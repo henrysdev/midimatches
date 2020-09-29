@@ -4,6 +4,8 @@
 </section>
 
 <section class="row">
+  <div id="messages" role="log" aria-live="polite"></div>
+  <input id="chat-input" type="text" />
   <article class="column">
     <h2>Resources</h2>
     <ul>

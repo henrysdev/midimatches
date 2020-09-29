@@ -1,8 +1,11 @@
-defmodule Progressions.RoomSupervisor do
+defmodule Progressions.Rooms.Room do
+  @moduledoc """
+  Supervisor for a single room
+  """
   use Supervisor
 
-  alias Progressions.{
-    Room,
+  alias Progressions.Rooms.Room.{
+    Server,
     TimestepClock
   }
 
@@ -13,7 +16,7 @@ defmodule Progressions.RoomSupervisor do
   @impl true
   def init(room_id) do
     children = [
-      {Room, [room_id]},
+      {Server, [room_id]},
       {TimestepClock, [room_id]}
     ]
 

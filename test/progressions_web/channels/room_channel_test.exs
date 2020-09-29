@@ -1,0 +1,26 @@
+defmodule ProgressionsWeb.RoomChannelTest do
+  use ProgressionsWeb.ChannelCase, async: true
+
+  alias ProgressionsWeb.{
+    RoomChannel,
+    UserSocket
+  }
+
+  alias Progressions.Rooms
+
+  setup do
+    Rooms.add_room("1")
+
+    {:ok, _, socket} =
+      UserSocket
+      |> socket()
+      |> subscribe_and_join(RoomChannel, "room:1")
+
+    %{socket: socket}
+  end
+
+  test "User can send play_note events and receive broadcasts", %{socket: socket} do
+    ref = push(socket, "play_note", %{"body" => "foobarzoo"})
+    assert_push(ref, %{"body" => "ASDFASDF", "timesteps" => []}, 1000)
+  end
+end

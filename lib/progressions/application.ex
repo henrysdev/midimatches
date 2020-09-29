@@ -14,7 +14,7 @@ defmodule Progressions.Application do
       # Start the Endpoint (http/https)
       ProgressionsWeb.Endpoint,
       # Start a worker by calling: Progressions.Worker.start_link(arg)
-      {DynamicSupervisor, strategy: :one_for_one, name: Progressions.RoomsDynamicSupervisor},
+      {DynamicSupervisor, strategy: :one_for_one, name: Progressions.Rooms},
       {Registry, keys: :unique, name: ProcessRegistry}
     ]
 

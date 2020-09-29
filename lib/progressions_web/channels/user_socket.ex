@@ -2,7 +2,7 @@ defmodule ProgressionsWeb.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  # channel "room:*", ProgressionsWeb.RoomChannel
+  channel "room:*", ProgressionsWeb.RoomChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
