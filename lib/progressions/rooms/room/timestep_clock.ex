@@ -29,8 +29,10 @@ defmodule Progressions.Rooms.Room.TimestepClock do
 
   @impl true
   def init([room_id]) do
-    timer = MicroTimer.send_every(@timestep_µs, :step, self())
+    Pids.register({:timestep_clock, room_id}, self())
     server = Pids.fetch!({:server, room_id})
+
+    timer = MicroTimer.send_every(@timestep_µs, :step, self())
 
     {:ok,
      %{

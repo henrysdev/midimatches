@@ -7,8 +7,8 @@ defmodule Progressions.Room.MusiciansTest do
     room_id = "room_id"
 
     {:ok, musician_pid} = Musicians.start_link([room_id])
-    {:ok, m1} = Musicians.add_musician(musician_pid, "1", room_id)
-    {:ok, m2} = Musicians.add_musician(musician_pid, "2", room_id)
+    {:ok, _m1} = Musicians.add_musician(musician_pid, "1", room_id)
+    {:ok, _m2} = Musicians.add_musician(musician_pid, "2", room_id)
 
     assert Musicians.musician_exists?("1", room_id) == true
     assert Musicians.musician_exists?("2", room_id) == true

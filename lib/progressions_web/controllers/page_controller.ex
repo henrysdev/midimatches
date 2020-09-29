@@ -6,7 +6,7 @@ defmodule ProgressionsWeb.PageController do
     render(conn, "index.html")
   end
 
-  def room(conn, %{"room_id" => room_id}) do
+  def room(conn, %{"room_id" => _room_id}) do
     render(conn, "index.html")
   end
 
