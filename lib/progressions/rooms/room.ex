@@ -4,10 +4,14 @@ defmodule Progressions.Rooms.Room do
   """
   use Supervisor
 
-  alias Progressions.Rooms.Room.{
-    Server,
-    TimestepClock
+  alias Progressions.{
+    Pids,
+    Rooms.Room.Server,
+    Rooms.Room.TimestepClock,
+    Rooms.Room.Musicians
   }
+
+  alias Progressions.Pids
 
   def start_link(room_id) do
     Supervisor.start_link(__MODULE__, room_id)
@@ -17,8 +21,11 @@ defmodule Progressions.Rooms.Room do
   def init(room_id) do
     children = [
       {Server, [room_id]},
-      {TimestepClock, [room_id]}
+      {TimestepClock, [room_id]},
+      {Musicians, [room_id]}
     ]
+
+    Pids.register({:room, room_id}, self())
 
     Supervisor.init(children, strategy: :one_for_one)
   end

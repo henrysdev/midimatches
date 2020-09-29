@@ -23,7 +23,7 @@ defmodule Progressions.Rooms do
   """
   @spec room_exists?(String.t()) :: boolean()
   def room_exists?(room_id) do
-    Pids.get_room(room_id) != nil
+    Pids.fetch({:room, room_id}) != nil
   end
 
   @doc """
