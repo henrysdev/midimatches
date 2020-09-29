@@ -3,8 +3,9 @@ defmodule Progressions.RoomTest do
 
   alias Progressions.Rooms.{
     Room,
-    Room.TimestepClock,
-    Room.Server
+    Room.Musicians,
+    Room.Server,
+    Room.TimestepClock
   }
 
   test "sets up expected supervision tree for single room" do
@@ -13,6 +14,7 @@ defmodule Progressions.RoomTest do
     {:ok, sup} = Room.start_link(room_id)
 
     assert [
+             {Musicians, _, :supervisor, [Musicians]},
              {TimestepClock, _, :worker, [TimestepClock]},
              {Server, _, :worker, [Server]}
            ] = Supervisor.which_children(sup)

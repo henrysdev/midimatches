@@ -3,28 +3,40 @@ defmodule Progressions.Pids do
   Provides convenience functions for interacting with process registry layer
   """
 
+  @proc_types [:room, :server, :timestep_clock, :musicians, :musician]
+
+  @type registry_resp() :: {:ok, pid()} | {:error, {:already_registered, pid()}}
+  @type id() :: String.t()
+  @type registry_key() :: tuple()
+
   @doc """
-  Get pid of room process by room_id
+  Registers a pid by a tuple key
   """
-  @spec get_room(String.t()) :: pid()
-  def get_room(id) do
-    lookup("room_#{id}")
+  @spec register(registry_key(), pid()) :: registry_resp()
+  def register({proc_type, identifiers} = key, pid) when proc_type in @proc_types do
+    Registry.register(ProcessRegistry, {proc_type, identifiers}, pid)
   end
 
   @doc """
-  Register pid of room process by room_id
+  Returns the pid value for the provided tuple key if one exists, otherwise nil
   """
-  @spec register_room(String.t(), pid()) ::
-          {:ok, pid()} | {:error, {:already_registered, pid()}}
-  def register_room(id, pid) do
-    Registry.register(ProcessRegistry, "room_#{id}", pid)
-  end
-
-  @spec lookup(String.t()) :: pid()
-  defp lookup(key) do
+  @spec fetch(registry_key()) :: pid()
+  def fetch({proc_type, identifiers} = key) when proc_type in @proc_types do
     case Registry.lookup(ProcessRegistry, key) do
       [{pid, _} | _rest] -> pid
       _ -> nil
+    end
+  end
+
+  @doc """
+  Returns the pid value for the provided tuple key if one exists, otherwise
+  a missing key error will be raised
+  """
+  @spec fetch!(registry_key()) :: pid()
+  def fetch!({proc_type, identifiers} = key) when proc_type in @proc_types do
+    case Registry.lookup(ProcessRegistry, key) do
+      [{pid, _} | _rest] -> pid
+      _ -> raise "Key not found in registry: #{inspect(key)}"
     end
   end
 end

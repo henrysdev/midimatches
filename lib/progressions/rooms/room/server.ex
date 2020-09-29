@@ -17,7 +17,7 @@ defmodule Progressions.Rooms.Room.Server do
 
   @impl true
   def init([room_id]) do
-    Pids.register_room(room_id, self())
+    Pids.register({:server, room_id}, self())
     {:ok, %{room_id: room_id, timesteps: []}}
   end
 
@@ -30,6 +30,7 @@ defmodule Progressions.Rooms.Room.Server do
   end
 
   @spec handle_cast(:broadcast_timesteps, room_state()) :: {:noreply, room_state()}
+  @impl true
   def handle_cast(:broadcast_timesteps, %{room_id: room_id, timesteps: timesteps}) do
     topic = "room:" <> room_id
 
