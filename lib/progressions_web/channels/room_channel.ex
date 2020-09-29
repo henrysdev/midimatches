@@ -4,17 +4,15 @@ defmodule ProgressionsWeb.RoomChannel do
 
   alias Progressions.{
     Pids,
-    Rooms.Room,
-    Rooms.Room.Musicians,
-    Rooms.Room.Server
+    Rooms.Room.Musicians
   }
 
-  def join("room:" <> room_id, params, socket) do
+  def join("room:" <> room_id, _params, socket) do
     if Progressions.Rooms.room_exists?(room_id) do
       # TODO musician id handling / generation
       musician_id = DateTime.utc_now() |> DateTime.to_string()
 
-      new_musician =
+      _new_musician =
         Pids.fetch({:musicians, room_id})
         |> Musicians.add_musician(musician_id, room_id)
 
@@ -25,8 +23,8 @@ defmodule ProgressionsWeb.RoomChannel do
     end
   end
 
-  def handle_in("play_note", %{"body" => body}, %Phoenix.Socket{topic: topic} = socket) do
-    [_, room_id] = String.split(topic, ":")
+  def handle_in("play_note", %{"body" => _body}, %Phoenix.Socket{topic: topic} = socket) do
+    [_, _room_id] = String.split(topic, ":")
 
     # TODO send note play event
 

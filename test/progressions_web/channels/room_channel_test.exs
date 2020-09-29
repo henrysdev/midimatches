@@ -19,8 +19,12 @@ defmodule ProgressionsWeb.RoomChannelTest do
     %{socket: socket}
   end
 
-  test "User can send play_note events and receive broadcasts", %{socket: socket} do
-    ref = push(socket, "play_note", %{"body" => "foobarzoo"})
+  test "User can receive tick broadcasts", %{socket: _socket} do
     assert_push(ref, %{"body" => "ASDFASDF", "timesteps" => []}, 1000)
+  end
+
+  test "User can send play_note events", %{socket: _socket} do
+    # TODO flesh out when implementing note play event handling
+    # ref = push(socket, "play_note", %{"body" => "foobarzoo"})
   end
 end

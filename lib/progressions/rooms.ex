@@ -39,10 +39,24 @@ defmodule Progressions.Rooms do
   end
 
   @doc """
-  List current children
+  Drop room from supervision tree
   """
-  @spec children() :: list()
-  def children do
+  @spec drop_room(String.t()) :: {atom(), pid() | String.t()}
+  def drop_room(room_id) do
+    room = Pids.fetch({:room, room_id})
+
+    if room != nil do
+      DynamicSupervisor.terminate_child(__MODULE__, room)
+    else
+      {:error, "room cannot be dropped as no room exists for room_id #{room_id}"}
+    end
+  end
+
+  @doc """
+  List current rooms
+  """
+  @spec list_rooms() :: list()
+  def list_rooms do
     DynamicSupervisor.which_children(__MODULE__)
   end
 end
