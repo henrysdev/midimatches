@@ -1,4 +1,8 @@
 defmodule Progressions.Telemetry do
+  @moduledoc """
+  The Telemetry module contains functions used to measure and monitor specific
+  performance concerns of the application.
+  """
   require Logger
 
   # TODO propagate these down via config

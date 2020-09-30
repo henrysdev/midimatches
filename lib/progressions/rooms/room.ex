@@ -19,13 +19,13 @@ defmodule Progressions.Rooms.Room do
 
   @impl true
   def init(room_id) do
+    Pids.register({:room, room_id}, self())
+
     children = [
       {Server, [room_id]},
-      {TimestepClock, [room_id]},
-      {Musicians, [room_id]}
+      {Musicians, [room_id]},
+      {TimestepClock, [room_id]}
     ]
-
-    Pids.register({:room, room_id}, self())
 
     Supervisor.init(children, strategy: :one_for_one)
   end

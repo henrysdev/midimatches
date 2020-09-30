@@ -3,13 +3,19 @@ defmodule Progressions.Rooms.Room.Server do
   Maintains state and exposes API for interacting with a single room
   """
   use GenServer
+  use TypedStruct
 
-  alias Progressions.{Pids}
+  alias __MODULE__
 
-  @type room_state() :: %{
-          room_id: String.t(),
-          timesteps: []
-        }
+  alias Progressions.{
+    Pids,
+    Types.Timestep
+  }
+
+  typedstruct do
+    field(:room_id, String.t(), enforce: true)
+    field(:timesteps, list(%Timestep{}), enforce: true, default: [])
+  end
 
   def start_link(room_id) do
     GenServer.start_link(__MODULE__, room_id)
@@ -18,7 +24,7 @@ defmodule Progressions.Rooms.Room.Server do
   @impl true
   def init([room_id]) do
     Pids.register({:server, room_id}, self())
-    {:ok, %{room_id: room_id, timesteps: []}}
+    {:ok, %Server{room_id: room_id, timesteps: []}}
   end
 
   @doc """
@@ -29,9 +35,9 @@ defmodule Progressions.Rooms.Room.Server do
     GenServer.cast(pid, :broadcast_timesteps)
   end
 
-  @spec handle_cast(:broadcast_timesteps, room_state()) :: {:noreply, room_state()}
+  @spec handle_cast(:broadcast_timesteps, %Server{}) :: {:noreply, %Server{}}
   @impl true
-  def handle_cast(:broadcast_timesteps, %{room_id: room_id, timesteps: timesteps}) do
+  def handle_cast(:broadcast_timesteps, %Server{room_id: room_id, timesteps: timesteps}) do
     topic = "room:" <> room_id
 
     ProgressionsWeb.Endpoint.broadcast(topic, "timesteps", %{
@@ -39,6 +45,6 @@ defmodule Progressions.Rooms.Room.Server do
       "body" => "ASDFASDF"
     })
 
-    {:noreply, %{room_id: room_id, timesteps: []}}
+    {:noreply, %Server{room_id: room_id, timesteps: []}}
   end
 end
