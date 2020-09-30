@@ -43,7 +43,9 @@ defmodule Progressions.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:micro_timer, "~> 0.1.0"},
-      {:dialyxir, "~> 1.0", only: [:dev], runtime: false}
+      {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
+      {:typed_struct, "~> 0.2.1"},
+      {:credo, "~> 1.5.0-rc.2", only: [:dev, :test], runtime: false}
     ]
   end
 

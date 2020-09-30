@@ -1,4 +1,8 @@
 defmodule ProgressionsWeb.RoomChannel do
+  @moduledoc """
+  Exposes API for all websocket communication in rooms
+  """
+
   use Phoenix.Channel
   require Logger
 

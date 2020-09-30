@@ -31,10 +31,10 @@ defmodule Progressions.Rooms do
   """
   @spec add_room(String.t()) :: {atom(), pid() | String.t()}
   def add_room(room_id) do
-    if !room_exists?(room_id) do
-      DynamicSupervisor.start_child(__MODULE__, {Room, room_id})
-    else
+    if room_exists?(room_id) do
       {:error, "room already exists for room_id #{room_id}"}
+    else
+      DynamicSupervisor.start_child(__MODULE__, {Room, room_id})
     end
   end
 

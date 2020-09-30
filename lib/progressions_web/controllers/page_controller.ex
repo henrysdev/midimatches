@@ -10,8 +10,8 @@ defmodule ProgressionsWeb.PageController do
     render(conn, "index.html")
   end
 
+  # TODO DEBUG REMOVE
   def debug_create_room(conn, %{"room_id" => room_id}) do
-    # TODO DEBUG REMOVE
     {:ok, _} = Rooms.add_room(room_id)
     render(conn, "index.html")
   end

@@ -14,8 +14,8 @@ defmodule Progressions.RoomTest do
     {:ok, sup} = Room.start_link(room_id)
 
     assert [
-             {Musicians, _, :supervisor, [Musicians]},
              {TimestepClock, _, :worker, [TimestepClock]},
+             {Musicians, _, :supervisor, [Musicians]},
              {Server, _, :worker, [Server]}
            ] = Supervisor.which_children(sup)
   end

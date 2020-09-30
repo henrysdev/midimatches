@@ -33,7 +33,7 @@ defmodule Progressions.PidsTest do
 
     Enum.each(results, fn res -> assert {:ok, _} = res end)
 
-    Registry.keys(ProcessRegistry, self()) |> IO.inspect()
+    Registry.keys(ProcessRegistry, self())
   end
 
   # setup do

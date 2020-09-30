@@ -34,10 +34,10 @@ defmodule Progressions.Rooms.Room.Musicians do
   """
   @spec add_musician(pid(), id(), id()) :: {atom(), pid() | String.t()}
   def add_musician(pid, musician_id, room_id) do
-    if !musician_exists?(musician_id, room_id) do
-      DynamicSupervisor.start_child(pid, {Musician, [musician_id, room_id]})
-    else
+    if musician_exists?(musician_id, room_id) do
       {:error, "musician already exists for musician_id #{musician_id} in room #{room_id}"}
+    else
+      DynamicSupervisor.start_child(pid, {Musician, [musician_id, room_id]})
     end
   end
 end

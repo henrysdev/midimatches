@@ -3,15 +3,16 @@ defmodule Progressions.Rooms.Room.TimestepClock do
   Clock process that facilitates timestep events within a room 
   """
   use GenServer
+  use TypedStruct
 
+  alias __MODULE__
   alias Progressions.{Telemetry}
 
-  @type clock_state() :: %{
-          timer: pid(),
-          steps: integer(),
-          server: pid(),
-          last_time: integer()
-        }
+  typedstruct do
+    field(:server, pid(), enforce: true)
+    field(:steps, integer(), enforce: true, default: 0)
+    field(:last_time, integer(), enforce: true)
+  end
 
   # TODO propagate these down via config
   @timestep_µs 50_000
@@ -32,21 +33,19 @@ defmodule Progressions.Rooms.Room.TimestepClock do
     Pids.register({:timestep_clock, room_id}, self())
     server = Pids.fetch!({:server, room_id})
 
-    timer = MicroTimer.send_every(@timestep_µs, :step, self())
+    MicroTimer.send_every(@timestep_µs, :step, self())
 
     {:ok,
-     %{
-       timer: timer,
+     %TimestepClock{
        steps: 1,
        server: server,
        last_time: System.system_time(:microsecond)
      }}
   end
 
-  @spec handle_info(:step, clock_state()) :: {:noreply, clock_state()}
+  @spec handle_info(:step, %TimestepClock{}) :: {:noreply, %TimestepClock{}}
   @impl true
-  def handle_info(:step, %{
-        timer: timer,
+  def handle_info(:step, %TimestepClock{
         steps: steps,
         server: server,
         last_time: last_time
@@ -58,11 +57,10 @@ defmodule Progressions.Rooms.Room.TimestepClock do
       Server.broadcast_timesteps(server)
     end
 
-    # TODO have all Instrument processes push
+    # TODO notify all Musician processes to push timesteps to server
 
     {:noreply,
-     %{
-       timer: timer,
+     %TimestepClock{
        steps: steps + 1,
        server: server,
        last_time: curr_time
