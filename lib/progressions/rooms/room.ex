@@ -18,12 +18,19 @@ defmodule Progressions.Rooms.Room do
     }
   }
 
-  def start_link(room_id, room_config \\ @default_room_config) do
-    Supervisor.start_link(__MODULE__, [room_id, room_config])
+  def start_link(args) do
+    Supervisor.start_link(__MODULE__, args)
   end
 
   @impl true
-  def init([room_id, %{timestep_clock: clock_cfg}]) do
+  def init(args) do
+    [room_id, %{timestep_clock: clock_cfg}] =
+      case args do
+        [id] -> [id, @default_room_config]
+        [id, cfg] -> [id, cfg]
+        _ -> raise "Unsupported init args passed to Room init #{inspect(args, pretty: true)}"
+      end
+
     Pids.register({:room, room_id}, self())
 
     children = [

@@ -34,7 +34,7 @@ defmodule Progressions.Rooms do
     if room_exists?(room_id) do
       {:error, "room already exists for room_id #{room_id}"}
     else
-      DynamicSupervisor.start_child(__MODULE__, {Room, room_id})
+      DynamicSupervisor.start_child(__MODULE__, {Room, [room_id]})
     end
   end
 
