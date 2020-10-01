@@ -40,4 +40,12 @@ defmodule Progressions.Rooms.Room.Musicians do
       DynamicSupervisor.start_child(pid, {Musician, [musician_id, room_id]})
     end
   end
+
+  @doc """
+  List all musician child processes
+  """
+  @spec list_musicians(pid()) :: list()
+  def list_musicians(pid) do
+    DynamicSupervisor.which_children(pid)
+  end
 end

@@ -4,13 +4,18 @@ defmodule Progressions.Rooms.Room.TimestepClock do
   """
   use GenServer
   use TypedStruct
+  require Logger
 
-  alias __MODULE__
-  alias Progressions.{Telemetry}
+  alias Progressions.{
+    Rooms.Room.Musicians,
+    Rooms.Room.Musicians.Musician,
+    Telemetry
+  }
 
   typedstruct do
     field(:server, pid(), enforce: true)
-    field(:steps, integer(), enforce: true, default: 0)
+    field(:musicians, pid(), enforce: true)
+    field(:step, integer(), enforce: true, default: 0)
     field(:last_time, integer(), enforce: true)
   end
 
@@ -31,39 +36,53 @@ defmodule Progressions.Rooms.Room.TimestepClock do
   @impl true
   def init([room_id]) do
     Pids.register({:timestep_clock, room_id}, self())
-    server = Pids.fetch!({:server, room_id})
-
     MicroTimer.send_every(@timestep_µs, :step, self())
 
     {:ok,
-     %TimestepClock{
-       steps: 1,
-       server: server,
+     %__MODULE__{
+       step: 1,
+       server: Pids.fetch!({:server, room_id}),
+       musicians: Pids.fetch!({:musicians, room_id}),
        last_time: System.system_time(:microsecond)
      }}
   end
 
-  @spec handle_info(:step, %TimestepClock{}) :: {:noreply, %TimestepClock{}}
+  @spec handle_info(:step, %__MODULE__{}) :: {:noreply, %__MODULE__{}}
   @impl true
-  def handle_info(:step, %TimestepClock{
-        steps: steps,
+  def handle_info(:step, %__MODULE__{
+        step: step,
         server: server,
+        musicians: musicians,
         last_time: last_time
       }) do
     curr_time = System.system_time(:microsecond)
-    Telemetry.monitor_timestep_sync(curr_time, last_time, steps)
 
-    if rem(steps, @tick_in_timesteps) == 0 do
+    Telemetry.monitor_timestep_sync(curr_time, last_time, step)
+
+    if rem(step, @tick_in_timesteps) == 0 do
       Server.broadcast_timesteps(server)
     end
 
-    # TODO notify all Musician processes to push timesteps to server
+    # children =
+    # DynamicSupervisor.which_children(musicians)
+    # |> Enum.map(fn {_, p, _, _} -> p end)
+    # |> Enum.each(&Musician.send_next_timestep(&1, step))
+
+    message_all_musicians(musicians, step)
 
     {:noreply,
-     %TimestepClock{
-       steps: steps + 1,
+     %__MODULE__{
+       step: step + 1,
        server: server,
+       musicians: musicians,
        last_time: curr_time
      }}
+  end
+
+  @spec message_all_musicians(pid(), integer()) :: :ok
+  defp message_all_musicians(musicians, step) do
+    Musicians.list_musicians(musicians)
+    |> Enum.map(fn {_, p, _, _} -> p end)
+    |> Enum.each(&Musician.send_next_timestep(&1, step))
   end
 end
