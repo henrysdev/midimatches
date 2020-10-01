@@ -4,7 +4,6 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
   """
   use GenServer
   use TypedStruct
-  require Logger
 
   alias Progressions.{
     Pids,
@@ -121,8 +120,6 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
           playhead: playhead
         }
       ) do
-    Logger.info("send_next_timestep called w/ clock_timestep: #{inspect(clock_timestep)}")
-
     # restart loop playhead if current timestep is at or past deadline
     {deadline, queue} =
       case playhead do

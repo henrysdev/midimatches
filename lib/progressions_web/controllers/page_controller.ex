@@ -1,6 +1,6 @@
 defmodule ProgressionsWeb.PageController do
   use ProgressionsWeb, :controller
-  alias Progressions.{Rooms}
+  alias Progressions.Rooms
 
   def index(conn, _params) do
     render(conn, "index.html")

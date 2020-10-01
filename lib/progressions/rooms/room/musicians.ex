@@ -5,14 +5,14 @@ defmodule Progressions.Rooms.Room.Musicians do
   use DynamicSupervisor
 
   alias Progressions.{
-    Rooms.Room.Musicians.Musician,
-    Pids
+    Pids,
+    Rooms.Room.Musicians.Musician
   }
 
   @type id() :: String.t()
 
-  def start_link(init_arg) do
-    DynamicSupervisor.start_link(__MODULE__, init_arg)
+  def start_link(args) do
+    DynamicSupervisor.start_link(__MODULE__, args)
   end
 
   @impl true
