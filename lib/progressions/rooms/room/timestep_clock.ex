@@ -59,7 +59,7 @@ defmodule Progressions.Rooms.Room.TimestepClock do
     TelemetryMonitor.check_clock_precision(curr_time, last_time, step)
 
     if rem(step, tick_in_timesteps) == 0 do
-      Server.broadcast_timestep_slices(server)
+      Server.broadcast_next_tick(server)
     end
 
     message_all_musicians(musicians, step)

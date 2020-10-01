@@ -29,9 +29,9 @@ defmodule Progressions.Rooms.Room.Server do
   @doc """
   Broadcasts next timesteps to all listening clients. Resets timesteps buffer.
   """
-  @spec broadcast_timestep_slices(pid()) :: :ok
-  def broadcast_timestep_slices(pid) do
-    GenServer.cast(pid, :broadcast_timestep_slices)
+  @spec broadcast_next_tick(pid()) :: :ok
+  def broadcast_next_tick(pid) do
+    GenServer.cast(pid, :broadcast_next_tick)
   end
 
   @doc """
@@ -42,9 +42,9 @@ defmodule Progressions.Rooms.Room.Server do
     GenServer.cast(pid, {:buffer_timestep_slices, new_timestep_slices})
   end
 
-  @spec handle_cast(:broadcast_timestep_slices, %__MODULE__{}) :: {:noreply, %__MODULE__{}}
+  @spec handle_cast(:broadcast_next_tick, %__MODULE__{}) :: {:noreply, %__MODULE__{}}
   @impl true
-  def handle_cast(:broadcast_timestep_slices, %__MODULE__{
+  def handle_cast(:broadcast_next_tick, %__MODULE__{
         room_id: room_id,
         timestep_slices: timestep_slices
       }) do
