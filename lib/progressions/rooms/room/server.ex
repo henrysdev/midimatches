@@ -18,8 +18,8 @@ defmodule Progressions.Rooms.Room.Server do
     field(:timestep_slices, timestep_slices())
   end
 
-  def start_link(room_id) do
-    GenServer.start_link(__MODULE__, room_id)
+  def start_link(args) do
+    GenServer.start_link(__MODULE__, args)
   end
 
   @impl true

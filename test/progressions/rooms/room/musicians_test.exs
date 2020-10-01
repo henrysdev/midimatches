@@ -10,7 +10,7 @@ defmodule Progressions.MusiciansTest do
   test "add musicians to room and lookup them up" do
     room_id = "room_id"
 
-    {:ok, _room} = Room.start_link(room_id)
+    {:ok, _room} = Room.start_link([room_id])
     musicians_pid = Pids.fetch!({:musicians, room_id})
 
     {:ok, _m1} = Musicians.add_musician(musicians_pid, "1", room_id)

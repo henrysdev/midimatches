@@ -16,7 +16,7 @@ defmodule Progressions.RoomTest do
   test "sets up expected supervision tree for single room" do
     room_id = "abc123"
 
-    {:ok, sup} = Room.start_link(room_id)
+    {:ok, sup} = Room.start_link([room_id])
 
     assert [
              {TimestepClock, _, :worker, [TimestepClock]},
@@ -77,7 +77,7 @@ defmodule Progressions.RoomTest do
       ]
     }
 
-    {:ok, _room} = Room.start_link(room_id, config)
+    {:ok, _room} = Room.start_link([room_id, config])
 
     musicians_pid = Pids.fetch!({:musicians, room_id})
 

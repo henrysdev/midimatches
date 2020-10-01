@@ -33,8 +33,8 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
     field(:playhead, playhead())
   end
 
-  def start_link(init_arg) do
-    GenServer.start_link(__MODULE__, init_arg)
+  def start_link(args) do
+    GenServer.start_link(__MODULE__, args)
   end
 
   @impl true
