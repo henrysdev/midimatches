@@ -11,9 +11,11 @@ defmodule Progressions.Rooms.Room.Server do
     Types.TimestepSlice
   }
 
-  typedstruct do
-    field(:room_id, String.t(), enforce: true)
-    field(:timestep_slices, list(%TimestepSlice{}), enforce: true, default: [])
+  @type timestep_slices() :: list(%TimestepSlice{})
+
+  typedstruct enforce: true do
+    field(:room_id, String.t())
+    field(:timestep_slices, timestep_slices())
   end
 
   def start_link(room_id) do
@@ -27,7 +29,7 @@ defmodule Progressions.Rooms.Room.Server do
   end
 
   @doc """
-  Broadcasts next timesteps to all listening clients. Resets timesteps buffer.
+  Broadcasts next tick's worth of timestep slices to all listening clients.
   """
   @spec broadcast_next_tick(pid()) :: :ok
   def broadcast_next_tick(pid) do
@@ -35,9 +37,10 @@ defmodule Progressions.Rooms.Room.Server do
   end
 
   @doc """
-  Accepts timesteps from musician processes and adds them to timesteps buffer
+  Accepts timestep slices from musician processes and adds them to timestep
+  slices buffer.
   """
-  @spec buffer_timestep_slices(pid(), list(%TimestepSlice{})) :: :ok
+  @spec buffer_timestep_slices(pid(), timestep_slices()) :: :ok
   def buffer_timestep_slices(pid, new_timestep_slices) do
     GenServer.cast(pid, {:buffer_timestep_slices, new_timestep_slices})
   end
@@ -59,7 +62,7 @@ defmodule Progressions.Rooms.Room.Server do
     {:noreply, %__MODULE__{room_id: room_id, timestep_slices: []}}
   end
 
-  @spec handle_cast({:buffer_timestep_slices, list(%TimestepSlice{})}, %__MODULE__{}) ::
+  @spec handle_cast({:buffer_timestep_slices, timestep_slices()}, %__MODULE__{}) ::
           {:noreply, %__MODULE__{}}
   @impl true
   def handle_cast({:buffer_timestep_slices, new_timestep_slices}, %__MODULE__{

@@ -12,7 +12,7 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
     Types.TimestepSlice
   }
 
-  @type timesteps() :: list(%TimestepSlice{})
+  @type timestep_slices() :: list(%TimestepSlice{})
   @type deadline() :: integer()
   @type queue() :: :queue.queue(%TimestepSlice{})
   @typedoc """
@@ -120,6 +120,7 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
           playhead: playhead
         }
       ) do
+        
     # restart loop playhead if current timestep is at or past deadline
     {deadline, queue} =
       case playhead do
@@ -166,7 +167,8 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
     {loop.length + curr_timestep, queue}
   end
 
-  @spec pop_due_timestep_slices(queue(), integer(), timesteps()) :: {queue(), timesteps()}
+  @spec pop_due_timestep_slices(queue(), integer(), timestep_slices()) ::
+          {queue(), timestep_slices()}
   defp pop_due_timestep_slices(queue, clock_timestep, acc_timestep_slices \\ []) do
     case :queue.peek(queue) do
       {:value, %TimestepSlice{step: step}} when step <= clock_timestep ->
