@@ -5,7 +5,7 @@ defmodule Progressions.Types.TimestepSlice do
   use TypedStruct
 
   typedstruct enforce: true do
-    field(:step, integer())
+    field(:timestep, integer())
     field(:notes, list(%Progressions.Types.Note{}))
   end
 end

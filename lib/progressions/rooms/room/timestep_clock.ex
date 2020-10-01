@@ -17,7 +17,7 @@ defmodule Progressions.Rooms.Room.TimestepClock do
   typedstruct do
     field(:server, pid(), enforce: true)
     field(:musicians, pid(), enforce: true)
-    field(:step, integer(), enforce: true)
+    field(:timestep, integer(), enforce: true)
     field(:last_time, integer(), enforce: true)
     field(:timestep_µs, integer(), default: 50_000)
     field(:tick_in_timesteps, integer(), default: 4)
@@ -30,11 +30,11 @@ defmodule Progressions.Rooms.Room.TimestepClock do
   @impl true
   def init([room_id, %{timestep_µs: timestep_µs, tick_in_timesteps: tick_in_timesteps}]) do
     Pids.register({:timestep_clock, room_id}, self())
-    MicroTimer.send_every(timestep_µs, :step, self())
+    MicroTimer.send_every(timestep_µs, :increment_timestep, self())
 
     {:ok,
      %__MODULE__{
-       step: 1,
+       timestep: 1,
        server: Pids.fetch!({:server, room_id}),
        musicians: Pids.fetch!({:musicians, room_id}),
        last_time: System.system_time(:microsecond),
@@ -43,30 +43,30 @@ defmodule Progressions.Rooms.Room.TimestepClock do
      }}
   end
 
-  @spec handle_info(:step, %__MODULE__{}) :: {:noreply, %__MODULE__{}}
+  @spec handle_info(:increment_timestep, %__MODULE__{}) :: {:noreply, %__MODULE__{}}
   @impl true
-  def handle_info(:step, %__MODULE__{
-        step: step,
+  def handle_info(:increment_timestep, %__MODULE__{
+        timestep: timestep,
         server: server,
         musicians: musicians,
         last_time: last_time,
         timestep_µs: timestep_µs,
         tick_in_timesteps: tick_in_timesteps
       }) do
-    Logger.info("clock_timestep=#{step}")
+    Logger.info("clock_timestep=#{timestep}")
     curr_time = System.system_time(:microsecond)
 
-    TelemetryMonitor.check_clock_precision(curr_time, last_time, step)
+    TelemetryMonitor.check_clock_precision(curr_time, last_time, timestep)
 
-    if rem(step, tick_in_timesteps) == 0 do
+    if rem(timestep, tick_in_timesteps) == 0 do
       Server.broadcast_next_tick(server)
     end
 
-    message_all_musicians(musicians, step)
+    message_all_musicians(musicians, timestep)
 
     {:noreply,
      %__MODULE__{
-       step: step + 1,
+       timestep: timestep + 1,
        server: server,
        musicians: musicians,
        last_time: curr_time,
@@ -76,9 +76,9 @@ defmodule Progressions.Rooms.Room.TimestepClock do
   end
 
   @spec message_all_musicians(pid(), integer()) :: :ok
-  defp message_all_musicians(musicians, step) do
+  defp message_all_musicians(musicians, timestep) do
     Musicians.list_musicians(musicians)
     |> Enum.map(fn {_, p, _, _} -> p end)
-    |> Enum.each(&Musician.next_timestep(&1, step))
+    |> Enum.each(&Musician.next_timestep(&1, timestep))
   end
 end

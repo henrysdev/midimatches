@@ -40,7 +40,7 @@ defmodule Progressions.RoomTest do
       length: 8,
       timestep_slices: [
         %TimestepSlice{
-          step: 0,
+          timestep: 0,
           notes: [
             %Note{
               instrument: "epiano",
@@ -55,7 +55,7 @@ defmodule Progressions.RoomTest do
           ]
         },
         %TimestepSlice{
-          step: 3,
+          timestep: 3,
           notes: [
             %Note{
               instrument: "epiano",
@@ -65,7 +65,7 @@ defmodule Progressions.RoomTest do
           ]
         },
         %TimestepSlice{
-          step: 7,
+          timestep: 7,
           notes: [
             %Note{
               instrument: "tuba",

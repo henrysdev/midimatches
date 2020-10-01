@@ -120,7 +120,6 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
           playhead: playhead
         }
       ) do
-        
     # restart loop playhead if current timestep is at or past deadline
     {deadline, queue} =
       case playhead do
@@ -158,9 +157,9 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
   defp restart_loop_playhead(loop, curr_timestep) do
     queue =
       loop.timestep_slices
-      |> Enum.reduce(:queue.new(), fn %TimestepSlice{step: step} = tstep, q ->
-        tstep
-        |> Map.put(:step, curr_timestep + step)
+      |> Enum.reduce(:queue.new(), fn %TimestepSlice{timestep: timestep} = timestep_slice, q ->
+        timestep_slice
+        |> Map.put(:timestep, curr_timestep + timestep)
         |> :queue.in(q)
       end)
 
@@ -171,7 +170,7 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
           {queue(), timestep_slices()}
   defp pop_due_timestep_slices(queue, clock_timestep, acc_timestep_slices \\ []) do
     case :queue.peek(queue) do
-      {:value, %TimestepSlice{step: step}} when step <= clock_timestep ->
+      {:value, %TimestepSlice{timestep: timestep}} when timestep <= clock_timestep ->
         {{:value, %TimestepSlice{} = timestep_slice}, queue} = :queue.out(queue)
         pop_due_timestep_slices(queue, clock_timestep, [timestep_slice | acc_timestep_slices])
 
