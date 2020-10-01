@@ -1,4 +1,4 @@
-defmodule Progressions.Types.Timestep do
+defmodule Progressions.Types.TimestepSlice do
   @moduledoc false
   # TODO detailed module doc on this type
 

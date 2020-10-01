@@ -20,7 +20,7 @@ defmodule ProgressionsWeb.RoomChannelTest do
   end
 
   test "User can receive tick broadcasts", %{socket: _socket} do
-    assert_push(ref, %{"body" => "ASDFASDF", "timesteps" => []}, 1000)
+    assert_push(ref, %{"body" => "ASDFASDF", "timestep_slices" => []}, 1000)
   end
 
   test "User can send play_note events", %{socket: _socket} do
