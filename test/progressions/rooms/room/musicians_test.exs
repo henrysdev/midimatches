@@ -1,4 +1,4 @@
-defmodule Progressions.Room.MusiciansTest do
+defmodule Progressions.MusiciansTest do
   use ExUnit.Case, async: true
 
   alias Progressions.{
