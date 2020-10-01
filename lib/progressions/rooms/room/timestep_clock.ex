@@ -21,7 +21,6 @@ defmodule Progressions.Rooms.Room.TimestepClock do
 
   # TODO propagate these down via config
   @timestep_µs 50_000
-  @measure_in_timesteps 8
   @tick_in_timesteps 4
 
   alias Progressions.{
@@ -62,11 +61,6 @@ defmodule Progressions.Rooms.Room.TimestepClock do
     if rem(step, @tick_in_timesteps) == 0 do
       Server.broadcast_timesteps(server)
     end
-
-    # children =
-    # DynamicSupervisor.which_children(musicians)
-    # |> Enum.map(fn {_, p, _, _} -> p end)
-    # |> Enum.each(&Musician.send_next_timestep(&1, step))
 
     message_all_musicians(musicians, step)
 
