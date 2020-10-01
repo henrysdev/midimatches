@@ -9,12 +9,12 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
     Pids,
     Rooms.Room.Server,
     Types.Loop,
-    Types.Timestep
+    Types.TimestepSlice
   }
 
-  @type timesteps() :: list(%Timestep{})
+  @type timesteps() :: list(%TimestepSlice{})
   @type deadline() :: integer()
-  @type queue() :: :queue.queue(%Timestep{})
+  @type queue() :: :queue.queue(%TimestepSlice{})
   @typedoc """
   The playhad structure represents the playhead for the playing loop. The
   tuple contains a timestep deadline (the timestep when the loop should be
@@ -65,9 +65,9 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
   Pushes the timestep to the server. This method should only be called by the
   TimestepClock process.
   """
-  @spec send_next_timestep(pid(), integer()) :: :ok
-  def send_next_timestep(pid, clock_timestep) do
-    GenServer.cast(pid, {:send_next_timestep, clock_timestep})
+  @spec next_timestep(pid(), integer()) :: :ok
+  def next_timestep(pid, clock_timestep) do
+    GenServer.cast(pid, {:next_timestep, clock_timestep})
   end
 
   @spec handle_cast({:new_loop, %Loop{}}, %__MODULE__{}) ::
@@ -99,18 +99,18 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
      }}
   end
 
-  @spec handle_cast({:send_next_timestep, integer()}, %__MODULE__{}) ::
+  @spec handle_cast({:next_timestep, integer()}, %__MODULE__{}) ::
           {:noreply, %__MODULE__{}}
   @impl true
   def handle_cast(
-        {:send_next_timestep, clock_timestep},
+        {:next_timestep, clock_timestep},
         %__MODULE__{active_loop: nil} = state
       ) do
     {:noreply, Map.put(state, :last_timestep, clock_timestep)}
   end
 
   def handle_cast(
-        {:send_next_timestep, clock_timestep},
+        {:next_timestep, clock_timestep},
         %__MODULE__{
           server: server,
           musician_id: musician_id,
@@ -134,11 +134,11 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
           raise "Unexpected match for playhead struct #{inspect(other)}"
       end
 
-    # send due timesteps to server buffer
-    {queue, timesteps_to_buffer} = pop_due_timesteps(queue, clock_timestep)
+    # send due timestep slices to server buffer
+    {queue, timestep_slices_to_buffer} = pop_due_timestep_slices(queue, clock_timestep)
 
-    if length(timesteps_to_buffer) > 0 do
-      Server.buffer_timesteps(server, timesteps_to_buffer)
+    if length(timestep_slices_to_buffer) > 0 do
+      Server.buffer_timestep_slices(server, timestep_slices_to_buffer)
     end
 
     {:noreply,
@@ -157,7 +157,7 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
   defp restart_loop_playhead(loop, curr_timestep) do
     queue =
       loop.timestep_slices
-      |> Enum.reduce(:queue.new(), fn %Timestep{step: step} = tstep, q ->
+      |> Enum.reduce(:queue.new(), fn %TimestepSlice{step: step} = tstep, q ->
         tstep
         |> Map.put(:step, curr_timestep + step)
         |> :queue.in(q)
@@ -166,15 +166,15 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
     {loop.length + curr_timestep, queue}
   end
 
-  @spec pop_due_timesteps(queue(), integer(), timesteps()) :: {queue(), timesteps()}
-  defp pop_due_timesteps(queue, clock_timestep, acc_timesteps \\ []) do
+  @spec pop_due_timestep_slices(queue(), integer(), timesteps()) :: {queue(), timesteps()}
+  defp pop_due_timestep_slices(queue, clock_timestep, acc_timestep_slices \\ []) do
     case :queue.peek(queue) do
-      {:value, %Timestep{step: step}} when step <= clock_timestep ->
-        {{:value, %Timestep{} = timestep}, queue} = :queue.out(queue)
-        pop_due_timesteps(queue, clock_timestep, [timestep | acc_timesteps])
+      {:value, %TimestepSlice{step: step}} when step <= clock_timestep ->
+        {{:value, %TimestepSlice{} = timestep_slice}, queue} = :queue.out(queue)
+        pop_due_timestep_slices(queue, clock_timestep, [timestep_slice | acc_timestep_slices])
 
       _ ->
-        {queue, acc_timesteps}
+        {queue, acc_timestep_slices}
     end
   end
 end

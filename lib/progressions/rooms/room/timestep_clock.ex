@@ -11,7 +11,7 @@ defmodule Progressions.Rooms.Room.TimestepClock do
     Rooms.Room.Musicians,
     Rooms.Room.Musicians.Musician,
     Rooms.Room.Server,
-    Telemetry
+    TelemetryMonitor
   }
 
   typedstruct do
@@ -56,10 +56,10 @@ defmodule Progressions.Rooms.Room.TimestepClock do
     Logger.info("clock_timestep=#{step}")
     curr_time = System.system_time(:microsecond)
 
-    Telemetry.monitor_timestep_sync(curr_time, last_time, step)
+    TelemetryMonitor.check_clock_precision(curr_time, last_time, step)
 
     if rem(step, tick_in_timesteps) == 0 do
-      Server.broadcast_timesteps(server)
+      Server.broadcast_timestep_slices(server)
     end
 
     message_all_musicians(musicians, step)
@@ -79,6 +79,6 @@ defmodule Progressions.Rooms.Room.TimestepClock do
   defp message_all_musicians(musicians, step) do
     Musicians.list_musicians(musicians)
     |> Enum.map(fn {_, p, _, _} -> p end)
-    |> Enum.each(&Musician.send_next_timestep(&1, step))
+    |> Enum.each(&Musician.next_timestep(&1, step))
   end
 end

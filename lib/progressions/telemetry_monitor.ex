@@ -1,7 +1,7 @@
-defmodule Progressions.Telemetry do
+defmodule Progressions.TelemetryMonitor do
   @moduledoc """
-  The Telemetry module contains functions used to measure and monitor specific
-  performance concerns of the application.
+  The TelemetryMonitor module contains functions used to measure and
+  monitor specific performance concerns of the application.
   """
   require Logger
 
@@ -12,8 +12,8 @@ defmodule Progressions.Telemetry do
   @doc """
   Monitor for alerting in case of timestep clock inaccuracy
   """
-  @spec monitor_timestep_sync(number(), number(), number()) :: nil
-  def monitor_timestep_sync(new, old, timestep)
+  @spec check_clock_precision(number(), number(), number()) :: nil
+  def check_clock_precision(new, old, timestep)
       when abs(new - old - @timestep_µs) > @clock_tolerance_µs and
              new > @timestep_µs and old > @timestep_µs do
     elapsed = abs(new - old - @timestep_µs)
@@ -31,5 +31,11 @@ defmodule Progressions.Telemetry do
     Logger.warn(message)
   end
 
-  def monitor_timestep_sync(_, _, _), do: nil
+  def check_clock_precision(_, _, _), do: nil
+
+  # @spec check_timesteps_sync(list(), integer()) :: nil
+  def check_timesteps_sync do
+    # TODO implement check for timesteps that are catching up. Can be detecting by
+    # timesteps slices that are from a timestep before current
+  end
 end

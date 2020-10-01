@@ -10,7 +10,7 @@ defmodule Progressions.RoomTest do
     Rooms.Room.TimestepClock,
     Types.Loop,
     Types.Note,
-    Types.Timestep
+    Types.TimestepSlice
   }
 
   test "sets up expected supervision tree for single room" do
@@ -39,7 +39,7 @@ defmodule Progressions.RoomTest do
       start_timestep: 0,
       length: 8,
       timestep_slices: [
-        %Timestep{
+        %TimestepSlice{
           step: 0,
           notes: [
             %Note{
@@ -54,7 +54,7 @@ defmodule Progressions.RoomTest do
             }
           ]
         },
-        %Timestep{
+        %TimestepSlice{
           step: 3,
           notes: [
             %Note{
@@ -64,7 +64,7 @@ defmodule Progressions.RoomTest do
             }
           ]
         },
-        %Timestep{
+        %TimestepSlice{
           step: 7,
           notes: [
             %Note{

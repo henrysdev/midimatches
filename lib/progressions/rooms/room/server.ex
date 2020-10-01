@@ -8,12 +8,12 @@ defmodule Progressions.Rooms.Room.Server do
 
   alias Progressions.{
     Pids,
-    Types.Timestep
+    Types.TimestepSlice
   }
 
   typedstruct do
     field(:room_id, String.t(), enforce: true)
-    field(:timesteps, list(%Timestep{}), enforce: true, default: [])
+    field(:timestep_slices, list(%TimestepSlice{}), enforce: true, default: [])
   end
 
   def start_link(room_id) do
@@ -23,50 +23,53 @@ defmodule Progressions.Rooms.Room.Server do
   @impl true
   def init([room_id]) do
     Pids.register({:server, room_id}, self())
-    {:ok, %__MODULE__{room_id: room_id, timesteps: []}}
+    {:ok, %__MODULE__{room_id: room_id, timestep_slices: []}}
   end
 
   @doc """
   Broadcasts next timesteps to all listening clients. Resets timesteps buffer.
   """
-  @spec broadcast_timesteps(pid()) :: :ok
-  def broadcast_timesteps(pid) do
-    GenServer.cast(pid, :broadcast_timesteps)
+  @spec broadcast_timestep_slices(pid()) :: :ok
+  def broadcast_timestep_slices(pid) do
+    GenServer.cast(pid, :broadcast_timestep_slices)
   end
 
   @doc """
   Accepts timesteps from musician processes and adds them to timesteps buffer
   """
-  @spec buffer_timesteps(pid(), list(%Timestep{})) :: :ok
-  def buffer_timesteps(pid, new_timesteps) do
-    GenServer.cast(pid, {:buffer_timesteps, new_timesteps})
+  @spec buffer_timestep_slices(pid(), list(%TimestepSlice{})) :: :ok
+  def buffer_timestep_slices(pid, new_timestep_slices) do
+    GenServer.cast(pid, {:buffer_timestep_slices, new_timestep_slices})
   end
 
-  @spec handle_cast(:broadcast_timesteps, %__MODULE__{}) :: {:noreply, %__MODULE__{}}
+  @spec handle_cast(:broadcast_timestep_slices, %__MODULE__{}) :: {:noreply, %__MODULE__{}}
   @impl true
-  def handle_cast(:broadcast_timesteps, %__MODULE__{room_id: room_id, timesteps: timesteps}) do
+  def handle_cast(:broadcast_timestep_slices, %__MODULE__{
+        room_id: room_id,
+        timestep_slices: timestep_slices
+      }) do
     Logger.info("broadcasting tick")
     topic = "room:" <> room_id
 
     ProgressionsWeb.Endpoint.broadcast(topic, "timesteps", %{
-      "timesteps" => timesteps,
+      "timestep_slices" => timestep_slices,
       "body" => "ASDFASDF"
     })
 
-    {:noreply, %__MODULE__{room_id: room_id, timesteps: []}}
+    {:noreply, %__MODULE__{room_id: room_id, timestep_slices: []}}
   end
 
-  @spec handle_cast({:buffer_timesteps, list(%Timestep{})}, %__MODULE__{}) ::
+  @spec handle_cast({:buffer_timestep_slices, list(%TimestepSlice{})}, %__MODULE__{}) ::
           {:noreply, %__MODULE__{}}
   @impl true
-  def handle_cast({:buffer_timesteps, new_timesteps}, %__MODULE__{
+  def handle_cast({:buffer_timestep_slices, new_timestep_slices}, %__MODULE__{
         room_id: room_id,
-        timesteps: timesteps
+        timestep_slices: timestep_slices
       }) do
-    Logger.info("buffering timesteps #{inspect(new_timesteps)}")
+    Logger.info("buffering timestep slices #{inspect(new_timestep_slices)}")
     # TODO buffer timestep properly
-    timesteps = timesteps ++ new_timesteps
+    timestep_slices = timestep_slices ++ new_timestep_slices
 
-    {:noreply, %__MODULE__{room_id: room_id, timesteps: timesteps}}
+    {:noreply, %__MODULE__{room_id: room_id, timestep_slices: timestep_slices}}
   end
 end

@@ -20,7 +20,7 @@ defmodule Progressions.MixProject do
   def application do
     [
       mod: {Progressions.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :logger_file_backend]
     ]
   end
 
@@ -45,7 +45,8 @@ defmodule Progressions.MixProject do
       {:micro_timer, "~> 0.1.0"},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:typed_struct, "~> 0.2.1"},
-      {:credo, "~> 1.5.0-rc.2", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.5.0-rc.2", only: [:dev, :test], runtime: false},
+      {:logger_file_backend, "~> 0.0.11"}
     ]
   end
 
