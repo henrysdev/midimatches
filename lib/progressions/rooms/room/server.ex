@@ -51,8 +51,9 @@ defmodule Progressions.Rooms.Room.Server do
         room_id: room_id,
         timestep_slices: timestep_slices
       }) do
-    Logger.info("broadcasting tick")
     topic = "room:" <> room_id
+
+    Logger.debug("broadcast timestep_slices: #{inspect(timestep_slices, pretty: true)}")
 
     ProgressionsWeb.Endpoint.broadcast(topic, "timesteps", %{
       "timestep_slices" => timestep_slices,
@@ -69,7 +70,6 @@ defmodule Progressions.Rooms.Room.Server do
         room_id: room_id,
         timestep_slices: timestep_slices
       }) do
-    Logger.info("buffering timestep slices #{inspect(new_timestep_slices)}")
     # TODO buffer timestep properly
     timestep_slices = timestep_slices ++ new_timestep_slices
 
