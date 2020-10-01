@@ -9,8 +9,8 @@ defmodule Progressions.RoomTest do
     Rooms.Room.Server,
     Rooms.Room.TimestepClock,
     Types.Loop,
-    Types.Timestep,
-    Types.Note
+    Types.Note,
+    Types.Timestep
   }
 
   test "sets up expected supervision tree for single room" do

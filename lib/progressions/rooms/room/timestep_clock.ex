@@ -7,8 +7,10 @@ defmodule Progressions.Rooms.Room.TimestepClock do
   require Logger
 
   alias Progressions.{
+    Pids,
     Rooms.Room.Musicians,
     Rooms.Room.Musicians.Musician,
+    Rooms.Room.Server,
     Telemetry
   }
 
@@ -20,11 +22,6 @@ defmodule Progressions.Rooms.Room.TimestepClock do
     field(:timestep_µs, integer(), default: 50_000)
     field(:tick_in_timesteps, integer(), default: 4)
   end
-
-  alias Progressions.{
-    Pids,
-    Rooms.Room.Server
-  }
 
   def start_link(args) do
     GenServer.start_link(__MODULE__, args)

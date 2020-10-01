@@ -61,7 +61,7 @@ defmodule Progressions.RoomsTest do
     assert length(Rooms.list_rooms()) == length(room_ids) - 1
   end
 
-  defp reset_rooms() do
+  defp reset_rooms do
     Rooms.list_rooms()
     |> Enum.map(fn {_, pid, _, _} -> pid end)
     |> Enum.each(&DynamicSupervisor.terminate_child(Rooms, &1))

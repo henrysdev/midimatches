@@ -6,9 +6,9 @@ defmodule Progressions.Rooms.Room do
 
   alias Progressions.{
     Pids,
+    Rooms.Room.Musicians,
     Rooms.Room.Server,
-    Rooms.Room.TimestepClock,
-    Rooms.Room.Musicians
+    Rooms.Room.TimestepClock
   }
 
   @default_room_config %{

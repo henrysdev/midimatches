@@ -5,8 +5,8 @@ defmodule Progressions.Rooms.Room.Musicians do
   use DynamicSupervisor
 
   alias Progressions.{
-    Rooms.Room.Musicians.Musician,
-    Pids
+    Pids,
+    Rooms.Room.Musicians.Musician
   }
 
   @type id() :: String.t()
