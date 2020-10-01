@@ -56,8 +56,16 @@ config :progressions, ProgressionsWeb.Endpoint,
     ]
   ]
 
-# Do not include metadata nor timestamps in development logs
-config :logger, :console, format: "[$level] $message\n"
+# # Do not include metadata nor timestamps in development logs
+# config :logger, :console, format: "[$level] $message\n"
+
+config :logger,
+  backends: [{LoggerFileBackend, :error_log}],
+  format: "[$level] $message\n"
+
+config :logger, :error_log,
+  path: "dev/log.log",
+  level: :debug
 
 # Set a higher stacktrace during development. Avoid configuring such
 # in production as building large stacktraces may be expensive.

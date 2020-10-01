@@ -24,7 +24,7 @@ defmodule ProgressionsWeb.Endpoint do
     at: "/",
     from: :progressions,
     gzip: false,
-    only: ~w(css fonts images js favicon.ico robots.txt)
+    only: ~w(css fonts images js favicon.ico robots.txt sounds)
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
