@@ -4,8 +4,7 @@ defmodule Progressions.Rooms.Room.Server do
   """
   use GenServer
   use TypedStruct
-
-  alias __MODULE__
+  require Logger
 
   alias Progressions.{
     Pids,
@@ -24,7 +23,7 @@ defmodule Progressions.Rooms.Room.Server do
   @impl true
   def init([room_id]) do
     Pids.register({:server, room_id}, self())
-    {:ok, %Server{room_id: room_id, timesteps: []}}
+    {:ok, %__MODULE__{room_id: room_id, timesteps: []}}
   end
 
   @doc """
@@ -35,9 +34,18 @@ defmodule Progressions.Rooms.Room.Server do
     GenServer.cast(pid, :broadcast_timesteps)
   end
 
-  @spec handle_cast(:broadcast_timesteps, %Server{}) :: {:noreply, %Server{}}
+  @doc """
+  Accepts timesteps from musician processes and adds them to timesteps buffer
+  """
+  @spec buffer_timesteps(pid(), list(%Timestep{})) :: :ok
+  def buffer_timesteps(pid, new_timesteps) do
+    GenServer.cast(pid, {:buffer_timesteps, new_timesteps})
+  end
+
+  @spec handle_cast(:broadcast_timesteps, %__MODULE__{}) :: {:noreply, %__MODULE__{}}
   @impl true
-  def handle_cast(:broadcast_timesteps, %Server{room_id: room_id, timesteps: timesteps}) do
+  def handle_cast(:broadcast_timesteps, %__MODULE__{room_id: room_id, timesteps: timesteps}) do
+    Logger.info("broadcasting tick")
     topic = "room:" <> room_id
 
     ProgressionsWeb.Endpoint.broadcast(topic, "timesteps", %{
@@ -45,6 +53,20 @@ defmodule Progressions.Rooms.Room.Server do
       "body" => "ASDFASDF"
     })
 
-    {:noreply, %Server{room_id: room_id, timesteps: []}}
+    {:noreply, %__MODULE__{room_id: room_id, timesteps: []}}
+  end
+
+  @spec handle_cast({:buffer_timesteps, list(%Timestep{})}, %__MODULE__{}) ::
+          {:noreply, %__MODULE__{}}
+  @impl true
+  def handle_cast({:buffer_timesteps, new_timesteps}, %__MODULE__{
+        room_id: room_id,
+        timesteps: timesteps
+      }) do
+    Logger.info("buffering timesteps #{inspect(new_timesteps)}")
+    # TODO buffer timestep properly
+    timesteps = timesteps ++ new_timesteps
+
+    {:noreply, %__MODULE__{room_id: room_id, timesteps: timesteps}}
   end
 end

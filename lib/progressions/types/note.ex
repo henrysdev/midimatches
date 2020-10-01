@@ -5,9 +5,8 @@ defmodule Progressions.Types.Note do
   use TypedStruct
 
   typedstruct enforce: true do
-    field(:instrument, integer())
+    field(:instrument, String.t())
     field(:key, integer())
-    field(:timestep, integer())
     field(:duration, integer())
   end
 end
