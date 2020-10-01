@@ -33,7 +33,5 @@ jobs:
       run: mix credo --strict
     - name: Check Formatting
       run: mix format --check-formatted
-    - name: Run dialyzer
-      run: mix dialyzer --no-check
     - name: Run tests
       run: mix test
