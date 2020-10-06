@@ -70,11 +70,7 @@ chatInput.addEventListener("keypress", event => {
 
 // Receive message events
 channel.on("timesteps", payload => {
-  let messageItem = document.createElement("p")
-  let d = new Date();
-  let utcMillis = d.getUTCMilliseconds();
-  messageItem.innerText = `[${utcMillis}] ${payload.body}`
-  messagesContainer.appendChild(messageItem)
+  console.log('PAYLOAD', payload);
 })
 
 channel.join()
