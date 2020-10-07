@@ -1,9 +1,9 @@
-defmodule Progressions.TelemetryMonitorTest do
-  use ExUnit.Case
+defmodule Progressions.Telemetry.MonitorTest do
+  use ExUnit.Case, async: true
 
   import ExUnit.CaptureLog
 
-  alias Progressions.TelemetryMonitor
+  alias Progressions.Telemetry.Monitor
 
   # TODO propagate these down via config
   @timestep_µs 50_000
@@ -21,13 +21,13 @@ defmodule Progressions.TelemetryMonitorTest do
           timestep
         }"
 
-    log = capture_log(fn -> TelemetryMonitor.check_clock_precision(new_time, old_time, 100) end)
+    log = capture_log(fn -> Monitor.check_clock_precision(new_time, old_time, 100) end)
 
     assert log =~ expected_log
   end
 
   test "check_clock_precision does not log warning when time difference within threshold" do
-    log = capture_log(fn -> TelemetryMonitor.check_clock_precision(0, 0, 100) end)
+    log = capture_log(fn -> Monitor.check_clock_precision(0, 0, 100) end)
 
     assert log == ""
   end

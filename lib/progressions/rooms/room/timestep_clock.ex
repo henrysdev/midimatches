@@ -12,7 +12,7 @@ defmodule Progressions.Rooms.Room.TimestepClock do
     Rooms.Room.Musicians.Musician,
     Rooms.Room.Server,
     Rooms.Room.TimestepClock,
-    TelemetryMonitor,
+    Telemetry.Monitor,
     Types.TimestepClockConfig
   }
 
@@ -61,7 +61,7 @@ defmodule Progressions.Rooms.Room.TimestepClock do
     Logger.info("clock_timestep=#{timestep}")
     curr_time = System.system_time(:microsecond)
 
-    TelemetryMonitor.check_clock_precision(curr_time, last_time, timestep)
+    Monitor.check_clock_precision(curr_time, last_time, timestep)
 
     if rem(timestep, tick_in_timesteps) == 0 do
       Server.broadcast_next_tick(server)
