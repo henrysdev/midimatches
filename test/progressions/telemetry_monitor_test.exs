@@ -1,5 +1,5 @@
 defmodule Progressions.TelemetryMonitorTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case
 
   import ExUnit.CaptureLog
 
@@ -13,16 +13,13 @@ defmodule Progressions.TelemetryMonitorTest do
     old_time = 1_600_993_322_016
     new_time = 1_600_993_922_016
     timestep = 100
+    elapsed = abs(new_time - old_time - @timestep_µs)
 
     expected_log =
-      Jason.encode!(%{
-        "desc" => "time elapsed between consecutive timesteps outside of tolerated threshold.",
-        "attrs" => %{
-          "elapsed_µs" => abs(new_time - old_time - @timestep_µs),
-          "tolerance_µs" => @clock_tolerance_µs,
-          "timestep" => timestep
-        }
-      })
+      "time elapsed between consecutive timesteps outside of tolerated threshold: " <>
+        "elapsed_µs=#{elapsed}, tolerance_threshold_µs=#{@clock_tolerance_µs}, timestep=#{
+          timestep
+        }"
 
     log = capture_log(fn -> TelemetryMonitor.check_clock_precision(new_time, old_time, 100) end)
 
