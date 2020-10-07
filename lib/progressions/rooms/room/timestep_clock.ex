@@ -11,7 +11,9 @@ defmodule Progressions.Rooms.Room.TimestepClock do
     Rooms.Room.Musicians,
     Rooms.Room.Musicians.Musician,
     Rooms.Room.Server,
-    TelemetryMonitor
+    Rooms.Room.TimestepClock,
+    TelemetryMonitor,
+    Types.TimestepClockConfig
   }
 
   typedstruct do
@@ -28,12 +30,15 @@ defmodule Progressions.Rooms.Room.TimestepClock do
   end
 
   @impl true
-  def init([room_id, %{timestep_µs: timestep_µs, tick_in_timesteps: tick_in_timesteps}]) do
+  def init([
+        room_id,
+        %TimestepClockConfig{timestep_µs: timestep_µs, tick_in_timesteps: tick_in_timesteps}
+      ]) do
     Pids.register({:timestep_clock, room_id}, self())
     MicroTimer.send_every(timestep_µs, :increment_timestep, self())
 
     {:ok,
-     %__MODULE__{
+     %TimestepClock{
        timestep: 1,
        server: Pids.fetch!({:server, room_id}),
        musicians: Pids.fetch!({:musicians, room_id}),
@@ -43,9 +48,9 @@ defmodule Progressions.Rooms.Room.TimestepClock do
      }}
   end
 
-  @spec handle_info(:increment_timestep, %__MODULE__{}) :: {:noreply, %__MODULE__{}}
+  @spec handle_info(:increment_timestep, %TimestepClock{}) :: {:noreply, %TimestepClock{}}
   @impl true
-  def handle_info(:increment_timestep, %__MODULE__{
+  def handle_info(:increment_timestep, %TimestepClock{
         timestep: timestep,
         server: server,
         musicians: musicians,
@@ -65,7 +70,7 @@ defmodule Progressions.Rooms.Room.TimestepClock do
     message_all_musicians(musicians, timestep)
 
     {:noreply,
-     %__MODULE__{
+     %TimestepClock{
        timestep: timestep + 1,
        server: server,
        musicians: musicians,

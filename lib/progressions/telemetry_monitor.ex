@@ -19,14 +19,10 @@ defmodule Progressions.TelemetryMonitor do
     elapsed = abs(new - old - @timestep_µs)
 
     message =
-      Jason.encode!(%{
-        "desc" => "time elapsed between consecutive timesteps outside of tolerated threshold.",
-        "attrs" => %{
-          "elapsed_µs" => elapsed,
-          "tolerance_µs" => @clock_tolerance_µs,
-          "timestep" => timestep
-        }
-      })
+      "time elapsed between consecutive timesteps outside of tolerated threshold: " <>
+        "elapsed_µs=#{elapsed}, tolerance_threshold_µs=#{@clock_tolerance_µs}, timestep=#{
+          timestep
+        }"
 
     Logger.warn(message)
   end

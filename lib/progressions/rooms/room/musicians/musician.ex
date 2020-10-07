@@ -7,9 +7,31 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
 
   alias Progressions.{
     Pids,
+    Rooms.Room.Musicians.Musician,
     Rooms.Room.Server,
     Types.Loop,
+    Types.MusicianConfig,
+    Types.Note,
     Types.TimestepSlice
+  }
+
+  @default_musician_config %MusicianConfig{
+    loop: %Loop{
+      start_timestep: 0,
+      length: 8,
+      timestep_slices: [
+        %TimestepSlice{
+          timestep: 0,
+          notes: [
+            %Note{
+              instrument: "kick",
+              key: 11,
+              duration: 1
+            }
+          ]
+        }
+      ]
+    }
   }
 
   @type timestep_slices() :: list(%TimestepSlice{})
@@ -38,12 +60,14 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
   end
 
   @impl true
-  def init([musician_id, room_id]) do
+  def init([room_id, musician_id]), do: init([room_id, musician_id, @default_musician_config])
+
+  def init([room_id, musician_id, musician_config = %MusicianConfig{}]) do
     Pids.register({:musician, {musician_id, room_id}}, self())
     server = Pids.fetch!({:server, room_id})
 
     {:ok,
-     %__MODULE__{
+     %Musician{
        server: server,
        musician_id: musician_id,
        room_id: room_id,
@@ -70,12 +94,12 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
     GenServer.cast(pid, {:next_timestep, clock_timestep})
   end
 
-  @spec handle_cast({:new_loop, %Loop{}}, %__MODULE__{}) ::
-          {:noreply, %__MODULE__{}}
+  @spec handle_cast({:new_loop, %Loop{}}, %Musician{}) ::
+          {:noreply, %Musician{}}
   @impl true
   def handle_cast(
         {:new_loop, %Loop{} = new_loop},
-        %__MODULE__{
+        %Musician{
           server: server,
           musician_id: musician_id,
           room_id: room_id,
@@ -88,7 +112,7 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
     active_loop = new_loop
 
     {:noreply,
-     %__MODULE__{
+     %Musician{
        server: server,
        musician_id: musician_id,
        room_id: room_id,
@@ -99,19 +123,19 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
      }}
   end
 
-  @spec handle_cast({:next_timestep, integer()}, %__MODULE__{}) ::
-          {:noreply, %__MODULE__{}}
+  @spec handle_cast({:next_timestep, integer()}, %Musician{}) ::
+          {:noreply, %Musician{}}
   @impl true
   def handle_cast(
         {:next_timestep, clock_timestep},
-        %__MODULE__{active_loop: nil} = state
+        %Musician{active_loop: nil} = state
       ) do
     {:noreply, Map.put(state, :last_timestep, clock_timestep)}
   end
 
   def handle_cast(
         {:next_timestep, clock_timestep},
-        %__MODULE__{
+        %Musician{
           server: server,
           musician_id: musician_id,
           room_id: room_id,
@@ -142,7 +166,7 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
     end
 
     {:noreply,
-     %__MODULE__{
+     %Musician{
        server: server,
        musician_id: musician_id,
        room_id: room_id,
