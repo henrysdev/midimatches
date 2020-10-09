@@ -4,7 +4,6 @@ defmodule Progressions.Rooms.Room.TimestepClock do
   """
   use GenServer
   use TypedStruct
-  require Logger
 
   alias Progressions.{
     Pids,
@@ -12,6 +11,7 @@ defmodule Progressions.Rooms.Room.TimestepClock do
     Rooms.Room.Musicians.Musician,
     Rooms.Room.Server,
     Rooms.Room.TimestepClock,
+    Telemetry.EventLog,
     Telemetry.Monitor,
     Types.TimestepClockConfig
   }
@@ -23,6 +23,7 @@ defmodule Progressions.Rooms.Room.TimestepClock do
     field(:last_time, integer(), enforce: true)
     field(:timestep_µs, integer(), default: 50_000)
     field(:tick_in_timesteps, integer(), default: 4)
+    field(:room_id, String.t(), enforce: true)
   end
 
   def start_link(args) do
@@ -44,7 +45,8 @@ defmodule Progressions.Rooms.Room.TimestepClock do
        musicians: Pids.fetch!({:musicians, room_id}),
        last_time: System.system_time(:microsecond),
        timestep_µs: timestep_µs,
-       tick_in_timesteps: tick_in_timesteps
+       tick_in_timesteps: tick_in_timesteps,
+       room_id: room_id
      }}
   end
 
@@ -56,10 +58,11 @@ defmodule Progressions.Rooms.Room.TimestepClock do
         musicians: musicians,
         last_time: last_time,
         timestep_µs: timestep_µs,
-        tick_in_timesteps: tick_in_timesteps
+        tick_in_timesteps: tick_in_timesteps,
+        room_id: room_id
       }) do
-    Logger.info("clock_timestep=#{timestep}")
     curr_time = System.system_time(:microsecond)
+    EventLog.log("clock_timestep=#{timestep}", room_id)
 
     Monitor.check_clock_precision(curr_time, last_time, timestep)
 
@@ -76,7 +79,8 @@ defmodule Progressions.Rooms.Room.TimestepClock do
        musicians: musicians,
        last_time: curr_time,
        timestep_µs: timestep_µs,
-       tick_in_timesteps: tick_in_timesteps
+       tick_in_timesteps: tick_in_timesteps,
+       room_id: room_id
      }}
   end
 

@@ -9,6 +9,7 @@ defmodule Progressions.Rooms.Room.Server do
   alias Progressions.{
     Pids,
     Rooms.Room.Server,
+    Telemetry.EventLog,
     Types.TimestepSlice
   }
 
@@ -54,7 +55,7 @@ defmodule Progressions.Rooms.Room.Server do
       }) do
     topic = "room:" <> room_id
 
-    Logger.debug("broadcast timestep_slices: #{inspect(timestep_slices)}")
+    EventLog.log("broadcast timestep_slices: #{inspect(timestep_slices)}", room_id)
 
     ProgressionsWeb.Endpoint.broadcast(topic, "timesteps", %{
       "timestep_slices" => timestep_slices,

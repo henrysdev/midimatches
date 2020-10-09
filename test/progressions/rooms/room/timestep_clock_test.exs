@@ -1,5 +1,5 @@
 defmodule Progressions.TimestepClockTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case
 
   test "maintains tickrate" do
     nil
