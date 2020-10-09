@@ -123,19 +123,32 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
      }}
   end
 
+<<<<<<< HEAD
   @spec handle_cast({:next_timestep, integer()}, %Musician{}) ::
           {:noreply, %Musician{}}
   @impl true
   def handle_cast(
         {:next_timestep, clock_timestep},
         %Musician{active_loop: nil} = state
+=======
+  @spec handle_cast({:next_timestep, integer()}, %__MODULE__{}) ::
+          {:noreply, %__MODULE__{}}
+  @impl true
+  def handle_cast(
+        {:next_timestep, clock_timestep},
+        %__MODULE__{active_loop: nil} = state
+>>>>>>> 01a9a3dc952f16441b3ab57146596350843ffce8
       ) do
     {:noreply, Map.put(state, :last_timestep, clock_timestep)}
   end
 
   def handle_cast(
         {:next_timestep, clock_timestep},
+<<<<<<< HEAD
         %Musician{
+=======
+        %__MODULE__{
+>>>>>>> 01a9a3dc952f16441b3ab57146596350843ffce8
           server: server,
           musician_id: musician_id,
           room_id: room_id,
