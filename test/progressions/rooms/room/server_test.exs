@@ -1,5 +1,5 @@
 defmodule Progressions.Room.ServerTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case
 
   test "broadcasts messages" do
     nil

@@ -6,7 +6,8 @@ defmodule Progressions.Rooms.Room.Musicians do
 
   alias Progressions.{
     Pids,
-    Rooms.Room.Musicians.Musician
+    Rooms.Room.Musicians.Musician,
+    Types.MusicianConfig
   }
 
   @type id() :: String.t()
@@ -37,7 +38,7 @@ defmodule Progressions.Rooms.Room.Musicians do
     if musician_exists?(musician_id, room_id) do
       {:error, "musician already exists for musician_id #{musician_id} in room #{room_id}"}
     else
-      DynamicSupervisor.start_child(pid, {Musician, [musician_id, room_id]})
+      DynamicSupervisor.start_child(pid, {Musician, [room_id, musician_id]})
     end
   end
 
@@ -47,5 +48,17 @@ defmodule Progressions.Rooms.Room.Musicians do
   @spec list_musicians(pid()) :: list()
   def list_musicians(pid) do
     DynamicSupervisor.which_children(pid)
+  end
+
+  @doc """
+  Start child musician processes with given configurations. Only to be called when starting a room
+  from a configuration
+  """
+  @spec configure_musicians(list(%MusicianConfig{}), id()) :: atom()
+  def configure_musicians(musician_configs, room_id) do
+    pid = Pids.fetch!({:musicians, room_id})
+
+    musician_configs
+    |> Enum.each(&DynamicSupervisor.start_child(pid, {Musician, [room_id, &1.musician_id, &1]}))
   end
 end

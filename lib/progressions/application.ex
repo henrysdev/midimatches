@@ -15,7 +15,8 @@ defmodule Progressions.Application do
       ProgressionsWeb.Endpoint,
       # Start a worker by calling: Progressions.Worker.start_link(arg)
       {DynamicSupervisor, strategy: :one_for_one, name: Progressions.Rooms},
-      {Registry, keys: :unique, name: ProcessRegistry}
+      {Registry, keys: :unique, name: ProcessRegistry},
+      Progressions.Telemetry.EventLog
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

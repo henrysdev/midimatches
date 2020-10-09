@@ -1,5 +1,5 @@
 defmodule Progressions.MusiciansTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case
 
   alias Progressions.{
     Pids,

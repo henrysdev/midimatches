@@ -4,14 +4,16 @@ defmodule Progressions.Rooms.Room.TimestepClock do
   """
   use GenServer
   use TypedStruct
-  require Logger
 
   alias Progressions.{
     Pids,
     Rooms.Room.Musicians,
     Rooms.Room.Musicians.Musician,
     Rooms.Room.Server,
-    TelemetryMonitor
+    Rooms.Room.TimestepClock,
+    Telemetry.EventLog,
+    Telemetry.Monitor,
+    Types.TimestepClockConfig
   }
 
   typedstruct do
@@ -21,6 +23,7 @@ defmodule Progressions.Rooms.Room.TimestepClock do
     field(:last_time, integer(), enforce: true)
     field(:timestep_µs, integer(), default: 50_000)
     field(:tick_in_timesteps, integer(), default: 4)
+    field(:room_id, String.t(), enforce: true)
   end
 
   def start_link(args) do
@@ -28,35 +31,40 @@ defmodule Progressions.Rooms.Room.TimestepClock do
   end
 
   @impl true
-  def init([room_id, %{timestep_µs: timestep_µs, tick_in_timesteps: tick_in_timesteps}]) do
+  def init([
+        room_id,
+        %TimestepClockConfig{timestep_µs: timestep_µs, tick_in_timesteps: tick_in_timesteps}
+      ]) do
     Pids.register({:timestep_clock, room_id}, self())
     MicroTimer.send_every(timestep_µs, :increment_timestep, self())
 
     {:ok,
-     %__MODULE__{
+     %TimestepClock{
        timestep: 1,
        server: Pids.fetch!({:server, room_id}),
        musicians: Pids.fetch!({:musicians, room_id}),
        last_time: System.system_time(:microsecond),
        timestep_µs: timestep_µs,
-       tick_in_timesteps: tick_in_timesteps
+       tick_in_timesteps: tick_in_timesteps,
+       room_id: room_id
      }}
   end
 
-  @spec handle_info(:increment_timestep, %__MODULE__{}) :: {:noreply, %__MODULE__{}}
+  @spec handle_info(:increment_timestep, %TimestepClock{}) :: {:noreply, %TimestepClock{}}
   @impl true
-  def handle_info(:increment_timestep, %__MODULE__{
+  def handle_info(:increment_timestep, %TimestepClock{
         timestep: timestep,
         server: server,
         musicians: musicians,
         last_time: last_time,
         timestep_µs: timestep_µs,
-        tick_in_timesteps: tick_in_timesteps
+        tick_in_timesteps: tick_in_timesteps,
+        room_id: room_id
       }) do
-    Logger.info("clock_timestep=#{timestep}")
     curr_time = System.system_time(:microsecond)
+    EventLog.log("clock_timestep=#{timestep}", room_id)
 
-    TelemetryMonitor.check_clock_precision(curr_time, last_time, timestep)
+    Monitor.check_clock_precision(curr_time, last_time, timestep)
 
     if rem(timestep, tick_in_timesteps) == 0 do
       Server.broadcast_next_tick(server)
@@ -65,13 +73,14 @@ defmodule Progressions.Rooms.Room.TimestepClock do
     message_all_musicians(musicians, timestep)
 
     {:noreply,
-     %__MODULE__{
+     %TimestepClock{
        timestep: timestep + 1,
        server: server,
        musicians: musicians,
        last_time: curr_time,
        timestep_µs: timestep_µs,
-       tick_in_timesteps: tick_in_timesteps
+       tick_in_timesteps: tick_in_timesteps,
+       room_id: room_id
      }}
   end
 
