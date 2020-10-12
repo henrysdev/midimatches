@@ -9,8 +9,8 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
     Pids,
     Rooms.Room.Musicians.Musician,
     Rooms.Room.Server,
+    Types.Configs.MusicianConfig,
     Types.Loop,
-    Types.MusicianConfig,
     Types.Note,
     Types.TimestepSlice
   }
@@ -62,7 +62,7 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
   @impl true
   def init([room_id, musician_id]), do: init([room_id, musician_id, @default_musician_config])
 
-  def init([room_id, musician_id, musician_config = %MusicianConfig{}]) do
+  def init([room_id, musician_id, _musician_config = %MusicianConfig{}]) do
     Pids.register({:musician, {musician_id, room_id}}, self())
     server = Pids.fetch!({:server, room_id})
 

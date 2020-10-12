@@ -32,6 +32,8 @@ defmodule Progressions.RoomsTest do
       |> Enum.map(&Rooms.add_room(&1))
       |> Enum.reverse()
 
+    :sys.get_state(Rooms)
+
     assert {:error, "room already exists for room_id 1"} == err_result
     assert length(Rooms.list_rooms()) == length(room_ids) - 1
   end
@@ -48,6 +50,8 @@ defmodule Progressions.RoomsTest do
     assert Pids.fetch({:musicians, "2"}) != nil
 
     Rooms.drop_room("2")
+
+    :sys.get_state(Rooms)
 
     assert Pids.fetch({:room, "2"}) == nil
     assert Pids.fetch({:server, "2"}) == nil

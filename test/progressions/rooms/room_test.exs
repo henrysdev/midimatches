@@ -8,12 +8,12 @@ defmodule Progressions.RoomTest do
     Rooms.Room.Musicians.Musician,
     Rooms.Room.Server,
     Rooms.Room.TimestepClock,
-    TestHelpers,
     Telemetry.EventLog,
+    TestHelpers,
+    Types.Configs.RoomConfig,
+    Types.Configs.TimestepClockConfig,
     Types.Loop,
     Types.Note,
-    Types.RoomConfig,
-    Types.TimestepClockConfig,
     Types.TimestepSlice
   }
 
@@ -42,7 +42,7 @@ defmodule Progressions.RoomTest do
 
     config = %RoomConfig{
       timestep_clock: %TimestepClockConfig{
-        timestep_µs: 50_000,
+        timestep_us: 50_000,
         tick_in_timesteps: 4
       },
       musicians: []

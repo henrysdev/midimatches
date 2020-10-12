@@ -9,17 +9,17 @@ defmodule Progressions.Rooms.Room do
     Rooms.Room.Musicians,
     Rooms.Room.Server,
     Rooms.Room.TimestepClock,
+    Types.Configs.MusicianConfig,
+    Types.Configs.RoomConfig,
+    Types.Configs.TimestepClockConfig,
     Types.Loop,
-    Types.MusicianConfig,
     Types.Note,
-    Types.RoomConfig,
-    Types.TimestepClockConfig,
     Types.TimestepSlice
   }
 
   @default_room_config %RoomConfig{
     timestep_clock: %TimestepClockConfig{
-      timestep_µs: 50_000,
+      timestep_us: 50_000,
       tick_in_timesteps: 4
     },
     musicians: [
