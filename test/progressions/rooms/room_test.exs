@@ -8,6 +8,7 @@ defmodule Progressions.RoomTest do
     Rooms.Room.Musicians.Musician,
     Rooms.Room.Server,
     Rooms.Room.TimestepClock,
+    TestHelpers,
     Telemetry.EventLog,
     Types.Loop,
     Types.Note,
@@ -17,25 +18,27 @@ defmodule Progressions.RoomTest do
   }
 
   setup do
-    EventLog.clear()
-    on_exit(fn -> EventLog.get() end)
+    TestHelpers.teardown_rooms()
+    on_exit(fn -> TestHelpers.teardown_rooms() end)
   end
 
   test "sets up expected supervision tree for single room" do
-    room_id = "abc123"
+    room_id = "1"
 
-    {:ok, sup} = Room.start_link([room_id])
+    {:ok, sup} = start_supervised({Room, [room_id]})
+
+    started_children = Supervisor.which_children(sup) |> Enum.reverse()
 
     assert [
-             {TimestepClock, _, :worker, [TimestepClock]},
-             {Task, _, :worker, [Task]},
+             {Server, _, :worker, [Server]},
              {Musicians, _, :supervisor, [Musicians]},
-             {Server, _, :worker, [Server]}
-           ] = Supervisor.which_children(sup)
+             {TimestepClock, _, :worker, [TimestepClock]}
+             | _task
+           ] = started_children
   end
 
   test "can simulate a room session" do
-    room_id = "xyx"
+    room_id = "1"
 
     config = %RoomConfig{
       timestep_clock: %TimestepClockConfig{
@@ -87,13 +90,12 @@ defmodule Progressions.RoomTest do
       ]
     }
 
-    {:ok, _room} = Room.start_link([room_id, config])
+    {:ok, _room} = start_supervised({Room, [room_id, config]})
 
     musicians_pid = Pids.fetch!({:musicians, room_id})
 
     1..2 |> Enum.each(&add_another_musician(musicians_pid, loop, room_id, &1))
 
-    # TODO when assert is used to match event logs, it messes up the chron ordering... investigate
     :timer.sleep(2000)
 
     event_log = EventLog.get_room(room_id) |> Enum.take(8)

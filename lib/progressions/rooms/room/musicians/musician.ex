@@ -81,6 +81,7 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
   @doc """
   Processes a new loop play event.
   """
+  @spec new_loop(pid(), %Loop{}) :: :ok
   def new_loop(pid, %Loop{} = loop) do
     GenServer.cast(pid, {:new_loop, loop})
   end
@@ -94,6 +95,7 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
     GenServer.cast(pid, {:next_timestep, clock_timestep})
   end
 
+  ## Callbacks
   @spec handle_cast({:new_loop, %Loop{}}, %Musician{}) ::
           {:noreply, %Musician{}}
   @impl true
@@ -177,6 +179,7 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
      }}
   end
 
+  ## Private methods
   @spec restart_loop_playhead(%Loop{}, integer()) :: playhead()
   defp restart_loop_playhead(loop, curr_timestep) do
     queue =

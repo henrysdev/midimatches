@@ -57,8 +57,8 @@ defmodule Progressions.Rooms.Room do
     children = [
       {Server, [room_id]},
       {Musicians, [room_id]},
-      {Task, fn -> Musicians.configure_musicians(room_config.musicians, room_id) end},
-      {TimestepClock, [room_id, room_config.timestep_clock]}
+      {TimestepClock, [room_id, room_config.timestep_clock]},
+      {Task, fn -> Musicians.configure_musicians(room_config.musicians, room_id) end}
     ]
 
     Supervisor.init(children, strategy: :rest_for_one)

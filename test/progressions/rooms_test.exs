@@ -3,21 +3,19 @@ defmodule Progressions.RoomsTest do
 
   alias Progressions.{
     Pids,
-    Rooms
+    Rooms,
+    TestHelpers
   }
 
   setup do
-    reset_rooms()
-    on_exit(fn -> reset_rooms() end)
+    TestHelpers.teardown_rooms()
+    on_exit(fn -> TestHelpers.teardown_rooms() end)
   end
 
   test "sets up entire supervision tree" do
     room_ids = ["1", "asdf", "3"]
 
     Enum.each(room_ids, &Rooms.add_room(&1))
-
-    # Allow plenty of time for registry to cleanup after removal
-    :timer.sleep(600)
 
     Enum.each(room_ids, fn id ->
       assert Rooms.room_exists?(id) == true
@@ -51,19 +49,10 @@ defmodule Progressions.RoomsTest do
 
     Rooms.drop_room("2")
 
-    # Allow plenty of time for registry to cleanup after removal
-    :timer.sleep(600)
-
     assert Pids.fetch({:room, "2"}) == nil
     assert Pids.fetch({:server, "2"}) == nil
     assert Pids.fetch({:timestep_clock, "2"}) == nil
     assert Pids.fetch({:musicians, "2"}) == nil
     assert length(Rooms.list_rooms()) == length(room_ids) - 1
-  end
-
-  defp reset_rooms do
-    Rooms.list_rooms()
-    |> Enum.map(fn {_, pid, _, _} -> pid end)
-    |> Enum.each(&DynamicSupervisor.terminate_child(Rooms, &1))
   end
 end

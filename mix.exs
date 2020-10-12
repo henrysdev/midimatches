@@ -58,7 +58,6 @@ defmodule Progressions.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      # test: "test --no-start",
       setup: ["deps.get", "cmd npm install --prefix assets"]
     ]
   end

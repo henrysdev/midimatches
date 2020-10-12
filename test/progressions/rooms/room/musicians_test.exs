@@ -4,11 +4,17 @@ defmodule Progressions.MusiciansTest do
   alias Progressions.{
     Pids,
     Rooms.Room,
-    Rooms.Room.Musicians
+    Rooms.Room.Musicians,
+    TestHelpers
   }
 
+  setup do
+    TestHelpers.teardown_rooms()
+    on_exit(fn -> TestHelpers.teardown_rooms() end)
+  end
+
   test "add musicians to room and lookup them up" do
-    room_id = "room_id"
+    room_id = "1"
 
     {:ok, _room} = Room.start_link([room_id])
     musicians_pid = Pids.fetch!({:musicians, room_id})
