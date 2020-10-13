@@ -7,7 +7,7 @@ defmodule Progressions.Rooms.Room.Musicians do
   alias Progressions.{
     Pids,
     Rooms.Room.Musicians.Musician,
-    Types.MusicianConfig
+    Types.Configs.MusicianConfig
   }
 
   @type id() :: String.t()

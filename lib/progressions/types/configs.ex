@@ -1,49 +1,58 @@
-defmodule Progressions.Types.MusicianConfig do
+defmodule Progressions.Types.Configs do
   @moduledoc """
-  Configurable fields for a new instance of a Musician in a room
+  Provides functions for interacting with configuration types
   """
-
-  use TypedStruct
-
-  alias Progressions.Types.Loop
-
-  typedstruct do
-    field(:musician_id, integer())
-    field(:loop, %Loop{})
-  end
-end
-
-defmodule Progressions.Types.TimestepClockConfig do
-  @moduledoc """
-  Configurable fields for a new instance of a room's TimestepClock
-  """
-
-  use TypedStruct
-
-  typedstruct enforce: true do
-    field(:timestep_µs, integer())
-    field(:tick_in_timesteps, integer())
-  end
-end
-
-defmodule Progressions.Types.RoomConfig do
-  @moduledoc """
-  Configurable fields for a new Room instance
-
-  TODO example complete config structure
-
-  TODO stop enforcing fields and set defaults here
-  """
-
-  use TypedStruct
 
   alias Progressions.Types.{
-    MusicianConfig,
-    TimestepClockConfig
+    Configs.MusicianConfig,
+    Configs.ProgressionsConfig,
+    Configs.RoomConfig,
+    Configs.TimestepClockConfig,
+    Loop,
+    Note,
+    TimestepSlice
   }
 
-  typedstruct enforce: true do
-    field(:timestep_clock, %TimestepClockConfig{})
-    field(:musicians, list(%MusicianConfig{}))
+  # Schema to be followed for defining configurations
+  @config_schema %ProgressionsConfig{
+    rooms: [
+      %RoomConfig{
+        timestep_clock: %TimestepClockConfig{
+          timestep_us: nil,
+          tick_in_timesteps: nil
+        },
+        musicians: [
+          %MusicianConfig{
+            musician_id: nil,
+            loop: %Loop{
+              length: nil,
+              start_timestep: nil,
+              timestep_slices: [
+                %TimestepSlice{
+                  notes: [
+                    %Note{
+                      duration: nil,
+                      instrument: nil,
+                      key: nil
+                    }
+                  ],
+                  timestep: nil
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+
+  @doc """
+  Parses the provided JSON file into the expected configuration
+  """
+  @spec parse_config(Path.t()) :: %ProgressionsConfig{}
+  def parse_config(cfg) do
+    cfg
+    |> File.read!()
+    |> Poison.decode!(as: @config_schema)
   end
 end

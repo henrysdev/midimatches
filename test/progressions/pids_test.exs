@@ -35,31 +35,4 @@ defmodule Progressions.PidsTest do
 
     Registry.keys(ProcessRegistry, self())
   end
-
-  # setup do
-  #   reset_registry()
-  #   on_exit(fn -> reset_registry() end)
-  # end
-
-  # defp reset_registry() do
-  #   case Registry.keys(ProcessRegistry, self()) do
-  #     [] ->
-  #       :ok
-
-  #     children ->
-  #       children
-  #       |> Enum.reduce(fn children, acc ->
-  #         case children do
-  #           {_, pid, _, _} ->
-  #             keys = Registry.keys(ProcessRegistry, pid)
-  #             IO.inspect({:KEYS, keys})
-  #             [keys | acc]
-
-  #           [] ->
-  #             acc
-  #         end
-  #       end)
-  #       |> Enum.map(&Registry.unregister(ProcessRegistry, &1))
-  #   end
-  # end
 end

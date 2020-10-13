@@ -13,7 +13,7 @@ defmodule Progressions.Rooms.Room.TimestepClock do
     Rooms.Room.TimestepClock,
     Telemetry.EventLog,
     Telemetry.Monitor,
-    Types.TimestepClockConfig
+    Types.Configs.TimestepClockConfig
   }
 
   typedstruct do
@@ -21,7 +21,7 @@ defmodule Progressions.Rooms.Room.TimestepClock do
     field(:musicians, pid(), enforce: true)
     field(:timestep, integer(), enforce: true)
     field(:last_time, integer(), enforce: true)
-    field(:timestep_µs, integer(), default: 50_000)
+    field(:timestep_us, integer(), default: 50_000)
     field(:tick_in_timesteps, integer(), default: 4)
     field(:room_id, String.t(), enforce: true)
   end
@@ -31,12 +31,14 @@ defmodule Progressions.Rooms.Room.TimestepClock do
   end
 
   @impl true
+  def init([room_id]), do: init([room_id, %TimestepClockConfig{}])
+
   def init([
         room_id,
-        %TimestepClockConfig{timestep_µs: timestep_µs, tick_in_timesteps: tick_in_timesteps}
+        %TimestepClockConfig{timestep_us: timestep_us, tick_in_timesteps: tick_in_timesteps}
       ]) do
     Pids.register({:timestep_clock, room_id}, self())
-    MicroTimer.send_every(timestep_µs, :increment_timestep, self())
+    MicroTimer.send_every(timestep_us, :increment_timestep, self())
 
     {:ok,
      %TimestepClock{
@@ -44,7 +46,7 @@ defmodule Progressions.Rooms.Room.TimestepClock do
        server: Pids.fetch!({:server, room_id}),
        musicians: Pids.fetch!({:musicians, room_id}),
        last_time: System.system_time(:microsecond),
-       timestep_µs: timestep_µs,
+       timestep_us: timestep_us,
        tick_in_timesteps: tick_in_timesteps,
        room_id: room_id
      }}
@@ -57,7 +59,7 @@ defmodule Progressions.Rooms.Room.TimestepClock do
         server: server,
         musicians: musicians,
         last_time: last_time,
-        timestep_µs: timestep_µs,
+        timestep_us: timestep_us,
         tick_in_timesteps: tick_in_timesteps,
         room_id: room_id
       }) do
@@ -78,7 +80,7 @@ defmodule Progressions.Rooms.Room.TimestepClock do
        server: server,
        musicians: musicians,
        last_time: curr_time,
-       timestep_µs: timestep_µs,
+       timestep_us: timestep_us,
        tick_in_timesteps: tick_in_timesteps,
        room_id: room_id
      }}

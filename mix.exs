@@ -10,7 +10,14 @@ defmodule Progressions.MixProject do
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test
+      ]
     ]
   end
 
@@ -46,7 +53,9 @@ defmodule Progressions.MixProject do
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:typed_struct, "~> 0.2.1"},
       {:credo, "~> 1.5.0-rc.2", only: [:dev, :test], runtime: false},
-      {:logger_file_backend, "~> 0.0.11"}
+      {:logger_file_backend, "~> 0.0.11"},
+      {:poison, "~> 3.1"},
+      {:excoveralls, "~> 0.10", only: :test}
     ]
   end
 
@@ -58,7 +67,6 @@ defmodule Progressions.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      # test: "test --no-start",
       setup: ["deps.get", "cmd npm install --prefix assets"]
     ]
   end

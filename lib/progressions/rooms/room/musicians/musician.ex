@@ -9,36 +9,16 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
     Pids,
     Rooms.Room.Musicians.Musician,
     Rooms.Room.Server,
+    Types.Configs.MusicianConfig,
     Types.Loop,
-    Types.MusicianConfig,
-    Types.Note,
     Types.TimestepSlice
-  }
-
-  @default_musician_config %MusicianConfig{
-    loop: %Loop{
-      start_timestep: 0,
-      length: 8,
-      timestep_slices: [
-        %TimestepSlice{
-          timestep: 0,
-          notes: [
-            %Note{
-              instrument: "kick",
-              key: 11,
-              duration: 1
-            }
-          ]
-        }
-      ]
-    }
   }
 
   @type timestep_slices() :: list(%TimestepSlice{})
   @type deadline() :: integer()
   @type queue() :: :queue.queue(%TimestepSlice{})
   @typedoc """
-  The playhad structure represents the playhead for the playing loop. The
+  The playhead structure represents the playhead for the playing loop. The
   tuple contains a timestep deadline (the timestep when the loop should be
   restarted), and a queue that holds the ordered timesteps that make up the
   loop.
@@ -60,27 +40,32 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
   end
 
   @impl true
-  def init([room_id, musician_id]), do: init([room_id, musician_id, @default_musician_config])
+  def init([room_id, musician_id]), do: init([room_id, musician_id, %MusicianConfig{}])
 
-  def init([room_id, musician_id, musician_config = %MusicianConfig{}]) do
+  def init([room_id, musician_id, %MusicianConfig{loop: loop}]) do
     Pids.register({:musician, {musician_id, room_id}}, self())
+
     server = Pids.fetch!({:server, room_id})
+
+    playhead = restart_loop_playhead(loop, 0)
+    active_loop = loop
 
     {:ok,
      %Musician{
        server: server,
        musician_id: musician_id,
        room_id: room_id,
-       active_loop: nil,
+       active_loop: active_loop,
        potential_loop: nil,
        last_timestep: 0,
-       playhead: {0, :queue.new()}
+       playhead: playhead
      }}
   end
 
   @doc """
   Processes a new loop play event.
   """
+  @spec new_loop(pid(), %Loop{}) :: :ok
   def new_loop(pid, %Loop{} = loop) do
     GenServer.cast(pid, {:new_loop, loop})
   end
@@ -94,6 +79,7 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
     GenServer.cast(pid, {:next_timestep, clock_timestep})
   end
 
+  ## Callbacks
   @spec handle_cast({:new_loop, %Loop{}}, %Musician{}) ::
           {:noreply, %Musician{}}
   @impl true
@@ -177,6 +163,7 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
      }}
   end
 
+  ## Private methods
   @spec restart_loop_playhead(%Loop{}, integer()) :: playhead()
   defp restart_loop_playhead(loop, curr_timestep) do
     queue =

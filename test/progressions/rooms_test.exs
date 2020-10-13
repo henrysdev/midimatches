@@ -3,21 +3,19 @@ defmodule Progressions.RoomsTest do
 
   alias Progressions.{
     Pids,
-    Rooms
+    Rooms,
+    TestHelpers
   }
 
   setup do
-    reset_rooms()
-    on_exit(fn -> reset_rooms() end)
+    TestHelpers.teardown_rooms()
+    on_exit(fn -> TestHelpers.teardown_rooms() end)
   end
 
   test "sets up entire supervision tree" do
     room_ids = ["1", "asdf", "3"]
 
     Enum.each(room_ids, &Rooms.add_room(&1))
-
-    # Allow plenty of time for registry to cleanup after removal
-    :timer.sleep(600)
 
     Enum.each(room_ids, fn id ->
       assert Rooms.room_exists?(id) == true
@@ -34,6 +32,8 @@ defmodule Progressions.RoomsTest do
       |> Enum.map(&Rooms.add_room(&1))
       |> Enum.reverse()
 
+    :sys.get_state(Rooms)
+
     assert {:error, "room already exists for room_id 1"} == err_result
     assert length(Rooms.list_rooms()) == length(room_ids) - 1
   end
@@ -43,6 +43,9 @@ defmodule Progressions.RoomsTest do
 
     Enum.each(room_ids, &Rooms.add_room(&1))
 
+    :sys.get_state(Rooms)
+    :sys.get_state(ProcessRegistry)
+
     assert length(Rooms.list_rooms()) == length(room_ids)
     assert Pids.fetch({:room, "2"}) != nil
     assert Pids.fetch({:server, "2"}) != nil
@@ -51,19 +54,13 @@ defmodule Progressions.RoomsTest do
 
     Rooms.drop_room("2")
 
-    # Allow plenty of time for registry to cleanup after removal
-    :timer.sleep(600)
+    :sys.get_state(Rooms)
+    :sys.get_state(ProcessRegistry)
 
     assert Pids.fetch({:room, "2"}) == nil
     assert Pids.fetch({:server, "2"}) == nil
     assert Pids.fetch({:timestep_clock, "2"}) == nil
     assert Pids.fetch({:musicians, "2"}) == nil
     assert length(Rooms.list_rooms()) == length(room_ids) - 1
-  end
-
-  defp reset_rooms do
-    Rooms.list_rooms()
-    |> Enum.map(fn {_, pid, _, _} -> pid end)
-    |> Enum.each(&DynamicSupervisor.terminate_child(Rooms, &1))
   end
 end
