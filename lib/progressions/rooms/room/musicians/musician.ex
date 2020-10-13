@@ -25,13 +25,13 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
   """
   @type playhead() :: {deadline(), queue()}
 
-  typedstruct do
-    field(:musician_id, String.t(), enforce: true)
-    field(:room_id, String.t(), enforce: true)
+  typedstruct enforce: true do
+    field(:musician_id, String.t())
+    field(:room_id, String.t())
     field(:active_loop, %Loop{}, default: %{})
     field(:potential_loop, %Loop{}, default: %{})
-    field(:server, pid(), enforce: true)
-    field(:last_timestep, integer(), enforce: true)
+    field(:server, pid())
+    field(:last_timestep, integer())
     field(:playhead, playhead())
   end
 
@@ -61,6 +61,8 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
      }}
   end
 
+  ## API
+
   @doc """
   Processes a new loop play event.
   """
@@ -79,18 +81,13 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
   end
 
   ## Callbacks
+
   @spec handle_cast({:new_loop, %Loop{}}, %Musician{}) ::
           {:noreply, %Musician{}}
   @impl true
   def handle_cast(
         {:new_loop, %Loop{} = new_loop},
-        %Musician{
-          server: server,
-          musician_id: musician_id,
-          room_id: room_id,
-          potential_loop: potential_loop,
-          last_timestep: last_timestep
-        }
+        %Musician{last_timestep: last_timestep} = state
       ) do
     # TODO take ticks/measures into account for restart invervals
     playhead = restart_loop_playhead(new_loop, last_timestep)
@@ -98,13 +95,9 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
 
     {:noreply,
      %Musician{
-       server: server,
-       musician_id: musician_id,
-       room_id: room_id,
-       active_loop: active_loop,
-       potential_loop: potential_loop,
-       last_timestep: last_timestep,
-       playhead: playhead
+       state
+       | active_loop: active_loop,
+         playhead: playhead
      }}
   end
 
@@ -122,12 +115,9 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
         {:next_timestep, clock_timestep},
         %Musician{
           server: server,
-          musician_id: musician_id,
-          room_id: room_id,
           active_loop: active_loop,
-          potential_loop: potential_loop,
           playhead: playhead
-        }
+        } = state
       ) do
     # restart loop playhead if current timestep is at or past deadline
     {deadline, queue} =
@@ -152,17 +142,14 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
 
     {:noreply,
      %Musician{
-       server: server,
-       musician_id: musician_id,
-       room_id: room_id,
-       active_loop: active_loop,
-       potential_loop: potential_loop,
-       last_timestep: clock_timestep,
-       playhead: {deadline, queue}
+       state
+       | last_timestep: clock_timestep,
+         playhead: {deadline, queue}
      }}
   end
 
-  ## Private methods
+  ## Private
+
   @spec restart_loop_playhead(%Loop{}, integer()) :: playhead()
   defp restart_loop_playhead(loop, curr_timestep) do
     queue =
