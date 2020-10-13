@@ -47,7 +47,6 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
 
     server = Pids.fetch!({:server, room_id})
 
-    playhead = restart_loop_playhead(loop, 0)
     active_loop = loop
 
     {:ok,
@@ -58,7 +57,7 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
        active_loop: active_loop,
        potential_loop: nil,
        last_timestep: 0,
-       playhead: playhead
+       playhead: {0, :queue.new()}
      }}
   end
 
@@ -187,6 +186,16 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
 
       _ ->
         {queue, acc_timestep_slices}
+    end
+  end
+
+  @spec calc_deadline(%Loop{}, integer()) :: integer()
+  defp calc_deadline(%Loop{start_timestep: start, length: length}, curr) do
+    remainder = rem(curr, length)
+
+    case remainder do
+      0 -> curr + start
+      remainder -> curr + length - remainder + start
     end
   end
 end

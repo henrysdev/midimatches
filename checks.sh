@@ -1,6 +1,5 @@
 mix dialyzer
-mix test
+mix coveralls
 mix format
 mix credo --strict
-mix coveralls
 mix deps.clean --unused

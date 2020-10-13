@@ -16,14 +16,14 @@ defmodule Progressions.Rooms.Room.TimestepClock do
     Types.Configs.TimestepClockConfig
   }
 
-  typedstruct do
-    field(:server, pid(), enforce: true)
-    field(:musicians, pid(), enforce: true)
-    field(:timestep, integer(), enforce: true)
-    field(:last_time, integer(), enforce: true)
-    field(:timestep_us, integer(), default: 50_000)
-    field(:tick_in_timesteps, integer(), default: 4)
-    field(:room_id, String.t(), enforce: true)
+  typedstruct enforce: true do
+    field(:server, pid())
+    field(:musicians, pid())
+    field(:timestep, integer())
+    field(:last_time, integer())
+    field(:timestep_us, integer())
+    field(:tick_in_timesteps, integer())
+    field(:room_id, String.t())
   end
 
   def start_link(args) do

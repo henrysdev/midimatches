@@ -6,6 +6,7 @@ defmodule Progressions.MusiciansTest do
     Rooms.Room,
     Rooms.Room.Musicians,
     Rooms.Room.Musicians.Musician,
+    Telemetry.EventLog,
     TestHelpers,
     Types.Configs.MusicianConfig,
     Types.Configs.RoomConfig,
@@ -39,22 +40,22 @@ defmodule Progressions.MusiciansTest do
     on_exit(fn -> TestHelpers.teardown_rooms() end)
   end
 
-  describe "musicians tree works as expected" do
-    test "configures default musician if no config provided" do
-      room_id = "1"
+  test "configures default musician if no config provided" do
+    room_id = "1"
 
-      {:ok, room} = start_supervised({Room, [room_id]})
-      musicians_pid = Pids.fetch!({:musicians, room_id})
-      :sys.get_state(musicians_pid)
-      :sys.get_state(room)
-      musicians = Musicians.list_musicians(musicians_pid)
+    {:ok, room} = start_supervised({Room, [room_id]})
+    musicians_pid = Pids.fetch!({:musicians, room_id})
+    :sys.get_state(musicians_pid)
+    :sys.get_state(room)
+    musicians = Musicians.list_musicians(musicians_pid)
 
-      assert [
-               {:undefined, _, :worker, [Musician]}
-             ] = musicians
-    end
+    assert [
+             {:undefined, _, :worker, [Musician]}
+           ] = musicians
+  end
 
-    test "start a room with configured musicians" do
+  describe "configured musicians" do
+    test "instantiate configured musicians correctly" do
       room_id = "1"
       musician_id = @musician_config.musician_id
 
@@ -63,8 +64,8 @@ defmodule Progressions.MusiciansTest do
       }
 
       {:ok, room} = start_supervised({Room, [room_id, room_config]})
-
       :sys.get_state(room)
+      :sys.get_state(ProcessRegistry)
       musician = Pids.fetch!({:musician, {musician_id, room_id}})
       state = :sys.get_state(musician)
 
@@ -94,6 +95,26 @@ defmodule Progressions.MusiciansTest do
              } = state
     end
 
+    test "generate expected event log" do
+      room_id = "1"
+
+      room_config = %RoomConfig{
+        musicians: [@musician_config]
+      }
+
+      {:ok, room} = start_supervised({Room, [room_id, room_config]})
+      :sys.get_state(room)
+
+      :timer.sleep(2000)
+
+      _first_two_measures =
+        room_id
+        |> EventLog.get_room()
+        |> Enum.take(16)
+    end
+  end
+
+  describe "added musicians" do
     test "add additional musicians to a started room" do
       room_id = "1"
 
