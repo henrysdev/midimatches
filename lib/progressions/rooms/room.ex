@@ -9,39 +9,7 @@ defmodule Progressions.Rooms.Room do
     Rooms.Room.Musicians,
     Rooms.Room.Server,
     Rooms.Room.TimestepClock,
-    Types.Configs.MusicianConfig,
-    Types.Configs.RoomConfig,
-    Types.Configs.TimestepClockConfig,
-    Types.Loop,
-    Types.Note,
-    Types.TimestepSlice
-  }
-
-  @default_room_config %RoomConfig{
-    timestep_clock: %TimestepClockConfig{
-      timestep_us: 50_000,
-      tick_in_timesteps: 4
-    },
-    musicians: [
-      %MusicianConfig{
-        loop: %Loop{
-          start_timestep: 0,
-          length: 8,
-          timestep_slices: [
-            %TimestepSlice{
-              timestep: 0,
-              notes: [
-                %Note{
-                  instrument: "kick",
-                  key: 11,
-                  duration: 1
-                }
-              ]
-            }
-          ]
-        }
-      }
-    ]
+    Types.Configs.RoomConfig
   }
 
   def start_link(args) do
@@ -49,7 +17,7 @@ defmodule Progressions.Rooms.Room do
   end
 
   @impl true
-  def init([room_id]), do: init([room_id, @default_room_config])
+  def init([room_id]), do: init([room_id, %RoomConfig{}])
 
   def init([room_id, room_config = %RoomConfig{}]) do
     Pids.register({:room, room_id}, self())

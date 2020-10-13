@@ -31,6 +31,8 @@ defmodule Progressions.Rooms.Room.TimestepClock do
   end
 
   @impl true
+  def init([room_id]), do: init([room_id, %TimestepClockConfig{}])
+
   def init([
         room_id,
         %TimestepClockConfig{timestep_us: timestep_us, tick_in_timesteps: tick_in_timesteps}

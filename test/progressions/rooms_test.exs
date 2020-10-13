@@ -43,6 +43,9 @@ defmodule Progressions.RoomsTest do
 
     Enum.each(room_ids, &Rooms.add_room(&1))
 
+    :sys.get_state(Rooms)
+    :sys.get_state(ProcessRegistry)
+
     assert length(Rooms.list_rooms()) == length(room_ids)
     assert Pids.fetch({:room, "2"}) != nil
     assert Pids.fetch({:server, "2"}) != nil
@@ -52,6 +55,7 @@ defmodule Progressions.RoomsTest do
     Rooms.drop_room("2")
 
     :sys.get_state(Rooms)
+    :sys.get_state(ProcessRegistry)
 
     assert Pids.fetch({:room, "2"}) == nil
     assert Pids.fetch({:server, "2"}) == nil

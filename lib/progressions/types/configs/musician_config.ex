@@ -5,10 +5,34 @@ defmodule Progressions.Types.Configs.MusicianConfig do
 
   use TypedStruct
 
-  alias Progressions.Types.Loop
+  alias Progressions.Types.{
+    Loop,
+    Note,
+    TimestepSlice
+  }
 
   typedstruct do
-    field(:musician_id, integer())
-    field(:loop, %Loop{})
+    # TODO figure out best way to handle musician_id.. should probably not be
+    # configured this way. Perhaps a "name" field instead? (that can have dupes)
+    field(:musician_id, String.t(), default: "xyz")
+
+    field(:loop, %Loop{},
+      default: %Loop{
+        start_timestep: 8,
+        length: 8,
+        timestep_slices: [
+          %TimestepSlice{
+            timestep: 0,
+            notes: [
+              %Note{
+                instrument: "kick",
+                key: 11,
+                duration: 1
+              }
+            ]
+          }
+        ]
+      }
+    )
   end
 end

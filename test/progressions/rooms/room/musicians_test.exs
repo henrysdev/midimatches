@@ -5,7 +5,33 @@ defmodule Progressions.MusiciansTest do
     Pids,
     Rooms.Room,
     Rooms.Room.Musicians,
-    TestHelpers
+    Rooms.Room.Musicians.Musician,
+    TestHelpers,
+    Types.Configs.MusicianConfig,
+    Types.Configs.RoomConfig,
+    Types.Loop,
+    Types.Note,
+    Types.TimestepSlice
+  }
+
+  @musician_config %MusicianConfig{
+    musician_id: "foobar",
+    loop: %Loop{
+      start_timestep: 8,
+      length: 8,
+      timestep_slices: [
+        %TimestepSlice{
+          timestep: 0,
+          notes: [
+            %Note{
+              instrument: "crazybass",
+              key: 12,
+              duration: 1
+            }
+          ]
+        }
+      ]
+    }
   }
 
   setup do
@@ -13,16 +39,78 @@ defmodule Progressions.MusiciansTest do
     on_exit(fn -> TestHelpers.teardown_rooms() end)
   end
 
-  test "add musicians to room and lookup them up" do
-    room_id = "1"
+  describe "musicians tree works as expected" do
+    test "configures default musician if no config provided" do
+      room_id = "1"
 
-    {:ok, _room} = Room.start_link([room_id])
-    musicians_pid = Pids.fetch!({:musicians, room_id})
+      {:ok, room} = start_supervised({Room, [room_id]})
+      musicians_pid = Pids.fetch!({:musicians, room_id})
+      :sys.get_state(musicians_pid)
+      :sys.get_state(room)
+      musicians = Musicians.list_musicians(musicians_pid)
 
-    {:ok, _m1} = Musicians.add_musician(musicians_pid, "1", room_id)
-    {:ok, _m2} = Musicians.add_musician(musicians_pid, "2", room_id)
+      assert [
+               {:undefined, _, :worker, [Musician]}
+             ] = musicians
+    end
 
-    assert Musicians.musician_exists?("1", room_id) == true
-    assert Musicians.musician_exists?("2", room_id) == true
+    test "start a room with configured musicians" do
+      room_id = "1"
+      musician_id = @musician_config.musician_id
+
+      room_config = %RoomConfig{
+        musicians: [@musician_config]
+      }
+
+      {:ok, room} = start_supervised({Room, [room_id, room_config]})
+
+      :sys.get_state(room)
+      musician = Pids.fetch!({:musician, {musician_id, room_id}})
+      state = :sys.get_state(musician)
+
+      assert %Musician{
+               active_loop: %Loop{
+                 length: 8,
+                 start_timestep: 8,
+                 timestep_slices: [
+                   %TimestepSlice{
+                     notes: [
+                       %Note{
+                         duration: 1,
+                         instrument: "crazybass",
+                         key: 12
+                       }
+                     ],
+                     timestep: 0
+                   }
+                 ]
+               },
+               last_timestep: _,
+               musician_id: musician_id,
+               playhead: _,
+               potential_loop: nil,
+               room_id: room_id,
+               server: _
+             } = state
+    end
+
+    test "add additional musicians to a started room" do
+      room_id = "1"
+
+      {:ok, _room} = start_supervised({Room, [room_id]})
+      musicians_pid = Pids.fetch!({:musicians, room_id})
+
+      {:ok, _m1} = Musicians.add_musician(musicians_pid, "1", room_id)
+      {:ok, _m2} = Musicians.add_musician(musicians_pid, "2", room_id)
+
+      child_count =
+        musicians_pid
+        |> Musicians.list_musicians()
+        |> length()
+
+      assert Musicians.musician_exists?("1", room_id) == true
+      assert Musicians.musician_exists?("2", room_id) == true
+      assert child_count == 3
+    end
   end
 end
