@@ -8,12 +8,13 @@ defmodule ProgressionsWeb.RoomChannel do
   alias Progressions.{
     Persistence,
     Pids,
+    Rooms,
     Rooms.Room.Musicians,
     Telemetry.EventLog
   }
 
   def join("room:" <> room_id, _params, socket) do
-    if Progressions.Rooms.room_exists?(room_id) do
+    if Rooms.room_exists?(room_id) do
       musician_id = Persistence.gen_serial_id()
 
       _new_musician =
