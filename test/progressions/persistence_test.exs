@@ -4,8 +4,14 @@ defmodule Progressions.PersistenceTest do
   alias Progressions.Persistence
 
   test "generates next 10 serial ids" do
-    start = Persistence.gen_serial_id() + 1
-    expected_serial_ids = start..(start + 10) |> Enum.to_list()
+    curr_id_str = Persistence.gen_serial_id()
+    {start, ""} = Integer.parse(curr_id_str)
+    start = start + 1
+
+    expected_serial_ids =
+      start..(start + 10)
+      |> Enum.to_list()
+      |> Enum.map(&"#{&1}")
 
     serial_ids =
       for _ <- 0..10 |> Enum.to_list() do
