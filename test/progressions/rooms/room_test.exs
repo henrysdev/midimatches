@@ -91,25 +91,49 @@ defmodule Progressions.RoomTest do
         musicians: []
       }
 
+      timestep_slices = @loop.timestep_slices
+
       {:ok, _room} = start_supervised({Room, [room_id, config]})
       musicians_pid = Pids.fetch!({:musicians, room_id})
       1..2 |> Enum.each(&add_another_musician(musicians_pid, @loop, room_id, &1))
       :timer.sleep(2000)
-      event_log = EventLog.get_room(room_id) |> Enum.take(8)
+      event_log = EventLog.get_room_log(room_id) |> Enum.take(8)
+
+      assert timestep_slices == @loop.timestep_slices
 
       assert [
-               %{message: "clock_timestep=1", timestamp: _},
-               %{message: "clock_timestep=2", timestamp: _},
-               %{message: "clock_timestep=3", timestamp: _},
-               %{message: "clock_timestep=4", timestamp: _},
                %{
-                 message:
-                   "broadcast timestep_slices: [%Progressions.Types.TimestepSlice{notes: [%Progressions.Types.Note{duration: 1, instrument: \"epiano\", key: 11}, %Progressions.Types.Note{duration: 1, instrument: \"epiano\", key: 14}], timestep: 0}, %Progressions.Types.TimestepSlice{notes: [%Progressions.Types.Note{duration: 1, instrument: \"epiano\", key: 11}, %Progressions.Types.Note{duration: 1, instrument: \"epiano\", key: 14}], timestep: 0}, %Progressions.Types.TimestepSlice{notes: [%Progressions.Types.Note{duration: 1, instrument: \"epiano\", key: 11}], timestep: 3}, %Progressions.Types.TimestepSlice{notes: [%Progressions.Types.Note{duration: 1, instrument: \"epiano\", key: 11}], timestep: 3}]",
-                 timestamp: _
+                 timestamp: _,
+                 event: %Progressions.Types.Events.ClockTimestep{timestep: 1}
                },
-               %{message: "clock_timestep=5", timestamp: _},
-               %{message: "clock_timestep=6", timestamp: _},
-               %{message: "clock_timestep=7", timestamp: _}
+               %{
+                 timestamp: _,
+                 event: %Progressions.Types.Events.ClockTimestep{timestep: 2}
+               },
+               %{
+                 timestamp: _,
+                 event: %Progressions.Types.Events.ClockTimestep{timestep: 3}
+               },
+               %{
+                 timestamp: _,
+                 event: %Progressions.Types.Events.ClockTimestep{timestep: 4}
+               },
+               %{
+                 timestamp: _,
+                 event: %Progressions.Types.Events.TickBroadcast{timestep_slices: timestep_slices}
+               },
+               %{
+                 timestamp: _,
+                 event: %Progressions.Types.Events.ClockTimestep{timestep: 5}
+               },
+               %{
+                 timestamp: _,
+                 event: %Progressions.Types.Events.ClockTimestep{timestep: 6}
+               },
+               %{
+                 timestamp: _,
+                 event: %Progressions.Types.Events.ClockTimestep{timestep: 7}
+               }
              ] = event_log
     end
   end

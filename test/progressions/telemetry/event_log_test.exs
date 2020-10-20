@@ -1,53 +1,86 @@
 defmodule Progressions.Telemetry.EventLogTest do
   use ExUnit.Case, async: true
 
-  alias Progressions.Telemetry.EventLog
+  alias Progressions.{
+    Telemetry.EventLog,
+    Types.Events.ClockTimestep,
+    Types.Events.TickBroadcast,
+    Types.TimestepSlice
+  }
 
   setup do
     EventLog.clear()
-    on_exit(fn -> EventLog.get() end)
+    on_exit(fn -> EventLog.clear() end)
   end
 
   test "event log accepts logs and maintains chron ordering" do
-    log_messages = [
-      "log message 1",
-      "log message 2"
-    ]
+    room_id = "1"
 
-    Enum.each(log_messages, &EventLog.log(&1, "room_1_id"))
+    timestep_slices = %TimestepSlice{
+      notes: nil,
+      timestep: nil
+    }
+
+    EventLog.clock_timestep(1, room_id)
+    EventLog.tick_broadcast(timestep_slices, room_id)
+    EventLog.clock_timestep(3, room_id)
+    logs = EventLog.get_room_log(room_id)
 
     assert [
-             %{message: "log message 1", timestamp: _},
-             %{message: "log message 2", timestamp: _}
-           ] = EventLog.get()
+             %{event: %ClockTimestep{timestep: 1}, timestamp: _},
+             %{event: %TickBroadcast{timestep_slices: timestep_slices}, timestamp: _},
+             %{event: %ClockTimestep{timestep: 3}, timestamp: _}
+           ] = logs
   end
 
   test "event log accepts logs and gets logs for single room" do
-    log_messages = [
-      {"log message 1", "room_1"},
-      {"log message 2", "room_2"}
-    ]
+    room_id = "1"
+    other_room_id = "2"
 
-    Enum.each(log_messages, fn {msg, room_id} -> EventLog.log(msg, room_id) end)
+    timestep_slices = %TimestepSlice{
+      notes: nil,
+      timestep: nil
+    }
+
+    EventLog.clock_timestep(1, room_id)
+    EventLog.tick_broadcast(timestep_slices, room_id)
+    EventLog.clock_timestep(3, room_id)
+
+    EventLog.clock_timestep(1, other_room_id)
+    EventLog.tick_broadcast(timestep_slices, other_room_id)
+    EventLog.clock_timestep(3, other_room_id)
+
+    room_logs = EventLog.get_room_log(room_id)
+    other_room_logs = EventLog.get_room_log(other_room_id)
 
     assert [
-             %{message: "log message 1", timestamp: _}
-           ] = EventLog.get_room("room_1")
+             %{event: %ClockTimestep{timestep: 1}, timestamp: _},
+             %{event: %TickBroadcast{timestep_slices: timestep_slices}, timestamp: _},
+             %{event: %ClockTimestep{timestep: 3}, timestamp: _}
+           ] = room_logs
 
     assert [
-             %{message: "log message 2", timestamp: _}
-           ] = EventLog.get_room("room_2")
+             %{event: %ClockTimestep{timestep: 1}, timestamp: _},
+             %{event: %TickBroadcast{timestep_slices: timestep_slices}, timestamp: _},
+             %{event: %ClockTimestep{timestep: 3}, timestamp: _}
+           ] = other_room_logs
   end
 
   test "event log clears" do
-    log_messages = [
-      "log message 1",
-      "log message 2"
-    ]
+    room_id = "1"
 
-    Enum.each(log_messages, &EventLog.log(&1, "room_1_id"))
+    timestep_slices = %TimestepSlice{
+      notes: nil,
+      timestep: nil
+    }
+
+    EventLog.clock_timestep(1, room_id)
+    EventLog.tick_broadcast(timestep_slices, room_id)
+    EventLog.clock_timestep(3, room_id)
     EventLog.clear()
 
-    assert [] == EventLog.get()
+    logs = EventLog.get_room_log(room_id)
+
+    assert logs == []
   end
 end
