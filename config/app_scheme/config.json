@@ -22,8 +22,7 @@
                           ]
                         }
                       ]
-                    },
-                    "musician_id": "foobar"
+                    }
               },
               {
                   "loop": {
@@ -51,8 +50,7 @@
                           ]
                         }
                       ]
-                  },
-                  "musician_id": "zubeef"
+                  }
               }
           ]
       }

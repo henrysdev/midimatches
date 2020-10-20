@@ -3,8 +3,9 @@ defmodule Progressions.PersistenceTest do
 
   alias Progressions.Persistence
 
-  test "generates serial pids starting from 1000" do
-    expected_serial_ids = 1000..1010 |> Enum.to_list()
+  test "generates next 10 serial ids" do
+    start = Persistence.gen_serial_id() + 1
+    expected_serial_ids = start..(start + 10) |> Enum.to_list()
 
     serial_ids =
       for _ <- 0..10 |> Enum.to_list() do

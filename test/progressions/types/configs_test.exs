@@ -46,8 +46,7 @@ defmodule Progressions.Types.ConfigsTest do
                                 ]
                               }
                             ]
-                          },
-                          "musician_id": "foobar"
+                          }
                     },
                     {
                         "loop": {
@@ -75,8 +74,7 @@ defmodule Progressions.Types.ConfigsTest do
                                 ]
                               }
                             ]
-                        },
-                        "musician_id": "zubeef"
+                        }
                     }
                 ]
             }
@@ -102,8 +100,7 @@ defmodule Progressions.Types.ConfigsTest do
                       timestep: 0
                     }
                   ]
-                },
-                musician_id: "foobar"
+                }
               },
               %MusicianConfig{
                 loop: %Loop{
@@ -119,8 +116,7 @@ defmodule Progressions.Types.ConfigsTest do
                       timestep: 0
                     }
                   ]
-                },
-                musician_id: "zubeef"
+                }
               }
             ]
           }

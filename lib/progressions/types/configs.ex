@@ -23,7 +23,6 @@ defmodule Progressions.Types.Configs do
         },
         musicians: [
           %MusicianConfig{
-            musician_id: nil,
             loop: %Loop{
               length: nil,
               start_timestep: nil,

@@ -60,7 +60,7 @@ defmodule Progressions.Rooms.Room.Server do
           timestep_slices: timestep_slices
         } = state
       ) do
-    topic = "room:" <> room_id
+    topic = "room:#{room_id}"
 
     EventLog.log("broadcast timestep_slices: #{inspect(timestep_slices)}", room_id)
 

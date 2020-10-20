@@ -16,7 +16,6 @@ defmodule Progressions.MusiciansTest do
   }
 
   @musician_config %MusicianConfig{
-    musician_id: "foobar",
     loop: %Loop{
       start_timestep: 8,
       length: 8,
@@ -57,7 +56,6 @@ defmodule Progressions.MusiciansTest do
   describe "configured musicians" do
     test "instantiate configured musicians correctly" do
       room_id = "1"
-      musician_id = @musician_config.musician_id
 
       room_config = %RoomConfig{
         musicians: [@musician_config]
@@ -66,8 +64,9 @@ defmodule Progressions.MusiciansTest do
       {:ok, room} = start_supervised({Room, [room_id, room_config]})
       :sys.get_state(room)
       :sys.get_state(ProcessRegistry)
-      musician = Pids.fetch!({:musician, {musician_id, room_id}})
-      state = :sys.get_state(musician)
+      musicians = Pids.fetch!({:musicians, room_id})
+      [{_, default_musician, _, _}] = Musicians.list_musicians(musicians)
+      state = :sys.get_state(default_musician)
 
       assert %Musician{
                active_loop: %Loop{
@@ -87,7 +86,7 @@ defmodule Progressions.MusiciansTest do
                  ]
                },
                last_timestep: _,
-               musician_id: musician_id,
+               musician_id: _,
                playhead: _,
                potential_loop: nil,
                room_id: room_id,

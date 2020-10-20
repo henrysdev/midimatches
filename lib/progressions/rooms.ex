@@ -5,6 +5,7 @@ defmodule Progressions.Rooms do
   use DynamicSupervisor
 
   alias Progressions.{
+    Persistence,
     Pids,
     Rooms.Room,
     Types.Configs.RoomConfig
@@ -67,9 +68,14 @@ defmodule Progressions.Rooms do
   Start child room processes with given configurations. Only to be called when starting a room
   from a configuration
   """
-  @spec configure_rooms(list(%RoomConfig{}), id()) :: :ok
-  def configure_rooms(room_configs, room_id) do
+  @spec configure_rooms(list(%RoomConfig{})) :: :ok
+  def configure_rooms(room_configs) do
     room_configs
-    |> Enum.each(&DynamicSupervisor.start_child(__MODULE__, {Room, [room_id, &1]}))
+    |> Enum.each(
+      &DynamicSupervisor.start_child(
+        __MODULE__,
+        {Room, [Persistence.gen_serial_id(), &1]}
+      )
+    )
   end
 end

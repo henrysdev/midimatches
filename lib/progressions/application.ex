@@ -5,6 +5,8 @@ defmodule Progressions.Application do
 
   use Application
 
+  alias Progressions.Types.Configs
+
   def start(_type, _args) do
     children = [
       # Start the Telemetry supervisor
@@ -38,8 +40,8 @@ defmodule Progressions.Application do
   def configure_rooms do
     :progressions
     |> Application.fetch_env!(:rooms_config)
-    |> Progressions.Types.Configs.parse_config()
+    |> Configs.parse_config()
     |> (& &1.rooms).()
-    |> Progressions.Rooms.configure_rooms("ID_HERE")
+    |> Progressions.Rooms.configure_rooms()
   end
 end
