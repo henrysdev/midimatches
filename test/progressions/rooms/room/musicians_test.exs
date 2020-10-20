@@ -108,7 +108,7 @@ defmodule Progressions.MusiciansTest do
 
       _first_two_measures =
         room_id
-        |> EventLog.get_room()
+        |> EventLog.get_room_log()
         |> Enum.take(16)
     end
   end

@@ -9,8 +9,7 @@ defmodule ProgressionsWeb.RoomChannel do
     Persistence,
     Pids,
     Rooms,
-    Rooms.Room.Musicians,
-    Telemetry.EventLog
+    Rooms.Room.Musicians
   }
 
   def join("room:" <> room_id, _params, socket) do
@@ -21,7 +20,6 @@ defmodule ProgressionsWeb.RoomChannel do
         Pids.fetch({:musicians, room_id})
         |> Musicians.add_musician(musician_id, room_id)
 
-      EventLog.log("user #{musician_id} joined room #{room_id}", room_id)
       {:ok, socket}
     else
       {:error, "room #{room_id} does not exist"}

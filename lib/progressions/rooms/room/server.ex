@@ -62,7 +62,7 @@ defmodule Progressions.Rooms.Room.Server do
       ) do
     topic = "room:#{room_id}"
 
-    EventLog.log("broadcast timestep_slices: #{inspect(timestep_slices)}", room_id)
+    EventLog.tick_broadcast(timestep_slices, room_id)
 
     ProgressionsWeb.Endpoint.broadcast(topic, "timesteps", %{
       "timestep_slices" => timestep_slices,

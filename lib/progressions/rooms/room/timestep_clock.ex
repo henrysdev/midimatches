@@ -1,6 +1,6 @@
 defmodule Progressions.Rooms.Room.TimestepClock do
   @moduledoc """
-  Clock process that facilitates timestep events within a room 
+  Clock process that facilitates timestep events within a room
   """
   use GenServer
   use TypedStruct
@@ -68,7 +68,8 @@ defmodule Progressions.Rooms.Room.TimestepClock do
         } = state
       ) do
     curr_time = System.system_time(:microsecond)
-    EventLog.log("clock_timestep=#{timestep}", room_id)
+
+    EventLog.clock_timestep(timestep, room_id)
 
     Monitor.check_clock_precision(curr_time, last_time, timestep)
 
