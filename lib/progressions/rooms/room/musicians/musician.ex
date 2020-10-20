@@ -28,8 +28,8 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
   typedstruct enforce: true do
     field(:musician_id, String.t())
     field(:room_id, String.t())
-    field(:active_loop, %Loop{}, default: %{})
-    field(:potential_loop, %Loop{}, default: %{})
+    field(:active_loop, %Loop{})
+    field(:potential_loop, %Loop{})
     field(:server, pid())
     field(:last_timestep, integer())
     field(:playhead, playhead())

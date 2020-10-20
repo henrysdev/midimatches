@@ -17,6 +17,7 @@ defmodule Progressions.Application do
       {DynamicSupervisor, strategy: :one_for_one, name: Progressions.Rooms},
       {Registry, keys: :unique, name: ProcessRegistry},
       Progressions.Telemetry.EventLog,
+      Progressions.Persistence,
       {Task, fn -> configure_rooms() end}
     ]
 
