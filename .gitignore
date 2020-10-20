@@ -34,3 +34,5 @@ npm-debug.log
 /priv/static/
 
 /dev/
+
+.DS_Store

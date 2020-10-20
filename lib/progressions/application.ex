@@ -5,6 +5,8 @@ defmodule Progressions.Application do
 
   use Application
 
+  alias Progressions.Types.Configs
+
   def start(_type, _args) do
     children = [
       # Start the Telemetry supervisor
@@ -16,7 +18,9 @@ defmodule Progressions.Application do
       # Start a worker by calling: Progressions.Worker.start_link(arg)
       {DynamicSupervisor, strategy: :one_for_one, name: Progressions.Rooms},
       {Registry, keys: :unique, name: ProcessRegistry},
-      Progressions.Telemetry.EventLog
+      Progressions.Telemetry.EventLog,
+      Progressions.Persistence,
+      {Task, fn -> configure_rooms() end}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
@@ -30,5 +34,14 @@ defmodule Progressions.Application do
   def config_change(changed, _new, removed) do
     ProgressionsWeb.Endpoint.config_change(changed, removed)
     :ok
+  end
+
+  @spec configure_rooms :: :ok
+  def configure_rooms do
+    :progressions
+    |> Application.fetch_env!(:rooms_config)
+    |> Configs.parse_config()
+    |> (& &1.rooms).()
+    |> Progressions.Rooms.configure_rooms()
   end
 end

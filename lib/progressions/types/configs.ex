@@ -23,7 +23,6 @@ defmodule Progressions.Types.Configs do
         },
         musicians: [
           %MusicianConfig{
-            musician_id: nil,
             loop: %Loop{
               length: nil,
               start_timestep: nil,
@@ -51,8 +50,8 @@ defmodule Progressions.Types.Configs do
   """
   @spec parse_config(Path.t()) :: %ProgressionsConfig{}
   def parse_config(cfg) do
-    cfg
-    |> File.read!()
-    |> Poison.decode!(as: @config_schema)
+    with {:ok, body} <- File.read(cfg),
+         {:ok, json} <- Poison.decode(body, as: @config_schema),
+         do: json
   end
 end

@@ -6,6 +6,7 @@ defmodule ProgressionsWeb.RoomChannel do
   use Phoenix.Channel
 
   alias Progressions.{
+    Persistence,
     Pids,
     Rooms.Room.Musicians,
     Telemetry.EventLog
@@ -13,8 +14,7 @@ defmodule ProgressionsWeb.RoomChannel do
 
   def join("room:" <> room_id, _params, socket) do
     if Progressions.Rooms.room_exists?(room_id) do
-      # TODO musician id handling / generation
-      musician_id = DateTime.utc_now() |> DateTime.to_string()
+      musician_id = Persistence.gen_serial_id()
 
       _new_musician =
         Pids.fetch({:musicians, room_id})

@@ -5,6 +5,7 @@ defmodule Progressions.Rooms.Room.Musicians do
   use DynamicSupervisor
 
   alias Progressions.{
+    Persistence,
     Pids,
     Rooms.Room.Musicians.Musician,
     Types.Configs.MusicianConfig
@@ -59,6 +60,11 @@ defmodule Progressions.Rooms.Room.Musicians do
     pid = Pids.fetch!({:musicians, room_id})
 
     musician_configs
-    |> Enum.each(&DynamicSupervisor.start_child(pid, {Musician, [room_id, &1.musician_id, &1]}))
+    |> Enum.each(
+      &DynamicSupervisor.start_child(
+        pid,
+        {Musician, [room_id, Persistence.gen_serial_id(), &1]}
+      )
+    )
   end
 end

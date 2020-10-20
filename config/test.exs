@@ -9,7 +9,8 @@ config :progressions, ProgressionsWeb.Endpoint,
 # Print only warnings and errors during test
 # config :logger, level: :warn
 config :logger,
-  backends: [{LoggerFileBackend, :error_log}],
+  level: :warn,
+  backends: [:console, {LoggerFileBackend, :error_log}],
   format: "[$level] $message\n"
 
 config :logger, :error_log,

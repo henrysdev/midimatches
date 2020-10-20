@@ -30,6 +30,8 @@ defmodule Progressions.Rooms.Room.Server do
     {:ok, %Server{room_id: room_id, timestep_slices: []}}
   end
 
+  ## API
+
   @doc """
   Broadcasts next tick's worth of timestep slices to all listening clients.
   """
@@ -47,13 +49,18 @@ defmodule Progressions.Rooms.Room.Server do
     GenServer.cast(pid, {:buffer_timestep_slices, new_timestep_slices})
   end
 
+  ## Callbacks
+
   @spec handle_cast(:broadcast_next_tick, %Server{}) :: {:noreply, %Server{}}
   @impl true
-  def handle_cast(:broadcast_next_tick, %Server{
-        room_id: room_id,
-        timestep_slices: timestep_slices
-      }) do
-    topic = "room:" <> room_id
+  def handle_cast(
+        :broadcast_next_tick,
+        %Server{
+          room_id: room_id,
+          timestep_slices: timestep_slices
+        } = state
+      ) do
+    topic = "room:#{room_id}"
 
     EventLog.log("broadcast timestep_slices: #{inspect(timestep_slices)}", room_id)
 
@@ -62,19 +69,21 @@ defmodule Progressions.Rooms.Room.Server do
       "body" => "ASDFASDF"
     })
 
-    {:noreply, %Server{room_id: room_id, timestep_slices: []}}
+    {:noreply, %Server{state | timestep_slices: []}}
   end
 
   @spec handle_cast({:buffer_timestep_slices, timestep_slices()}, %Server{}) ::
           {:noreply, %Server{}}
   @impl true
-  def handle_cast({:buffer_timestep_slices, new_timestep_slices}, %Server{
-        room_id: room_id,
-        timestep_slices: timestep_slices
-      }) do
+  def handle_cast(
+        {:buffer_timestep_slices, new_timestep_slices},
+        %Server{
+          timestep_slices: timestep_slices
+        } = state
+      ) do
     # TODO buffer timestep properly
     timestep_slices = timestep_slices ++ new_timestep_slices
 
-    {:noreply, %Server{room_id: room_id, timestep_slices: timestep_slices}}
+    {:noreply, %Server{state | timestep_slices: timestep_slices}}
   end
 end
