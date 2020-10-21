@@ -42,7 +42,7 @@ defmodule Progressions.Rooms.Room.TimestepClock do
 
     {:ok,
      %TimestepClock{
-       timestep: 1,
+       timestep: 0,
        server: Pids.fetch!({:server, room_id}),
        musicians: Pids.fetch!({:musicians, room_id}),
        last_time: System.system_time(:microsecond),
