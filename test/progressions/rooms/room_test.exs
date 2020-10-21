@@ -97,11 +97,19 @@ defmodule Progressions.RoomTest do
       musicians_pid = Pids.fetch!({:musicians, room_id})
       1..2 |> Enum.each(&add_another_musician(musicians_pid, @loop, room_id, &1))
       :timer.sleep(2000)
-      event_log = EventLog.get_room_log(room_id) |> Enum.take(8)
+      event_log = EventLog.get_room_log(room_id) |> Enum.take(10)
 
       assert timestep_slices == @loop.timestep_slices
 
       assert [
+               %{
+                 timestamp: _,
+                 event: %Progressions.Types.Events.ClockTimestep{timestep: 0}
+               },
+               %{
+                 timestamp: _,
+                 event: %Progressions.Types.Events.TickBroadcast{timestep_slices: []}
+               },
                %{
                  timestamp: _,
                  event: %Progressions.Types.Events.ClockTimestep{timestep: 1}

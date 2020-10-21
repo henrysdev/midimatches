@@ -29,7 +29,6 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
     field(:musician_id, String.t())
     field(:room_id, String.t())
     field(:active_loop, %Loop{})
-    field(:potential_loop, %Loop{})
     field(:server, pid())
     field(:last_timestep, integer())
     field(:playhead, playhead())
@@ -45,19 +44,14 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
   def init([room_id, musician_id, %MusicianConfig{loop: loop}]) do
     Pids.register({:musician, {musician_id, room_id}}, self())
 
-    server = Pids.fetch!({:server, room_id})
-
-    active_loop = loop
-
     {:ok,
      %Musician{
-       server: server,
+       server: Pids.fetch!({:server, room_id}),
        musician_id: musician_id,
        room_id: room_id,
-       active_loop: active_loop,
-       potential_loop: nil,
-       last_timestep: 0,
-       playhead: {0, :queue.new()}
+       active_loop: loop,
+       last_timestep: -1,
+       playhead: {loop.start_timestep, :queue.new()}
      }}
   end
 
@@ -89,8 +83,7 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
         {:new_loop, %Loop{} = new_loop},
         %Musician{last_timestep: last_timestep} = state
       ) do
-    # TODO take ticks/measures into account for restart invervals
-    playhead = restart_loop_playhead(new_loop, last_timestep)
+    playhead = recalibrate_loop_playhead(new_loop, last_timestep)
     active_loop = new_loop
 
     {:noreply,
@@ -106,36 +99,25 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
   @impl true
   def handle_cast(
         {:next_timestep, clock_timestep},
-        %Musician{active_loop: nil} = state
-      ) do
-    {:noreply, Map.put(state, :last_timestep, clock_timestep)}
-  end
-
-  def handle_cast(
-        {:next_timestep, clock_timestep},
         %Musician{
           server: server,
           active_loop: active_loop,
-          playhead: playhead
+          playhead: {deadline, queue}
         } = state
       ) do
-    # restart loop playhead if current timestep is at or past deadline
+    # restart loop playhead if current timestep is at or past deadline.
     {deadline, queue} =
-      case playhead do
-        # TODO take ticks/measures into account for restart invervals
+      case {deadline, queue} do
         {deadline, _queue} when deadline <= clock_timestep ->
-          restart_loop_playhead(active_loop, clock_timestep)
+          recalibrate_loop_playhead(active_loop, clock_timestep)
 
         {_deadline, _queue} ->
-          playhead
-
-        other ->
-          raise "Unexpected match for playhead struct #{inspect(other)}"
+          {deadline, queue}
       end
 
-    # send due timestep slices to server buffer
     {queue, timestep_slices_to_buffer} = pop_due_timestep_slices(queue, clock_timestep)
 
+    # send due timestep slices to server buffer as side effect
     if length(timestep_slices_to_buffer) > 0 do
       Server.buffer_timestep_slices(server, timestep_slices_to_buffer)
     end
@@ -148,19 +130,25 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
      }}
   end
 
-  ## Private
+  ## Helpers
 
-  @spec restart_loop_playhead(%Loop{}, integer()) :: playhead()
-  defp restart_loop_playhead(loop, curr_timestep) do
+  @spec recalibrate_loop_playhead(%Loop{}, integer()) :: playhead()
+  defp recalibrate_loop_playhead(
+         %Loop{length: loop_length, start_timestep: loop_start_timestep} = loop,
+         curr_timestep
+       ) do
+    deadline = calc_deadline(curr_timestep, loop_start_timestep, loop_length)
+
     queue =
       loop.timestep_slices
-      |> Enum.reduce(:queue.new(), fn %TimestepSlice{timestep: timestep} = timestep_slice, q ->
+      |> Enum.reduce(:queue.new(), fn %TimestepSlice{timestep: position_in_loop} = timestep_slice,
+                                      q ->
         timestep_slice
-        |> Map.put(:timestep, curr_timestep + timestep)
+        |> Map.put(:timestep, deadline - loop_length + position_in_loop)
         |> :queue.in(q)
       end)
 
-    {loop.length + curr_timestep, queue}
+    {deadline, queue}
   end
 
   @spec pop_due_timestep_slices(queue(), integer(), timestep_slices()) ::
@@ -176,13 +164,18 @@ defmodule Progressions.Rooms.Room.Musicians.Musician do
     end
   end
 
-  @spec calc_deadline(%Loop{}, integer()) :: integer()
-  defp calc_deadline(%Loop{start_timestep: start, length: length}, curr) do
-    remainder = rem(curr, length)
+  @spec calc_deadline(integer(), integer(), integer()) :: integer()
+  def calc_deadline(_curr_timestep, _loop_start_timestep, loop_length) when loop_length <= 0 do
+    {:error, "loop length must be greater than zero"}
+  end
 
-    case remainder do
-      0 -> curr + start
-      remainder -> curr + length - remainder + start
+  def calc_deadline(curr_timestep, loop_start_timestep, loop_length) do
+    loop_rem = rem(curr_timestep - loop_start_timestep, loop_length)
+
+    case loop_rem do
+      _ when curr_timestep < loop_start_timestep -> loop_start_timestep
+      0 -> curr_timestep + loop_length
+      loop_rem -> curr_timestep + loop_length - loop_rem
     end
   end
 end

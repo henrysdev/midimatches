@@ -88,7 +88,6 @@ defmodule Progressions.MusiciansTest do
                last_timestep: _,
                musician_id: _,
                playhead: _,
-               potential_loop: nil,
                room_id: room_id,
                server: _
              } = state
