@@ -28,10 +28,4 @@ defmodule Progressions.Telemetry.Monitor do
   end
 
   def check_clock_precision(_, _, _), do: nil
-
-  # @spec check_timesteps_sync(list(), integer()) :: nil
-  def check_timesteps_sync do
-    # TODO implement check for timesteps that are catching up. Can be detecting by
-    # timesteps slices that are from a timestep before current
-  end
 end
