@@ -307,16 +307,19 @@ defmodule Progressions.TimestepClockTest do
            ] = logs
   end
 
+  @spec inspect_clock_state(pid()) :: map()
   defp inspect_clock_state(timestep_clock) do
     state = :sys.get_state(timestep_clock)
     %{timestep: state.timestep}
   end
 
+  @spec inspect_server_state(pid()) :: map()
   defp inspect_server_state(server) do
     state = :sys.get_state(server)
     %{buffered_timestep_slices: state.timestep_slices}
   end
 
+  @spec inspect_musicians_state(pid()) :: map()
   defp inspect_musicians_state(musicians) do
     Musicians.list_musicians(musicians)
     |> Enum.map(&elem(&1, 1))
@@ -331,6 +334,7 @@ defmodule Progressions.TimestepClockTest do
     end)
   end
 
+  @spec simulate_timesteps(pid(), pid(), pid(), integer(), integer(), integer()) :: map()
   defp simulate_timesteps(
          timestep_clock,
          server,

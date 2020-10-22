@@ -327,19 +327,19 @@ defmodule Progressions.MusicianTest do
 
       assert [
                %{
-                 musician: %{deadline: 8, last_timestep: 0, loop_left: {[], []}},
+                 musician: %{deadline: 4, last_timestep: 0, loop_left: {[], []}},
                  server: %{buffered_timestep_slices: []}
                },
                %{
-                 musician: %{deadline: 8, last_timestep: 1, loop_left: {[], []}},
+                 musician: %{deadline: 4, last_timestep: 1, loop_left: {[], []}},
                  server: %{buffered_timestep_slices: []}
                },
                %{
-                 musician: %{deadline: 8, last_timestep: 2, loop_left: {[], []}},
+                 musician: %{deadline: 4, last_timestep: 2, loop_left: {[], []}},
                  server: %{buffered_timestep_slices: []}
                },
                %{
-                 musician: %{deadline: 8, last_timestep: 3, loop_left: {[], []}},
+                 musician: %{deadline: 4, last_timestep: 3, loop_left: {[], []}},
                  server: %{buffered_timestep_slices: []}
                },
                %{

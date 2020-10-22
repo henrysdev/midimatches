@@ -5,29 +5,14 @@ defmodule Progressions.Types.Configs.MusicianConfig do
 
   use TypedStruct
 
-  alias Progressions.Types.{
-    Loop,
-    Note,
-    TimestepSlice
-  }
+  alias Progressions.Types.Loop
 
   typedstruct do
     field(:loop, %Loop{},
       default: %Loop{
-        start_timestep: 8,
-        length: 8,
-        timestep_slices: [
-          %TimestepSlice{
-            timestep: 0,
-            notes: [
-              %Note{
-                instrument: "kick",
-                key: 11,
-                duration: 1
-              }
-            ]
-          }
-        ]
+        start_timestep: 0,
+        length: 4,
+        timestep_slices: []
       }
     )
   end

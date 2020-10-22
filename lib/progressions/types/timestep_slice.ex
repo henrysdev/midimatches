@@ -4,6 +4,7 @@ defmodule Progressions.Types.TimestepSlice do
 
   use TypedStruct
 
+  @derive Jason.Encoder
   typedstruct enforce: true do
     field(:timestep, integer())
     field(:notes, list(%Progressions.Types.Note{}))

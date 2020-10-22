@@ -81,8 +81,9 @@ defmodule Progressions.Rooms.Room.Server do
           timestep_slices: timestep_slices
         } = state
       ) do
-    # TODO buffer timestep properly
-    timestep_slices = timestep_slices ++ new_timestep_slices
+    timestep_slices =
+      (timestep_slices ++ new_timestep_slices)
+      |> Enum.sort_by(& &1.timestep, :asc)
 
     {:noreply, %Server{state | timestep_slices: timestep_slices}}
   end
