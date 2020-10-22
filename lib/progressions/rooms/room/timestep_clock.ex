@@ -64,14 +64,15 @@ defmodule Progressions.Rooms.Room.TimestepClock do
           musicians: musicians,
           last_time: last_time,
           tick_in_timesteps: tick_in_timesteps,
-          room_id: room_id
+          room_id: room_id,
+          timestep_us: timestep_us
         } = state
       ) do
     curr_time = System.system_time(:microsecond)
 
     EventLog.clock_timestep(timestep, room_id)
 
-    Monitor.check_clock_precision(curr_time, last_time, timestep)
+    Monitor.check_clock_precision(curr_time, last_time, timestep, timestep_us)
 
     if rem(timestep, tick_in_timesteps) == 0 do
       Server.broadcast_next_tick(server)

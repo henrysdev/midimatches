@@ -2,7 +2,7 @@
   "rooms": [
       {
           "timestep_clock": {
-            "timestep_us": 100000,
+            "timestep_us": 50000,
             "tick_in_timesteps": 4
           },
           "musicians": [

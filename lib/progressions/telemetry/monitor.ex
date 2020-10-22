@@ -5,18 +5,16 @@ defmodule Progressions.Telemetry.Monitor do
   """
   require Logger
 
-  # TODO propagate these down via config
-  @timestep_us 50_000
   @clock_tolerance_us 1_000
 
   @doc """
   Monitor for alerting in case of timestep clock inaccuracy
   """
-  @spec check_clock_precision(number(), number(), number()) :: nil
-  def check_clock_precision(new, old, timestep)
-      when abs(new - old - @timestep_us) > @clock_tolerance_us and
-             new > @timestep_us and old > @timestep_us do
-    elapsed = abs(new - old - @timestep_us)
+  @spec check_clock_precision(number(), number(), number(), integer()) :: nil
+  def check_clock_precision(new, old, timestep, timestep_us)
+      when abs(new - old - timestep_us) > @clock_tolerance_us and
+             new > timestep_us and old > timestep_us do
+    elapsed = abs(new - old - timestep_us)
 
     message =
       "time elapsed between consecutive timesteps outside of tolerated threshold: " <>
@@ -27,5 +25,5 @@ defmodule Progressions.Telemetry.Monitor do
     Logger.warn(message)
   end
 
-  def check_clock_precision(_, _, _), do: nil
+  def check_clock_precision(_, _, _, _), do: nil
 end

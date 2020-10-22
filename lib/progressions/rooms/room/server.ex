@@ -65,8 +65,7 @@ defmodule Progressions.Rooms.Room.Server do
     EventLog.tick_broadcast(timestep_slices, room_id)
 
     ProgressionsWeb.Endpoint.broadcast(topic, "timesteps", %{
-      "timestep_slices" => timestep_slices,
-      "body" => "ASDFASDF"
+      "timestep_slices" => timestep_slices
     })
 
     {:noreply, %Server{state | timestep_slices: []}}
