@@ -4,6 +4,7 @@ defmodule Progressions.Types.Note do
 
   use TypedStruct
 
+  @derive Jason.Encoder
   typedstruct enforce: true do
     field(:instrument, String.t())
     field(:key, integer())

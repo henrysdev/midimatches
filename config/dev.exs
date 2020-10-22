@@ -60,7 +60,7 @@ config :progressions, ProgressionsWeb.Endpoint,
 # config :logger, :console, format: "[$level] $message\n"
 
 config :logger,
-  backends: [{LoggerFileBackend, :error_log}],
+  backends: [:console, {LoggerFileBackend, :error_log}],
   format: "[$level] $message\n"
 
 config :logger, :error_log,

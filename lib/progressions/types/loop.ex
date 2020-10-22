@@ -6,6 +6,7 @@ defmodule Progressions.Types.Loop do
 
   alias Progressions.Types.TimestepSlice
 
+  @derive Jason.Encoder
   typedstruct enforce: true do
     field(:start_timestep, integer())
     field(:length, integer())
