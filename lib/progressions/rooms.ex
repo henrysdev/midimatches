@@ -74,7 +74,7 @@ defmodule Progressions.Rooms do
     |> Enum.each(
       &DynamicSupervisor.start_child(
         __MODULE__,
-        {Room, [Persistence.gen_serial_id(), &1]}
+        {Room, [{Persistence.gen_serial_id(), &1}]}
       )
     )
   end

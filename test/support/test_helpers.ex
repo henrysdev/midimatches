@@ -3,10 +3,7 @@ defmodule Progressions.TestHelpers do
   This module provides convenience methods for writing unit tests for this project
   """
 
-  alias Progressions.{
-    Rooms,
-    Telemetry.EventLog
-  }
+  alias Progressions.Rooms
 
   def teardown_rooms do
     pids = room_pids()
@@ -14,8 +11,6 @@ defmodule Progressions.TestHelpers do
     Enum.each(pids, &DynamicSupervisor.terminate_child(Rooms, &1))
 
     unregister_keys(pids)
-
-    EventLog.clear()
   end
 
   defp room_pids do

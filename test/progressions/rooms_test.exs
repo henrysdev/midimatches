@@ -48,9 +48,7 @@ defmodule Progressions.RoomsTest do
 
     assert length(Rooms.list_rooms()) == length(room_ids)
     assert Pids.fetch({:room, "2"}) != nil
-    assert Pids.fetch({:server, "2"}) != nil
-    assert Pids.fetch({:timestep_clock, "2"}) != nil
-    assert Pids.fetch({:musicians, "2"}) != nil
+    assert Pids.fetch({:loop_server, "2"}) != nil
 
     Rooms.drop_room("2")
 
@@ -58,9 +56,7 @@ defmodule Progressions.RoomsTest do
     :sys.get_state(ProcessRegistry)
 
     assert Pids.fetch({:room, "2"}) == nil
-    assert Pids.fetch({:server, "2"}) == nil
-    assert Pids.fetch({:timestep_clock, "2"}) == nil
-    assert Pids.fetch({:musicians, "2"}) == nil
+    assert Pids.fetch({:loop_server, "2"}) == nil
     assert length(Rooms.list_rooms()) == length(room_ids) - 1
   end
 end

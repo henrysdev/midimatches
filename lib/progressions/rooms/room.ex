@@ -6,9 +6,7 @@ defmodule Progressions.Rooms.Room do
 
   alias Progressions.{
     Pids,
-    Rooms.Room.Musicians,
-    Rooms.Room.Server,
-    Rooms.Room.TimestepClock,
+    Rooms.Room.LoopServer,
     Types.Configs.RoomConfig
   }
 
@@ -17,16 +15,17 @@ defmodule Progressions.Rooms.Room do
   end
 
   @impl true
-  def init([room_id]), do: init([room_id, %RoomConfig{}])
+  def init(args) do
+    {room_id, room_config} =
+      case args do
+        [room_id] -> {room_id, %RoomConfig{}}
+        [room_id, room_config] -> {room_id, room_config}
+      end
 
-  def init([room_id, room_config = %RoomConfig{}]) do
     Pids.register({:room, room_id}, self())
 
     children = [
-      {Server, [room_id]},
-      {Musicians, [room_id]},
-      {TimestepClock, [room_id, room_config.timestep_clock]},
-      {Task, fn -> Musicians.configure_musicians(room_config.musicians, room_id) end}
+      {LoopServer, [room_id, room_config.loop_server]}
     ]
 
     Supervisor.init(children, strategy: :rest_for_one)

@@ -8,8 +8,9 @@ defmodule Progressions.Rooms.Room.LoopServer do
 
   alias Progressions.{
     Pids,
-    Rooms.Room.LoopServer,
+    Types.Configs.LoopServerConfig,
     Types.Loop,
+    Types.Musician,
     Utils
   }
 
@@ -19,7 +20,7 @@ defmodule Progressions.Rooms.Room.LoopServer do
     field(:room_id, String.t())
     field(:room_start_utc, integer())
     field(:timestep_us, integer())
-    field(:musicians, %{})
+    field(:musicians, %{required(id()) => %Musician{}})
   end
 
   def start_link(args) do
@@ -27,36 +28,68 @@ defmodule Progressions.Rooms.Room.LoopServer do
   end
 
   @impl true
-  def init([room_id]) do
-    Pids.register({:server, room_id}, self())
-    room_start_utc = :os.system_time(:microsecond)
-    # TODO propogate down via config
-    timestep_us = 500_000
+  def init(args) do
+    {room_id, loop_server_config} =
+      case args do
+        [room_id] -> {room_id, %LoopServerConfig{}}
+        [room_id, loop_server_config] -> {room_id, loop_server_config}
+      end
+
+    Pids.register({:loop_server, room_id}, self())
+
+    # configure musicians map
+    musicians_map =
+      loop_server_config.musicians
+      |> Enum.reduce(%{}, fn %Musician{} = elem, acc ->
+        Map.put(acc, elem.musician_id, elem)
+      end)
 
     {:ok,
-     %LoopServer{
+     %__MODULE__{
        room_id: room_id,
-       room_start_utc: room_start_utc,
-       timestep_us: timestep_us,
-       musicians: %{}
+       room_start_utc: :os.system_time(:microsecond),
+       timestep_us: loop_server_config.timestep_us,
+       musicians: musicians_map
      }}
   end
 
   ## API
 
+  @spec add_musician(pid(), %Musician{}) :: :ok
+  def add_musician(pid, %Musician{} = musician) do
+    GenServer.cast(pid, {:add_musician, musician})
+  end
+
   @spec receive_loop(pid(), id(), %Loop{}) :: :ok
-  def receive_loop(pid, musician_id, loop = %Loop{}) do
+  def receive_loop(pid, musician_id, %Loop{} = loop) do
     GenServer.cast(pid, {:receive_loop, loop, musician_id})
   end
 
   ## Callbacks
 
-  @spec handle_cast({:receive_loop, %Loop{}, id()}, %LoopServer{}) :: {:noreply, %LoopServer{}}
+  @spec handle_cast({:add_musician, %Musician{}}, %__MODULE__{}) :: {:noreply, %__MODULE__{}}
+  @impl true
+  def handle_cast(
+        {:add_musician, musician = %Musician{musician_id: musician_id}},
+        %__MODULE__{musicians: musicians_map} = state
+      ) do
+    # add musician to musicians map if not already there
+    musicians_map =
+      if Map.has_key?(musicians_map, musician_id) do
+        musicians_map
+      else
+        Map.put(musicians_map, musician_id, musician)
+      end
+
+    {:noreply, %__MODULE__{state | musicians: musicians_map}}
+  end
+
+  @spec handle_cast({:receive_loop, %Loop{}, id()}, %__MODULE__{}) :: {:noreply, %__MODULE__{}}
   @impl true
   def handle_cast(
         {:receive_loop, loop = %Loop{start_timestep: loop_start_timestep, length: loop_length},
          musician_id},
-        %LoopServer{
+        %__MODULE__{
           room_id: room_id,
           room_start_utc: room_start_utc,
           timestep_us: timestep_us,
@@ -81,6 +114,6 @@ defmodule Progressions.Rooms.Room.LoopServer do
       "loop" => %Loop{loop | start_timestep: deadline_timestep}
     })
 
-    {:noreply, %LoopServer{state | musicians: musicians_map}}
+    {:noreply, %__MODULE__{state | musicians: musicians_map}}
   end
 end

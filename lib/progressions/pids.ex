@@ -3,7 +3,7 @@ defmodule Progressions.Pids do
   Provides convenience functions for interacting with process registry layer
   """
 
-  @proc_types [:room, :server, :timestep_clock, :musicians, :musician]
+  @proc_types [:room, :loop_server]
 
   @type registry_resp() :: {:ok, pid()} | {:error, String.t() | tuple()}
   @type id() :: String.t()

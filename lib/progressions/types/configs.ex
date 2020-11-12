@@ -4,11 +4,11 @@ defmodule Progressions.Types.Configs do
   """
 
   alias Progressions.Types.{
-    Configs.MusicianConfig,
+    Configs.LoopServerConfig,
     Configs.ProgressionsConfig,
     Configs.RoomConfig,
-    Configs.TimestepClockConfig,
     Loop,
+    Musician,
     Note,
     TimestepSlice
   }
@@ -17,30 +17,30 @@ defmodule Progressions.Types.Configs do
   @config_schema %ProgressionsConfig{
     rooms: [
       %RoomConfig{
-        timestep_clock: %TimestepClockConfig{
+        loop_server: %LoopServerConfig{
           timestep_us: nil,
-          tick_in_timesteps: nil
-        },
-        musicians: [
-          %MusicianConfig{
-            loop: %Loop{
-              length: nil,
-              start_timestep: nil,
-              timestep_slices: [
-                %TimestepSlice{
-                  notes: [
-                    %Note{
-                      duration: nil,
-                      instrument: nil,
-                      key: nil
-                    }
-                  ],
-                  timestep: nil
-                }
-              ]
+          musicians: [
+            %Musician{
+              musician_id: nil,
+              loop: %Loop{
+                length: nil,
+                start_timestep: nil,
+                timestep_slices: [
+                  %TimestepSlice{
+                    notes: [
+                      %Note{
+                        duration: nil,
+                        instrument: nil,
+                        key: nil
+                      }
+                    ],
+                    timestep: nil
+                  }
+                ]
+              }
             }
-          }
-        ]
+          ]
+        }
       }
     ]
   }
