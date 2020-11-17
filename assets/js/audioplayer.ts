@@ -13,11 +13,11 @@ function loadSound(blipURL: string): void {
         playButton.disabled = false;
         blipBuffer = audioBuffer;
       });
-    playButton.onclick = () => play(blipBuffer);
+    playButton.onclick = () => playAudio(blipBuffer);
   }
 }
 
-function play(audioBuffer: AudioBuffer): void {
+function playAudio(audioBuffer: AudioBuffer): void {
   const source = context.createBufferSource();
   source.buffer = audioBuffer;
   source.connect(context.destination);

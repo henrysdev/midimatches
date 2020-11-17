@@ -18,5 +18,7 @@ import "phoenix_html"
 
 import "./audioplayer.ts"
 
+import "./player/player.js"
+
 import greet from "./hello.ts";
 document.querySelector("section.phx-hero h1").innerHTML = greet("Phoenix");
