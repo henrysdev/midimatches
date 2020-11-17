@@ -1,8 +1,8 @@
-defmodule Progressions.LoopServerTest do
+defmodule Progressions.ServerTest do
   use ExUnit.Case
 
   alias Progressions.{
-    Rooms.Room.LoopServer,
+    Rooms.Room.Server,
     Types.Loop,
     Types.Note,
     Types.TimestepSlice
@@ -64,16 +64,16 @@ defmodule Progressions.LoopServerTest do
 
     expected_payload = %Phoenix.Socket.Broadcast{
       topic: room_topic,
-      event: "new_loop",
+      event: "update_musician_loop",
       payload: %{
         "musician_id" => musician_id,
         "loop" => loop
       }
     }
 
-    {:ok, loop_server} = LoopServer.start_link([room_id])
+    {:ok, loop_server} = Server.start_link([room_id])
 
-    LoopServer.receive_loop(loop_server, musician_id, loop)
+    Server.update_musician_loop(loop_server, musician_id, loop)
     ProgressionsWeb.Endpoint.subscribe(room_topic)
 
     assert_receive ^expected_payload

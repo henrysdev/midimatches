@@ -1,6 +1,6 @@
-defmodule Progressions.Rooms.Room.LoopServer do
+defmodule Progressions.Rooms.Room.Server do
   @moduledoc """
-  Maintains state and exposes API for interacting with a single room
+  Maintains state and exposes API for interacting with a room
   """
   use GenServer
   use TypedStruct
@@ -8,7 +8,7 @@ defmodule Progressions.Rooms.Room.LoopServer do
 
   alias Progressions.{
     Pids,
-    Types.Configs.LoopServerConfig,
+    Types.Configs.ServerConfig,
     Types.Loop,
     Types.Musician,
     Utils
@@ -23,15 +23,17 @@ defmodule Progressions.Rooms.Room.LoopServer do
     field(:musicians, %{required(id()) => %Musician{}})
   end
 
+  @spec start_link(any) :: :ignore | {:error, any} | {:ok, pid}
   def start_link(args) do
     GenServer.start_link(__MODULE__, args)
   end
 
   @impl true
+  @spec init(any) :: {:ok, %__MODULE__{}}
   def init(args) do
     {room_id, loop_server_config} =
       case args do
-        [room_id] -> {room_id, %LoopServerConfig{}}
+        [room_id] -> {room_id, %ServerConfig{}}
         [room_id, loop_server_config] -> {room_id, loop_server_config}
       end
 
@@ -56,13 +58,19 @@ defmodule Progressions.Rooms.Room.LoopServer do
   ## API
 
   @spec add_musician(pid(), %Musician{}) :: :ok
+  @doc """
+  Add a new musician to the room
+  """
   def add_musician(pid, %Musician{} = musician) do
     GenServer.cast(pid, {:add_musician, musician})
   end
 
-  @spec receive_loop(pid(), id(), %Loop{}) :: :ok
-  def receive_loop(pid, musician_id, %Loop{} = loop) do
-    GenServer.cast(pid, {:receive_loop, loop, musician_id})
+  @spec update_musician_loop(pid(), id(), %Loop{}) :: :ok
+  @doc """
+  Update given musician with a new loop
+  """
+  def update_musician_loop(pid, musician_id, %Loop{} = loop) do
+    GenServer.cast(pid, {:update_musician_loop, loop, musician_id})
   end
 
   ## Callbacks
@@ -84,11 +92,12 @@ defmodule Progressions.Rooms.Room.LoopServer do
     {:noreply, %__MODULE__{state | musicians: musicians_map}}
   end
 
-  @spec handle_cast({:receive_loop, %Loop{}, id()}, %__MODULE__{}) :: {:noreply, %__MODULE__{}}
+  @spec handle_cast({:update_musician_loop, %Loop{}, id()}, %__MODULE__{}) ::
+          {:noreply, %__MODULE__{}}
   @impl true
   def handle_cast(
-        {:receive_loop, loop = %Loop{start_timestep: loop_start_timestep, length: loop_length},
-         musician_id},
+        {:update_musician_loop,
+         loop = %Loop{start_timestep: loop_start_timestep, length: loop_length}, musician_id},
         %__MODULE__{
           room_id: room_id,
           room_start_utc: room_start_utc,
@@ -109,7 +118,7 @@ defmodule Progressions.Rooms.Room.LoopServer do
     deadline_timestep = Utils.calc_deadline(current_timestep, loop_start_timestep, loop_length)
 
     # broadcast to all clients
-    ProgressionsWeb.Endpoint.broadcast("room:#{room_id}", "new_loop", %{
+    ProgressionsWeb.Endpoint.broadcast("room:#{room_id}", "update_musician_loop", %{
       "musician_id" => musician_id,
       "loop" => %Loop{loop | start_timestep: deadline_timestep}
     })

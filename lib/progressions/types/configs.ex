@@ -4,9 +4,9 @@ defmodule Progressions.Types.Configs do
   """
 
   alias Progressions.Types.{
-    Configs.LoopServerConfig,
     Configs.ProgressionsConfig,
     Configs.RoomConfig,
+    Configs.ServerConfig,
     Loop,
     Musician,
     Note,
@@ -17,7 +17,7 @@ defmodule Progressions.Types.Configs do
   @config_schema %ProgressionsConfig{
     rooms: [
       %RoomConfig{
-        loop_server: %LoopServerConfig{
+        loop_server: %ServerConfig{
           timestep_us: nil,
           musicians: [
             %Musician{
@@ -45,10 +45,10 @@ defmodule Progressions.Types.Configs do
     ]
   }
 
+  @spec parse_config(Path.t()) :: %ProgressionsConfig{}
   @doc """
   Parses the provided JSON file into the expected configuration
   """
-  @spec parse_config(Path.t()) :: %ProgressionsConfig{}
   def parse_config(cfg) do
     with {:ok, body} <- File.read(cfg),
          {:ok, json} <- Poison.decode(body, as: @config_schema),

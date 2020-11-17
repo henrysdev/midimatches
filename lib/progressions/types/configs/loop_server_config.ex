@@ -1,6 +1,6 @@
-defmodule Progressions.Types.Configs.LoopServerConfig do
+defmodule Progressions.Types.Configs.ServerConfig do
   @moduledoc """
-  Configurable fields for a new instance of a LoopServer in a room
+  Configurable fields for a new instance of a Server in a room
   """
 
   use TypedStruct

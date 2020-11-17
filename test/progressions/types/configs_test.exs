@@ -3,9 +3,9 @@ defmodule Progressions.Types.ConfigsTest do
 
   alias Progressions.Types.{
     Configs,
-    Configs.LoopServerConfig,
     Configs.ProgressionsConfig,
     Configs.RoomConfig,
+    Configs.ServerConfig,
     Loop,
     Musician,
     Note,
@@ -86,7 +86,7 @@ defmodule Progressions.Types.ConfigsTest do
       expected = %ProgressionsConfig{
         rooms: [
           %RoomConfig{
-            loop_server: %LoopServerConfig{
+            loop_server: %ServerConfig{
               timestep_us: 50_000,
               musicians: [
                 %Musician{

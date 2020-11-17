@@ -4,7 +4,7 @@ defmodule Progressions.RoomTest do
   alias Progressions.{
     Pids,
     Rooms.Room,
-    Rooms.Room.LoopServer,
+    Rooms.Room.Server,
     TestHelpers,
     Types.Configs.RoomConfig,
     Types.Loop,
@@ -23,7 +23,7 @@ defmodule Progressions.RoomTest do
 
     started_children = Supervisor.which_children(sup) |> Enum.reverse()
 
-    assert [{LoopServer, _, :worker, [LoopServer]}] = started_children
+    assert [{Server, _, :worker, [Server]}] = started_children
   end
 
   test "simulates a simple room session" do
@@ -52,21 +52,21 @@ defmodule Progressions.RoomTest do
     {:ok, _room} = start_supervised({Room, [room_id, config]})
     loop_server = Pids.fetch!({:loop_server, room_id})
 
-    LoopServer.add_musician(loop_server, %Musician{
+    Server.add_musician(loop_server, %Musician{
       musician_id: "mid1",
       loop: default_loop
     })
 
-    LoopServer.add_musician(loop_server, %Musician{
+    Server.add_musician(loop_server, %Musician{
       musician_id: "mid2",
       loop: default_loop
     })
 
-    LoopServer.receive_loop(loop_server, "mid2", new_loop)
+    Server.update_musician_loop(loop_server, "mid2", new_loop)
 
     expected_payload = %Phoenix.Socket.Broadcast{
       topic: room_topic,
-      event: "new_loop",
+      event: "update_musician_loop",
       payload: %{
         "musician_id" => "mid2",
         "loop" => new_loop
@@ -80,7 +80,7 @@ defmodule Progressions.RoomTest do
 
     state = :sys.get_state(loop_server)
 
-    assert %Progressions.Rooms.Room.LoopServer{
+    assert %Progressions.Rooms.Room.Server{
              musicians: %{
                "mid1" => %Progressions.Types.Musician{
                  loop: default_loop,

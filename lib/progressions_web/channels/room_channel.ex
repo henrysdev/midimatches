@@ -9,7 +9,7 @@ defmodule ProgressionsWeb.RoomChannel do
     Persistence,
     Pids,
     Rooms,
-    Rooms.Room.LoopServer,
+    Rooms.Room.Server,
     Types.Musician
   }
 
@@ -17,7 +17,7 @@ defmodule ProgressionsWeb.RoomChannel do
     if Rooms.room_exists?(room_id) do
       loop_server = Pids.fetch!({:loop_server, room_id})
 
-      LoopServer.add_musician(loop_server, %Musician{
+      Server.add_musician(loop_server, %Musician{
         musician_id: Persistence.gen_serial_id()
       })
 
@@ -27,7 +27,11 @@ defmodule ProgressionsWeb.RoomChannel do
     end
   end
 
-  def handle_in("new_loop", %{"body" => _body}, %Phoenix.Socket{topic: topic} = socket) do
+  def handle_in(
+        "update_musician_loop",
+        %{"body" => _body},
+        %Phoenix.Socket{topic: topic} = socket
+      ) do
     [_, _room_id] = String.split(topic, ":")
 
     # TODO send note play event
