@@ -57,6 +57,22 @@ defmodule Progressions.Rooms.Room.Server do
 
   ## API
 
+  @spec get_musicians(pid()) :: [%Musician{}]
+  @doc """
+  Get musician ids
+  """
+  def get_musicians(pid) do
+    GenServer.call(pid, :get_musicians)
+  end
+
+  @spec get_start_time(pid()) :: integer()
+  @doc """
+  Get start time of room in UTC microseconds
+  """
+  def get_start_time(pid) do
+    GenServer.call(pid, :get_start_time)
+  end
+
   @spec add_musician(pid(), %Musician{}) :: :ok
   @doc """
   Add a new musician to the room
@@ -74,6 +90,21 @@ defmodule Progressions.Rooms.Room.Server do
   end
 
   ## Callbacks
+
+  @impl true
+  def handle_call(:get_musicians, _from, %__MODULE__{musicians: musicians_map} = state) do
+    musicians =
+      musicians_map
+      |> Map.values()
+      |> Enum.sort_by(& &1.musician_id, :asc)
+
+    {:reply, musicians, state}
+  end
+
+  @impl true
+  def handle_call(:get_start_time, _from, %__MODULE__{room_start_utc: start_time} = state) do
+    {:reply, start_time, state}
+  end
 
   @spec handle_cast({:add_musician, %Musician{}}, %__MODULE__{}) :: {:noreply, %__MODULE__{}}
   @impl true
