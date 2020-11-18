@@ -4,11 +4,11 @@ defmodule Progressions.Types.Configs do
   """
 
   alias Progressions.Types.{
-    Configs.MusicianConfig,
     Configs.ProgressionsConfig,
     Configs.RoomConfig,
-    Configs.TimestepClockConfig,
+    Configs.ServerConfig,
     Loop,
+    Musician,
     Note,
     TimestepSlice
   }
@@ -17,38 +17,38 @@ defmodule Progressions.Types.Configs do
   @config_schema %ProgressionsConfig{
     rooms: [
       %RoomConfig{
-        timestep_clock: %TimestepClockConfig{
+        server: %ServerConfig{
           timestep_us: nil,
-          tick_in_timesteps: nil
-        },
-        musicians: [
-          %MusicianConfig{
-            loop: %Loop{
-              length: nil,
-              start_timestep: nil,
-              timestep_slices: [
-                %TimestepSlice{
-                  notes: [
-                    %Note{
-                      duration: nil,
-                      instrument: nil,
-                      key: nil
-                    }
-                  ],
-                  timestep: nil
-                }
-              ]
+          musicians: [
+            %Musician{
+              musician_id: nil,
+              loop: %Loop{
+                length: nil,
+                start_timestep: nil,
+                timestep_slices: [
+                  %TimestepSlice{
+                    notes: [
+                      %Note{
+                        duration: nil,
+                        instrument: nil,
+                        key: nil
+                      }
+                    ],
+                    timestep: nil
+                  }
+                ]
+              }
             }
-          }
-        ]
+          ]
+        }
       }
     ]
   }
 
+  @spec parse_config(Path.t()) :: %ProgressionsConfig{}
   @doc """
   Parses the provided JSON file into the expected configuration
   """
-  @spec parse_config(Path.t()) :: %ProgressionsConfig{}
   def parse_config(cfg) do
     with {:ok, body} <- File.read(cfg),
          {:ok, json} <- Poison.decode(body, as: @config_schema),

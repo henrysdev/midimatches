@@ -9,13 +9,9 @@ defmodule Progressions.Types.Configs.RoomConfig do
 
   use TypedStruct
 
-  alias Progressions.Types.{
-    Configs.MusicianConfig,
-    Configs.TimestepClockConfig
-  }
+  alias Progressions.Types.Configs.ServerConfig
 
   typedstruct do
-    field(:timestep_clock, %TimestepClockConfig{}, default: %TimestepClockConfig{})
-    field(:musicians, list(%MusicianConfig{}), default: [%MusicianConfig{}])
+    field(:server, %ServerConfig{}, default: %ServerConfig{})
   end
 end

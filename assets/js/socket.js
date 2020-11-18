@@ -57,21 +57,39 @@ socket.connect()
 let path              = window.location.pathname.split('/')
 let room_id           = path[path.length -1]
 let channel           = socket.channel(`room:${room_id}`);
-let chatInput         = document.querySelector("#chat-input")
-let messagesContainer = document.querySelector("#messages")
+let textInput         = document.querySelector("#chat-input")
 
 // Send message events
-chatInput.addEventListener("keypress", event => {
+textInput.addEventListener("keypress", event => {
+  const loop = {
+    start_timestep: 2,
+    length: 8,
+    timestep_slices: [
+      {
+        timestep: 0,
+        notes: [
+          {
+            instrument: textInput.value,
+            key: 11,
+            duration: 4,
+          }
+        ]
+      }
+    ]
+  };
   if(event.key === 'Enter'){
-    channel.push("play_note", {body: chatInput.value})
-    chatInput.value = ""
+    console.log("SEND update_musician_loop", loop)
+    channel.push("update_musician_loop", {
+      loop: JSON.stringify(loop)
+    });
+    textInput.value = "";
   }
 })
 
 // Receive message events
-channel.on("timesteps", payload => {
-  console.log('PAYLOAD', payload);
-})
+channel.on("broadcast_updated_musician_loop", payload => {
+  console.log('RECV broadcast_updated_musician_loop', payload);
+});
 
 channel.join()
   .receive("ok", resp => { console.log("Joined successfully", resp) })

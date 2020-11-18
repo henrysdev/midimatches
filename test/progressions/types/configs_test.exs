@@ -3,11 +3,11 @@ defmodule Progressions.Types.ConfigsTest do
 
   alias Progressions.Types.{
     Configs,
-    Configs.MusicianConfig,
     Configs.ProgressionsConfig,
     Configs.RoomConfig,
-    Configs.TimestepClockConfig,
+    Configs.ServerConfig,
     Loop,
+    Musician,
     Note,
     TimestepSlice
   }
@@ -24,60 +24,61 @@ defmodule Progressions.Types.ConfigsTest do
       json_content = """
       {
         "rooms": [
-            {
-                "timestep_clock": {
-                  "timestep_us": 50000,
-                  "tick_in_timesteps": 4
-                },
-                "musicians": [
-                    {
-                        "loop": {
-                            "start_timestep": 0,
-                            "length": 8,
-                            "timestep_slices": [
+          {
+            "server": {
+              "timestep_us": 50000,
+              "musicians": [
+                {
+                    "musician_id": "1foo",
+                    "loop": {
+                        "start_timestep": 0,
+                        "length": 8,
+                        "timestep_slices": [
+                          {
+                            "timestep": 0,
+                            "notes": [
                               {
-                                "timestep": 0,
-                                "notes": [
-                                  {
-                                    "instrument": "kick",
-                                    "key": 11,
-                                    "duration": 1
-                                  }
-                                ]
+                                "instrument": "kick",
+                                "key": 11,
+                                "duration": 1
                               }
                             ]
                           }
-                    },
-                    {
-                        "loop": {
-                            "start_timestep": 8,
-                            "length": 8,
-                            "timestep_slices": [
-                              {
-                                "timestep": 0,
-                                "notes": [
-                                  {
-                                    "instrument": "epiano",
-                                    "key": 22,
-                                    "duration": 1
-                                  }
-                                ]
-                              },
-                              {
-                                "timestep": 0,
-                                "notes": [
-                                  {
-                                    "instrument": "epiano",
-                                    "key": 24,
-                                    "duration": 1
-                                  }
-                                ]
-                              }
-                            ]
+                        ]
+                      }
+                },
+                {
+                  "musician_id": "2foo",
+                  "loop": {
+                      "start_timestep": 8,
+                      "length": 8,
+                      "timestep_slices": [
+                        {
+                          "timestep": 0,
+                          "notes": [
+                            {
+                              "instrument": "epiano",
+                              "key": 22,
+                              "duration": 1
+                            }
+                          ]
+                        },
+                        {
+                          "timestep": 0,
+                          "notes": [
+                            {
+                              "instrument": "epiano",
+                              "key": 24,
+                              "duration": 1
+                            }
+                          ]
                         }
-                    }
-                ]
-            }
+                      ]
+                  }
+                }
+            ]
+        }
+          }
         ]
       }
       """
@@ -85,40 +86,41 @@ defmodule Progressions.Types.ConfigsTest do
       expected = %ProgressionsConfig{
         rooms: [
           %RoomConfig{
-            timestep_clock: %TimestepClockConfig{
+            server: %ServerConfig{
               timestep_us: 50_000,
-              tick_in_timesteps: 4
-            },
-            musicians: [
-              %MusicianConfig{
-                loop: %Loop{
-                  length: 8,
-                  start_timestep: 0,
-                  timestep_slices: [
-                    %TimestepSlice{
-                      notes: [%Note{duration: 1, instrument: "kick", key: 11}],
-                      timestep: 0
-                    }
-                  ]
+              musicians: [
+                %Musician{
+                  musician_id: "1foo",
+                  loop: %Loop{
+                    length: 8,
+                    start_timestep: 0,
+                    timestep_slices: [
+                      %TimestepSlice{
+                        notes: [%Note{duration: 1, instrument: "kick", key: 11}],
+                        timestep: 0
+                      }
+                    ]
+                  }
+                },
+                %Musician{
+                  musician_id: "2foo",
+                  loop: %Loop{
+                    length: 8,
+                    start_timestep: 8,
+                    timestep_slices: [
+                      %TimestepSlice{
+                        notes: [%Note{duration: 1, instrument: "epiano", key: 22}],
+                        timestep: 0
+                      },
+                      %TimestepSlice{
+                        notes: [%Note{duration: 1, instrument: "epiano", key: 24}],
+                        timestep: 0
+                      }
+                    ]
+                  }
                 }
-              },
-              %MusicianConfig{
-                loop: %Loop{
-                  length: 8,
-                  start_timestep: 8,
-                  timestep_slices: [
-                    %TimestepSlice{
-                      notes: [%Note{duration: 1, instrument: "epiano", key: 22}],
-                      timestep: 0
-                    },
-                    %TimestepSlice{
-                      notes: [%Note{duration: 1, instrument: "epiano", key: 24}],
-                      timestep: 0
-                    }
-                  ]
-                }
-              }
-            ]
+              ]
+            }
           }
         ]
       }

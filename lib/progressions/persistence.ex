@@ -27,9 +27,23 @@ defmodule Progressions.Persistence do
     GenServer.call(__MODULE__, :next_serial)
   end
 
+  @spec peek_next_serial_id() :: id()
+  @doc """
+  Peeks and returns the next available serial id without generating it
+  """
+  def peek_next_serial_id do
+    GenServer.call(__MODULE__, :peek_next_serial)
+  end
+
   @spec handle_call(:next_serial, {pid(), any()}, integer()) :: {:reply, id(), integer()}
   @impl true
   def handle_call(:next_serial, _from, serial) do
     {:reply, Integer.to_string(serial), serial + 1}
+  end
+
+  @spec handle_call(:peek_next_serial, {pid(), any()}, integer()) :: {:reply, id(), integer()}
+  @impl true
+  def handle_call(:peek_next_serial, _from, serial) do
+    {:reply, Integer.to_string(serial), serial}
   end
 end

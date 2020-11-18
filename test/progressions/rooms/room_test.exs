@@ -4,59 +4,11 @@ defmodule Progressions.RoomTest do
   alias Progressions.{
     Pids,
     Rooms.Room,
-    Rooms.Room.Musicians,
-    Rooms.Room.Musicians.Musician,
     Rooms.Room.Server,
-    Rooms.Room.TimestepClock,
-    Telemetry.EventLog,
     TestHelpers,
     Types.Configs.RoomConfig,
-    Types.Configs.TimestepClockConfig,
     Types.Loop,
-    Types.Note,
-    Types.TimestepSlice
-  }
-
-  @loop %Loop{
-    start_timestep: 8,
-    length: 8,
-    timestep_slices: [
-      %TimestepSlice{
-        timestep: 0,
-        notes: [
-          %Note{
-            instrument: "epiano",
-            key: 11,
-            duration: 1
-          },
-          %Note{
-            instrument: "epiano",
-            key: 14,
-            duration: 1
-          }
-        ]
-      },
-      %TimestepSlice{
-        timestep: 3,
-        notes: [
-          %Note{
-            instrument: "epiano",
-            key: 11,
-            duration: 1
-          }
-        ]
-      },
-      %TimestepSlice{
-        timestep: 7,
-        notes: [
-          %Note{
-            instrument: "tuba",
-            key: 42,
-            duration: 1
-          }
-        ]
-      }
-    ]
+    Types.Musician
   }
 
   setup do
@@ -64,90 +16,84 @@ defmodule Progressions.RoomTest do
     on_exit(fn -> TestHelpers.teardown_rooms() end)
   end
 
-  describe "room tree works as expected" do
-    test "sets up supervision tree" do
-      room_id = "1"
+  test "sets up supervision tree" do
+    room_id = "1"
 
-      {:ok, sup} = start_supervised({Room, [room_id]})
+    {:ok, sup} = start_supervised({Room, [{room_id}]})
 
-      started_children = Supervisor.which_children(sup) |> Enum.reverse()
+    started_children = Supervisor.which_children(sup) |> Enum.reverse()
 
-      assert [
-               {Server, _, :worker, [Server]},
-               {Musicians, _, :supervisor, [Musicians]},
-               {TimestepClock, _, :worker, [TimestepClock]}
-               | _task
-             ] = started_children
-    end
-
-    test "simulates a simple room session" do
-      room_id = "1"
-
-      config = %RoomConfig{
-        timestep_clock: %TimestepClockConfig{
-          timestep_us: 50_000,
-          tick_in_timesteps: 4
-        },
-        musicians: []
-      }
-
-      timestep_slices = @loop.timestep_slices
-
-      {:ok, _room} = start_supervised({Room, [room_id, config]})
-      musicians_pid = Pids.fetch!({:musicians, room_id})
-      1..2 |> Enum.each(&add_another_musician(musicians_pid, @loop, room_id, &1))
-      :timer.sleep(2000)
-      event_log = EventLog.get_room_log(room_id) |> Enum.take(10)
-
-      assert timestep_slices == @loop.timestep_slices
-
-      assert [
-               %{
-                 timestamp: _,
-                 event: %Progressions.Types.Events.ClockTimestep{timestep: 0}
-               },
-               %{
-                 timestamp: _,
-                 event: %Progressions.Types.Events.TickBroadcast{timestep_slices: []}
-               },
-               %{
-                 timestamp: _,
-                 event: %Progressions.Types.Events.ClockTimestep{timestep: 1}
-               },
-               %{
-                 timestamp: _,
-                 event: %Progressions.Types.Events.ClockTimestep{timestep: 2}
-               },
-               %{
-                 timestamp: _,
-                 event: %Progressions.Types.Events.ClockTimestep{timestep: 3}
-               },
-               %{
-                 timestamp: _,
-                 event: %Progressions.Types.Events.ClockTimestep{timestep: 4}
-               },
-               %{
-                 timestamp: _,
-                 event: %Progressions.Types.Events.TickBroadcast{timestep_slices: timestep_slices}
-               },
-               %{
-                 timestamp: _,
-                 event: %Progressions.Types.Events.ClockTimestep{timestep: 5}
-               },
-               %{
-                 timestamp: _,
-                 event: %Progressions.Types.Events.ClockTimestep{timestep: 6}
-               },
-               %{
-                 timestamp: _,
-                 event: %Progressions.Types.Events.ClockTimestep{timestep: 7}
-               }
-             ] = event_log
-    end
+    assert [{Server, _, :worker, [Server]}] = started_children
   end
 
-  defp add_another_musician(musicians_pid, loop, room_id, musician_id) do
-    {:ok, musician_1} = Musicians.add_musician(musicians_pid, musician_id, room_id)
-    Musician.new_loop(musician_1, loop)
+  test "simulates a simple room session" do
+    room_id = "1"
+    room_topic = "room:#{room_id}"
+
+    config = %RoomConfig{
+      server: %{
+        timestep_us: 50_000,
+        musicians: []
+      }
+    }
+
+    default_loop = %Loop{
+      length: 12,
+      start_timestep: 2,
+      timestep_slices: []
+    }
+
+    new_loop = %Loop{
+      start_timestep: 1,
+      length: 99,
+      timestep_slices: []
+    }
+
+    {:ok, _room} = start_supervised({Room, [{room_id, config}]})
+    server = Pids.fetch!({:server, room_id})
+
+    Server.add_musician(server, %Musician{
+      musician_id: "mid1",
+      loop: default_loop
+    })
+
+    Server.add_musician(server, %Musician{
+      musician_id: "mid2",
+      loop: default_loop
+    })
+
+    Server.update_musician_loop(server, "mid2", new_loop)
+
+    expected_payload = %Phoenix.Socket.Broadcast{
+      topic: room_topic,
+      event: "broadcast_updated_musician_loop",
+      payload: %{
+        "musician_id" => "mid2",
+        "loop" => new_loop
+      }
+    }
+
+    ProgressionsWeb.Endpoint.subscribe(room_topic)
+
+    assert_receive ^expected_payload
+    ProgressionsWeb.Endpoint.unsubscribe(room_topic)
+
+    state = :sys.get_state(server)
+
+    assert %Progressions.Rooms.Room.Server{
+             musicians: %{
+               "mid1" => %Progressions.Types.Musician{
+                 loop: default_loop,
+                 musician_id: "mid1"
+               },
+               "mid2" => %Progressions.Types.Musician{
+                 loop: new_loop,
+                 musician_id: "mid2"
+               }
+             },
+             room_id: "1",
+             room_start_utc: _,
+             timestep_us: 50_000
+           } = state
   end
 end

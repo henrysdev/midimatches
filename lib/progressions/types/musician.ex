@@ -1,4 +1,4 @@
-defmodule Progressions.Types.Configs.MusicianConfig do
+defmodule Progressions.Types.Musician do
   @moduledoc """
   Configurable fields for a new instance of a Musician in a room
   """
@@ -8,6 +8,8 @@ defmodule Progressions.Types.Configs.MusicianConfig do
   alias Progressions.Types.Loop
 
   typedstruct do
+    field(:musician_id, enforce: true)
+
     field(:loop, %Loop{},
       default: %Loop{
         start_timestep: 0,

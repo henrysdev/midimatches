@@ -3,11 +3,7 @@
   <p>Peace of mind from prototype to production</p>
 </section>
 
-<button id="play" disabled>Play A Sound</button>
-
 <section class="row">
-  <div id="messages" role="log" aria-live="polite"></div>
-  <input id="chat-input" type="text" />
   <article class="column">
     <h2>Resources</h2>
     <ul>

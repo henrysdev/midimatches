@@ -49,8 +49,6 @@ defmodule Progressions.RoomsTest do
     assert length(Rooms.list_rooms()) == length(room_ids)
     assert Pids.fetch({:room, "2"}) != nil
     assert Pids.fetch({:server, "2"}) != nil
-    assert Pids.fetch({:timestep_clock, "2"}) != nil
-    assert Pids.fetch({:musicians, "2"}) != nil
 
     Rooms.drop_room("2")
 
@@ -59,8 +57,6 @@ defmodule Progressions.RoomsTest do
 
     assert Pids.fetch({:room, "2"}) == nil
     assert Pids.fetch({:server, "2"}) == nil
-    assert Pids.fetch({:timestep_clock, "2"}) == nil
-    assert Pids.fetch({:musicians, "2"}) == nil
     assert length(Rooms.list_rooms()) == length(room_ids) - 1
   end
 end

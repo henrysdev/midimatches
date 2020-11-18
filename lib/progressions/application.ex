@@ -18,9 +18,8 @@ defmodule Progressions.Application do
       # Start a worker by calling: Progressions.Worker.start_link(arg)
       {DynamicSupervisor, strategy: :one_for_one, name: Progressions.Rooms},
       {Registry, keys: :unique, name: ProcessRegistry},
-      Progressions.Telemetry.EventLog,
       Progressions.Persistence,
-      {Task, fn -> configure_rooms() end}
+      {Task, fn -> configure() end}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
@@ -36,8 +35,8 @@ defmodule Progressions.Application do
     :ok
   end
 
-  @spec configure_rooms :: :ok
-  def configure_rooms do
+  @spec configure :: :ok
+  def configure do
     :progressions
     |> Application.fetch_env!(:rooms_config)
     |> Configs.parse_config()

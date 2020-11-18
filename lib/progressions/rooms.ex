@@ -13,6 +13,7 @@ defmodule Progressions.Rooms do
 
   @type id() :: String.t()
 
+  @spec start_link(any) :: :ignore | {:error, any} | {:ok, pid}
   def start_link(init_arg) do
     DynamicSupervisor.start_link(__MODULE__, init_arg, name: __MODULE__)
   end
@@ -22,30 +23,30 @@ defmodule Progressions.Rooms do
     DynamicSupervisor.init(strategy: :one_for_one)
   end
 
+  @spec room_exists?(id()) :: boolean()
   @doc """
   Check if a room process exists for the given id
   """
-  @spec room_exists?(id()) :: boolean()
   def room_exists?(room_id) do
     Pids.fetch({:room, room_id}) != nil
   end
 
+  @spec add_room(id()) :: {atom(), pid() | String.t()}
   @doc """
   Start a room under supervision.
   """
-  @spec add_room(id()) :: {atom(), pid() | String.t()}
   def add_room(room_id) do
     if room_exists?(room_id) do
       {:error, "room already exists for room_id #{room_id}"}
     else
-      DynamicSupervisor.start_child(__MODULE__, {Room, [room_id]})
+      DynamicSupervisor.start_child(__MODULE__, {Room, [{room_id}]})
     end
   end
 
+  @spec drop_room(id()) :: {atom(), pid() | String.t()}
   @doc """
   Drop room from supervision tree
   """
-  @spec drop_room(id()) :: {atom(), pid() | String.t()}
   def drop_room(room_id) do
     room = Pids.fetch({:room, room_id})
 
@@ -56,26 +57,24 @@ defmodule Progressions.Rooms do
     end
   end
 
+  @spec list_rooms() :: list()
   @doc """
   List current rooms
   """
-  @spec list_rooms() :: list()
   def list_rooms do
     DynamicSupervisor.which_children(__MODULE__)
   end
 
+  @spec configure_rooms(list(%RoomConfig{})) :: :ok
   @doc """
   Start child room processes with given configurations. Only to be called when starting a room
   from a configuration
   """
-  @spec configure_rooms(list(%RoomConfig{})) :: :ok
   def configure_rooms(room_configs) do
     room_configs
-    |> Enum.each(
-      &DynamicSupervisor.start_child(
-        __MODULE__,
-        {Room, [Persistence.gen_serial_id(), &1]}
-      )
-    )
+    |> Enum.each(fn cfg ->
+      room_id = Persistence.gen_serial_id()
+      DynamicSupervisor.start_child(__MODULE__, {Room, [{room_id, cfg}]})
+    end)
   end
 end
