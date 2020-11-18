@@ -12,6 +12,6 @@ defmodule Progressions.Types.Configs.RoomConfig do
   alias Progressions.Types.Configs.ServerConfig
 
   typedstruct do
-    field(:loop_server, %ServerConfig{}, default: %ServerConfig{})
+    field(:server, %ServerConfig{}, default: %ServerConfig{})
   end
 end

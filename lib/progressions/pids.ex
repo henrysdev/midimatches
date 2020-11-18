@@ -3,7 +3,9 @@ defmodule Progressions.Pids do
   Provides convenience functions for interacting with process registry layer
   """
 
-  @proc_types [:room, :loop_server]
+  require Logger
+
+  @proc_types [:room, :server]
 
   @type registry_resp() :: {:ok, pid()} | {:error, String.t() | tuple()}
   @type id() :: String.t()
@@ -14,6 +16,7 @@ defmodule Progressions.Pids do
   Registers a pid by a tuple key
   """
   def register({proc_type, identifiers}, pid) when proc_type in @proc_types do
+    Logger.info({:registering_process, {proc_type, identifiers}})
     Registry.register(ProcessRegistry, {proc_type, identifiers}, pid)
   end
 

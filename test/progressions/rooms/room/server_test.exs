@@ -64,16 +64,16 @@ defmodule Progressions.ServerTest do
 
     expected_payload = %Phoenix.Socket.Broadcast{
       topic: room_topic,
-      event: "update_musician_loop",
+      event: "broadcast_updated_musician_loop",
       payload: %{
         "musician_id" => musician_id,
         "loop" => loop
       }
     }
 
-    {:ok, loop_server} = Server.start_link([room_id])
+    {:ok, server} = Server.start_link([room_id])
 
-    Server.update_musician_loop(loop_server, musician_id, loop)
+    Server.update_musician_loop(server, musician_id, loop)
     ProgressionsWeb.Endpoint.subscribe(room_topic)
 
     assert_receive ^expected_payload

@@ -25,7 +25,7 @@ defmodule Progressions.Types.ConfigsTest do
       {
         "rooms": [
           {
-            "loop_server": {
+            "server": {
               "timestep_us": 50000,
               "musicians": [
                 {
@@ -86,7 +86,7 @@ defmodule Progressions.Types.ConfigsTest do
       expected = %ProgressionsConfig{
         rooms: [
           %RoomConfig{
-            loop_server: %ServerConfig{
+            server: %ServerConfig{
               timestep_us: 50_000,
               musicians: [
                 %Musician{

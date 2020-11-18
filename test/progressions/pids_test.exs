@@ -27,7 +27,7 @@ defmodule Progressions.PidsTest do
 
   test "only accepts supported process types and id formats" do
     results =
-      [:room, :loop_server]
+      [:room, :server]
       |> Enum.map(fn a -> {a, "1"} end)
       |> Enum.map(&Pids.register(&1, spawn(fn -> nil end)))
 

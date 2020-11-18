@@ -17,7 +17,7 @@ defmodule Progressions.Types.Configs do
   @config_schema %ProgressionsConfig{
     rooms: [
       %RoomConfig{
-        loop_server: %ServerConfig{
+        server: %ServerConfig{
           timestep_us: nil,
           musicians: [
             %Musician{

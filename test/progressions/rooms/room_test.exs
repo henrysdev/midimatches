@@ -19,7 +19,7 @@ defmodule Progressions.RoomTest do
   test "sets up supervision tree" do
     room_id = "1"
 
-    {:ok, sup} = start_supervised({Room, [room_id]})
+    {:ok, sup} = start_supervised({Room, [{room_id}]})
 
     started_children = Supervisor.which_children(sup) |> Enum.reverse()
 
@@ -31,7 +31,7 @@ defmodule Progressions.RoomTest do
     room_topic = "room:#{room_id}"
 
     config = %RoomConfig{
-      loop_server: %{
+      server: %{
         timestep_us: 50_000,
         musicians: []
       }
@@ -49,24 +49,24 @@ defmodule Progressions.RoomTest do
       timestep_slices: []
     }
 
-    {:ok, _room} = start_supervised({Room, [room_id, config]})
-    loop_server = Pids.fetch!({:loop_server, room_id})
+    {:ok, _room} = start_supervised({Room, [{room_id, config}]})
+    server = Pids.fetch!({:server, room_id})
 
-    Server.add_musician(loop_server, %Musician{
+    Server.add_musician(server, %Musician{
       musician_id: "mid1",
       loop: default_loop
     })
 
-    Server.add_musician(loop_server, %Musician{
+    Server.add_musician(server, %Musician{
       musician_id: "mid2",
       loop: default_loop
     })
 
-    Server.update_musician_loop(loop_server, "mid2", new_loop)
+    Server.update_musician_loop(server, "mid2", new_loop)
 
     expected_payload = %Phoenix.Socket.Broadcast{
       topic: room_topic,
-      event: "update_musician_loop",
+      event: "broadcast_updated_musician_loop",
       payload: %{
         "musician_id" => "mid2",
         "loop" => new_loop
@@ -78,7 +78,7 @@ defmodule Progressions.RoomTest do
     assert_receive ^expected_payload
     ProgressionsWeb.Endpoint.unsubscribe(room_topic)
 
-    state = :sys.get_state(loop_server)
+    state = :sys.get_state(server)
 
     assert %Progressions.Rooms.Room.Server{
              musicians: %{

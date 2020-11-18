@@ -10,18 +10,43 @@ defmodule ProgressionsWeb.RoomChannel do
     Pids,
     Rooms,
     Rooms.Room.Server,
-    Types.Musician
+    Types.Loop,
+    Types.Musician,
+    Types.Note,
+    Types.TimestepSlice
+  }
+
+  # TODO move to type decode helper
+  @loop_schema %Loop{
+    length: nil,
+    start_timestep: nil,
+    timestep_slices: [
+      %TimestepSlice{
+        notes: [
+          %Note{
+            duration: nil,
+            instrument: nil,
+            key: nil
+          }
+        ],
+        timestep: nil
+      }
+    ]
   }
 
   def join("room:" <> room_id, _params, socket) do
     if Rooms.room_exists?(room_id) do
-      loop_server = Pids.fetch!({:loop_server, room_id})
+      room_server = Pids.fetch!({:server, room_id})
+      musician_id = Persistence.gen_serial_id()
 
-      Server.add_musician(loop_server, %Musician{
-        musician_id: Persistence.gen_serial_id()
+      Server.add_musician(room_server, %Musician{
+        musician_id: musician_id
       })
 
-      {:ok, socket}
+      {:ok,
+       socket
+       |> assign(room_server: room_server)
+       |> assign(musician_id: musician_id)}
     else
       {:error, "room #{room_id} does not exist"}
     end
@@ -29,12 +54,12 @@ defmodule ProgressionsWeb.RoomChannel do
 
   def handle_in(
         "update_musician_loop",
-        %{"body" => _body},
-        %Phoenix.Socket{topic: topic} = socket
+        %{"loop" => loop_json},
+        %Phoenix.Socket{assigns: %{room_server: room_server, musician_id: musician_id}} = socket
       ) do
-    [_, _room_id] = String.split(topic, ":")
+    {:ok, loop} = Poison.decode(loop_json, as: @loop_schema)
 
-    # TODO send note play event
+    Server.update_musician_loop(room_server, musician_id, loop)
 
     {:noreply, socket}
   end

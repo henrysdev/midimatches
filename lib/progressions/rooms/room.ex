@@ -19,14 +19,14 @@ defmodule Progressions.Rooms.Room do
   def init(args) do
     {room_id, room_config} =
       case args do
-        [room_id] -> {room_id, %RoomConfig{}}
-        [room_id, room_config] -> {room_id, room_config}
+        [{room_id}] -> {room_id, %RoomConfig{}}
+        [{room_id, room_config}] -> {room_id, room_config}
       end
 
     Pids.register({:room, room_id}, self())
 
     children = [
-      {Server, [room_id, room_config.loop_server]}
+      {Server, [room_id, room_config.server]}
     ]
 
     Supervisor.init(children, strategy: :rest_for_one)

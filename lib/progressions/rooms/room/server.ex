@@ -31,17 +31,17 @@ defmodule Progressions.Rooms.Room.Server do
   @impl true
   @spec init(any) :: {:ok, %__MODULE__{}}
   def init(args) do
-    {room_id, loop_server_config} =
+    {room_id, server_config} =
       case args do
         [room_id] -> {room_id, %ServerConfig{}}
-        [room_id, loop_server_config] -> {room_id, loop_server_config}
+        [room_id, server_config] -> {room_id, server_config}
       end
 
-    Pids.register({:loop_server, room_id}, self())
+    Pids.register({:server, room_id}, self())
 
     # configure musicians map
     musicians_map =
-      loop_server_config.musicians
+      server_config.musicians
       |> Enum.reduce(%{}, fn %Musician{} = elem, acc ->
         Map.put(acc, elem.musician_id, elem)
       end)
@@ -50,7 +50,7 @@ defmodule Progressions.Rooms.Room.Server do
      %__MODULE__{
        room_id: room_id,
        room_start_utc: :os.system_time(:microsecond),
-       timestep_us: loop_server_config.timestep_us,
+       timestep_us: server_config.timestep_us,
        musicians: musicians_map
      }}
   end
@@ -118,7 +118,7 @@ defmodule Progressions.Rooms.Room.Server do
     deadline_timestep = Utils.calc_deadline(current_timestep, loop_start_timestep, loop_length)
 
     # broadcast to all clients
-    ProgressionsWeb.Endpoint.broadcast("room:#{room_id}", "update_musician_loop", %{
+    ProgressionsWeb.Endpoint.broadcast("room:#{room_id}", "broadcast_updated_musician_loop", %{
       "musician_id" => musician_id,
       "loop" => %Loop{loop | start_timestep: deadline_timestep}
     })
