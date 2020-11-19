@@ -8,7 +8,7 @@
 // from the params if you are not using authentication.
 import {Socket} from "phoenix"
 
-let socket = new Socket("/socket", {params: {token: window.userToken}})
+let socket = new Socket("/socket", {params: {token: window.userToken}});
 
 // When you connect, you'll often need to authenticate the client.
 // For example, imagine you have an authentication plug, `MyAuth`,
@@ -60,31 +60,36 @@ let channel           = socket.channel(`room:${room_id}`);
 let textInput         = document.querySelector("#chat-input")
 
 // Send message events
-textInput.addEventListener("keypress", event => {
-  const loop = {
-    start_timestep: 2,
-    length: 8,
-    timestep_slices: [
-      {
-        timestep: 0,
-        notes: [
-          {
-            instrument: textInput.value,
-            key: 11,
-            duration: 4,
-          }
-        ]
+if (!!textInput && !!textInput.value) {
+  textInput.addEventListener("keypress", (event) => {
+    const loop = {
+      start_timestep: 2,
+      length: 8,
+      timestep_slices: [
+        {
+          timestep: 0,
+          notes: [
+            {
+              instrument: !!textInput ? textInput.value : 'DEFAULT',
+              key: 11,
+              duration: 4,
+            }
+          ]
+        }
+      ]
+    };
+    if(event.key === 'Enter'){
+      console.log("SEND update_musician_loop", loop)
+      channel.push("update_musician_loop", {
+        loop: JSON.stringify(loop)
+      });
+      if (!!textInput && !!textInput.value) {
+        textInput.value = "";
       }
-    ]
-  };
-  if(event.key === 'Enter'){
-    console.log("SEND update_musician_loop", loop)
-    channel.push("update_musician_loop", {
-      loop: JSON.stringify(loop)
-    });
-    textInput.value = "";
-  }
-})
+    }
+  });
+}
+
 
 // Receive message events
 channel.on("broadcast_updated_musician_loop", payload => {
@@ -92,7 +97,7 @@ channel.on("broadcast_updated_musician_loop", payload => {
 });
 
 channel.join()
-  .receive("ok", resp => { console.log("Joined successfully", resp) })
-  .receive("error", resp => { console.log("Unable to join", resp) })
+  .receive("ok", resp => { console.log("Joined successfully", resp)})
+  .receive("error", resp => { console.log("Unable to join", resp)});
 
 export default socket
