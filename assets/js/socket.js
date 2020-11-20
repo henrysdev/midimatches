@@ -6,7 +6,7 @@
 //
 // Pass the token on params as below. Or remove it
 // from the params if you are not using authentication.
-import {Socket} from "phoenix"
+import { Socket } from "phoenix"
 
 let socket = new Socket("/socket", {params: {token: window.userToken}});
 
@@ -60,35 +60,33 @@ let channel           = socket.channel(`room:${room_id}`);
 let textInput         = document.querySelector("#chat-input")
 
 // Send message events
-if (!!textInput && !!textInput.value) {
-  textInput.addEventListener("keypress", (event) => {
-    const loop = {
-      start_timestep: 2,
-      length: 8,
-      timestep_slices: [
-        {
-          timestep: 0,
-          notes: [
-            {
-              instrument: !!textInput ? textInput.value : 'DEFAULT',
-              key: 11,
-              duration: 4,
-            }
-          ]
-        }
-      ]
-    };
-    if(event.key === 'Enter'){
-      console.log("SEND update_musician_loop", loop)
-      channel.push("update_musician_loop", {
-        loop: JSON.stringify(loop)
-      });
-      if (!!textInput && !!textInput.value) {
-        textInput.value = "";
+textInput.addEventListener("keypress", (event) => {
+  const loop = {
+    start_timestep: 2,
+    length: 8,
+    timestep_slices: [
+      {
+        timestep: 0,
+        notes: [
+          {
+            instrument: !!textInput ? textInput.value : 'DEFAULT',
+            key: 11,
+            duration: 4,
+          }
+        ]
       }
+    ]
+  };
+  if(event.key === 'Enter'){
+    console.log("SEND update_musician_loop", loop)
+    channel.push("update_musician_loop", {
+      loop: JSON.stringify(loop)
+    });
+    if (!!textInput && !!textInput.value) {
+      textInput.value = "";
     }
-  });
-}
+  }
+});
 
 
 // Receive message events

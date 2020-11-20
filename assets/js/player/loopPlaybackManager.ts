@@ -1,13 +1,22 @@
 import { Loop, Note, TimestepSlice, Musician } from "../types";
 import * as _ from "lodash";
 
-
-export class LoopTimestepQueue {
+/**
+ * LoopPlaybackManager is responsible for maintaining the state and behavior of loop playback
+ */
+export class LoopPlaybackManager {
+  // temporary buffer for actions to be executed on the next timestep event
   actionsQueue: Function[];
+  // mapping of musicians in room keyed by musicianId
   musiciansMap: {[key:string]: Musician};
+  // ordered list of timestep slices waiting to be scheduled for playback
   orderedTimestepSlices: TimestepSlice[];
+  // mapping of loop identifiers (musicianIds) keyed by the timestep at which the playing loop
+  // should be restarted
   loopRestartDeadlines: {[key:number]: string[]};
+  // mapping of loops keyed by their loop identifiers (musicianIds)
   liveLoopMap: {[key:string]: Loop};
+
   constructor() {
     this.actionsQueue = [];
     this.musiciansMap = {};
@@ -73,7 +82,6 @@ export class LoopTimestepQueue {
 
     // adjust position to be correct timestep for each timestep
     liveLoop.timestep_slices = origLoop.timestep_slices.map((timestepSlice) => {
-      // TODO cleaner way to copy and just change one field?
       return {
         timestep: timestepSlice.timestep + liveLoop.start_timestep,
         notes: timestepSlice.notes
