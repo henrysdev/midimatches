@@ -6,9 +6,9 @@
 //
 // Pass the token on params as below. Or remove it
 // from the params if you are not using authentication.
-import {Socket} from "phoenix"
+import { Socket } from "phoenix"
 
-let socket = new Socket("/socket", {params: {token: window.userToken}})
+let socket = new Socket("/socket", {params: {token: window.userToken}});
 
 // When you connect, you'll often need to authenticate the client.
 // For example, imagine you have an authentication plug, `MyAuth`,
@@ -60,7 +60,7 @@ let channel           = socket.channel(`room:${room_id}`);
 let textInput         = document.querySelector("#chat-input")
 
 // Send message events
-textInput.addEventListener("keypress", event => {
+textInput.addEventListener("keypress", (event) => {
   const loop = {
     start_timestep: 2,
     length: 8,
@@ -69,7 +69,7 @@ textInput.addEventListener("keypress", event => {
         timestep: 0,
         notes: [
           {
-            instrument: textInput.value,
+            instrument: !!textInput ? textInput.value : 'DEFAULT',
             key: 11,
             duration: 4,
           }
@@ -82,9 +82,12 @@ textInput.addEventListener("keypress", event => {
     channel.push("update_musician_loop", {
       loop: JSON.stringify(loop)
     });
-    textInput.value = "";
+    if (!!textInput && !!textInput.value) {
+      textInput.value = "";
+    }
   }
-})
+});
+
 
 // Receive message events
 channel.on("broadcast_updated_musician_loop", payload => {
@@ -92,7 +95,7 @@ channel.on("broadcast_updated_musician_loop", payload => {
 });
 
 channel.join()
-  .receive("ok", resp => { console.log("Joined successfully", resp) })
-  .receive("error", resp => { console.log("Unable to join", resp) })
+  .receive("ok", resp => { console.log("Joined successfully", resp)})
+  .receive("error", resp => { console.log("Unable to join", resp)});
 
 export default socket

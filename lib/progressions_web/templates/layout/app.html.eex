@@ -7,7 +7,7 @@
     <title>Progressions · Phoenix Framework</title>
     <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
     <script defer type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
-    <script defer type="text/javascript" src="<%= Routes.static_path(@conn, "/js/worker.js") %>"></script>
+    <script defer type="text/javascript" src="<%= Routes.static_path(@conn, "/js/clockWorker.js") %>"></script>
   </head>
   <body>
     <button id="play">Play A Sound</button>

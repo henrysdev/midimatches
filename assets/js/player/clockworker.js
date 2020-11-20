@@ -1,5 +1,5 @@
-var timerID;
-var interval=100;
+let timerID;
+let interval;
 
 self.onmessage=function(e) {
 	// If the "start" message is received, start a repeating timeout for the appropriate interval

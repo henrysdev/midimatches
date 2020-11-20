@@ -14,3 +14,8 @@ export interface Loop {
     length: number;
     timestep_slices: TimestepSlice[];
 }
+
+export interface Musician {
+    musician_id: string;
+    loop: Loop;
+}
