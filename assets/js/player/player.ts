@@ -1,4 +1,5 @@
-import { Loop, Note, TimestepSlice } from "../types";
+import { Loop, Note, TimestepSlice, Musician } from "../types";
+import { LoopPlaybackManager } from './loopplaybackmanager';
 
 var audioContext: AudioContext;
 var currentTimestep: number; // What note is currently last scheduled?
@@ -13,21 +14,21 @@ var noteResolution = 0;     // 0 == 16th, 1 == 8th, 2 == quarter note
 const noteLength = 0.09;    // length of "beep" (in seconds)
 var timerWorker: Worker;    // The Web Worker used to fire timer messages
 var soundBuffer: AudioBuffer;
+var loopPlaybackManager: LoopPlaybackManager;
 
-// DEBUG
-var note: Note = {
-  instrument: "basoon",
-  key: 10,
-  duration: 1
+// TODO DEBUG remove
+const mocks = require('./mocks.json');
+const defaultMusician: Musician = {
+  musician_id: "defaultMusicianId",
+  loop: mocks.defaultLoop
 }
-var timestepSlices: TimestepSlice = {
-  timestep: 0,
-  notes: [note]
+const anotherMusician: Musician = {
+  musician_id: "anotherMusicianId",
+  loop: mocks.shortLoop
 }
-var loop: Loop = {
-  start_timestep: 2,
-  length: 8,
-  timestep_slices: [timestepSlices]
+const thirdMusician: Musician = {
+  musician_id: "thirdMusicianId",
+  loop: mocks.longLoop
 }
 
 
@@ -62,6 +63,10 @@ function scheduleNote(beatNumber: number, time: number): void {
 
   // source.start(time);
   // source.stop(time + noteLength);
+
+  const dueTimestepSlices: TimestepSlice[] = loopPlaybackManager.getDueTimestepSlices(beatNumber);
+  console.log('TIMESTEP: ', beatNumber);
+  console.log('DUE TIMESTEPS: ', dueTimestepSlices);
 
   // create an oscillator
   var osc = audioContext.createOscillator();
@@ -104,6 +109,12 @@ function loadSound(soundURL: string) {
 
 function init(){
   audioContext = new AudioContext();
+  loopPlaybackManager = new LoopPlaybackManager();
+
+  // TODO debug remove
+  loopPlaybackManager.addMusician(defaultMusician);
+  loopPlaybackManager.addMusician(anotherMusician);
+  loopPlaybackManager.addMusician(thirdMusician);
 
   // TODO load all sounds
   loadSound('/sounds/blip.mp3');

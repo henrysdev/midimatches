@@ -1,4 +1,4 @@
-import { Loop, Note, TimestepSlice, Musician } from "../types";
+import { Loop, TimestepSlice, Musician } from "../types";
 import * as _ from "lodash";
 
 /**
