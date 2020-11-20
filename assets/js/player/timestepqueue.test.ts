@@ -1,99 +1,186 @@
 import { LoopTimestepQueue } from './timestepqueue';
 import { Loop, Musician, TimestepSlice } from '../types';
 
-const defaultLoop: Loop = {
-  start_timestep: 0,
-  length: 8,
-  timestep_slices: [
-    {
-      timestep: 0,
-      notes: [
-        {
-          instrument: 'bassoon',
-          key: 3,
-          duration: 1,
-        }
-      ]
-    },
-    {
-      timestep: 1,
-      notes: [
-        {
-          instrument: 'bassoon',
-          key: 4,
-          duration: 1,
-        }
-      ]
-    },
-    {
-      timestep: 2,
-      notes: [
-        {
-          instrument: 'bassoon',
-          key: 5,
-          duration: 3,
-        }
-      ]
-    },
-    {
-      timestep: 3,
-      notes: [
-        {
-          instrument: 'bassoon',
-          key: 5,
-          duration: 2,
-        }
-      ]
-    },
-    {
-      timestep: 4,
-      notes: [
-        {
-          instrument: 'bassoon',
-          key: 5,
-          duration: 1,
-        }
-      ]
-    },
-    {
-      timestep: 5,
-      notes: [
-        {
-          instrument: 'bassoon',
-          key: 5,
-          duration: 1,
-        }
-      ]
-    },
-    {
-      timestep: 6,
-      notes: [
-        {
-          instrument: 'bassoon',
-          key: 5,
-          duration: 1,
-        }
-      ]
-    }
-  ]
-}
 const defaultMusicianId = '1000'
+let defaultLoop: Loop;
 
-test('simulates playback queue', () => {
+beforeEach(() => {
+  defaultLoop = {
+    start_timestep: 0,
+    length: 8,
+    timestep_slices: [
+      {
+        timestep: 0,
+        notes: [
+          {
+            instrument: 'bassoon',
+            key: 3,
+            duration: 1,
+          }
+        ]
+      },
+      {
+        timestep: 1,
+        notes: [
+          {
+            instrument: 'bassoon',
+            key: 4,
+            duration: 1,
+          }
+        ]
+      },
+      {
+        timestep: 2,
+        notes: [
+          {
+            instrument: 'bassoon',
+            key: 5,
+            duration: 3,
+          }
+        ]
+      },
+      {
+        timestep: 3,
+        notes: [
+          {
+            instrument: 'bassoon',
+            key: 5,
+            duration: 2,
+          }
+        ]
+      },
+      {
+        timestep: 4,
+        notes: [
+          {
+            instrument: 'bassoon',
+            key: 5,
+            duration: 1,
+          }
+        ]
+      },
+      {
+        timestep: 5,
+        notes: [
+          {
+            instrument: 'bassoon',
+            key: 5,
+            duration: 1,
+          }
+        ]
+      },
+      {
+        timestep: 6,
+        notes: [
+          {
+            instrument: 'bassoon',
+            key: 5,
+            duration: 1,
+          }
+        ]
+      }
+    ]
+  };
+});
+
+test('simulates playback of one loop', () => {
+  const shortLoop: Loop = {
+    start_timestep: 0,
+    length: 4,
+    timestep_slices: [
+      {
+        timestep: 0,
+        notes: [
+          {
+            instrument: 'bassoon',
+            key: 5,
+            duration: 1,
+          }
+        ]
+      },
+      {
+        timestep: 1,
+        notes: [
+          {
+            instrument: 'bassoon',
+            key: 6,
+            duration: 1,
+          }
+        ]
+      }
+    ]
+  };
+
   const defaultMusician: Musician = {
     musician_id: defaultMusicianId,
-    loop: defaultLoop,
+    loop: shortLoop
   }
 
   const ltq = new LoopTimestepQueue();
   ltq.addMusician(defaultMusician);
-  const timestepSlicesEachTimestep: {timestep: number, slices: TimestepSlice[]}[] = [];
-  for(let currTimestep = 0; currTimestep < defaultLoop.length * 2; currTimestep++) {
+  const actualTimestepSlicesEachTimestep: TimestepSlice[][] = [];
+  for(let currTimestep = 0; currTimestep < shortLoop.length * 3; currTimestep++) {
     const dueTimesteps = ltq.getDueTimestepSlices(currTimestep);
-    timestepSlicesEachTimestep.push({timestep: currTimestep, slices: dueTimesteps});
+    actualTimestepSlicesEachTimestep.push(dueTimesteps);
   }
+  const expectedTimeSlicesEachTimestep: TimestepSlice[][] = [
+    [{
+        timestep: 0,
+        notes: [{
+            instrument: 'bassoon',
+            key: 5,
+            duration: 1,
+          }],
+      }],
+    [{
+        timestep: 1,
+        notes: [{
+            instrument: 'bassoon',
+            key: 6,
+            duration: 1,
+          }]
+      }],
+    [],
+    [],
+    [{
+        timestep: 4,
+        notes: [{
+            instrument: 'bassoon',
+            key: 5,
+            duration: 1,
+          }],
+      }],
+    [{
+        timestep: 5,
+        notes: [{
+            instrument: 'bassoon',
+            key: 6,
+            duration: 1,
+          }]
+      }],
+    [],
+    [],
+    [{
+      timestep: 8,
+      notes: [{
+          instrument: 'bassoon',
+          key: 5,
+          duration: 1,
+        }],
+    }],
+    [{
+      timestep: 9,
+      notes: [{
+          instrument: 'bassoon',
+          key: 6,
+          duration: 1,
+        }]
+    }],
+    [],
+    []
+  ];
 
-  console.log("SLICES EACH TIMESTEP", timestepSlicesEachTimestep);
+  expect(actualTimestepSlicesEachTimestep).toStrictEqual(expectedTimeSlicesEachTimestep);
 })
 
 test('addMusician adds musician to map successfully', () => {
@@ -115,7 +202,7 @@ test('addMusician adds musician to map successfully', () => {
 describe("updateMusicianLoop", () => {
   const newLoop: Loop = {
     start_timestep: 2,
-    length: 4,
+    length: 2,
     timestep_slices: [
       {
         timestep: 1,
@@ -170,11 +257,12 @@ describe("getDueTimestepSlices", () => {
       musician_id: defaultMusicianId,
       loop: defaultLoop,
     }
-    const expectedTimestepSlices: TimestepSlice[] = defaultLoop.timestep_slices.slice(0,3);
+    const expectedTimestepSlices: TimestepSlice[] = defaultLoop.timestep_slices.slice(1,4);
 
     const ltq = new LoopTimestepQueue();
     ltq.addMusician(defaultMusician);
-    const timestepSlices = ltq.getDueTimestepSlices(2);
+    ltq.getDueTimestepSlices(0);
+    const timestepSlices = ltq.getDueTimestepSlices(3);
 
     expect(timestepSlices).toEqual(expectedTimestepSlices);
   });
@@ -196,10 +284,11 @@ describe("getDueTimestepSlices", () => {
       musician_id: defaultMusicianId,
       loop: defaultLoop,
     }
-    const expectedTimestepSlices: TimestepSlice[] = defaultLoop.timestep_slices;
+    const expectedTimestepSlices: TimestepSlice[] = defaultLoop.timestep_slices.slice(1,100);
 
     const ltq = new LoopTimestepQueue();
     ltq.addMusician(defaultMusician);
+    ltq.getDueTimestepSlices(0);
     const timestepSlices = ltq.getDueTimestepSlices(100);
 
     expect(timestepSlices).toEqual(expectedTimestepSlices);
@@ -213,7 +302,9 @@ describe("getDueTimestepSlices", () => {
 
     const ltq = new LoopTimestepQueue();
     ltq.addMusician(defaultMusician);
-    const timestepSlices = ltq.getDueTimestepSlices(-1);
+    ltq.getDueTimestepSlices(0);
+    ltq.getDueTimestepSlices(6);
+    const timestepSlices = ltq.getDueTimestepSlices(7);
 
     expect(timestepSlices).toEqual(expectedTimestepSlices);
   });

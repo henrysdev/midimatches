@@ -1,4 +1,5 @@
 import { Loop, Note, TimestepSlice, Musician } from "../types";
+import * as _ from "lodash";
 
 
 export class LoopTimestepQueue {
@@ -6,17 +7,20 @@ export class LoopTimestepQueue {
   musiciansMap: {[key:string]: Musician};
   orderedTimestepSlices: TimestepSlice[];
   loopRestartDeadlines: {[key:number]: string[]};
+  liveLoopMap: {[key:string]: Loop};
   constructor() {
     this.actionsQueue = [];
     this.musiciansMap = {};
     this.orderedTimestepSlices = [];
     this.loopRestartDeadlines = {};
+    this.liveLoopMap = {};
   }
 
   // Queue action to add a new musician next timestep
   addMusician(musician: Musician): void {
     const action = (timestep: number) => {
       this.musiciansMap[musician.musician_id] = musician;
+      this.liveLoopMap[musician.musician_id] = _.cloneDeep(musician.loop);
       this._restartMusicianLoop(musician.musician_id, timestep);
     }
     this.actionsQueue.push(action);
@@ -27,9 +31,8 @@ export class LoopTimestepQueue {
     const action = (timestep: number) => {
       if (musicianId in this.musiciansMap) {
         this.musiciansMap[musicianId].loop = loop;
+        this.liveLoopMap[musicianId] = _.cloneDeep(loop);
         this._restartMusicianLoop(musicianId, timestep);
-      } else {
-        console.log("tried to update a musician loop for a musician that does not exist : ", musicianId);
       }
     }
     this.actionsQueue.push(action);
@@ -41,14 +44,14 @@ export class LoopTimestepQueue {
     this.actionsQueue.forEach((action: Function) => action(currTimestep));
     this.actionsQueue = [];
 
+    // restart any loops that have reached their timestep deadline
+    this._handleDueRestartDeadlines(currTimestep);
+
     // split array into due timestep slices and remaining timestep slices
     let splitIdx = 0;
     while (splitIdx < this.orderedTimestepSlices.length &&
       this.orderedTimestepSlices[splitIdx].timestep <= currTimestep) splitIdx++;
     const dueTimestepSlices = this.orderedTimestepSlices.splice(0, splitIdx);
-
-    // restart any loops that have reached their timestep deadline
-    this._handleDueRestartDeadlines(currTimestep);
 
     return dueTimestepSlices;
   }
@@ -64,25 +67,28 @@ export class LoopTimestepQueue {
 
   // Wrap loop timesteps and set next deadline
   _restartMusicianLoop(musicianId: string, timestep: number): void {
-    const loop = this.musiciansMap[musicianId].loop;
-    // TODO set loop.start_timestep to current
-    // loop.start_timestep = timestep;
+    const liveLoop = this.liveLoopMap[musicianId];
+    const origLoop = this.musiciansMap[musicianId].loop;
+    liveLoop.start_timestep = timestep;
 
     // adjust position to be correct timestep for each timestep
-    const timeAdjustedTimestepSlices = loop.timestep_slices.map((timestepSlice) => {
-      timestepSlice.timestep += loop.start_timestep;
-      return timestepSlice;
+    liveLoop.timestep_slices = origLoop.timestep_slices.map((timestepSlice) => {
+      // TODO cleaner way to copy and just change one field?
+      return {
+        timestep: timestepSlice.timestep + liveLoop.start_timestep,
+        notes: timestepSlice.notes
+      } as TimestepSlice
     });
 
     // add timestep to restart loop to loop restart deadlines
-    const deadline = loop.start_timestep + loop.length;
+    const deadline = liveLoop.start_timestep + liveLoop.length;
     deadline in this.loopRestartDeadlines ?
       this.loopRestartDeadlines[deadline].push(musicianId) :
       this.loopRestartDeadlines[deadline] = [musicianId];
 
     // copy loop into timeslices and sort
     this.orderedTimestepSlices = this.orderedTimestepSlices
-      .concat(timeAdjustedTimestepSlices)
+      .concat(liveLoop.timestep_slices)
       .sort((sliceA, sliceB) => sliceA.timestep - sliceB.timestep);
   }
 }
