@@ -1,4 +1,4 @@
-import { LoopPlaybackManager } from './loopplaybackmanager';
+import { LoopPlaybackManager } from './loopPlaybackManager';
 import { Loop, Musician, TimestepSlice } from '../types';
 
 const mocks = require('./mocks.json');

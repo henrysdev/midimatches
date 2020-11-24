@@ -1,4 +1,51 @@
 {
+  
+  "classicalLoop": {
+      "start_timestep":0,
+      "length":4,
+      "timestep_slices":[
+         {
+            "timestep":0,
+            "notes":[
+               {
+                  "instrument":"piano",
+                  "key":60,
+                  "duration":1
+               }
+            ]
+         },
+         {
+            "timestep":1,
+            "notes":[
+               {
+                  "instrument":"piano",
+                  "key":67,
+                  "duration":1
+               }
+            ]
+         },
+         {
+            "timestep":2,
+            "notes":[
+               {
+                  "instrument":"piano",
+                  "key":64,
+                  "duration":1
+               }
+            ]
+         },
+         {
+            "timestep":3,
+            "notes":[
+               {
+                  "instrument":"piano",
+                  "key":67,
+                  "duration":1
+               }
+            ]
+         }
+      ]
+  },
   "shortLoop":{
      "start_timestep":0,
      "length":4,

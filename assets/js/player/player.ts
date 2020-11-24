@@ -1,5 +1,5 @@
 import { Loop, Note, TimestepSlice, Musician } from "../types";
-import { LoopPlaybackManager } from './loopplaybackmanager';
+import { LoopPlaybackManager } from './loopPlaybackManager';
 
 var audioContext: AudioContext;
 var currentTimestep: number; // What note is currently last scheduled?
@@ -11,7 +11,7 @@ var scheduleAheadTime = 0.1;    // How far ahead to schedule audio (sec)
                             // with next interval (in case the timer is late)
 var nextNoteTime = 0.0;     // when the next note is due.
 var noteResolution = 0;     // 0 == 16th, 1 == 8th, 2 == quarter note
-const noteLength = 0.09;    // length of "beep" (in seconds)
+const noteLength = 0.1;    // length of "beep" (in seconds)
 var timerWorker: Worker;    // The Web Worker used to fire timer messages
 var soundBuffer: AudioBuffer;
 var loopPlaybackManager: LoopPlaybackManager;
@@ -20,19 +20,18 @@ var loopPlaybackManager: LoopPlaybackManager;
 const mocks = require('./mocks.json');
 const defaultMusician: Musician = {
   musician_id: "defaultMusicianId",
-  loop: mocks.defaultLoop
+  loop: mocks.classicalLoop
 }
-const anotherMusician: Musician = {
-  musician_id: "anotherMusicianId",
-  loop: mocks.shortLoop
-}
-const thirdMusician: Musician = {
-  musician_id: "thirdMusicianId",
-  loop: mocks.longLoop
+const defaultMusician1: Musician = {
+  musician_id: "defaultMusicianId1",
+  loop: mocks.classicalLoop
 }
 
+function freqFromMidi(m: number): number {
+  return Math.pow(2, (m-69.0) / 12.0) * 440.0;
+}
 
-function nextNote() {
+function nextNote(): void {
     // Advance current note and time by a 16th note...
     var secondsPerBeat = 60.0 / tempo;    // Notice this picks up the CURRENT 
                                           // tempo value to calculate beat length.
@@ -49,43 +48,24 @@ function scheduleNote(beatNumber: number, time: number): void {
     return; // we're not playing non-quarter 8th notes
   }
 
-  // const source = audioContext.createBufferSource();
-  // source.buffer = soundBuffer;
-  // source.connect(audioContext.destination);
-
-  // if (beatNumber % 16 === 0) {
-  //   // beat 0 (start of sequence)
-  // } else if (beatNumber % 4 === 0 ) {
-  //   // quarter notes of sequence
-  // } else {                  
-  //   // 16th notes of sequence
-  // }
-
-  // source.start(time);
-  // source.stop(time + noteLength);
-
   const dueTimestepSlices: TimestepSlice[] = loopPlaybackManager.getDueTimestepSlices(beatNumber);
-  console.log('TIMESTEP: ', beatNumber);
-  console.log('DUE TIMESTEPS: ', dueTimestepSlices);
+  // console.log('TIMESTEP: ', beatNumber);
+  // console.log('DUE TIMESTEPS: ', dueTimestepSlices);
 
-  // create an oscillator
-  var osc = audioContext.createOscillator();
-  osc.connect( audioContext.destination );
-  osc.frequency.value = 220.0; // other 16th notes = low pitch
-  if (beatNumber % 4 === 0 )    // quarter notes = medium pitch
-    osc.frequency.value = 440.0;
-  if (beatNumber % 8 === 0 )    // 8th notes = lowest pitch
-    osc.frequency.value = 100.0;
-  if (beatNumber % 16 === 0)    // beat 0 == high pitch
-    osc.frequency.value = 880.0;                     
-  osc.start(time);
-  osc.stop(time + noteLength);
+  for (let i = 0; i < dueTimestepSlices.length; i++) {
+    const timestepSliceToPlay = dueTimestepSlices[i];
+    for (let j = 0; j < timestepSliceToPlay.notes.length; j++) {
+      var osc = audioContext.createOscillator();
+      osc.connect( audioContext.destination );
+      const {key, duration } = timestepSliceToPlay.notes[j];
+      osc.frequency.value = freqFromMidi(key);
+      osc.start(time);
+      osc.stop(time + duration * noteLength);
+    }
+  }
 }
 
 function scheduler() {
-  // TOD0 process loop queue
-  // while there are notes that will need to play before the next interval, 
-  // schedule them and advance the pointer.
   while (nextNoteTime < audioContext.currentTime + scheduleAheadTime ) {
     console.log(currentTimestep);
     scheduleNote(currentTimestep, nextNoteTime);
@@ -107,14 +87,12 @@ function loadSound(soundURL: string) {
   .then(audioBuffer => {soundBuffer = audioBuffer;});
 }
 
-function init(){
+function init() {
   audioContext = new AudioContext();
   loopPlaybackManager = new LoopPlaybackManager();
 
   // TODO debug remove
   loopPlaybackManager.addMusician(defaultMusician);
-  loopPlaybackManager.addMusician(anotherMusician);
-  loopPlaybackManager.addMusician(thirdMusician);
 
   // TODO load all sounds
   loadSound('/sounds/blip.mp3');
