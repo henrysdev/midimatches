@@ -16,7 +16,7 @@ import "./socket.js"
 
 import "phoenix_html"
 
-import "./player/player.ts"
+import "./player/noteplayer.ts"
 
 import greet from "./hello.ts";
 document.querySelector("section.phx-hero h1").innerHTML = greet("Phoenix");

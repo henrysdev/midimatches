@@ -88,7 +88,6 @@ textInput.addEventListener("keypress", (event) => {
   }
 });
 
-
 // Receive message events
 channel.on("broadcast_updated_musician_loop", payload => {
   console.log('RECV broadcast_updated_musician_loop', payload);

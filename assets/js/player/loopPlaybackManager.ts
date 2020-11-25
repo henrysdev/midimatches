@@ -1,6 +1,8 @@
 import { Loop, TimestepSlice, Musician } from "../types";
 import * as _ from "lodash";
 
+const loopBoundary = 16;
+
 /**
  * LoopPlaybackManager is responsible for maintaining the state and behavior of loop playback
  */
@@ -49,9 +51,11 @@ export class LoopPlaybackManager {
 
   // Return timestep slices due for the given timestep and update deadlines where necessary
   getDueTimestepSlices(currTimestep: number): TimestepSlice[] {
-    // execute action queue
-    this.actionsQueue.forEach((action: Function) => action(currTimestep));
-    this.actionsQueue = [];
+    // execute all actions in action queue if current timestep is at a loop boundary
+    if (currTimestep % loopBoundary == 0) {
+      this.actionsQueue.forEach((action: Function) => action(currTimestep));
+      this.actionsQueue = [];
+    }
 
     // restart any loops that have reached their timestep deadline
     this._handleDueRestartDeadlines(currTimestep);

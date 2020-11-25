@@ -1,8 +1,59 @@
 {
-  
-  "classicalLoop": {
+   "basicBeatLoop": {
       "start_timestep":0,
-      "length":4,
+      "length":16,
+      "timestep_slices":[
+         {
+            "timestep":0,
+            "notes":[
+               {
+                  "instrument":"kick",
+                  "key":60,
+                  "duration":1
+               }
+            ]
+         }
+      ]
+  },
+   "classicalLoopRH": {
+      "start_timestep":0,
+      "length":16,
+      "timestep_slices":[
+         {
+            "timestep":0,
+            "notes":[
+               {
+                  "instrument":"piano",
+                  "key":72,
+                  "duration":1
+               }
+            ]
+         },
+         {
+            "timestep":8,
+            "notes":[
+               {
+                  "instrument":"piano",
+                  "key":76,
+                  "duration":1
+               }
+            ]
+         },
+         {
+            "timestep":12,
+            "notes":[
+               {
+                  "instrument":"piano",
+                  "key":79,
+                  "duration":1
+               }
+            ]
+         }
+      ]
+  },
+  "classicalLoopLH": {
+      "start_timestep":0,
+      "length":16,
       "timestep_slices":[
          {
             "timestep":0,
@@ -15,7 +66,7 @@
             ]
          },
          {
-            "timestep":1,
+            "timestep":4,
             "notes":[
                {
                   "instrument":"piano",
@@ -25,7 +76,7 @@
             ]
          },
          {
-            "timestep":2,
+            "timestep":8,
             "notes":[
                {
                   "instrument":"piano",
@@ -35,7 +86,7 @@
             ]
          },
          {
-            "timestep":3,
+            "timestep":12,
             "notes":[
                {
                   "instrument":"piano",
