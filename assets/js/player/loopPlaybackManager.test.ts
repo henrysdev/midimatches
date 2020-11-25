@@ -1,4 +1,4 @@
-import { LoopPlaybackManager } from './loopplaybackmanager';
+import { LoopPlaybackManager } from './loopPlaybackManager';
 import { Loop, Musician, TimestepSlice } from '../types';
 
 const mocks = require('./mocks.json');
@@ -81,9 +81,8 @@ describe("updateMusicianLoop", () => {
 
     const lpm = new LoopPlaybackManager();
     lpm.addMusician(defaultMusician);
-    lpm.getDueTimestepSlices(0);
     lpm.updateMusicianLoop(mocks.shortLoop, defaultMusicianId);
-    lpm.getDueTimestepSlices(1);
+    lpm.getDueTimestepSlices(0);
 
     expect(lpm.musiciansMap[defaultMusicianId].loop).toEqual(mocks.shortLoop);
   });
