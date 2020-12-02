@@ -1,0 +1,2 @@
+<%# <div id="content-container"></div> %>
+<script defer type="text/javascript" src="<%= Routes.static_path(@conn, "/js/views/landingPage.js") %>"></script>

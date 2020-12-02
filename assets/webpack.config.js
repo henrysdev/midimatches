@@ -18,7 +18,8 @@ module.exports = (env, options) => {
     },
     entry: {
       'app': glob.sync('./vendor/**/*.js').concat(['./js/app.js']),
-      'clockWorker': './js/player/clockWorker.js'
+      'clockWorker': './js/player/clockWorker.js',
+      'landingPage': './js/views/landingPage.js',
     },
     output: {
       filename: '[name].js',
@@ -29,7 +30,7 @@ module.exports = (env, options) => {
     module: {
       rules: [
         {
-          test: /\.(j|t)s$/,
+          test: /\.(j|t)(s|sx)$/,
           exclude: /node_modules/,
           use: [
             {
@@ -51,7 +52,7 @@ module.exports = (env, options) => {
       ]
     },
     resolve: {
-      extensions: [".ts", ".js"]
+      extensions: [".ts", ".tsx", ".js", ".jsx"]
     },
     plugins: [
       new MiniCssExtractPlugin({ filename: '../css/app.css' }),

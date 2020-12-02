@@ -1,3 +1,6 @@
+import React from "react";
+import ReactDOM from "react-dom";
+
 // We need to import the CSS so that webpack will load it.
 // The MiniCssExtractPlugin is used to separate it out into
 // its own CSS file.
@@ -20,5 +23,6 @@ import "./player/noteplayer.ts"
 
 import "./midi.ts"
 
-import greet from "./hello.ts";
-document.querySelector("section.phx-hero h1").innerHTML = greet("Phoenix");
+// import LandingPage from "./components/landingPage.tsx";
+// const greeting = document.getElementById("content-container");
+// ReactDOM.render(<LandingPage name="Phoenix" />, greeting);
