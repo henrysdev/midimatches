@@ -7,7 +7,8 @@
     "outDir": "./dist/",
     "strict": true,
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "downlevelIteration": true,
   },
   "exclude": [
     "/node_modules/**/*",

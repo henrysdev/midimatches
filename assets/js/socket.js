@@ -59,6 +59,8 @@ let room_id           = path[path.length -1]
 let channel           = socket.channel(`room:${room_id}`);
 let textInput         = document.querySelector("#chat-input")
 
+export let roomStartTime = 0;
+
 // Send message events
 textInput.addEventListener("keypress", (event) => {
   const loop = {
@@ -89,12 +91,16 @@ textInput.addEventListener("keypress", (event) => {
 });
 
 // Receive message events
-channel.on("broadcast_updated_musician_loop", payload => {
-  console.log('RECV broadcast_updated_musician_loop', payload);
-});
-
 channel.join()
   .receive("ok", resp => { console.log("Joined successfully", resp)})
   .receive("error", resp => { console.log("Unable to join", resp)});
+
+channel.on("init_room_client", ({start_time_utc}) => {
+  roomStartTime = start_time_utc;
+});
+
+channel.on("broadcast_updated_musician_loop", payload => {
+  console.log('RECV broadcast_updated_musician_loop', payload);
+});
 
 export default socket
