@@ -57,38 +57,38 @@ socket.connect()
 let path              = window.location.pathname.split('/')
 let room_id           = path[path.length -1]
 let channel           = socket.channel(`room:${room_id}`);
-// let textInput         = document.querySelector("#chat-input")
+let textInput         = document.querySelector("#chat-input")
 
 export let roomStartTime = 0;
 
-// // Send message events
-// window.addEventListener("keypress", (event) => {
-//   const loop = {
-//     start_timestep: 2,
-//     length: 8,
-//     timestep_slices: [
-//       {
-//         timestep: 0,
-//         notes: [
-//           {
-//             instrument: !!textInput ? textInput.value : 'DEFAULT',
-//             key: 11,
-//             duration: 4,
-//           }
-//         ]
-//       }
-//     ]
-//   };
-//   if(event.key === 'Enter'){
-//     console.log("SEND update_musician_loop", loop)
-//     channel.push("update_musician_loop", {
-//       loop: JSON.stringify(loop)
-//     });
-//     if (!!textInput && !!textInput.value) {
-//       textInput.value = "";
-//     }
-//   }
-// });
+// Send message events
+textInput.addEventListener("keypress", (event) => {
+  const loop = {
+    start_timestep: 2,
+    length: 8,
+    timestep_slices: [
+      {
+        timestep: 0,
+        notes: [
+          {
+            instrument: !!textInput ? textInput.value : 'DEFAULT',
+            key: 11,
+            duration: 4,
+          }
+        ]
+      }
+    ]
+  };
+  if(event.key === 'Enter'){
+    console.log("SEND update_musician_loop", loop)
+    channel.push("update_musician_loop", {
+      loop: JSON.stringify(loop)
+    });
+    if (!!textInput && !!textInput.value) {
+      textInput.value = "";
+    }
+  }
+});
 
 // Receive message events
 channel.join()

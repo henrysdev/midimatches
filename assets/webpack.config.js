@@ -17,9 +17,8 @@ module.exports = (env, options) => {
       ]
     },
     entry: {
-      'app': glob.sync('./vendor/**/*.js').concat(['./js/app.js']),
-      'clockWorker': './js/player/clockWorker.js',
-      'landingPage': './js/views/landingPage.js',
+      'app': './js/app.tsx',
+      'clockWorker': './js/_SAVE/player/clockWorker.js',
     },
     output: {
       filename: '[name].js',
