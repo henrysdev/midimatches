@@ -54,12 +54,12 @@ let socket = new Socket("/socket", {params: {token: window.userToken}});
 // Finally, connect to the socket:
 socket.connect()
 
-let path              = window.location.pathname.split('/')
-let room_id           = path[path.length -1]
-let channel           = socket.channel(`room:${room_id}`);
+// let path              = window.location.pathname.split('/')
+// let room_id           = path[path.length -1]
+// let channel           = socket.channel(`room:${room_id}`);
 // let textInput         = document.querySelector("#chat-input")
 
-export let roomStartTime = 0;
+// export let roomStartTime = 0;
 
 // // Send message events
 // window.addEventListener("keypress", (event) => {
@@ -90,17 +90,17 @@ export let roomStartTime = 0;
 //   }
 // });
 
-// Receive message events
-channel.join()
-  .receive("ok", resp => { console.log("Joined successfully", resp)})
-  .receive("error", resp => { console.log("Unable to join", resp)});
+// // Receive message events
+// channel.join()
+//   .receive("ok", resp => { console.log("Joined successfully", resp)})
+//   .receive("error", resp => { console.log("Unable to join", resp)});
 
-channel.on("init_room_client", ({start_time_utc}) => {
-  roomStartTime = start_time_utc;
-});
+// channel.on("init_room_client", ({start_time_utc}) => {
+//   roomStartTime = start_time_utc;
+// });
 
-channel.on("broadcast_updated_musician_loop", payload => {
-  console.log('RECV broadcast_updated_musician_loop', payload);
-});
+// channel.on("broadcast_updated_musician_loop", payload => {
+//   console.log('RECV broadcast_updated_musician_loop', payload);
+// });
 
-export default socket
+// export default socket

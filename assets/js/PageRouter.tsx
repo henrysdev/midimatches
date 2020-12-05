@@ -1,9 +1,8 @@
 import * as React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
-import { Header } from './components/common/Header';
-import { LandingPage } from './pages/landing';
-import { RoomPage } from './pages/room';
+import { Header } from './components/common/index';
+import { LandingPage, RoomPage } from './pages/index';
 
 const PageRouter: React.FC = () => (
   <>

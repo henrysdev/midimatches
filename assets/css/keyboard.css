@@ -1,0 +1,102 @@
+
+h1 {
+  color: #fff;
+  font-size: 50px;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+h2 {
+  color: #fff;
+  font-size: 24px;
+  font-style: italic;
+  font-weight: 400;
+  margin: 0 0 30px;
+}
+
+.nowplaying {
+  font-size: 120px;
+  line-height: 1;
+  color: #eee;
+  text-shadow: 0 0 5rem #028ae9;
+  transition: all .07s ease;
+  min-height: 120px;
+}
+
+.keys {
+  display: block;
+  width: 100%;
+  height: 100px;
+  max-width: 880px;
+  position: relative;
+  margin: 40px auto 0;
+}
+
+.key {
+  position: relative;
+  border: 1px solid black;
+  border-radius: .5rem;
+  transition: all .07s ease;
+  display: block;
+  box-sizing: border-box;
+  z-index: 2;
+}
+
+.key:not(.sharp) {
+  float: left;
+  width: 1.9231%;
+  height: 100%;
+  background: rgba(255, 255, 255, .8);    
+}
+
+.key.sharp {
+  position: absolute;
+  width: 1.115386%;
+  /* width: 1% 1.9231%; */
+  height: 60%;
+  background: #000;
+  color: #eee;
+  top: 0;
+  z-index: 3;
+}
+
+.key:not(.sharp)[data-note-name^='A'] {
+  background: red;
+}
+
+/* 
+.key[data-key="87"] {
+  left: 7%;
+}
+
+.key[data-key="69"] {
+  left: 17%;
+}
+
+.key[data-key="84"]  {
+  left: 37%;
+}
+
+.key[data-key="89"] {
+  left: 47%;
+}
+
+.key[data-key="85"] {
+  left: 57%;    
+}
+
+.key[data-key="79"] {
+  left: 77%;    
+}
+
+.key[data-key="80"] {
+  left: 87%;    
+} */
+
+.playing {
+  transform: scale(.95);
+  border-color: #028ae9;
+  box-shadow: 0 0 1rem #028ae9;
+}

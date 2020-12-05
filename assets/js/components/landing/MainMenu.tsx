@@ -1,5 +1,5 @@
 import React from "react";
-import { SimpleButton } from "../common/SimpleButton";
+import { SimpleButton } from "../common/index";
 
 const MainMenu: React.FC = () => {
   return (

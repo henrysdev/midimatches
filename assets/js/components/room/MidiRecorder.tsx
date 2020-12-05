@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useState } from "react";
-import { SimpleButton } from '../common/SimpleButton';
+import { SimpleButton } from '../common/index';
 import { MIDINoteEvent, Loop, TimestepSlice, Note } from '../../types/index';
 import { NOTE_ON, NOTE_OFF } from '../../constants/index';
 
@@ -53,8 +53,9 @@ const MidiRecorder: React.FC<MidiRecorderProps> = ({
     if(!statusByte[1]) statusByte.unshift('0');
     const eventType = parseInt(statusByte[0], 16);
     const _channel = parseInt(statusByte[1], 16);
+    const now = Date.now()
     const receivedTimestep = calculateTimestep(
-      Date.now(),
+      now,
       roomStartTime,
       timestepSize,
       quantizationThreshold
@@ -107,7 +108,7 @@ const MidiRecorder: React.FC<MidiRecorderProps> = ({
       const noteOnEvent = activeMidiNotes.get(noteOffEvent.value);
       const {value: key_, receivedTimestep: startTimestep} = noteOnEvent;
 
-      // update recorded timestep map with new note
+      // update recorded timestep slice with new note
       const newNote: Note = {
         instrument: "abc",
         key: key_,
@@ -132,8 +133,8 @@ const MidiRecorder: React.FC<MidiRecorderProps> = ({
 
   return (
     <div>
-      <SimpleButton label="stop recording" callback={() => stopRecord()} disabled={false} />
       <SimpleButton label="start recording" callback={() => startRecord()} disabled={false} />
+      <SimpleButton label="stop recording" callback={() => stopRecord()} disabled={false} />
     </div>
   );
 };

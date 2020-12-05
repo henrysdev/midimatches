@@ -1,0 +1,8 @@
+export const enum GAME_VIEW {
+  START,
+  INPUT_TEST,
+  SAMPLE_RECORDING,
+  SAMPLE_PLAYBACK,
+  VOTING,
+  RESULTS
+}
