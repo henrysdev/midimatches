@@ -149,6 +149,7 @@ defmodule Progressions.Rooms.Room.Server do
     deadline_timestep = Utils.calc_deadline(current_timestep, loop_start_timestep, loop_length)
 
     # broadcast to all clients
+    # TODO move logic to room_channel module
     ProgressionsWeb.Endpoint.broadcast("room:#{room_id}", "broadcast_updated_musician_loop", %{
       "musician_id" => musician_id,
       "loop" => %Loop{loop | start_timestep: deadline_timestep}

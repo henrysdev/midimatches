@@ -28,14 +28,14 @@ defmodule ProgressionsWeb.RoomChannelTest do
   end
 
   test "client joins existing room successfully", %{socket: socket} do
-    RoomChannel.join("room:1", %{}, socket)
+    {:ok, _, _} = subscribe_and_join(socket, RoomChannel, "room:1")
 
-    actual_musicians =
+    musicians_in_room =
       Pids.fetch!({:server, "1"})
       |> Server.get_musicians()
       |> Enum.map(& &1.musician_id)
 
-    assert length(actual_musicians) == 2
+    assert length(musicians_in_room) == 2
   end
 
   test "client gets error when non existent room joined", %{socket: socket} do

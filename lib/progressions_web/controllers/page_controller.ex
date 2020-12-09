@@ -11,7 +11,7 @@ defmodule ProgressionsWeb.PageController do
   @spec room(Plug.Conn.t(), map) :: Plug.Conn.t()
   def room(conn, %{"room_id" => room_id}) do
     if Rooms.room_exists?(room_id) do
-      render(conn, "index.html")
+      render(conn, "room.html")
     else
       render(conn, "not_found.html")
     end

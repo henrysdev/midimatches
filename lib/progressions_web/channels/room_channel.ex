@@ -36,20 +36,31 @@ defmodule ProgressionsWeb.RoomChannel do
 
   def join("room:" <> room_id, _params, socket) do
     if Rooms.room_exists?(room_id) do
-      room_server = Pids.fetch!({:server, room_id})
-      musician_id = Persistence.gen_serial_id()
-
-      Server.add_musician(room_server, %Musician{
-        musician_id: musician_id
-      })
+      send(self(), "init_room_client")
 
       {:ok,
        socket
-       |> assign(room_server: room_server)
-       |> assign(musician_id: musician_id)}
+       |> assign(room_id: room_id)}
     else
       {:error, "room #{room_id} does not exist"}
     end
+  end
+
+  def handle_info("init_room_client", %{assigns: %{room_id: room_id}} = socket) do
+    room_server = Pids.fetch!({:server, room_id})
+    musician_id = Persistence.gen_serial_id()
+
+    Server.add_musician(room_server, %Musician{
+      musician_id: musician_id
+    })
+
+    start_time_utc = Server.get_start_time(room_server)
+    push(socket, "init_room_client", %{start_time_utc: start_time_utc})
+
+    {:noreply,
+     socket
+     |> assign(room_server: room_server)
+     |> assign(musician_id: musician_id)}
   end
 
   def handle_in(

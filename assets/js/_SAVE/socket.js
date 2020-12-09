@@ -6,9 +6,9 @@
 //
 // Pass the token on params as below. Or remove it
 // from the params if you are not using authentication.
-import { Socket } from "phoenix";
+import { Socket } from "phoenix"
 
-let socket = new Socket("/socket", { params: { token: window.userToken } });
+let socket = new Socket("/socket", {params: {token: window.userToken}});
 
 // When you connect, you'll often need to authenticate the client.
 // For example, imagine you have an authentication plug, `MyAuth`,
@@ -52,55 +52,55 @@ let socket = new Socket("/socket", { params: { token: window.userToken } });
 //     end
 //
 // Finally, connect to the socket:
-socket.connect();
+socket.connect()
 
-// let path              = window.location.pathname.split('/')
-// let room_id           = path[path.length -1]
-// let channel           = socket.channel(`room:${room_id}`);
-// let textInput         = document.querySelector("#chat-input")
+let path              = window.location.pathname.split('/')
+let room_id           = path[path.length -1]
+let channel           = socket.channel(`room:${room_id}`);
+let textInput         = document.querySelector("#chat-input")
 
-// export let roomStartTime = 0;
+export let roomStartTime = 0;
 
-// // Send message events
-// window.addEventListener("keypress", (event) => {
-//   const loop = {
-//     start_timestep: 2,
-//     length: 8,
-//     timestep_slices: [
-//       {
-//         timestep: 0,
-//         notes: [
-//           {
-//             instrument: !!textInput ? textInput.value : 'DEFAULT',
-//             key: 11,
-//             duration: 4,
-//           }
-//         ]
-//       }
-//     ]
-//   };
-//   if(event.key === 'Enter'){
-//     console.log("SEND update_musician_loop", loop)
-//     channel.push("update_musician_loop", {
-//       loop: JSON.stringify(loop)
-//     });
-//     if (!!textInput && !!textInput.value) {
-//       textInput.value = "";
-//     }
-//   }
-// });
+// Send message events
+textInput.addEventListener("keypress", (event) => {
+  const loop = {
+    start_timestep: 2,
+    length: 8,
+    timestep_slices: [
+      {
+        timestep: 0,
+        notes: [
+          {
+            instrument: !!textInput ? textInput.value : 'DEFAULT',
+            key: 11,
+            duration: 4,
+          }
+        ]
+      }
+    ]
+  };
+  if(event.key === 'Enter'){
+    console.log("SEND update_musician_loop", loop)
+    channel.push("update_musician_loop", {
+      loop: JSON.stringify(loop)
+    });
+    if (!!textInput && !!textInput.value) {
+      textInput.value = "";
+    }
+  }
+});
 
-// // Receive message events
-// channel.join()
-//   .receive("ok", resp => { console.log("Joined successfully", resp)})
-//   .receive("error", resp => { console.log("Unable to join", resp)});
+// Receive message events
+channel.join()
+  .receive("ok", resp => { console.log("Joined successfully", resp)})
+  .receive("error", resp => { console.log("Unable to join", resp)});
 
-// channel.on("init_room_client", ({start_time_utc}) => {
-//   roomStartTime = start_time_utc;
-// });
+channel.on("init_room_client", ({start_time_utc}) => {
+  roomStartTime = start_time_utc;
+});
 
-// channel.on("broadcast_updated_musician_loop", payload => {
-//   console.log('RECV broadcast_updated_musician_loop', payload);
-// });
+channel.on("broadcast_updated_musician_loop", payload => {
+  console.log('RECV broadcast_updated_musician_loop', payload);
+});
 
-// export default socket
+export default socket

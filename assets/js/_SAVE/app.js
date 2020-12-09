@@ -18,5 +18,8 @@ import "phoenix_html"
 
 import "./player/noteplayer.ts"
 
-import greet from "./hello.ts";
-document.querySelector("section.phx-hero h1").innerHTML = greet("Phoenix");
+import "./midi.ts"
+
+// import LandingPage from "./components/landingPage.tsx";
+// const greeting = document.getElementById("content-container");
+// ReactDOM.render(<LandingPage name="Phoenix" />, greeting);
