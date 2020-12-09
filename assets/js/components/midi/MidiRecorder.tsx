@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useState } from "react";
 import { SimpleButton } from '../common/index';
 import { MIDINoteEvent, Loop, Note } from '../../types/index';
-import { Keyboard } from '../keyboard/index';
+// import { Keyboard } from '../keyboard/index';
 import { NOTE_ON, NOTE_OFF } from '../../constants/index';
 
 interface MidiRecorderProps {
@@ -134,7 +134,7 @@ const MidiRecorder: React.FC<MidiRecorderProps> = ({
 
   return (
     <div>
-      <Keyboard activeMidiNotes={Array.from(activeMidiNotes.keys())} />
+      {/* <Keyboard activeMidiNotes={Array.from(activeMidiNotes.keys())} /> */}
       <SimpleButton label="start recording" callback={() => startRecord()} disabled={false} />
       <SimpleButton label="stop recording" callback={() => stopRecord()} disabled={false} />
     </div>

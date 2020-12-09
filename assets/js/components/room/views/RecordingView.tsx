@@ -1,23 +1,28 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import { SimpleButton } from '../../common/index';
 import { MidiInput } from '../../midi/index';
-import { Channel } from "phoenix";
+import { SUBMIT_PLAYER_RECORDING_EVENT } from '../../../constants/index'
+import { GameContext } from '../../../contexts/index'
 
 interface RecordingViewProps {
-  nextViewCallback: Function;
-  channel: Channel;
+  channelPushCallback: Function;
 }
 
-const RecordingView: React.FC<RecordingViewProps> = ({nextViewCallback, channel}) => {
+const RecordingView: React.FC<RecordingViewProps> = ({channelPushCallback}) => {
+  const [playerRecording, setPlayerRecording] = useState<Object>();
+  const gameCtx = useContext(GameContext);
+  console.log('RecordingView GameContext: ', gameCtx);
+
   return (
-    <>
     <div>
-      CANVAS FOR NOTES BEING PLAYED MOVING LEFT  
+      <MidiInput setRecordingCallback={setPlayerRecording} />
+        <h1>Sample Recording View</h1>
+      <SimpleButton
+        label="Push message to channel"
+        callback={() => channelPushCallback(SUBMIT_PLAYER_RECORDING_EVENT, {loop: JSON.stringify(playerRecording)})}
+        disabled={!playerRecording}
+      />
     </div>
-    <MidiInput />
-    <h1>Sample Recording View</h1>
-    <SimpleButton label="next state" callback={() => nextViewCallback()}  disabled={false} />
-    </>
   );
 };
 export { RecordingView };

@@ -1,2 +1,2 @@
-export { MidiRecorder } from './MidiRecorder';
+// export { MidiRecorder } from './MidiRecorder';
 export { MidiInput } from './MidiInput';
