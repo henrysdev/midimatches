@@ -9,7 +9,7 @@ export const enum GAME_VIEW {
   SAMPLE_RECORDING,
   SAMPLE_PLAYBACK,
   VOTING,
-  RESULTS
+  RESULTS,
 }
 
-export const SUBMIT_PLAYER_RECORDING_EVENT = "update_musician_loop"
+export const SUBMIT_PLAYER_RECORDING_EVENT = "update_musician_loop";

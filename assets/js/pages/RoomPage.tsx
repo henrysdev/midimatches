@@ -1,9 +1,7 @@
 import React from "react";
-import { Game } from '../components/room/Game';
+import { Game } from "../components/room/Game";
 
 const RoomPage: React.FC = () => {
-  return (
-    <Game />
-  );
+  return <Game />;
 };
 export { RoomPage };

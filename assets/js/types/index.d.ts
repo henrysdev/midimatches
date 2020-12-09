@@ -1,7 +1,5 @@
-import { GAME_VIEW } from '../constants/index';
-
 export interface Note {
-  instrument: string,
+  instrument: string;
   key: number;
   duration: number;
 }

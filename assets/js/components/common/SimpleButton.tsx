@@ -5,7 +5,11 @@ interface SimpleButtonProps {
   callback: Function;
   disabled: boolean;
 }
-const SimpleButton: React.FC<SimpleButtonProps> = ({disabled, label, callback}) => {
+const SimpleButton: React.FC<SimpleButtonProps> = ({
+  disabled,
+  label,
+  callback,
+}) => {
   return (
     <button disabled={disabled} onClick={() => callback()}>
       {label}
