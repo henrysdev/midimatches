@@ -9,7 +9,7 @@ defmodule ProgressionsWeb.RoomChannelTest do
   alias Progressions.{
     Pids,
     Rooms,
-    Rooms.Room.Server,
+    Rooms.Room.ServerAPI,
     TestHelpers
   }
 
@@ -32,7 +32,7 @@ defmodule ProgressionsWeb.RoomChannelTest do
 
     musicians_in_room =
       Pids.fetch!({:server, "1"})
-      |> Server.get_musicians()
+      |> ServerAPI.get_musicians()
       |> Enum.map(& &1.musician_id)
 
     assert length(musicians_in_room) == 2
@@ -68,7 +68,7 @@ defmodule ProgressionsWeb.RoomChannelTest do
 
     [_expected_musician_id | _] =
       Pids.fetch!({:server, "1"})
-      |> Server.get_musicians()
+      |> ServerAPI.get_musicians()
       |> Enum.map(& &1.musician_id)
 
     assert_push("broadcast_updated_musician_loop", %{

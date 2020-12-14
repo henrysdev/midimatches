@@ -27,7 +27,7 @@ defmodule Progressions.MixProject do
   def application do
     [
       mod: {Progressions.Application, []},
-      extra_applications: [:logger, :runtime_tools, :logger_file_backend]
+      extra_applications: [:logger, :runtime_tools, :logger_file_backend, :gen_state_machine]
     ]
   end
 
@@ -55,7 +55,8 @@ defmodule Progressions.MixProject do
       {:credo, "~> 1.5.0-rc.2", only: [:dev, :test], runtime: false},
       {:logger_file_backend, "~> 0.0.11"},
       {:poison, "~> 3.1"},
-      {:excoveralls, "~> 0.10", only: :test}
+      {:excoveralls, "~> 0.10", only: :test},
+      {:gen_state_machine, "~> 3.0"}
     ]
   end
 

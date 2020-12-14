@@ -5,6 +5,7 @@ defmodule Progressions.RoomTest do
     Pids,
     Rooms.Room,
     Rooms.Room.Server,
+    Rooms.Room.ServerAPI,
     TestHelpers,
     Types.Configs.RoomConfig,
     Types.Loop,
@@ -33,6 +34,7 @@ defmodule Progressions.RoomTest do
     config = %RoomConfig{
       server: %{
         timestep_us: 50_000,
+        quantization_threshold: 0.7,
         musicians: []
       }
     }
@@ -52,17 +54,17 @@ defmodule Progressions.RoomTest do
     {:ok, _room} = start_supervised({Room, [{room_id, config}]})
     server = Pids.fetch!({:server, room_id})
 
-    Server.add_musician(server, %Musician{
+    ServerAPI.add_musician(server, %Musician{
       musician_id: "mid1",
       loop: default_loop
     })
 
-    Server.add_musician(server, %Musician{
+    ServerAPI.add_musician(server, %Musician{
       musician_id: "mid2",
       loop: default_loop
     })
 
-    Server.update_musician_loop(server, "mid2", new_loop)
+    ServerAPI.update_musician_loop(server, "mid2", new_loop)
 
     expected_payload = %Phoenix.Socket.Broadcast{
       topic: room_topic,
@@ -93,6 +95,7 @@ defmodule Progressions.RoomTest do
              },
              room_id: "1",
              room_start_utc: _,
+             quantization_threshold: 0.7,
              timestep_us: 50_000
            } = state
   end

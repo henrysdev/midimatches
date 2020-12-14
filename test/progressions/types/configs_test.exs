@@ -27,6 +27,7 @@ defmodule Progressions.Types.ConfigsTest do
           {
             "server": {
               "timestep_us": 50000,
+              "quantization_threshold": 0.4,
               "musicians": [
                 {
                     "musician_id": "1foo",
@@ -88,6 +89,7 @@ defmodule Progressions.Types.ConfigsTest do
           %RoomConfig{
             server: %ServerConfig{
               timestep_us: 50_000,
+              quantization_threshold: 0.4,
               musicians: [
                 %Musician{
                   musician_id: "1foo",

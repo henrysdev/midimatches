@@ -215,7 +215,7 @@ function midiNoteNumberToNoteName(midiNoteId: number): string {
 }
 
 function webMidiEventToMidiNoteEvent(
-  webMidiEvent,
+  webMidiEvent: any,
   receivedTimestep: number
 ): MIDINoteEvent {
   return {
@@ -229,7 +229,7 @@ function getCurrentTimestep({
   roomStartTime,
   timestepSize,
   quantizationThreshold,
-}): number {
+}: any): number {
   const nowMicros = Date.now() * 1000;
   return calculateTimestep(
     nowMicros,

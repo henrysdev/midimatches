@@ -30,10 +30,6 @@ const Game: React.FC<GameProps> = () => {
     setGameChannel(channel);
   }, []);
 
-  useEffect(() => {
-    console.log("GAME CONTEXT CHANGED: ", gameContext);
-  }, [gameContext]);
-
   if (!!gameChannel) {
     gameChannel.on("init_room_client", ({ start_time_utc }) => {
       console.log("WEBSOCKET INIT MESSAGE");
@@ -50,7 +46,7 @@ const Game: React.FC<GameProps> = () => {
       console.log("RECV broadcast_updated_musician_loop", payload);
     });
 
-    gameChannel.on("set_game_view", ({ game_view }) => {
+    gameChannel.on("set_game_view", ({ game_view, game_state }) => {
       setCurrentView(game_view);
     });
   }
