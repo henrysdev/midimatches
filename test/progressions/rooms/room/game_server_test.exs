@@ -18,7 +18,7 @@ defmodule Progressions.GameServerTest do
     room_id = "1"
     musician_ids = ["musician1", "musician2", "musician3"]
 
-    {:ok, game_server} = GameServerAPI.start_game_server(room_id)
+    {:ok, game_server} = GameServer.start_link(room_id)
 
     {views, num_musicians} =
       Enum.reduce(
@@ -44,7 +44,7 @@ defmodule Progressions.GameServerTest do
     room_id = "1"
     musician_ids = ["musician1", "musician2", "musician3"]
 
-    {:ok, game_server} = GameServerAPI.start_game_server(room_id)
+    {:ok, game_server} = GameServer.start_link(room_id)
 
     game_server
     |> add_musicians(musician_ids)
@@ -71,7 +71,7 @@ defmodule Progressions.GameServerTest do
     room_id = "1"
     musician_ids = ["musician1", "musician2", "musician3"]
 
-    {:ok, game_server} = GameServerAPI.start_game_server(room_id)
+    {:ok, game_server} = GameServer.start_link(room_id)
 
     game_server
     |> add_musicians(musician_ids)
@@ -109,7 +109,7 @@ defmodule Progressions.GameServerTest do
       "musician3" => "musician1"
     }
 
-    {:ok, game_server} = GameServerAPI.start_game_server(room_id)
+    {:ok, game_server} = GameServer.start_link(room_id)
 
     game_server
     |> add_musicians(musician_ids)
@@ -145,7 +145,7 @@ defmodule Progressions.GameServerTest do
       "musician3" => "musician1"
     }
 
-    {:ok, game_server} = GameServerAPI.start_game_server(room_id)
+    {:ok, game_server} = GameServer.start_link(room_id)
 
     game_server
     |> add_musicians(musician_ids)

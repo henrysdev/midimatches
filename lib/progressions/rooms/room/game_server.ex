@@ -4,14 +4,17 @@ defmodule Progressions.Rooms.Room.GameServer do
   """
   use GenStateMachine
 
-  alias Progressions.Types.{
-    Loop,
-    Musician
+  alias Progressions.{
+    Pids,
+    Types.Configs.ServerConfig,
+    Types.Loop,
+    Types.Musician
   }
 
   use TypedStruct
 
   @type id() :: String.t()
+  @type game_view() :: [:game_end | :game_start | :playback_voting | :pregame_lobby | :recording]
 
   # TODO move to config
   @default_rounds_to_win 2
@@ -20,14 +23,13 @@ defmodule Progressions.Rooms.Room.GameServer do
   typedstruct do
     # static state
     field(:room_id, String.t(), enforce: true)
-    field(:room_start_utc, integer(), enforce: true)
+    field(:server_start_time, integer(), enforce: true)
     field(:timestep_us, integer(), enforce: true)
     field(:quantization_threshold, float(), enforce: true)
     field(:rounds_to_win, integer(), default: @default_rounds_to_win)
     field(:game_size_num_players, integer(), default: @default_game_size_num_players)
 
     # dynamic state
-    field(:view, String.t(), default: :pregame_lobby)
     field(:musicians, %{required(id()) => %Musician{}})
     field(:round, integer(), default: 0)
     field(:scores, %{required(id()) => integer()}, default: %{})
@@ -35,8 +37,29 @@ defmodule Progressions.Rooms.Room.GameServer do
 
     # ephemeral state
     field(:ready_ups, %{required(id()) => boolean()}, default: %{})
-    field(:recordings, %{required(id()) => boolean()}, default: %{})
+    field(:recordings, %{required(id()) => %Loop{}}, default: %{})
     field(:votes, %{required(id()) => id()}, default: %{})
+  end
+
+  @spec start_link(any, Progressions.Types.Configs.ServerConfig.t()) ::
+          :ignore | {:error, any} | {:ok, pid}
+  def start_link(room_id, %ServerConfig{} = config \\ %ServerConfig{}) do
+    {:ok, game_server} =
+      GenStateMachine.start_link(
+        __MODULE__,
+        {:pregame_lobby,
+         %__MODULE__{
+           room_id: room_id,
+           server_start_time: :os.system_time(:microsecond),
+           timestep_us: config.timestep_us,
+           quantization_threshold: config.quantization_threshold,
+           musicians: %{}
+         }}
+      )
+
+    Pids.register({:game_server, room_id}, game_server)
+
+    {:ok, game_server}
   end
 
   ## Event Callbacks
@@ -50,6 +73,8 @@ defmodule Progressions.Rooms.Room.GameServer do
       ) do
     {:next_state, view, data, [{:reply, from, view}]}
   end
+
+  # TODO handle player drop
 
   # Game View: Pregame Lobby
   def handle_event(
@@ -70,10 +95,13 @@ defmodule Progressions.Rooms.Room.GameServer do
         |> Enum.reduce(%{}, &Map.put(&2, &1, 0))
 
       updated_data = %__MODULE__{updated_data | scores: init_scores}
-      {:next_state, :game_start, updated_data, [{:reply, from, updated_data}]}
+
+      {:next_state, :game_start, updated_data,
+       [{:reply, from, sync_across_clients(:game_start, updated_data)}]}
     else
       # wait for more musicians to join
-      {:next_state, :pregame_lobby, updated_data, [{:reply, from, updated_data}]}
+      {:next_state, :pregame_lobby, updated_data,
+       [{:reply, from, sync_across_clients(:pregame_lobby, updated_data)}]}
     end
   end
 
@@ -97,12 +125,16 @@ defmodule Progressions.Rooms.Room.GameServer do
       # valid ready up - store ready up in game server state
       {true, false} ->
         updated_data = %__MODULE__{data | ready_ups: Map.put(ready_ups, musician_id, true)}
-        {:next_state, :game_start, updated_data, [{:reply, from, updated_data}]}
+
+        {:next_state, :game_start, updated_data,
+         [{:reply, from, sync_across_clients(:game_start, updated_data)}]}
 
       # last needed ready up - reset ready ups and transition to next game server state
       {true, true} ->
         updated_data = %__MODULE__{data | ready_ups: %{}}
-        {:next_state, :recording, updated_data, [{:reply, from, updated_data}]}
+
+        {:next_state, :recording, updated_data,
+         [{:reply, from, sync_across_clients(:recording, updated_data)}]}
     end
   end
 
@@ -126,12 +158,16 @@ defmodule Progressions.Rooms.Room.GameServer do
       # valid recording - store recording in game server state
       {true, false} ->
         updated_data = %__MODULE__{data | recordings: Map.put(recordings, musician_id, recording)}
-        {:next_state, :recording, updated_data, [{:reply, from, updated_data}]}
+
+        {:next_state, :recording, updated_data,
+         [{:reply, from, sync_across_clients(:recording, updated_data)}]}
 
       # last needed recording - store recording and transition to playback voting server state
       {true, true} ->
         updated_data = %__MODULE__{data | recordings: Map.put(recordings, musician_id, recording)}
-        {:next_state, :playback_voting, updated_data, [{:reply, from, updated_data}]}
+
+        {:next_state, :playback_voting, updated_data,
+         [{:reply, from, sync_across_clients(:playback_voting, updated_data)}]}
     end
   end
 
@@ -149,7 +185,6 @@ defmodule Progressions.Rooms.Room.GameServer do
           rounds_to_win: rounds_to_win
         } = data
       ) do
-    # TODO add guard to prevent self voting? `and musician_id != vote`
     valid_vote? =
       Map.has_key?(musicians, musician_id) and Map.has_key?(recordings, vote) and
         !Map.has_key?(votes, musician_id) and musician_id != vote
@@ -164,7 +199,9 @@ defmodule Progressions.Rooms.Room.GameServer do
       # valid vote - store vote in game server state
       {true, false} ->
         updated_data = %__MODULE__{data | votes: Map.put(votes, musician_id, vote)}
-        {:next_state, :playback_voting, updated_data, [{:reply, from, updated_data}]}
+
+        {:next_state, :playback_voting, updated_data,
+         [{:reply, from, sync_across_clients(:playback_voting, updated_data)}]}
 
       # last needed vote - calculate score and transition to next round or game end
       {true, true} ->
@@ -183,7 +220,9 @@ defmodule Progressions.Rooms.Room.GameServer do
         if Map.get(updated_scores, round_winner) >= rounds_to_win do
           # game has been won by round winner
           updated_data = %__MODULE__{data | votes: %{}, scores: updated_scores}
-          {:next_state, :game_end, updated_data, [{:reply, from, updated_data}]}
+
+          {:next_state, :game_end, updated_data,
+           [{:reply, from, sync_across_clients(:game_end, updated_data)}]}
         else
           # continue to next round
           updated_data = %__MODULE__{
@@ -194,7 +233,8 @@ defmodule Progressions.Rooms.Room.GameServer do
               round: round + 1
           }
 
-          {:next_state, :recording, updated_data, [{:reply, from, updated_data}]}
+          {:next_state, :recording, updated_data,
+           [{:reply, from, sync_across_clients(:recording, updated_data)}]}
         end
     end
   end
@@ -202,5 +242,67 @@ defmodule Progressions.Rooms.Room.GameServer do
   # Game View: Game End
   def handle_event(:cast, :next_state, :game_end, %__MODULE__{winner: _winner} = data) do
     {:next_state, :game_end, data}
+  end
+
+  ## Helpers
+
+  # transform game server state into update payload for clients
+  defp server_to_client_game_state(%__MODULE__{
+         room_id: room_id,
+         server_start_time: server_start_time,
+         timestep_us: timestep_us,
+         quantization_threshold: quantization_threshold,
+         rounds_to_win: rounds_to_win,
+         game_size_num_players: game_size_num_players,
+         musicians: musicians,
+         round: round,
+         scores: scores,
+         winner: winner,
+         ready_ups: ready_ups,
+         recordings: recordings,
+         votes: votes
+       }) do
+    # votes are secret - should not expose actual votes to clients, just progress on
+    # voting as a whole
+    num_votes_cast =
+      votes
+      |> Map.keys()
+      |> length()
+
+    # should only expose very limited info about musicians
+    shallow_musicians =
+      musicians
+      |> Map.values()
+      |> Enum.map(fn %Musician{musician_id: musician_id} ->
+        %{musician_id: musician_id}
+      end)
+
+    %{
+      room_id: room_id,
+      room_start_time: server_start_time,
+      timestep_us: timestep_us,
+      quantization_threshold: quantization_threshold,
+      rounds_to_win: rounds_to_win,
+      game_size_num_players: game_size_num_players,
+      musicians: shallow_musicians,
+      round: round,
+      scores: scores,
+      winner: winner,
+      ready_ups: ready_ups,
+      recordings: recordings,
+      num_votes_cast: num_votes_cast
+    }
+  end
+
+  defp sync_across_clients(view, %__MODULE__{room_id: room_id} = game_server_data)
+       when is_atom(view) do
+    client_payload = %{
+      view: view,
+      game_state: server_to_client_game_state(game_server_data)
+    }
+
+    ProgressionsWeb.Endpoint.broadcast("room:#{room_id}", "view_update", client_payload)
+
+    game_server_data
   end
 end

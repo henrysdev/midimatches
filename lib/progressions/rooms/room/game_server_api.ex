@@ -5,33 +5,11 @@ defmodule Progressions.Rooms.Room.GameServerAPI do
   require Logger
 
   alias Progressions.{
-    Pids,
-    Rooms.Room.GameServer,
-    Types.Configs.ServerConfig,
     Types.Loop,
     Types.Musician
   }
 
   @type id() :: String.t()
-
-  def start_game_server(room_id, %ServerConfig{} = config \\ %ServerConfig{}) do
-    {:ok, game_server} =
-      GenStateMachine.start_link(
-        GameServer,
-        {:pregame_lobby,
-         %GameServer{
-           room_id: room_id,
-           room_start_utc: :os.system_time(:microsecond),
-           timestep_us: config.timestep_us,
-           quantization_threshold: config.quantization_threshold,
-           musicians: %{}
-         }}
-      )
-
-    Pids.register({:server, room_id}, game_server)
-
-    {:ok, game_server}
-  end
 
   @spec get_current_view(pid()) :: atom()
   @doc """

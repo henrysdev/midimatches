@@ -6,6 +6,7 @@ defmodule Progressions.Rooms.Room do
 
   alias Progressions.{
     Pids,
+    Rooms.Room.GameServer,
     Rooms.Room.Server,
     Types.Configs.RoomConfig
   }
@@ -26,6 +27,8 @@ defmodule Progressions.Rooms.Room do
     Pids.register({:room, room_id}, self())
 
     children = [
+      # TODO deprecate Server
+      {GameServer, [room_id, room_config.server]},
       {Server, [room_id, room_config.server]}
     ]
 

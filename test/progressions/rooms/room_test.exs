@@ -4,6 +4,7 @@ defmodule Progressions.RoomTest do
   alias Progressions.{
     Pids,
     Rooms.Room,
+    Rooms.Room.GameServer,
     Rooms.Room.Server,
     Rooms.Room.ServerAPI,
     TestHelpers,
@@ -24,7 +25,10 @@ defmodule Progressions.RoomTest do
 
     started_children = Supervisor.which_children(sup) |> Enum.reverse()
 
-    assert [{Server, _, :worker, [Server]}] = started_children
+    assert [
+             {GameServer, _, :worker, [GameServer]},
+             {Server, _, :worker, [Server]}
+           ] = started_children
   end
 
   test "simulates a simple room session" do
