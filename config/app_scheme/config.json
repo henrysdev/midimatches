@@ -2,7 +2,10 @@
   "rooms": [
     {
       "server": {
-        "timestep_us": 50000
+        "timestep_us": 50000,
+        "quantization_threshold": 0.5,
+        "rounds_to_win": 2,
+        "game_size_num_players": 3
       }
     }
   ]

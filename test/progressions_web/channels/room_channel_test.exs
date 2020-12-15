@@ -24,12 +24,16 @@ defmodule ProgressionsWeb.RoomChannelTest do
       UserSocket
       |> socket()
       |> subscribe_and_join(RoomChannel, "room:1")
+      |> enter_room()
 
     %{socket: socket}
   end
 
   test "client joins existing room successfully", %{socket: socket} do
-    {:ok, _, _} = subscribe_and_join(socket, RoomChannel, "room:1")
+    {:ok, _, _} =
+      socket
+      |> subscribe_and_join(RoomChannel, "room:1")
+      |> enter_room()
 
     {_view, %GameServer{musicians: musicians_in_room}} =
       {:game_server, "1"}
@@ -46,6 +50,13 @@ defmodule ProgressionsWeb.RoomChannelTest do
 
   test "client gets error when non existent room joined", %{socket: socket} do
     assert {:error, _} = RoomChannel.join("room:3", %{}, socket)
+  end
+
+  test "client musician enter room", %{socket: socket} do
+    push(socket, "musician_enter_room", %{})
+
+    assert_broadcast("view_update", %{})
+    assert_push("view_update", %{})
   end
 
   test "client musician ready up", %{socket: socket} do
@@ -75,6 +86,11 @@ defmodule ProgressionsWeb.RoomChannelTest do
 
     assert_broadcast("view_update", %{})
     assert_push("view_update", %{})
+  end
+
+  defp enter_room({:ok, params, socket}) do
+    push(socket, "musician_enter_room", %{})
+    {:ok, params, socket}
   end
 
   # TODO fix test assertions...

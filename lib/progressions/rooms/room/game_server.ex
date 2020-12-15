@@ -313,6 +313,8 @@ defmodule Progressions.Rooms.Room.GameServer do
       game_state: server_to_client_game_state(game_server_data)
     }
 
+    Logger.info({:SYNCING, client_payload} |> inspect(pretty: true))
+
     ProgressionsWeb.Endpoint.broadcast("room:#{room_id}", "view_update", client_payload)
 
     game_server_data

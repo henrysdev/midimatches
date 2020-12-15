@@ -25,3 +25,19 @@ export interface MIDINoteEvent {
   velocity: number;
   receivedTimestep: number;
 }
+
+export interface GameContextType {
+  gameSizeNumPlayers: number;
+  musicians: Musician[];
+  numVotesCast: number;
+  quantizationThreshold: number;
+  readyUps: any;
+  recordings: any;
+  roomId: string;
+  roomStartTime: number;
+  round: number;
+  roundsToWin: number;
+  scores: any;
+  timestepUs: number;
+  winner: null;
+}

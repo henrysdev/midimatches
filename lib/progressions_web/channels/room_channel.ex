@@ -35,8 +35,6 @@ defmodule ProgressionsWeb.RoomChannel do
 
   def join("room:" <> room_id, _params, socket) do
     if Rooms.room_exists?(room_id) do
-      send(self(), "init_room_client")
-
       {:ok,
        socket
        |> assign(room_id: room_id)}
@@ -45,7 +43,11 @@ defmodule ProgressionsWeb.RoomChannel do
     end
   end
 
-  def handle_info("init_room_client", %{assigns: %{room_id: room_id}} = socket) do
+  def handle_in(
+        "musician_enter_room",
+        _params,
+        %Phoenix.Socket{assigns: %{room_id: room_id}} = socket
+      ) do
     room_server = Pids.fetch!({:game_server, room_id})
     musician_id = Persistence.gen_serial_id()
 
