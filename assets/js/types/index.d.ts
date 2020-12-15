@@ -16,7 +16,7 @@ export interface Loop {
 }
 
 export interface Musician {
-  musician_id: string;
+  musicianId: string;
   loop: Loop;
 }
 

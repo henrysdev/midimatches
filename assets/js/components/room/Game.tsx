@@ -55,16 +55,33 @@ const Game: React.FC<GameProps> = () => {
       {(() => {
         switch (currentView) {
           case GAME_VIEW.PREGAME_LOBBY:
-            return <PregameLobbyView submitEnterRoom={pushMessageToChannel} />;
+            return (
+              <PregameLobbyView pushMessageToChannel={pushMessageToChannel} />
+            );
 
           case GAME_VIEW.GAME_START:
-            return <GameStartView submitReadyUp={pushMessageToChannel} />;
+            return (
+              <GameStartView pushMessageToChannel={pushMessageToChannel} />
+            );
 
           case GAME_VIEW.RECORDING:
-            return <RecordingView submitRecording={pushMessageToChannel} />;
+            return (
+              <RecordingView pushMessageToChannel={pushMessageToChannel} />
+            );
 
           case GAME_VIEW.PLAYBACK_VOTING:
-            return <PlaybackVotingView submitVote={pushMessageToChannel} />;
+            return (
+              <PlaybackVotingView
+                pushMessageToChannel={pushMessageToChannel}
+                eligibleMusiciansToVoteFor={gameContext.musicians
+                  .map(({ musicianId }) => musicianId)
+                  .filter((mId) => {
+                    console.log("GAMECONTEXT: ", gameContext);
+                    console.log("mId: ", mId);
+                    return mId !== "TODO MUST KNOW YOUR OWN PLAYER ID...";
+                  })}
+              />
+            );
 
           case GAME_VIEW.GAME_END:
             return <GameEndView />;

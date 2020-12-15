@@ -62,6 +62,18 @@ defmodule ProgressionsWeb.RoomChannel do
   end
 
   def handle_in(
+        "musician_leave_room",
+        _params,
+        %Phoenix.Socket{assigns: %{room_server: room_server, musician_id: musician_id}} = socket
+      ) do
+    GameServerAPI.drop_musician(room_server, musician_id)
+
+    {:noreply, socket}
+  end
+
+  def handle_in("musician_leave_room", _params, socket), do: {:noreply, socket}
+
+  def handle_in(
         "musician_ready_up",
         _params,
         %Phoenix.Socket{assigns: %{room_server: room_server, musician_id: musician_id}} = socket

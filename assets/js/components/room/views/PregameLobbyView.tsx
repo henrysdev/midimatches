@@ -1,21 +1,25 @@
 import React from "react";
 import { SimpleButton } from "../../common/index";
-import { SUBMIT_ENTER_ROOM } from "../../../constants/index";
+import { SUBMIT_ENTER_ROOM, SUBMIT_LEAVE_ROOM } from "../../../constants/index";
 
 interface PregameLobbyViewProps {
-  submitEnterRoom: Function;
+  pushMessageToChannel: Function;
 }
 
 const PregameLobbyView: React.FC<PregameLobbyViewProps> = ({
-  submitEnterRoom,
+  pushMessageToChannel,
 }) => {
+  window.addEventListener("beforeunload", () =>
+    pushMessageToChannel(SUBMIT_LEAVE_ROOM, {})
+  );
+
   return (
     <div>
       <h3>PregameLobby View</h3>
       <SimpleButton
         label="Join Room"
         callback={() => {
-          submitEnterRoom(SUBMIT_ENTER_ROOM, {});
+          pushMessageToChannel(SUBMIT_ENTER_ROOM, {});
         }}
         disabled={false}
       />

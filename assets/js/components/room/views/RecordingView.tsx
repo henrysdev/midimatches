@@ -5,10 +5,12 @@ import { SUBMIT_RECORDING_EVENT } from "../../../constants/index";
 import { GameContext } from "../../../contexts/index";
 
 interface RecordingViewProps {
-  submitRecording: Function;
+  pushMessageToChannel: Function;
 }
 
-const RecordingView: React.FC<RecordingViewProps> = ({ submitRecording }) => {
+const RecordingView: React.FC<RecordingViewProps> = ({
+  pushMessageToChannel,
+}) => {
   const [playerRecording, setPlayerRecording] = useState<Object>();
   const gameCtx = useContext(GameContext);
 
@@ -21,7 +23,7 @@ const RecordingView: React.FC<RecordingViewProps> = ({ submitRecording }) => {
         label="Submit Recording"
         callback={() => {
           if (!!playerRecording) {
-            submitRecording(SUBMIT_RECORDING_EVENT, {
+            pushMessageToChannel(SUBMIT_RECORDING_EVENT, {
               recording: JSON.stringify(playerRecording),
             });
             setPlayerRecording(undefined);

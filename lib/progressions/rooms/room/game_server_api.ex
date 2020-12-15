@@ -28,6 +28,14 @@ defmodule Progressions.Rooms.Room.GameServerAPI do
     GenStateMachine.call(pid, {:add_musician, musician})
   end
 
+  @spec drop_musician(pid(), id()) :: :ok
+  @doc """
+  Drop an existing musician from the game. Should be called on client disconnect
+  """
+  def drop_musician(pid, musician_id) do
+    GenStateMachine.call(pid, {:drop_musician, musician_id})
+  end
+
   @spec musician_ready_up(pid(), id()) :: :ok
   @doc """
   Ready up a musician in the game. All ready ups from active musicians required to progress

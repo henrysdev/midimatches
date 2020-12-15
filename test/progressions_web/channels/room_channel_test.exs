@@ -59,6 +59,13 @@ defmodule ProgressionsWeb.RoomChannelTest do
     assert_push("view_update", %{})
   end
 
+  test "client musician leave room", %{socket: socket} do
+    push(socket, "musician_leave_room", %{})
+
+    assert_broadcast("view_update", %{})
+    assert_push("view_update", %{})
+  end
+
   test "client musician ready up", %{socket: socket} do
     push(socket, "musician_ready_up", %{})
 

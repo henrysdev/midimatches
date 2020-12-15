@@ -75,7 +75,36 @@ defmodule Progressions.Rooms.Room.GameServer do
     {:next_state, view, data, [{:reply, from, view}]}
   end
 
-  # TODO handle player drop
+  def handle_event(
+        {:call, from},
+        {:drop_musician, musician_id},
+        :pregame_lobby,
+        %__MODULE__{
+          musicians: musicians,
+          scores: scores,
+          ready_ups: ready_ups,
+          votes: votes,
+          recordings: recordings
+        } = data
+      ) do
+    updated_musicians = Map.delete(musicians, musician_id)
+    updated_scores = Map.delete(scores, musician_id)
+    updated_ready_ups = Map.delete(ready_ups, musician_id)
+    updated_votes = Map.delete(votes, musician_id)
+    updated_recordings = Map.delete(recordings, musician_id)
+
+    updated_data = %__MODULE__{
+      data
+      | musicians: updated_musicians,
+        scores: updated_scores,
+        ready_ups: updated_ready_ups,
+        votes: updated_votes,
+        recordings: updated_recordings
+    }
+
+    {:next_state, :pregame_lobby, updated_data,
+     [{:reply, from, sync_across_clients(:pregame_lobby, updated_data)}]}
+  end
 
   # Game View: Pregame Lobby
   def handle_event(
@@ -220,7 +249,12 @@ defmodule Progressions.Rooms.Room.GameServer do
 
         if Map.get(updated_scores, round_winner) >= rounds_to_win do
           # game has been won by round winner
-          updated_data = %__MODULE__{data | votes: %{}, scores: updated_scores}
+          updated_data = %__MODULE__{
+            data
+            | votes: %{},
+              scores: updated_scores,
+              winner: round_winner
+          }
 
           {:next_state, :game_end, updated_data,
            [{:reply, from, sync_across_clients(:game_end, updated_data)}]}

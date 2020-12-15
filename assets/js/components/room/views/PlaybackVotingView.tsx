@@ -3,24 +3,31 @@ import { SimpleButton } from "../../common/index";
 import { SUBMIT_VOTE_EVENT } from "../../../constants/index";
 
 interface PlaybackVotingViewProps {
-  submitVote: Function;
+  pushMessageToChannel: Function;
+  eligibleMusiciansToVoteFor: string[];
 }
 
 const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
-  submitVote,
+  pushMessageToChannel,
+  eligibleMusiciansToVoteFor,
 }) => {
   return (
     <div>
       <h3>PlaybackVoting View</h3>
-      <SimpleButton
-        label="Vote"
-        callback={() => {
-          submitVote(SUBMIT_VOTE_EVENT, {
-            vote: "fakeMusicianId",
-          });
-        }}
-        disabled={false}
-      />
+      {eligibleMusiciansToVoteFor.map((musicianId: string) => {
+        return (
+          <SimpleButton
+            key={`vote-${musicianId}`}
+            label={`Vote for ${musicianId}`}
+            callback={() => {
+              pushMessageToChannel(SUBMIT_VOTE_EVENT, {
+                vote: musicianId,
+              });
+            }}
+            disabled={false}
+          />
+        );
+      })}
     </div>
   );
 };
