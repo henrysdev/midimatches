@@ -132,39 +132,4 @@ defmodule ProgressionsWeb.RoomChannelTest do
   #   assert_receive expected_payload
   #   ProgressionsWeb.Endpoint.unsubscribe(room_topic)
   # end
-
-  # test "client sends update_musician_loop event and triggers broadcast_updated_musician_loop", %{
-  #   socket: socket
-  # } do
-  #   loop_json =
-  #     %{
-  #       start_timestep: 2,
-  #       length: 8,
-  #       timestep_slices: [
-  #         %{
-  #           timestep: 0,
-  #           notes: [
-  #             %{
-  #               instrument: "tuba",
-  #               key: 11,
-  #               duration: 4
-  #             }
-  #           ]
-  #         }
-  #       ]
-  #     }
-  #     |> Jason.encode!()
-
-  #   push(socket, "update_musician_loop", %{"loop" => loop_json})
-
-  #   [_expected_musician_id | _] =
-  #     Pids.fetch!({:server, "1"})
-  #     |> ServerAPI.get_musicians()
-  #     |> Enum.map(& &1.musician_id)
-
-  #   assert_push("broadcast_updated_musician_loop", %{
-  #     "musician_id" => _expected_musician_id,
-  #     "loop" => loop_json
-  #   })
-  # end
 end
