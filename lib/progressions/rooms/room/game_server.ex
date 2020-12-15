@@ -3,63 +3,64 @@ defmodule Progressions.Rooms.Room.GameServer do
   The game logic for the game server represented as an event-driven state machine
   """
   use GenStateMachine
+  use TypedStruct
 
   alias Progressions.{
     Pids,
-    Types.Configs.ServerConfig,
+    Types.Configs.GameServerConfig,
     Types.Loop,
     Types.Musician
   }
 
-  use TypedStruct
+  require Logger
 
   @type id() :: String.t()
-  @type game_view() :: [:game_end | :game_start | :playback_voting | :pregame_lobby | :recording]
-
-  # TODO move to config
-  @default_rounds_to_win 2
-  @default_game_size_num_players 3
+  @type game_view() :: [:pregame_lobby | :game_start | :recording | :playback_voting | :game_end]
 
   typedstruct do
-    # static state
+    # server life cycle state
     field(:room_id, String.t(), enforce: true)
     field(:server_start_time, integer(), enforce: true)
     field(:timestep_us, integer(), enforce: true)
     field(:quantization_threshold, float(), enforce: true)
-    field(:rounds_to_win, integer(), default: @default_rounds_to_win)
-    field(:game_size_num_players, integer(), default: @default_game_size_num_players)
+    field(:rounds_to_win, integer(), enforce: true)
+    field(:game_size_num_players, integer(), enforce: true)
 
-    # dynamic state
-    field(:musicians, %{required(id()) => %Musician{}})
+    # game life cycle state
+    field(:musicians, %{required(id()) => %Musician{}}, default: %{})
     field(:round, integer(), default: 0)
     field(:scores, %{required(id()) => integer()}, default: %{})
     field(:winner, id())
 
-    # ephemeral state
+    # round life cycle state
     field(:ready_ups, %{required(id()) => boolean()}, default: %{})
     field(:recordings, %{required(id()) => %Loop{}}, default: %{})
     field(:votes, %{required(id()) => id()}, default: %{})
   end
 
-  @spec start_link(any, Progressions.Types.Configs.ServerConfig.t()) ::
-          :ignore | {:error, any} | {:ok, pid}
-  def start_link(room_id, %ServerConfig{} = config \\ %ServerConfig{}) do
-    {:ok, game_server} =
-      GenStateMachine.start_link(
-        __MODULE__,
-        {:pregame_lobby,
-         %__MODULE__{
-           room_id: room_id,
-           server_start_time: :os.system_time(:microsecond),
-           timestep_us: config.timestep_us,
-           quantization_threshold: config.quantization_threshold,
-           musicians: %{}
-         }}
-      )
+  def start_link(args) do
+    GenStateMachine.start_link(__MODULE__, args)
+  end
 
-    Pids.register({:game_server, room_id}, game_server)
+  def init(args) do
+    {room_id, server_config} =
+      case args do
+        [room_id] -> {room_id, %GameServerConfig{}}
+        [room_id, server_config] -> {room_id, server_config}
+      end
 
-    {:ok, game_server}
+    Pids.register({:game_server, room_id}, self())
+
+    data = %__MODULE__{
+      room_id: room_id,
+      server_start_time: :os.system_time(:microsecond),
+      timestep_us: server_config.timestep_us,
+      quantization_threshold: server_config.quantization_threshold,
+      game_size_num_players: server_config.game_size_num_players,
+      rounds_to_win: server_config.rounds_to_win
+    }
+
+    {:ok, :pregame_lobby, data}
   end
 
   ## Event Callbacks
@@ -244,6 +245,17 @@ defmodule Progressions.Rooms.Room.GameServer do
     {:next_state, :game_end, data}
   end
 
+  # Catchall
+
+  def handle_event({:call, from}, params, state, data) do
+    Logger.warn(
+      {:CATCHALL_CLAUSE_DEBUG, %{from: from, params: params, state: state, data: data}}
+      |> inspect(pretty: true)
+    )
+
+    {:next_state, state, data, [{:reply, from, data}]}
+  end
+
   ## Helpers
 
   # transform game server state into update payload for clients
@@ -262,7 +274,7 @@ defmodule Progressions.Rooms.Room.GameServer do
          recordings: recordings,
          votes: votes
        }) do
-    # votes are secret - should not expose actual votes to clients, just progress on
+    # votes are secret - should not expose actual votes to clients, only progress on
     # voting as a whole
     num_votes_cast =
       votes

@@ -18,7 +18,7 @@ defmodule Progressions.GameServerTest do
     room_id = "1"
     musician_ids = ["musician1", "musician2", "musician3"]
 
-    {:ok, game_server} = GameServer.start_link(room_id)
+    {:ok, game_server} = GameServer.start_link([room_id])
 
     {views, num_musicians} =
       Enum.reduce(
@@ -44,10 +44,10 @@ defmodule Progressions.GameServerTest do
     room_id = "1"
     musician_ids = ["musician1", "musician2", "musician3"]
 
-    {:ok, game_server} = GameServer.start_link(room_id)
+    {:ok, game_server} = GameServer.start_link([room_id])
 
     game_server
-    |> add_musicians(musician_ids)
+    |> TestHelpers.add_musicians(musician_ids)
 
     {views, num_ready_ups} =
       Enum.reduce(
@@ -71,11 +71,11 @@ defmodule Progressions.GameServerTest do
     room_id = "1"
     musician_ids = ["musician1", "musician2", "musician3"]
 
-    {:ok, game_server} = GameServer.start_link(room_id)
+    {:ok, game_server} = GameServer.start_link([room_id])
 
     game_server
-    |> add_musicians(musician_ids)
-    |> ready_up_musicians(musician_ids)
+    |> TestHelpers.add_musicians(musician_ids)
+    |> TestHelpers.ready_up_musicians(musician_ids)
 
     {views, num_recordings} =
       Enum.reduce(
@@ -109,12 +109,12 @@ defmodule Progressions.GameServerTest do
       "musician3" => "musician1"
     }
 
-    {:ok, game_server} = GameServer.start_link(room_id)
+    {:ok, game_server} = GameServer.start_link([room_id])
 
     game_server
-    |> add_musicians(musician_ids)
-    |> ready_up_musicians(musician_ids)
-    |> record_musicians(musician_ids)
+    |> TestHelpers.add_musicians(musician_ids)
+    |> TestHelpers.ready_up_musicians(musician_ids)
+    |> TestHelpers.record_musicians(musician_ids)
 
     {views, num_votes, scores} =
       Enum.reduce(
@@ -145,14 +145,14 @@ defmodule Progressions.GameServerTest do
       "musician3" => "musician1"
     }
 
-    {:ok, game_server} = GameServer.start_link(room_id)
+    {:ok, game_server} = GameServer.start_link([room_id])
 
     game_server
-    |> add_musicians(musician_ids)
-    |> ready_up_musicians(musician_ids)
-    |> record_musicians(musician_ids)
-    |> vote_for_musicians(musician_votes)
-    |> record_musicians(musician_ids)
+    |> TestHelpers.add_musicians(musician_ids)
+    |> TestHelpers.ready_up_musicians(musician_ids)
+    |> TestHelpers.record_musicians(musician_ids)
+    |> TestHelpers.vote_for_musicians(musician_votes)
+    |> TestHelpers.record_musicians(musician_ids)
 
     {views, num_votes, scores} =
       Enum.reduce(
@@ -171,51 +171,5 @@ defmodule Progressions.GameServerTest do
     assert [:playback_voting, :playback_voting, :game_end] = Enum.reverse(views)
     assert [1, 2, 0] = Enum.reverse(num_votes)
     assert [%{"musician1" => 1}, %{"musician1" => 1}, %{"musician1" => 2}] = Enum.reverse(scores)
-  end
-
-  # Helpers
-
-  defp add_musicians(game_server, musician_ids) do
-    Enum.each(musician_ids, fn m_id ->
-      GameServerAPI.add_musician(game_server, %Musician{
-        musician_id: m_id
-      })
-    end)
-
-    game_server
-  end
-
-  defp ready_up_musicians(game_server, musician_ids) do
-    Enum.each(musician_ids, fn m_id ->
-      GameServerAPI.musician_ready_up(game_server, m_id)
-    end)
-
-    game_server
-  end
-
-  defp record_musicians(game_server, musician_ids) do
-    Enum.each(musician_ids, fn m_id ->
-      GameServerAPI.musician_recording(
-        game_server,
-        m_id,
-        %Loop{
-          start_timestep: 0,
-          length: 4,
-          timestep_slices: []
-        }
-      )
-    end)
-
-    game_server
-  end
-
-  defp vote_for_musicians(game_server, musician_votes) do
-    musician_votes
-    |> Map.to_list()
-    |> Enum.each(fn {m_id, m_vote} ->
-      GameServerAPI.musician_vote(game_server, m_id, m_vote)
-    end)
-
-    game_server
   end
 end

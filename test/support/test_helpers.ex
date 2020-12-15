@@ -5,7 +5,10 @@ defmodule Progressions.TestHelpers do
 
   alias Progressions.{
     Persistence,
-    Rooms
+    Rooms,
+    Rooms.Room.GameServerAPI,
+    Types.Loop,
+    Types.Musician
   }
 
   def teardown_rooms do
@@ -15,6 +18,50 @@ defmodule Progressions.TestHelpers do
 
     reset_persistence()
     unregister_keys(pids)
+  end
+
+  def add_musicians(game_server, musician_ids) do
+    Enum.each(musician_ids, fn m_id ->
+      GameServerAPI.add_musician(game_server, %Musician{
+        musician_id: m_id
+      })
+    end)
+
+    game_server
+  end
+
+  def ready_up_musicians(game_server, musician_ids) do
+    Enum.each(musician_ids, fn m_id ->
+      GameServerAPI.musician_ready_up(game_server, m_id)
+    end)
+
+    game_server
+  end
+
+  def record_musicians(game_server, musician_ids) do
+    Enum.each(musician_ids, fn m_id ->
+      GameServerAPI.musician_recording(
+        game_server,
+        m_id,
+        %Loop{
+          start_timestep: 0,
+          length: 4,
+          timestep_slices: []
+        }
+      )
+    end)
+
+    game_server
+  end
+
+  def vote_for_musicians(game_server, musician_votes) do
+    musician_votes
+    |> Map.to_list()
+    |> Enum.each(fn {m_id, m_vote} ->
+      GameServerAPI.musician_vote(game_server, m_id, m_vote)
+    end)
+
+    game_server
   end
 
   defp room_pids do

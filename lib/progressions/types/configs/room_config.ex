@@ -1,17 +1,13 @@
 defmodule Progressions.Types.Configs.RoomConfig do
   @moduledoc """
   Configurable fields for a new Room instance
-
-  TODO example complete config structure
-
-  TODO stop enforcing fields and set defaults here
   """
 
   use TypedStruct
 
-  alias Progressions.Types.Configs.ServerConfig
+  alias Progressions.Types.Configs.GameServerConfig
 
   typedstruct do
-    field(:server, %ServerConfig{}, default: %ServerConfig{})
+    field(:server, %GameServerConfig{}, default: %GameServerConfig{})
   end
 end

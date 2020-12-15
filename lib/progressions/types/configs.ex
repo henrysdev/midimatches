@@ -4,42 +4,20 @@ defmodule Progressions.Types.Configs do
   """
 
   alias Progressions.Types.{
+    Configs.GameServerConfig,
     Configs.ProgressionsConfig,
-    Configs.RoomConfig,
-    Configs.ServerConfig,
-    Loop,
-    Musician,
-    Note,
-    TimestepSlice
+    Configs.RoomConfig
   }
 
   # Schema to be followed for defining configurations
   @config_schema %ProgressionsConfig{
     rooms: [
       %RoomConfig{
-        server: %ServerConfig{
+        server: %GameServerConfig{
           timestep_us: nil,
-          musicians: [
-            %Musician{
-              musician_id: nil,
-              loop: %Loop{
-                length: nil,
-                start_timestep: nil,
-                timestep_slices: [
-                  %TimestepSlice{
-                    notes: [
-                      %Note{
-                        duration: nil,
-                        instrument: nil,
-                        key: nil
-                      }
-                    ],
-                    timestep: nil
-                  }
-                ]
-              }
-            }
-          ]
+          quantization_threshold: nil,
+          rounds_to_win: nil,
+          game_size_num_players: nil
         }
       }
     ]

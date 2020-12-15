@@ -9,14 +9,13 @@ defmodule ProgressionsWeb.RoomChannel do
     Persistence,
     Pids,
     Rooms,
-    Rooms.Room.ServerAPI,
+    Rooms.Room.GameServerAPI,
     Types.Loop,
     Types.Musician,
     Types.Note,
     Types.TimestepSlice
   }
 
-  # TODO move to type decode helper
   @loop_schema %Loop{
     length: nil,
     start_timestep: nil,
@@ -47,15 +46,12 @@ defmodule ProgressionsWeb.RoomChannel do
   end
 
   def handle_info("init_room_client", %{assigns: %{room_id: room_id}} = socket) do
-    room_server = Pids.fetch!({:server, room_id})
+    room_server = Pids.fetch!({:game_server, room_id})
     musician_id = Persistence.gen_serial_id()
 
-    ServerAPI.add_musician(room_server, %Musician{
+    GameServerAPI.add_musician(room_server, %Musician{
       musician_id: musician_id
     })
-
-    start_time_utc = ServerAPI.get_start_time(room_server)
-    push(socket, "init_room_client", %{start_time_utc: start_time_utc})
 
     {:noreply,
      socket
@@ -64,13 +60,33 @@ defmodule ProgressionsWeb.RoomChannel do
   end
 
   def handle_in(
-        "update_musician_loop",
-        %{"loop" => loop_json},
+        "musician_ready_up",
+        _params,
         %Phoenix.Socket{assigns: %{room_server: room_server, musician_id: musician_id}} = socket
       ) do
-    {:ok, loop} = Poison.decode(loop_json, as: @loop_schema)
+    GameServerAPI.musician_ready_up(room_server, musician_id)
 
-    ServerAPI.update_musician_loop(room_server, musician_id, loop)
+    {:noreply, socket}
+  end
+
+  def handle_in(
+        "musician_recording",
+        %{"recording" => loop_json},
+        %Phoenix.Socket{assigns: %{room_server: room_server, musician_id: musician_id}} = socket
+      ) do
+    {:ok, recording} = Poison.decode(loop_json, as: @loop_schema)
+
+    GameServerAPI.musician_recording(room_server, musician_id, recording)
+
+    {:noreply, socket}
+  end
+
+  def handle_in(
+        "musician_vote",
+        %{"vote" => vote},
+        %Phoenix.Socket{assigns: %{room_server: room_server, musician_id: musician_id}} = socket
+      ) do
+    GameServerAPI.musician_vote(room_server, musician_id, vote)
 
     {:noreply, socket}
   end

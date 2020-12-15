@@ -2,58 +2,8 @@
   "rooms": [
     {
       "server": {
-        "timestep_us": 50000,
-        "musicians": [
-          {
-              "musician_id": "1foo",
-              "loop": {
-                  "start_timestep": 0,
-                  "length": 8,
-                  "timestep_slices": [
-                    {
-                      "timestep": 0,
-                      "notes": [
-                        {
-                          "instrument": "kick",
-                          "key": 11,
-                          "duration": 1
-                        }
-                      ]
-                    }
-                  ]
-                }
-          },
-          {
-            "musician_id": "2foo",
-            "loop": {
-                "start_timestep": 8,
-                "length": 8,
-                "timestep_slices": [
-                  {
-                    "timestep": 0,
-                    "notes": [
-                      {
-                        "instrument": "epiano",
-                        "key": 22,
-                        "duration": 1
-                      }
-                    ]
-                  },
-                  {
-                    "timestep": 0,
-                    "notes": [
-                      {
-                        "instrument": "epiano",
-                        "key": 24,
-                        "duration": 1
-                      }
-                    ]
-                  }
-                ]
-            }
-          }
-      ]
-  }
+        "timestep_us": 50000
+      }
     }
   ]
 }
