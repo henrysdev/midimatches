@@ -33,6 +33,15 @@ defmodule ProgressionsWeb.RoomChannel do
     ]
   }
 
+  intercept ["view_update"]
+
+  def handle_out("view_update", msg, socket) do
+    push(socket, "view_update", msg)
+
+    IO.inspect({:VIEW_UPDATE})
+    {:noreply, socket}
+  end
+
   def join("room:" <> room_id, _params, socket) do
     if Rooms.room_exists?(room_id) do
       {:ok,
