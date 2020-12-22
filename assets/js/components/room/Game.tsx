@@ -76,8 +76,6 @@ const Game: React.FC<GameProps> = () => {
                 eligibleMusiciansToVoteFor={gameContext.musicians
                   .map(({ musicianId }) => musicianId)
                   .filter((mId) => {
-                    console.log("GAMECONTEXT: ", gameContext);
-                    console.log("mId: ", mId);
                     return mId !== "TODO MUST KNOW YOUR OWN PLAYER ID...";
                   })}
               />

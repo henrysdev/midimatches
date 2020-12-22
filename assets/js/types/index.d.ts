@@ -31,13 +31,13 @@ export interface GameContextType {
   musicians: Musician[];
   numVotesCast: number;
   quantizationThreshold: number;
-  readyUps: any;
-  recordings: any;
+  readyUps: any; //Map<string, boolean>;
+  recordings: any; // Map<string, Loop>;
   roomId: string;
   roomStartTime: number;
   round: number;
   roundsToWin: number;
-  scores: any;
+  scores: any; //Map<string, number>;
   timestepUs: number;
-  winner: null;
+  winner: string;
 }

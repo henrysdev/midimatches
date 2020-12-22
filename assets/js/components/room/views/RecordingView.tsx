@@ -12,7 +12,6 @@ const RecordingView: React.FC<RecordingViewProps> = ({
   pushMessageToChannel,
 }) => {
   const [playerRecording, setPlayerRecording] = useState<Object>();
-  const gameCtx = useContext(GameContext);
 
   return (
     <div>
