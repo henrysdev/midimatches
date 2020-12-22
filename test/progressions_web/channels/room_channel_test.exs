@@ -75,11 +75,13 @@ defmodule ProgressionsWeb.RoomChannelTest do
 
   test "client musician recording", %{socket: socket} do
     push(socket, "musician_recording", %{
-      "recording" => %Loop{
-        start_timestep: 0,
-        length: 4,
-        timestep_slices: []
-      }
+      "recording" =>
+        %Loop{
+          start_timestep: 0,
+          length: 4,
+          timestep_slices: []
+        }
+        |> Jason.encode!()
     })
 
     assert_broadcast("view_update", %{})

@@ -37,8 +37,6 @@ defmodule ProgressionsWeb.RoomChannel do
 
   def handle_out("view_update", msg, socket) do
     push(socket, "view_update", msg)
-
-    IO.inspect({:VIEW_UPDATE})
     {:noreply, socket}
   end
 
