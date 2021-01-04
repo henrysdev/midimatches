@@ -14,7 +14,7 @@ defmodule Progressions.Types.Configs do
     rooms: [
       %RoomConfig{
         server: %GameServerConfig{
-          timestep_us: nil,
+          timestep_size: nil,
           quantization_threshold: nil,
           rounds_to_win: nil,
           game_size_num_players: nil

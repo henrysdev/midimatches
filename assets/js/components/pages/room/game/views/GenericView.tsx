@@ -1,6 +1,6 @@
 import React from "react";
-import { SimpleButton } from "../../common/index";
-import { GAME_VIEW } from "../../../constants/index";
+import { SimpleButton } from "../../../../common/index";
+import { GAME_VIEW } from "../../../../../constants/index";
 
 interface GenericViewProps {
   currentView: GAME_VIEW;

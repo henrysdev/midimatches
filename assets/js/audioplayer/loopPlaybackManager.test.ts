@@ -144,7 +144,7 @@ describe("getDueTimestepSlices", () => {
       musicianId: defaultMusicianId,
       loop: mocks.defaultLoop,
     };
-    const expectedTimestepSlices: TimestepSlice[] = mocks.defaultLoop.timestep_slices.slice(
+    const expectedTimestepSlices: TimestepSlice[] = mocks.defaultLoop.timestepSlices.slice(
       1,
       4
     );
@@ -161,7 +161,7 @@ describe("getDueTimestepSlices", () => {
       musicianId: defaultMusicianId,
       loop: mocks.defaultLoop,
     };
-    const expectedTimestepSlices: TimestepSlice[] = mocks.defaultLoop.timestep_slices.slice(
+    const expectedTimestepSlices: TimestepSlice[] = mocks.defaultLoop.timestepSlices.slice(
       0,
       1
     );
@@ -177,7 +177,7 @@ describe("getDueTimestepSlices", () => {
       musicianId: defaultMusicianId,
       loop: mocks.defaultLoop,
     };
-    const expectedTimestepSlices: TimestepSlice[] = mocks.defaultLoop.timestep_slices.slice(
+    const expectedTimestepSlices: TimestepSlice[] = mocks.defaultLoop.timestepSlices.slice(
       1,
       100
     );

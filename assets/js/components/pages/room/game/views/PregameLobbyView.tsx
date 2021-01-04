@@ -1,6 +1,9 @@
-import React from "react";
-import { SimpleButton } from "../../common/index";
-import { SUBMIT_ENTER_ROOM, SUBMIT_LEAVE_ROOM } from "../../../constants/index";
+import React, { useEffect } from "react";
+import { SimpleButton } from "../../../../common/index";
+import {
+  SUBMIT_ENTER_ROOM,
+  SUBMIT_LEAVE_ROOM,
+} from "../../../../../constants/index";
 
 interface PregameLobbyViewProps {
   pushMessageToChannel: Function;

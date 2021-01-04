@@ -21,7 +21,7 @@ defmodule Progressions.Rooms.Room.GameServer do
     # server life cycle state
     field(:room_id, String.t(), enforce: true)
     field(:server_start_time, integer(), enforce: true)
-    field(:timestep_us, integer(), enforce: true)
+    field(:timestep_size, integer(), enforce: true)
     field(:quantization_threshold, float(), enforce: true)
     field(:rounds_to_win, integer(), enforce: true)
     field(:game_size_num_players, integer(), enforce: true)
@@ -54,7 +54,7 @@ defmodule Progressions.Rooms.Room.GameServer do
     data = %__MODULE__{
       room_id: room_id,
       server_start_time: :os.system_time(:microsecond),
-      timestep_us: server_config.timestep_us,
+      timestep_size: server_config.timestep_size,
       quantization_threshold: server_config.quantization_threshold,
       game_size_num_players: server_config.game_size_num_players,
       rounds_to_win: server_config.rounds_to_win
@@ -161,7 +161,11 @@ defmodule Progressions.Rooms.Room.GameServer do
 
       # last needed ready up - reset ready ups and transition to next game server state
       {true, true} ->
-        updated_data = %__MODULE__{data | ready_ups: %{}}
+        updated_data = %__MODULE__{
+          data
+          | ready_ups: %{},
+            server_start_time: :os.system_time(:microsecond)
+        }
 
         {:next_state, :recording, updated_data,
          [{:reply, from, sync_across_clients(:recording, updated_data)}]}
@@ -296,7 +300,7 @@ defmodule Progressions.Rooms.Room.GameServer do
   defp server_to_client_game_state(%__MODULE__{
          room_id: room_id,
          server_start_time: server_start_time,
-         timestep_us: timestep_us,
+         timestep_size: timestep_size,
          quantization_threshold: quantization_threshold,
          rounds_to_win: rounds_to_win,
          game_size_num_players: game_size_num_players,
@@ -326,7 +330,7 @@ defmodule Progressions.Rooms.Room.GameServer do
     %{
       room_id: room_id,
       room_start_time: server_start_time,
-      timestep_us: timestep_us,
+      timestep_size: timestep_size,
       quantization_threshold: quantization_threshold,
       rounds_to_win: rounds_to_win,
       game_size_num_players: game_size_num_players,

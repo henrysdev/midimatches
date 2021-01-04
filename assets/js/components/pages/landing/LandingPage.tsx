@@ -1,6 +1,6 @@
 import React from "react";
-import { MainMenu } from "../components/landing/MainMenu";
-import { Main } from "../components/common/Main";
+import { MainMenu } from "./MainMenu";
+import { Main } from "../../common/Main";
 
 const LandingPage: React.FC = () => {
   return (

@@ -10,9 +10,9 @@ export interface TimestepSlice {
 }
 
 export interface Loop {
-  start_timestep: number;
+  startTimestep: number;
   length: number;
-  timestep_slices: TimestepSlice[];
+  timestepSlices: TimestepSlice[];
 }
 
 export interface Musician {
@@ -38,6 +38,6 @@ export interface GameContextType {
   round: number;
   roundsToWin: number;
   scores: any; //Map<string, number>;
-  timestepUs: number;
+  timestepSize: number;
   winner: string;
 }

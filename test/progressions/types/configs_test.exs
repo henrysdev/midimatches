@@ -22,7 +22,7 @@ defmodule Progressions.Types.ConfigsTest do
         "rooms": [
           {
             "server": {
-              "timestep_us": 50000,
+              "timestep_size": 50000,
               "quantization_threshold": 0.4,
               "rounds_to_win": 2,
               "game_size_num_players": 3
@@ -36,7 +36,7 @@ defmodule Progressions.Types.ConfigsTest do
         rooms: [
           %RoomConfig{
             server: %GameServerConfig{
-              timestep_us: 50_000,
+              timestep_size: 50_000,
               quantization_threshold: 0.4,
               rounds_to_win: 2,
               game_size_num_players: 3

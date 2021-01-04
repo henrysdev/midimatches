@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-
-import { SimpleButton } from "../common/index";
-import { Loop, MIDINoteEvent, Note, TimestepSlice } from "../../types/index";
 import WebMidi from "webmidi";
 import * as Tone from "tone";
 import _ from "lodash";
-import { Keyboard } from "../room/index";
+
+import { SimpleButton } from "../common/index";
+import { Loop, MIDINoteEvent, Note, TimestepSlice } from "../../types/index";
+import { Keyboard } from "./index";
 import { GameContext } from "../../contexts/index";
 
 interface MidiInputProps {
@@ -121,6 +121,7 @@ const MidiInput: React.FC<MidiInputProps> = ({ submitRecording }) => {
     const { gameContext, activeNotes } = midiInputStateRef.current;
     const currTimestep = getCurrentTimestep(gameContext);
     const noteOnEvent = webMidiEventToMidiNoteEvent(midiEvent, currTimestep);
+    console.log("note On event: ", noteOnEvent);
     const activeNotesCopy = _.cloneDeep(activeNotes);
     activeNotesCopy.set(noteOnEvent.value, noteOnEvent);
     setMidiInputState({ activeNotes: activeNotesCopy });

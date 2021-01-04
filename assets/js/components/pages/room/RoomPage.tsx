@@ -1,5 +1,5 @@
 import React from "react";
-import { Game } from "../components/room/Game";
+import { Game } from "./game/Game";
 
 const RoomPage: React.FC = () => {
   return <Game />;

@@ -1,9 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
-import { SimpleButton } from "../../common/index";
-import { SUBMIT_VOTE_EVENT } from "../../../constants/index";
-import { GameContext } from "../../../contexts/index";
-import { LoopPlaybackManager, NotePlayer } from "../../../audioplayer/index";
-import { GameContextType } from "../../../types/index";
+import { SimpleButton } from "../../../../common/index";
+import { SUBMIT_VOTE_EVENT } from "../../../../../constants/index";
+import { GameContext } from "../../../../../contexts/index";
+import {
+  LoopPlaybackManager,
+  NotePlayer,
+} from "../../../../../audioplayer/index";
+import { loopToEvents } from "../../../../../utils/index";
+import { GameContextType, Loop } from "../../../../../types/index";
+import * as Tone from "tone";
 
 interface PlaybackVotingViewProps {
   pushMessageToChannel: Function;
@@ -26,12 +31,13 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
     const nPlayer = new NotePlayer(lpManager);
     setLoopPlaybackManager(lpManager);
     setNotePlayer(nPlayer);
-    nPlayer.start();
+    // nPlayer.start();
   }, []);
 
   useEffect(() => {
     if (!!loopPlaybackManager && !!notePlayer && !!recordings) {
       console.log("RECORDINGS: ", recordings);
+      // testToneScheduling(recordings);
       Object.entries(recordings).forEach(([musicianId, recording]) => {
         loopPlaybackManager.addMusician({
           musicianId,
@@ -46,16 +52,18 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
       <h3>PlaybackVoting View</h3>
       {eligibleMusiciansToVoteFor.map((musicianId: string) => {
         return (
-          <SimpleButton
-            key={`vote-${musicianId}`}
-            label={`Vote for ${musicianId}`}
-            callback={() => {
-              pushMessageToChannel(SUBMIT_VOTE_EVENT, {
-                vote: musicianId,
-              });
-            }}
-            disabled={false}
-          />
+          <div>
+            <SimpleButton
+              key={`vote-${musicianId}`}
+              label={`Vote for ${musicianId}`}
+              callback={() => {
+                pushMessageToChannel(SUBMIT_VOTE_EVENT, {
+                  vote: musicianId,
+                });
+              }}
+              disabled={false}
+            />
+          </div>
         );
       })}
     </div>

@@ -88,25 +88,25 @@ export class LoopPlaybackManager {
   _restartMusicianLoop(musicianId: string, timestep: number): void {
     const liveLoop = this.liveLoopMap[musicianId];
     const origLoop = this.musiciansMap[musicianId].loop;
-    liveLoop.start_timestep = timestep;
+    liveLoop.startTimestep = timestep;
 
     // adjust position to be correct timestep for each timestep
-    liveLoop.timestep_slices = origLoop.timestep_slices.map((timestepSlice) => {
+    liveLoop.timestepSlices = origLoop.timestepSlices.map((timestepSlice) => {
       return {
-        timestep: timestepSlice.timestep + liveLoop.start_timestep,
+        timestep: timestepSlice.timestep + liveLoop.startTimestep,
         notes: timestepSlice.notes,
       } as TimestepSlice;
     });
 
     // add timestep to restart loop to loop restart deadlines
-    const deadline = liveLoop.start_timestep + liveLoop.length;
+    const deadline = liveLoop.startTimestep + liveLoop.length;
     deadline in this.loopRestartDeadlines
       ? this.loopRestartDeadlines[deadline].push(musicianId)
       : (this.loopRestartDeadlines[deadline] = [musicianId]);
 
     // copy loop into timeslices and sort
     this.orderedTimestepSlices = this.orderedTimestepSlices
-      .concat(liveLoop.timestep_slices)
+      .concat(liveLoop.timestepSlices)
       .sort((sliceA, sliceB) => sliceA.timestep - sliceB.timestep);
   }
 }

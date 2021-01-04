@@ -7,11 +7,14 @@ import {
   GameEndView,
 } from "./views/index";
 import { Socket, Channel } from "phoenix";
-import { GAME_VIEW } from "../../constants/index";
-import { GameContext } from "../../contexts/index";
-import { GameContextType } from "../../types/index";
-import { GameContextDebug } from "../common/index";
-import { gameViewAtomToEnum, formatServerPayload } from "../../utils/index";
+import { GAME_VIEW } from "../../../../constants/index";
+import { GameContext } from "../../../../contexts/index";
+import { GameContextType } from "../../../../types/index";
+import { GameContextDebug } from "../../../common/index";
+import {
+  gameViewAtomToEnum,
+  formatServerPayload,
+} from "../../../../utils/index";
 
 interface GameProps {}
 
