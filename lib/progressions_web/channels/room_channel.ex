@@ -9,14 +9,13 @@ defmodule ProgressionsWeb.RoomChannel do
     Persistence,
     Pids,
     Rooms,
-    Rooms.Room.Server,
+    Rooms.Room.GameServerAPI,
     Types.Loop,
     Types.Musician,
     Types.Note,
     Types.TimestepSlice
   }
 
-  # TODO move to type decode helper
   @loop_schema %Loop{
     length: nil,
     start_timestep: nil,
@@ -34,10 +33,15 @@ defmodule ProgressionsWeb.RoomChannel do
     ]
   }
 
+  intercept ["view_update"]
+
+  def handle_out("view_update", msg, socket) do
+    push(socket, "view_update", msg)
+    {:noreply, socket}
+  end
+
   def join("room:" <> room_id, _params, socket) do
     if Rooms.room_exists?(room_id) do
-      send(self(), "init_room_client")
-
       {:ok,
        socket
        |> assign(room_id: room_id)}
@@ -46,16 +50,17 @@ defmodule ProgressionsWeb.RoomChannel do
     end
   end
 
-  def handle_info("init_room_client", %{assigns: %{room_id: room_id}} = socket) do
-    room_server = Pids.fetch!({:server, room_id})
+  def handle_in(
+        "musician_enter_room",
+        _params,
+        %Phoenix.Socket{assigns: %{room_id: room_id}} = socket
+      ) do
+    room_server = Pids.fetch!({:game_server, room_id})
     musician_id = Persistence.gen_serial_id()
 
-    Server.add_musician(room_server, %Musician{
+    GameServerAPI.add_musician(room_server, %Musician{
       musician_id: musician_id
     })
-
-    start_time_utc = Server.get_start_time(room_server)
-    push(socket, "init_room_client", %{start_time_utc: start_time_utc})
 
     {:noreply,
      socket
@@ -64,13 +69,45 @@ defmodule ProgressionsWeb.RoomChannel do
   end
 
   def handle_in(
-        "update_musician_loop",
-        %{"loop" => loop_json},
+        "musician_leave_room",
+        _params,
         %Phoenix.Socket{assigns: %{room_server: room_server, musician_id: musician_id}} = socket
       ) do
-    {:ok, loop} = Poison.decode(loop_json, as: @loop_schema)
+    GameServerAPI.drop_musician(room_server, musician_id)
 
-    Server.update_musician_loop(room_server, musician_id, loop)
+    {:noreply, socket}
+  end
+
+  def handle_in("musician_leave_room", _params, socket), do: {:noreply, socket}
+
+  def handle_in(
+        "musician_ready_up",
+        _params,
+        %Phoenix.Socket{assigns: %{room_server: room_server, musician_id: musician_id}} = socket
+      ) do
+    GameServerAPI.musician_ready_up(room_server, musician_id)
+
+    {:noreply, socket}
+  end
+
+  def handle_in(
+        "musician_recording",
+        %{"recording" => loop_json},
+        %Phoenix.Socket{assigns: %{room_server: room_server, musician_id: musician_id}} = socket
+      ) do
+    {:ok, recording} = Poison.decode(loop_json, as: @loop_schema)
+
+    GameServerAPI.musician_recording(room_server, musician_id, recording)
+
+    {:noreply, socket}
+  end
+
+  def handle_in(
+        "musician_vote",
+        %{"vote" => vote},
+        %Phoenix.Socket{assigns: %{room_server: room_server, musician_id: musician_id}} = socket
+      ) do
+    GameServerAPI.musician_vote(room_server, musician_id, vote)
 
     {:noreply, socket}
   end

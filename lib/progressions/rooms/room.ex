@@ -6,7 +6,7 @@ defmodule Progressions.Rooms.Room do
 
   alias Progressions.{
     Pids,
-    Rooms.Room.Server,
+    Rooms.Room.GameServer,
     Types.Configs.RoomConfig
   }
 
@@ -26,9 +26,9 @@ defmodule Progressions.Rooms.Room do
     Pids.register({:room, room_id}, self())
 
     children = [
-      {Server, [room_id, room_config.server]}
+      {GameServer, [room_id, room_config.server]}
     ]
 
-    Supervisor.init(children, strategy: :rest_for_one)
+    Supervisor.init(children, strategy: :one_for_one)
   end
 end

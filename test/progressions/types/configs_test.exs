@@ -3,13 +3,9 @@ defmodule Progressions.Types.ConfigsTest do
 
   alias Progressions.Types.{
     Configs,
+    Configs.GameServerConfig,
     Configs.ProgressionsConfig,
-    Configs.RoomConfig,
-    Configs.ServerConfig,
-    Loop,
-    Musician,
-    Note,
-    TimestepSlice
+    Configs.RoomConfig
   }
 
   @test_file ".test.json"
@@ -26,58 +22,11 @@ defmodule Progressions.Types.ConfigsTest do
         "rooms": [
           {
             "server": {
-              "timestep_us": 50000,
-              "musicians": [
-                {
-                    "musician_id": "1foo",
-                    "loop": {
-                        "start_timestep": 0,
-                        "length": 8,
-                        "timestep_slices": [
-                          {
-                            "timestep": 0,
-                            "notes": [
-                              {
-                                "instrument": "kick",
-                                "key": 11,
-                                "duration": 1
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                },
-                {
-                  "musician_id": "2foo",
-                  "loop": {
-                      "start_timestep": 8,
-                      "length": 8,
-                      "timestep_slices": [
-                        {
-                          "timestep": 0,
-                          "notes": [
-                            {
-                              "instrument": "epiano",
-                              "key": 22,
-                              "duration": 1
-                            }
-                          ]
-                        },
-                        {
-                          "timestep": 0,
-                          "notes": [
-                            {
-                              "instrument": "epiano",
-                              "key": 24,
-                              "duration": 1
-                            }
-                          ]
-                        }
-                      ]
-                  }
-                }
-            ]
-        }
+              "timestep_size": 50000,
+              "quantization_threshold": 0.4,
+              "rounds_to_win": 2,
+              "game_size_num_players": 3
+            }
           }
         ]
       }
@@ -86,40 +35,11 @@ defmodule Progressions.Types.ConfigsTest do
       expected = %ProgressionsConfig{
         rooms: [
           %RoomConfig{
-            server: %ServerConfig{
-              timestep_us: 50_000,
-              musicians: [
-                %Musician{
-                  musician_id: "1foo",
-                  loop: %Loop{
-                    length: 8,
-                    start_timestep: 0,
-                    timestep_slices: [
-                      %TimestepSlice{
-                        notes: [%Note{duration: 1, instrument: "kick", key: 11}],
-                        timestep: 0
-                      }
-                    ]
-                  }
-                },
-                %Musician{
-                  musician_id: "2foo",
-                  loop: %Loop{
-                    length: 8,
-                    start_timestep: 8,
-                    timestep_slices: [
-                      %TimestepSlice{
-                        notes: [%Note{duration: 1, instrument: "epiano", key: 22}],
-                        timestep: 0
-                      },
-                      %TimestepSlice{
-                        notes: [%Note{duration: 1, instrument: "epiano", key: 24}],
-                        timestep: 0
-                      }
-                    ]
-                  }
-                }
-              ]
+            server: %GameServerConfig{
+              timestep_size: 50_000,
+              quantization_threshold: 0.4,
+              rounds_to_win: 2,
+              game_size_num_players: 3
             }
           }
         ]

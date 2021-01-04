@@ -8,8 +8,10 @@ defmodule Progressions.Types.Musician do
   alias Progressions.Types.Loop
 
   typedstruct do
-    field(:musician_id, enforce: true)
+    field(:musician_id, String.t(), enforce: true)
+    field(:view_state, nil)
 
+    # deprecated. recordings will be in view_state
     field(:loop, %Loop{},
       default: %Loop{
         start_timestep: 0,

@@ -9,8 +9,9 @@ defmodule ProgressionsWeb.RoomChannelTest do
   alias Progressions.{
     Pids,
     Rooms,
-    Rooms.Room.Server,
-    TestHelpers
+    Rooms.Room.GameServer,
+    TestHelpers,
+    Types.Loop
   }
 
   setup do
@@ -23,57 +24,114 @@ defmodule ProgressionsWeb.RoomChannelTest do
       UserSocket
       |> socket()
       |> subscribe_and_join(RoomChannel, "room:1")
+      |> enter_room()
 
     %{socket: socket}
   end
 
   test "client joins existing room successfully", %{socket: socket} do
-    {:ok, _, _} = subscribe_and_join(socket, RoomChannel, "room:1")
+    {:ok, _, _} =
+      socket
+      |> subscribe_and_join(RoomChannel, "room:1")
+      |> enter_room()
 
-    musicians_in_room =
-      Pids.fetch!({:server, "1"})
-      |> Server.get_musicians()
-      |> Enum.map(& &1.musician_id)
+    {_view, %GameServer{musicians: musicians_in_room}} =
+      {:game_server, "1"}
+      |> Pids.fetch!()
+      |> :sys.get_state()
 
-    assert length(musicians_in_room) == 2
+    expected_num_musicians =
+      musicians_in_room
+      |> Map.keys()
+      |> length()
+
+    assert expected_num_musicians == 2
   end
 
   test "client gets error when non existent room joined", %{socket: socket} do
     assert {:error, _} = RoomChannel.join("room:3", %{}, socket)
   end
 
-  test "client sends update_musician_loop event and triggers broadcast_updated_musician_loop", %{
-    socket: socket
-  } do
-    loop_json =
-      %{
-        start_timestep: 2,
-        length: 8,
-        timestep_slices: [
-          %{
-            timestep: 0,
-            notes: [
-              %{
-                instrument: "tuba",
-                key: 11,
-                duration: 4
-              }
-            ]
-          }
-        ]
-      }
-      |> Jason.encode!()
+  test "client musician enter room", %{socket: socket} do
+    push(socket, "musician_enter_room", %{})
 
-    push(socket, "update_musician_loop", %{"loop" => loop_json})
-
-    [_expected_musician_id | _] =
-      Pids.fetch!({:server, "1"})
-      |> Server.get_musicians()
-      |> Enum.map(& &1.musician_id)
-
-    assert_push("broadcast_updated_musician_loop", %{
-      "musician_id" => _expected_musician_id,
-      "loop" => loop_json
-    })
+    assert_broadcast("view_update", %{})
+    assert_push("view_update", %{})
   end
+
+  test "client musician leave room", %{socket: socket} do
+    push(socket, "musician_leave_room", %{})
+
+    assert_broadcast("view_update", %{})
+    assert_push("view_update", %{})
+  end
+
+  test "client musician ready up", %{socket: socket} do
+    push(socket, "musician_ready_up", %{})
+
+    assert_broadcast("view_update", %{})
+    assert_push("view_update", %{})
+  end
+
+  test "client musician recording", %{socket: socket} do
+    push(socket, "musician_recording", %{
+      "recording" =>
+        %Loop{
+          start_timestep: 0,
+          length: 4,
+          timestep_slices: []
+        }
+        |> Jason.encode!()
+    })
+
+    assert_broadcast("view_update", %{})
+    assert_push("view_update", %{})
+  end
+
+  test "client musician vote", %{socket: socket} do
+    push(socket, "musician_vote", %{
+      "vote" => "fakeMusicianId"
+    })
+
+    assert_broadcast("view_update", %{})
+    assert_push("view_update", %{})
+  end
+
+  defp enter_room({:ok, params, socket}) do
+    push(socket, "musician_enter_room", %{})
+    {:ok, params, socket}
+  end
+
+  # TODO fix test assertions...
+  # test "client musician ready up and receives state update", %{socket: socket} do
+  #   room_topic = "room:1"
+  #   musician_ids = ["musician1", "musician2"]
+  #   acting_musician_id = Map.get(socket.assigns, :musician_id)
+
+  #   expected_payload = %{
+  #     ready_ups: %{
+  #       acting_musician_id => true
+  #     }
+  #   }
+
+  #   game_server =
+  #     {:game_server, "1"}
+  #     |> Pids.fetch!()
+
+  #   game_server |> TestHelpers.add_musicians(musician_ids)
+
+  #   1..3
+  #   |> Enum.to_list()
+  #   |> Enum.each(fn _ ->
+  #     assert_broadcast(_, _)
+  #     assert_push(_, _)
+  #   end)
+
+  #   ProgressionsWeb.Endpoint.subscribe(room_topic)
+
+  #   push(socket, "musician_ready_up", %{})
+
+  #   assert_receive expected_payload
+  #   ProgressionsWeb.Endpoint.unsubscribe(room_topic)
+  # end
 end

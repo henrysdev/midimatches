@@ -10,13 +10,13 @@ export interface TimestepSlice {
 }
 
 export interface Loop {
-  start_timestep: number;
+  startTimestep: number;
   length: number;
-  timestep_slices: TimestepSlice[];
+  timestepSlices: TimestepSlice[];
 }
 
 export interface Musician {
-  musician_id: string;
+  musicianId: string;
   loop: Loop;
 }
 
@@ -24,4 +24,20 @@ export interface MIDINoteEvent {
   value: number;
   velocity: number;
   receivedTimestep: number;
+}
+
+export interface GameContextType {
+  gameSizeNumPlayers: number;
+  musicians: Musician[];
+  numVotesCast: number;
+  quantizationThreshold: number;
+  readyUps: any; //Map<string, boolean>;
+  recordings: any; // Map<string, Loop>;
+  roomId: string;
+  roomStartTime: number;
+  round: number;
+  roundsToWin: number;
+  scores: any; //Map<string, number>;
+  timestepSize: number;
+  winner: string;
 }
