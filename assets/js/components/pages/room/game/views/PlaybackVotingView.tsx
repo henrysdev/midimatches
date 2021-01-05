@@ -20,6 +20,7 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
 
   useEffect(() => {
     if (!!recordings) {
+      // TODO automatically schedule all to fully playback
       // Object.entries(recordings).reduce((now, [musicianId, recording]) => {
       //   scheduleRecording(ß
       //     recording,

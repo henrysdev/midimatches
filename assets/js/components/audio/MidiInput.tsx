@@ -228,14 +228,14 @@ function webMidiEventToMidiNoteEvent(
 }
 
 function getCurrentTimestep({
-  roomStartTime,
+  roundRecordingStartTime,
   timestepSize,
   quantizationThreshold,
 }: any): number {
   const nowMicros = Date.now() * 1000;
   return calculateTimestep(
     nowMicros,
-    roomStartTime,
+    roundRecordingStartTime,
     timestepSize,
     quantizationThreshold
   );
@@ -243,11 +243,11 @@ function getCurrentTimestep({
 
 function calculateTimestep(
   timeUtc: number,
-  roomStartTime: number,
+  roundRecordingStartTime: number,
   timestepSize: number,
   quantizationThreshold: number
 ): number {
-  const elapsedTime = Math.abs(timeUtc - roomStartTime);
+  const elapsedTime = Math.abs(timeUtc - roundRecordingStartTime);
   const elapsedTimesteps = Math.floor(elapsedTime / timestepSize);
   const remainderTime = elapsedTime % timestepSize;
   const quantizeTimestep =

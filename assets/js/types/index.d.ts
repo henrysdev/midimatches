@@ -34,7 +34,7 @@ export interface GameContextType {
   readyUps: any; //Map<string, boolean>;
   recordings: any; // Map<string, Loop>;
   roomId: string;
-  roomStartTime: number;
+  roundRecordingStartTime: number;
   round: number;
   roundsToWin: number;
   scores: any; //Map<string, number>;

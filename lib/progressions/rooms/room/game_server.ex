@@ -20,7 +20,7 @@ defmodule Progressions.Rooms.Room.GameServer do
   typedstruct do
     # server life cycle state
     field(:room_id, String.t(), enforce: true)
-    field(:server_start_time, integer(), enforce: true)
+    field(:round_recording_start_time, integer(), enforce: true)
     field(:timestep_size, integer(), enforce: true)
     field(:quantization_threshold, float(), enforce: true)
     field(:rounds_to_win, integer(), enforce: true)
@@ -54,7 +54,7 @@ defmodule Progressions.Rooms.Room.GameServer do
 
     data = %__MODULE__{
       room_id: room_id,
-      server_start_time: :os.system_time(:microsecond),
+      round_recording_start_time: :os.system_time(:microsecond),
       timestep_size: server_config.timestep_size,
       quantization_threshold: server_config.quantization_threshold,
       game_size_num_players: server_config.game_size_num_players,
@@ -166,7 +166,7 @@ defmodule Progressions.Rooms.Room.GameServer do
         updated_data = %__MODULE__{
           data
           | ready_ups: %{},
-            server_start_time: :os.system_time(:microsecond)
+            round_recording_start_time: :os.system_time(:microsecond)
         }
 
         {:next_state, :recording, updated_data,
@@ -301,7 +301,7 @@ defmodule Progressions.Rooms.Room.GameServer do
   # transform game server state into update payload for clients
   defp server_to_client_game_state(%__MODULE__{
          room_id: room_id,
-         server_start_time: server_start_time,
+         round_recording_start_time: round_recording_start_time,
          timestep_size: timestep_size,
          quantization_threshold: quantization_threshold,
          rounds_to_win: rounds_to_win,
@@ -331,7 +331,7 @@ defmodule Progressions.Rooms.Room.GameServer do
 
     %{
       room_id: room_id,
-      room_start_time: server_start_time,
+      round_recording_start_time: round_recording_start_time,
       timestep_size: timestep_size,
       quantization_threshold: quantization_threshold,
       rounds_to_win: rounds_to_win,
