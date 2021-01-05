@@ -9,7 +9,8 @@ defmodule Progressions.Rooms.Room.GameServer do
     Pids,
     Types.Configs.GameServerConfig,
     Types.Loop,
-    Types.Musician
+    Types.Musician,
+    Utils
   }
 
   require Logger
@@ -26,6 +27,7 @@ defmodule Progressions.Rooms.Room.GameServer do
     field(:rounds_to_win, integer(), enforce: true)
     field(:game_size_num_players, integer(), enforce: true)
     field(:solo_time_limit, integer(), enforce: true)
+    field(:contestants_per_round, integer(), enforce: true)
 
     # game life cycle state
     field(:musicians, %{required(id()) => %Musician{}}, default: %{})
@@ -59,7 +61,8 @@ defmodule Progressions.Rooms.Room.GameServer do
       quantization_threshold: server_config.quantization_threshold,
       game_size_num_players: server_config.game_size_num_players,
       rounds_to_win: server_config.rounds_to_win,
-      solo_time_limit: server_config.solo_time_limit
+      solo_time_limit: server_config.solo_time_limit,
+      contestants_per_round: server_config.contestants_per_round
     }
 
     {:ok, :pregame_lobby, data}
@@ -113,11 +116,18 @@ defmodule Progressions.Rooms.Room.GameServer do
         {:call, from},
         {:add_musician, %Musician{musician_id: musician_id} = musician},
         :pregame_lobby,
-        %__MODULE__{musicians: musicians, game_size_num_players: game_size_num_players} = data
+        %__MODULE__{
+          musicians: musicians,
+          game_size_num_players: game_size_num_players
+        } = data
       ) do
     updated_musicians = Map.put(musicians, musician_id, musician)
     enough_musicians_to_start? = length(Map.keys(updated_musicians)) == game_size_num_players
-    updated_data = %__MODULE__{data | musicians: updated_musicians}
+
+    updated_data = %__MODULE__{
+      data
+      | musicians: updated_musicians
+    }
 
     if enough_musicians_to_start? do
       # progress to game start
@@ -285,7 +295,7 @@ defmodule Progressions.Rooms.Room.GameServer do
     {:next_state, :game_end, data}
   end
 
-  # Catchall
+  # Catchall for debug
 
   def handle_event({:call, from}, params, state, data) do
     Logger.warn(
@@ -298,59 +308,11 @@ defmodule Progressions.Rooms.Room.GameServer do
 
   ## Helpers
 
-  # transform game server state into update payload for clients
-  defp server_to_client_game_state(%__MODULE__{
-         room_id: room_id,
-         round_recording_start_time: round_recording_start_time,
-         timestep_size: timestep_size,
-         quantization_threshold: quantization_threshold,
-         rounds_to_win: rounds_to_win,
-         game_size_num_players: game_size_num_players,
-         musicians: musicians,
-         round: round,
-         scores: scores,
-         winner: winner,
-         ready_ups: ready_ups,
-         recordings: recordings,
-         votes: votes
-       }) do
-    # votes are secret - should not expose actual votes to clients, only progress on
-    # voting as a whole
-    num_votes_cast =
-      votes
-      |> Map.keys()
-      |> length()
-
-    # should only expose very limited info about musicians
-    shallow_musicians =
-      musicians
-      |> Map.values()
-      |> Enum.map(fn %Musician{musician_id: musician_id} ->
-        %{musician_id: musician_id}
-      end)
-
-    %{
-      room_id: room_id,
-      round_recording_start_time: round_recording_start_time,
-      timestep_size: timestep_size,
-      quantization_threshold: quantization_threshold,
-      rounds_to_win: rounds_to_win,
-      game_size_num_players: game_size_num_players,
-      musicians: shallow_musicians,
-      round: round,
-      scores: scores,
-      winner: winner,
-      ready_ups: ready_ups,
-      recordings: recordings,
-      num_votes_cast: num_votes_cast
-    }
-  end
-
   defp sync_across_clients(view, %__MODULE__{room_id: room_id} = game_server_data)
        when is_atom(view) do
     client_payload = %{
       view: view,
-      game_state: server_to_client_game_state(game_server_data)
+      game_state: Utils.server_to_client_game_state(game_server_data)
     }
 
     ProgressionsWeb.Endpoint.broadcast("room:#{room_id}", "view_update", client_payload)
