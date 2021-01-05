@@ -5,7 +5,7 @@
         "timestep_size": 50000,
         "quantization_threshold": 0.5,
         "rounds_to_win": 2,
-        "game_size_num_players": 1,
+        "game_size_num_players": 2,
         "contestants_per_round": 2
       }
     }

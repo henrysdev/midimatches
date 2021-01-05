@@ -4,6 +4,7 @@ import * as Tone from 'tone';
 import WebMidi from 'webmidi';
 
 import { Keyboard } from '.';
+import { DEFAULT_SYNTH_CONFIG } from '../../constants';
 import { GameContext } from '../../contexts';
 import { Loop, MIDINoteEvent, Note, TimestepSlice } from '../../types';
 import { SimpleButton } from '../common';
@@ -38,22 +39,7 @@ const MidiInput: React.FC<MidiInputProps> = ({ submitRecording }) => {
 
   // init on load
   useEffect(() => {
-    // TODO break out into instrument class
-    const niceSynth = new Tone.Synth({
-      oscillator: {
-        type: "amtriangle",
-        harmonicity: 0.5,
-        modulationType: "sine",
-      },
-      envelope: {
-        attackCurve: "exponential",
-        attack: 0.03,
-        decay: 0.4,
-        sustain: 0.2,
-        release: 1.5,
-      },
-      portamento: 0.05,
-    }).toDestination();
+    const niceSynth = new Tone.Synth(DEFAULT_SYNTH_CONFIG).toDestination();
     Tone.context.lookAhead = 0.02;
 
     setMidiInputState({
