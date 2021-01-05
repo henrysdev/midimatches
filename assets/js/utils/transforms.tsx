@@ -83,10 +83,15 @@ export function loopToEvents(
   timestepSize: number
 ): Tone.Event[] {
   return loop.timestepSlices.reduce((accEvents, timestepSlice, idx) => {
+    const timestepSizeInSeconds = 0.000001 * timestepSize;
     const { timestep, notes } = timestepSlice;
     const events = notes.map(({ key, instrument, duration }) => {
       const note = midiToPitch(key);
-      return { time: now + timestepSize * timestep, note, velocity: 0.2 };
+      return {
+        time: now + timestepSizeInSeconds * timestep,
+        note,
+        velocity: 0.2,
+      };
     });
     return accEvents.concat(events);
   }, []);

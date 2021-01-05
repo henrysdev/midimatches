@@ -25,6 +25,7 @@ defmodule Progressions.Rooms.Room.GameServer do
     field(:quantization_threshold, float(), enforce: true)
     field(:rounds_to_win, integer(), enforce: true)
     field(:game_size_num_players, integer(), enforce: true)
+    field(:solo_time_limit, integer(), enforce: true)
 
     # game life cycle state
     field(:musicians, %{required(id()) => %Musician{}}, default: %{})
@@ -57,7 +58,8 @@ defmodule Progressions.Rooms.Room.GameServer do
       timestep_size: server_config.timestep_size,
       quantization_threshold: server_config.quantization_threshold,
       game_size_num_players: server_config.game_size_num_players,
-      rounds_to_win: server_config.rounds_to_win
+      rounds_to_win: server_config.rounds_to_win,
+      solo_time_limit: server_config.solo_time_limit
     }
 
     {:ok, :pregame_lobby, data}

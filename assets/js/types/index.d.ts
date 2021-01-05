@@ -40,4 +40,5 @@ export interface GameContextType {
   scores: any; //Map<string, number>;
   timestepSize: number;
   winner: string;
+  soloTimeLimit: number;
 }

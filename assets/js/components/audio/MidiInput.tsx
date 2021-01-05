@@ -1,12 +1,12 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import WebMidi from "webmidi";
-import * as Tone from "tone";
-import _ from "lodash";
+import _ from 'lodash';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import * as Tone from 'tone';
+import WebMidi from 'webmidi';
 
-import { SimpleButton } from "../common/index";
-import { Loop, MIDINoteEvent, Note, TimestepSlice } from "../../types/index";
-import { Keyboard } from "./index";
-import { GameContext } from "../../contexts/index";
+import { Keyboard } from '.';
+import { GameContext } from '../../contexts';
+import { Loop, MIDINoteEvent, Note, TimestepSlice } from '../../types';
+import { SimpleButton } from '../common';
 
 interface MidiInputProps {
   submitRecording: Function;
@@ -38,6 +38,7 @@ const MidiInput: React.FC<MidiInputProps> = ({ submitRecording }) => {
 
   // init on load
   useEffect(() => {
+    // TODO break out into instrument class
     const niceSynth = new Tone.Synth({
       oscillator: {
         type: "amtriangle",
