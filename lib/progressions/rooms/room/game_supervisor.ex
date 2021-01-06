@@ -10,7 +10,6 @@ defmodule Progressions.Rooms.Room.GameSupervisor do
     Types.Configs.GameServerConfig
   }
 
-  @spec start_link(any) :: :ignore | {:error, any} | {:ok, pid}
   def start_link(args) do
     Supervisor.start_link(__MODULE__, args)
   end
@@ -23,12 +22,10 @@ defmodule Progressions.Rooms.Room.GameSupervisor do
         [{room_id, room_config}] -> {room_id, room_config}
       end
 
-    Pids.register({:room, room_id}, self())
+    Pids.register({:game_supervisor, room_id}, self())
 
-    children = [
-      {GameServer, [room_id, game_config]}
-    ]
+    children = [{GameServer, [room_id, game_config]}]
 
-    Supervisor.init(children, strategy: :rest_for_one)
+    Supervisor.init(children, strategy: :one_for_one)
   end
 end

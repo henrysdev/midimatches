@@ -9,6 +9,8 @@ defmodule Progressions.Rooms.RoomServer do
 
   alias __MODULE__
 
+  alias Progressions.Pids
+
   @type id() :: String.t()
   @type game_view() :: [:pregame_lobby | :game_start | :recording | :playback_voting | :game_end]
 
@@ -31,6 +33,8 @@ defmodule Progressions.Rooms.RoomServer do
         [room_id] -> {room_id, %{}}
         [room_id, server_config] -> {room_id, server_config}
       end
+
+    Pids.register({:room_server, room_id}, self())
 
     {:ok,
      %RoomServer{

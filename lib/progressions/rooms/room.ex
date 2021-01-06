@@ -11,7 +11,6 @@ defmodule Progressions.Rooms.Room do
     Types.Configs.RoomConfig
   }
 
-  @spec start_link(any) :: :ignore | {:error, any} | {:ok, pid}
   def start_link(args) do
     Supervisor.start_link(__MODULE__, args)
   end
