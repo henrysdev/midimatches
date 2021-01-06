@@ -7,6 +7,7 @@ defmodule Progressions.Rooms.Room.Bracket do
   use TypedStruct
 
   @type id() :: String.t()
+  @type pairings() :: list(list(id))
 
   typedstruct do
     field(:match_ups, %{required(id()) => list(id)}, default: %{})
@@ -26,19 +27,20 @@ defmodule Progressions.Rooms.Room.Bracket do
   end
 
   def new_bracket(musicians) do
-    games =
+    pairings =
       musicians
       |> Enum.shuffle()
       |> Enum.chunk_every(2)
+      |> Enum.map(fn [m1, m2] -> [min(m1, m2), max(m1, m2)] end)
 
     match_ups =
-      Enum.reduce(games, %{}, fn [m1, m2] = pair, acc ->
+      Enum.reduce(pairings, %{}, fn [m1, m2] = pair, acc ->
         acc
         |> Map.put(m1, pair)
         |> Map.put(m2, pair)
       end)
 
-    %Bracket{match_ups: match_ups, wins_to_advance: length(games)}
+    %Bracket{match_ups: match_ups, wins_to_advance: length(pairings)}
   end
 
   @spec record_winner(%Bracket{}, id()) :: %Bracket{}
@@ -78,5 +80,15 @@ defmodule Progressions.Rooms.Room.Bracket do
       _ ->
         bracket
     end
+  end
+
+  @spec remaining_matches(%Bracket{}) :: pairings()
+  @doc """
+  Returns a list of matches that have not yet had an outcome recorded.
+  """
+  def remaining_matches(%Bracket{match_ups: match_ups}) do
+    match_ups
+    |> Map.values()
+    |> Enum.uniq()
   end
 end

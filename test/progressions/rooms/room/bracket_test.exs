@@ -16,11 +16,6 @@ defmodule Progressions.BracketTest do
   end
 
   test "record bracket winners and advance to next round" do
-    musicians =
-      1..8
-      |> Enum.to_list()
-      |> Enum.map(&Integer.to_string/1)
-
     bracket = %Bracket{
       match_ups: %{
         "1" => ["1", "2"],
@@ -37,7 +32,7 @@ defmodule Progressions.BracketTest do
 
     winners = ["1", "3", "5", "8"]
 
-    {bracket, winners_scan} =
+    {_bracket, winners_scan} =
       Enum.reduce(
         winners,
         {bracket, []},
@@ -53,8 +48,6 @@ defmodule Progressions.BracketTest do
   end
 
   test "final round yields final winner" do
-    musicians = ["1", "2"]
-
     bracket = %Bracket{
       match_ups: %{
         "1" => ["1", "2"],
@@ -68,5 +61,42 @@ defmodule Progressions.BracketTest do
     bracket = Bracket.record_winner(bracket, winner)
 
     assert bracket.final_winner == winner
+  end
+
+  test "remaining matches returns only unplayed matches" do
+    bracket = %Bracket{
+      match_ups: %{
+        "1" => ["1", "2"],
+        "2" => ["1", "2"],
+        "3" => ["3", "4"],
+        "4" => ["3", "4"],
+        "5" => ["5", "6"],
+        "6" => ["5", "6"],
+        "7" => ["7", "8"],
+        "8" => ["7", "8"]
+      },
+      wins_to_advance: 4
+    }
+
+    winners = ["1", "3", "5"]
+
+    {_bracket, remaining_matches_scan} =
+      Enum.reduce(
+        winners,
+        {bracket, [Bracket.remaining_matches(bracket)]},
+        fn x, {b, remaining_matches_scan} ->
+          b = Bracket.record_winner(b, x)
+          {b, [Bracket.remaining_matches(b) | remaining_matches_scan]}
+        end
+      )
+
+    expected_remaining_matches_scan = [
+      [["1", "2"], ["3", "4"], ["5", "6"], ["7", "8"]],
+      [["3", "4"], ["5", "6"], ["7", "8"]],
+      [["5", "6"], ["7", "8"]],
+      [["7", "8"]]
+    ]
+
+    assert Enum.reverse(remaining_matches_scan) == expected_remaining_matches_scan
   end
 end
