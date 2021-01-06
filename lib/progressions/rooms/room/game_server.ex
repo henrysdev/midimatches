@@ -310,12 +310,10 @@ defmodule Progressions.Rooms.Room.GameServer do
 
   defp sync_across_clients(view, %__MODULE__{room_id: room_id} = game_server_data)
        when is_atom(view) do
-    client_payload = %{
+    ProgressionsWeb.Endpoint.broadcast("room:#{room_id}", "view_update", %{
       view: view,
       game_state: Utils.server_to_client_game_state(game_server_data)
-    }
-
-    ProgressionsWeb.Endpoint.broadcast("room:#{room_id}", "view_update", client_payload)
+    })
 
     game_server_data
   end
