@@ -1,6 +1,7 @@
-import { GAME_VIEW } from "../constants/index";
-import * as Tone from "tone";
-import { Loop } from "../types/index";
+import * as Tone from 'tone';
+
+import { GAME_VIEW } from '../constants';
+import { Loop } from '../types';
 
 const isArray = function (a: Array<any>): boolean {
   return Array.isArray(a);
@@ -53,7 +54,7 @@ function midiToPitchClass(midi: number): string {
   return scaleIndexToNote[note];
 }
 
-export function formatServerPayload(payload: Object): Object {
+export function unmarshalBody(payload: Object): Object {
   return keysToCamel(payload);
 }
 

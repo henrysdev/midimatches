@@ -1,20 +1,12 @@
-import React, { useEffect, useState } from "react";
-import {
-  PregameLobbyView,
-  GameStartView,
-  RecordingView,
-  PlaybackVotingView,
-  GameEndView,
-} from "./views/index";
-import { Socket, Channel } from "phoenix";
-import { GAME_VIEW } from "../../../../constants/index";
-import { GameContext } from "../../../../contexts/index";
-import { GameContextType } from "../../../../types/index";
-import { GameContextDebug } from "../../../common/index";
-import {
-  gameViewAtomToEnum,
-  formatServerPayload,
-} from "../../../../utils/index";
+import { Channel, Socket } from 'phoenix';
+import React, { useEffect, useState } from 'react';
+
+import { GAME_VIEW } from '../../../../constants';
+import { GameContext } from '../../../../contexts';
+import { GameContextType, Musician } from '../../../../types';
+import { gameViewAtomToEnum, unmarshalBody } from '../../../../utils';
+import { GameContextDebug } from '../../../common';
+import { GameEndView, GameStartView, PlaybackVotingView, PregameLobbyView, RecordingView } from './views';
 
 interface GameProps {}
 
@@ -23,6 +15,7 @@ const Game: React.FC<GameProps> = () => {
   const [currentView, setCurrentView] = useState(GAME_VIEW.PREGAME_LOBBY);
   const [gameChannel, setGameChannel] = useState<Channel>();
   const [gameContext, setGameContext] = useState<GameContextType>({});
+  const [musicianId, setMusicianId] = useState<string>();
 
   useEffect(() => {
     let socket = new Socket("/socket", { params: { token: window.userToken } });
@@ -38,16 +31,25 @@ const Game: React.FC<GameProps> = () => {
       .receive("error", (resp) => {
         console.log("Unable to join", resp);
       });
-    channel.on("view_update", ({ view, game_state }) => {
+    channel.on("view_update", (body) => {
+      const { view, gameState } = unmarshalBody(body);
       const gameView = gameViewAtomToEnum(view);
-      const payload = formatServerPayload(game_state);
       setCurrentView(gameView);
-      setGameContext(payload);
+      setGameContext(gameState);
     });
     setGameChannel(channel);
   }, []);
 
-  const pushMessageToChannel = (event: string, payload: Object) => {
+  const playerJoin = (event: string, payload: Object) => {
+    if (!!gameChannel) {
+      gameChannel.push(event, payload).receive("ok", (reply) => {
+        const { musicianId } = unmarshalBody(reply);
+        setMusicianId(musicianId);
+      });
+    }
+  };
+
+  const genericPushMessage = (event: string, payload: Object) => {
     if (!!gameChannel) {
       gameChannel.push(event, payload);
     }
@@ -58,29 +60,24 @@ const Game: React.FC<GameProps> = () => {
       {(() => {
         switch (currentView) {
           case GAME_VIEW.PREGAME_LOBBY:
-            return (
-              <PregameLobbyView pushMessageToChannel={pushMessageToChannel} />
-            );
+            return <PregameLobbyView pushMessageToChannel={playerJoin} />;
 
           case GAME_VIEW.GAME_START:
-            return (
-              <GameStartView pushMessageToChannel={pushMessageToChannel} />
-            );
+            return <GameStartView pushMessageToChannel={genericPushMessage} />;
 
           case GAME_VIEW.RECORDING:
-            return (
-              <RecordingView pushMessageToChannel={pushMessageToChannel} />
-            );
+            return <RecordingView pushMessageToChannel={genericPushMessage} />;
 
           case GAME_VIEW.PLAYBACK_VOTING:
             return (
               <PlaybackVotingView
-                pushMessageToChannel={pushMessageToChannel}
-                eligibleMusiciansToVoteFor={gameContext.musicians
-                  .map(({ musicianId }) => musicianId)
-                  .filter((mId) => {
-                    return mId !== "TODO MUST KNOW YOUR OWN PLAYER ID...";
-                  })}
+                pushMessageToChannel={genericPushMessage}
+                eligibleMusiciansToVoteFor={
+                  // TODO replace with contestants when added to game context
+                  gameContext.musicians
+                    .map(({ musicianId }: Musician) => musicianId)
+                    .filter((mId: string) => mId !== musicianId)
+                }
               />
             );
 

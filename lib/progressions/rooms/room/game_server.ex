@@ -160,10 +160,6 @@ defmodule Progressions.Rooms.Room.GameServer do
     enough_ready_ups? = length(Map.keys(ready_ups)) == length(Map.keys(musicians)) - 1
 
     case {valid_ready_up?, enough_ready_ups?} do
-      # invalid ready up - game server state unchanged
-      {false, _} ->
-        {:next_state, :game_start, data, [{:reply, from, data}]}
-
       # valid ready up - store ready up in game server state
       {true, false} ->
         updated_data = %__MODULE__{data | ready_ups: Map.put(ready_ups, musician_id, true)}
@@ -181,6 +177,10 @@ defmodule Progressions.Rooms.Room.GameServer do
 
         {:next_state, :recording, updated_data,
          [{:reply, from, sync_across_clients(:recording, updated_data)}]}
+
+      # invalid ready up - game server state unchanged
+      _ ->
+        {:next_state, :game_start, data, [{:reply, from, data}]}
     end
   end
 
@@ -197,10 +197,6 @@ defmodule Progressions.Rooms.Room.GameServer do
     enough_recordings? = length(Map.keys(recordings)) == length(Map.keys(musicians)) - 1
 
     case {valid_recording?, enough_recordings?} do
-      # invalid recording - game server state unchanged
-      {false, _} ->
-        {:next_state, :recording, data, [{:reply, from, data}]}
-
       # valid recording - store recording in game server state
       {true, false} ->
         updated_data = %__MODULE__{data | recordings: Map.put(recordings, musician_id, recording)}
@@ -214,6 +210,10 @@ defmodule Progressions.Rooms.Room.GameServer do
 
         {:next_state, :playback_voting, updated_data,
          [{:reply, from, sync_across_clients(:playback_voting, updated_data)}]}
+
+      # invalid recording - game server state unchanged
+      _ ->
+        {:next_state, :recording, data, [{:reply, from, data}]}
     end
   end
 
@@ -238,10 +238,6 @@ defmodule Progressions.Rooms.Room.GameServer do
     enough_votes? = length(Map.keys(votes)) == length(Map.keys(musicians)) - 1
 
     case {valid_vote?, enough_votes?} do
-      # invalid vote - game server state unchanged
-      {false, _} ->
-        {:next_state, :playback_voting, data, [{:reply, from, data}]}
-
       # valid vote - store vote in game server state
       {true, false} ->
         updated_data = %__MODULE__{data | votes: Map.put(votes, musician_id, vote)}
@@ -287,6 +283,10 @@ defmodule Progressions.Rooms.Room.GameServer do
           {:next_state, :recording, updated_data,
            [{:reply, from, sync_across_clients(:recording, updated_data)}]}
         end
+
+      # invalid vote - game server state unchanged
+      _ ->
+        {:next_state, :playback_voting, data, [{:reply, from, data}]}
     end
   end
 
