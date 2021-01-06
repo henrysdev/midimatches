@@ -1,4 +1,4 @@
-defmodule Progressions.Rooms.Room do
+defmodule Progressions.Rooms.Room.GameSupervisor do
   @moduledoc """
   Supervisor for a single room
   """
@@ -6,9 +6,8 @@ defmodule Progressions.Rooms.Room do
 
   alias Progressions.{
     Pids,
-    Rooms.Room.GameSupervisor,
-    Rooms.RoomServer,
-    Types.Configs.RoomConfig
+    Rooms.Room.GameServer,
+    Types.Configs.GameServerConfig
   }
 
   @spec start_link(any) :: :ignore | {:error, any} | {:ok, pid}
@@ -18,17 +17,16 @@ defmodule Progressions.Rooms.Room do
 
   @impl true
   def init(args) do
-    {room_id, room_config} =
+    {room_id, game_config} =
       case args do
-        [{room_id}] -> {room_id, %RoomConfig{}}
+        [{room_id}] -> {room_id, %GameServerConfig{}}
         [{room_id, room_config}] -> {room_id, room_config}
       end
 
     Pids.register({:room, room_id}, self())
 
     children = [
-      {RoomServer, [room_id]},
-      {GameSupervisor, [{room_id, room_config.server}]}
+      {GameServer, [room_id, game_config]}
     ]
 
     Supervisor.init(children, strategy: :rest_for_one)
