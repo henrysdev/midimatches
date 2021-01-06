@@ -3,7 +3,7 @@ defmodule Progressions.RoomTest do
 
   alias Progressions.{
     Rooms.Room,
-    Rooms.Room.GameSupervisor,
+    Rooms.Room.Game,
     Rooms.RoomServer,
     TestHelpers
   }
@@ -22,7 +22,7 @@ defmodule Progressions.RoomTest do
 
     assert [
              {RoomServer, _, :worker, [RoomServer]},
-             {GameSupervisor, _, :supervisor, [GameSupervisor]}
+             {Game, _, :supervisor, [Game]}
            ] = started_children
   end
 end

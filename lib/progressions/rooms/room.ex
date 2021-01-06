@@ -6,7 +6,7 @@ defmodule Progressions.Rooms.Room do
 
   alias Progressions.{
     Pids,
-    Rooms.Room.GameSupervisor,
+    Rooms.Room.Game,
     Rooms.RoomServer,
     Types.Configs.RoomConfig
   }
@@ -27,7 +27,7 @@ defmodule Progressions.Rooms.Room do
 
     children = [
       {RoomServer, [room_id]},
-      {GameSupervisor, [{room_id, room_config.server}]}
+      {Game, [{room_id, room_config.server}]}
     ]
 
     Supervisor.init(children, strategy: :rest_for_one)

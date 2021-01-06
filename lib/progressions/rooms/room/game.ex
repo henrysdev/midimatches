@@ -1,4 +1,4 @@
-defmodule Progressions.Rooms.Room.GameSupervisor do
+defmodule Progressions.Rooms.Room.Game do
   @moduledoc """
   Supervisor for a single room
   """

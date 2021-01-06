@@ -1,4 +1,4 @@
-defmodule Progressions.Rooms.Room.Bracket do
+defmodule Progressions.Rooms.Room.Game.Bracket do
   @moduledoc """
   A collection of functions that allow facilitating a tournament-like bracket system.
   """

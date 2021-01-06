@@ -26,8 +26,9 @@ defmodule Progressions.Rooms.RoomServer do
     GenServer.start_link(RoomServer, args)
   end
 
+  @impl true
   def init(args) do
-    {room_id, config} =
+    {room_id, _config} =
       case args do
         # TODO any actual config to parse?
         [room_id] -> {room_id, %{}}
