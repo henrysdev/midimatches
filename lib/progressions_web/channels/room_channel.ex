@@ -62,7 +62,7 @@ defmodule ProgressionsWeb.RoomChannel do
       musician_id: musician_id
     })
 
-    {:noreply,
+    {:reply, {:ok, %{musician_id: musician_id}},
      socket
      |> assign(room_server: room_server)
      |> assign(musician_id: musician_id)}

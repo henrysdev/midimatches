@@ -1,8 +1,8 @@
-import React, { useContext, useState } from "react";
-import { SimpleButton } from "../../../../common/index";
-import { MidiInput } from "../../../../audio/index";
-import { SUBMIT_RECORDING_EVENT } from "../../../../../constants/index";
-import { GameContext } from "../../../../../contexts/index";
+import React, { useState } from 'react';
+
+import { SUBMIT_RECORDING_EVENT } from '../../../../../constants';
+import { MidiInput } from '../../../../audio';
+import { SimpleButton } from '../../../../common';
 
 interface RecordingViewProps {
   pushMessageToChannel: Function;

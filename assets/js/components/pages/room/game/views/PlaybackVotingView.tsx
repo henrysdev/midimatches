@@ -1,14 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
-import { SimpleButton } from "../../../../common/index";
-import { SUBMIT_VOTE_EVENT } from "../../../../../constants/index";
-import { GameContext } from "../../../../../contexts/index";
-import {
-  LoopPlaybackManager,
-  NotePlayer,
-} from "../../../../../audioplayer/index";
-import { loopToEvents } from "../../../../../utils/index";
-import { GameContextType, Loop } from "../../../../../types/index";
-import * as Tone from "tone";
+import React, { useContext, useEffect } from 'react';
+import * as Tone from 'tone';
+
+import { SUBMIT_VOTE_EVENT } from '../../../../../constants';
+import { GameContext } from '../../../../../contexts';
+import { GameContextType } from '../../../../../types';
+import { RecordingPlayer } from '../../../../audio';
+import { SimpleButton } from '../../../../common';
 
 interface PlaybackVotingViewProps {
   pushMessageToChannel: Function;
@@ -20,30 +17,20 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
   eligibleMusiciansToVoteFor,
 }) => {
   const { recordings }: GameContextType = useContext(GameContext);
-  const [
-    loopPlaybackManager,
-    setLoopPlaybackManager,
-  ] = useState<LoopPlaybackManager>();
-  const [notePlayer, setNotePlayer] = useState<NotePlayer>();
 
   useEffect(() => {
-    const lpManager = new LoopPlaybackManager();
-    const nPlayer = new NotePlayer(lpManager);
-    setLoopPlaybackManager(lpManager);
-    setNotePlayer(nPlayer);
-    // nPlayer.start();
-  }, []);
-
-  useEffect(() => {
-    if (!!loopPlaybackManager && !!notePlayer && !!recordings) {
-      console.log("RECORDINGS: ", recordings);
-      // testToneScheduling(recordings);
-      Object.entries(recordings).forEach(([musicianId, recording]) => {
-        loopPlaybackManager.addMusician({
-          musicianId,
-          loop: recording,
-        });
-      });
+    if (!!recordings) {
+      // TODO automatically schedule all to fully playback
+      // Object.entries(recordings).reduce((now, [musicianId, recording]) => {
+      //   scheduleRecording(ß
+      //     recording,
+      //     now,
+      //     timestepSize,
+      //     soloTimeLimit,
+      //     playNote
+      //   );
+      //   return now + soloTimeLimit;
+      // }, Tone.now());
     }
   }, [recordings]);
 
@@ -52,7 +39,7 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
       <h3>PlaybackVoting View</h3>
       {eligibleMusiciansToVoteFor.map((musicianId: string) => {
         return (
-          <div>
+          <div key={`${musicianId}`}>
             <SimpleButton
               key={`vote-${musicianId}`}
               label={`Vote for ${musicianId}`}
@@ -63,6 +50,16 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
               }}
               disabled={false}
             />
+            {Object.entries(recordings).map(([musicianId, recording]) => {
+              return (
+                <RecordingPlayer
+                  key={`recording-player-${musicianId}`}
+                  recording={recording}
+                  musicianId={musicianId}
+                  scheduledStartTime={Tone.now()}
+                />
+              );
+            })}
           </div>
         );
       })}

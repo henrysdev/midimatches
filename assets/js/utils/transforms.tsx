@@ -1,6 +1,7 @@
-import { GAME_VIEW } from "../constants/index";
-import * as Tone from "tone";
-import { Loop } from "../types/index";
+import * as Tone from 'tone';
+
+import { GAME_VIEW } from '../constants';
+import { Loop } from '../types';
 
 const isArray = function (a: Array<any>): boolean {
   return Array.isArray(a);
@@ -53,7 +54,7 @@ function midiToPitchClass(midi: number): string {
   return scaleIndexToNote[note];
 }
 
-export function formatServerPayload(payload: Object): Object {
+export function unmarshalBody(payload: Object): Object {
   return keysToCamel(payload);
 }
 
@@ -83,10 +84,15 @@ export function loopToEvents(
   timestepSize: number
 ): Tone.Event[] {
   return loop.timestepSlices.reduce((accEvents, timestepSlice, idx) => {
+    const timestepSizeInSeconds = 0.000001 * timestepSize;
     const { timestep, notes } = timestepSlice;
     const events = notes.map(({ key, instrument, duration }) => {
       const note = midiToPitch(key);
-      return { time: now + timestepSize * timestep, note, velocity: 0.2 };
+      return {
+        time: now + timestepSizeInSeconds * timestep,
+        note,
+        velocity: 0.2,
+      };
     });
     return accEvents.concat(events);
   }, []);

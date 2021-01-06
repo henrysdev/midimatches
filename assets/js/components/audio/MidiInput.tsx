@@ -1,12 +1,13 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import WebMidi from "webmidi";
-import * as Tone from "tone";
-import _ from "lodash";
+import _ from 'lodash';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import * as Tone from 'tone';
+import WebMidi from 'webmidi';
 
-import { SimpleButton } from "../common/index";
-import { Loop, MIDINoteEvent, Note, TimestepSlice } from "../../types/index";
-import { Keyboard } from "./index";
-import { GameContext } from "../../contexts/index";
+import { Keyboard } from '.';
+import { DEFAULT_SYNTH_CONFIG } from '../../constants';
+import { GameContext } from '../../contexts';
+import { Loop, MIDINoteEvent, Note, TimestepSlice } from '../../types';
+import { SimpleButton } from '../common';
 
 interface MidiInputProps {
   submitRecording: Function;
@@ -38,21 +39,7 @@ const MidiInput: React.FC<MidiInputProps> = ({ submitRecording }) => {
 
   // init on load
   useEffect(() => {
-    const niceSynth = new Tone.Synth({
-      oscillator: {
-        type: "amtriangle",
-        harmonicity: 0.5,
-        modulationType: "sine",
-      },
-      envelope: {
-        attackCurve: "exponential",
-        attack: 0.03,
-        decay: 0.4,
-        sustain: 0.2,
-        release: 1.5,
-      },
-      portamento: 0.05,
-    }).toDestination();
+    const niceSynth = new Tone.Synth(DEFAULT_SYNTH_CONFIG).toDestination();
     Tone.context.lookAhead = 0.02;
 
     setMidiInputState({
@@ -227,14 +214,14 @@ function webMidiEventToMidiNoteEvent(
 }
 
 function getCurrentTimestep({
-  roomStartTime,
+  roundRecordingStartTime,
   timestepSize,
   quantizationThreshold,
 }: any): number {
   const nowMicros = Date.now() * 1000;
   return calculateTimestep(
     nowMicros,
-    roomStartTime,
+    roundRecordingStartTime,
     timestepSize,
     quantizationThreshold
   );
@@ -242,11 +229,11 @@ function getCurrentTimestep({
 
 function calculateTimestep(
   timeUtc: number,
-  roomStartTime: number,
+  roundRecordingStartTime: number,
   timestepSize: number,
   quantizationThreshold: number
 ): number {
-  const elapsedTime = Math.abs(timeUtc - roomStartTime);
+  const elapsedTime = Math.abs(timeUtc - roundRecordingStartTime);
   const elapsedTimesteps = Math.floor(elapsedTime / timestepSize);
   const remainderTime = elapsedTime % timestepSize;
   const quantizeTimestep =
