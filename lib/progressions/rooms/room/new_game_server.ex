@@ -26,6 +26,7 @@ defmodule Progressions.Rooms.Room.NewGameServer do
 
     field(:game_view, game_view(), default: :game_start)
     field(:bracket, %Bracket{}, default: %Bracket{})
+    field(:contestants, list(id), default: [])
     field(:round_recording_start_time, integer(), default: 0)
     field(:ready_ups, %MapSet{}, default: MapSet.new())
     field(:recordings, %{required(id()) => any}, default: %{})

@@ -2,13 +2,9 @@ defmodule Progressions.NewGameLogicTest do
   use ExUnit.Case
 
   alias Progressions.{
-    Rooms.Room.Game.Bracket,
     Rooms.Room.NewGameLogic,
     Rooms.Room.NewGameServer,
-    TestHelpers,
-    Types.GameRules,
-    Types.Loop,
-    Types.Musician
+    TestHelpers
   }
 
   setup do
@@ -69,6 +65,37 @@ defmodule Progressions.NewGameLogicTest do
         {["1"], :game_start},
         {["1", "3"], :game_start},
         {["1", "3"], :game_start}
+      ]
+
+      assert Enum.reverse(actual_state_scan) == expected_state_scan
+    end
+  end
+
+  describe "recordings" do
+    test "are submitted from all contestants and game view advances" do
+      musicians = ["1", "2", "3", "4"]
+      event_payloads = [{"1", %{"a" => "foo"}}, {"2", %{"b" => "bar"}}]
+
+      game_server_state = %NewGameServer{
+        musicians: MapSet.new(musicians),
+        game_view: :recording,
+        contestants: ["1", "2"]
+      }
+
+      {_bracket, actual_state_scan} =
+        Enum.reduce(
+          event_payloads,
+          {game_server_state, []},
+          fn ep, {gss, state_scan} ->
+            gss = NewGameLogic.add_recording(gss, ep)
+            recordings = Map.values(gss.recordings)
+            {gss, [{recordings, gss.game_view} | state_scan]}
+          end
+        )
+
+      expected_state_scan = [
+        {[%{"a" => "foo"}], :recording},
+        {[%{"a" => "foo"}, %{"b" => "bar"}], :playback_voting}
       ]
 
       assert Enum.reverse(actual_state_scan) == expected_state_scan

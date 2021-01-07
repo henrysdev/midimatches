@@ -2,12 +2,9 @@ defmodule Progressions.NewGameServerTest do
   use ExUnit.Case
 
   alias Progressions.{
-    Rooms.Room.Game.Bracket,
     Rooms.Room.NewGameServer,
     TestHelpers,
-    Types.GameRules,
-    Types.Loop,
-    Types.Musician
+    Types.GameRules
   }
 
   setup do
