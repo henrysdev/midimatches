@@ -26,7 +26,7 @@ defmodule Progressions.Rooms.Room do
     Pids.register({:room, room_id}, self())
 
     children = [
-      {RoomServer, [room_id]},
+      {RoomServer, [{room_id}]},
       {Game, [{room_id, room_config.server}]}
     ]
 

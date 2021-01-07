@@ -24,7 +24,7 @@ defmodule Progressions.Pids do
     {:error, "cannot register unidentified process type #{proc_type}"}
   end
 
-  @spec fetch(registry_key()) :: pid()
+  @spec fetch(registry_key()) :: pid() | nil
   @doc """
   Returns the pid value for the provided tuple key if one exists, otherwise nil
   """

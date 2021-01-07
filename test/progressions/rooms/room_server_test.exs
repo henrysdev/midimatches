@@ -2,8 +2,10 @@ defmodule Progressions.RoomServerTest do
   use ExUnit.Case
 
   alias Progressions.{
+    Pids,
     Rooms.RoomServer,
-    TestHelpers
+    TestHelpers,
+    Types.Configs.GameServerConfig
   }
 
   setup do
@@ -18,8 +20,8 @@ defmodule Progressions.RoomServerTest do
 
     assert :sys.get_state(room_server) == %RoomServer{
              players: MapSet.new(),
-             game_config: nil,
-             room_id: {room_id}
+             game_config: %GameServerConfig{},
+             room_id: room_id
            }
   end
 
@@ -42,5 +44,22 @@ defmodule Progressions.RoomServerTest do
     expected_players = ["m2", "m3"]
 
     assert players == expected_players
+  end
+
+  test "starts game when enough players have joined" do
+    room_id = "1"
+
+    game_config = %GameServerConfig{
+      game_size_num_players: 4
+    }
+
+    {:ok, room_server} = start_supervised({RoomServer, [{room_id, game_config}]})
+
+    RoomServer.add_player(room_server, "m1")
+    RoomServer.add_player(room_server, "m2")
+    RoomServer.add_player(room_server, "m3")
+    assert is_nil(Pids.fetch({:game_supervisor, room_id}))
+    state = RoomServer.add_player(room_server, "m4")
+    assert !is_nil(state.game)
   end
 end

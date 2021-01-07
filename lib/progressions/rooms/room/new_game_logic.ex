@@ -6,13 +6,13 @@ defmodule Progressions.Rooms.Room.NewGameLogic do
   alias Progressions.{
     Rooms.Room.Game.Bracket,
     Rooms.Room.NewGameServer,
-    Types.GameRules
+    Types.Configs.GameServerConfig
   }
 
   @type id() :: String.t()
   @type as_instruction_map() :: %{sync_clients?: boolean(), state: %NewGameServer{}}
 
-  @spec start_game(%GameRules{}, list(id), id()) :: %NewGameServer{}
+  @spec start_game(%GameServerConfig{}, list(id), id()) :: %NewGameServer{}
   def start_game(game_rules, musicians, room_id) do
     bracket = Bracket.new_bracket(musicians)
 

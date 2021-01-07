@@ -9,17 +9,20 @@ defmodule Progressions.Rooms.RoomServer do
 
   alias __MODULE__
 
-  alias Progressions.Pids
+  alias Progressions.{
+    Pids,
+    Rooms.Room.Game,
+    Types.Configs.GameServerConfig
+  }
 
   @type id() :: String.t()
   @type game_view() :: [:pregame_lobby | :game_start | :recording | :playback_voting | :game_end]
 
   typedstruct do
-    # server life cycle state
     field(:room_id, id(), enforce: true)
     field(:players, %MapSet{}, default: MapSet.new())
-    # TODO actual game config type
-    field(:game_config, %{})
+    field(:game_config, %GameServerConfig{})
+    field(:game, pid)
   end
 
   def start_link(args) do
@@ -28,30 +31,29 @@ defmodule Progressions.Rooms.RoomServer do
 
   @impl true
   def init(args) do
-    {room_id, _config} =
+    {room_id, game_config} =
       case args do
-        # TODO any actual config to parse?
-        [room_id] -> {room_id, %{}}
-        [room_id, server_config] -> {room_id, server_config}
+        [{room_id}] -> {room_id, %GameServerConfig{}}
+        [{room_id, game_config}] -> {room_id, game_config}
       end
 
     Pids.register({:room_server, room_id}, self())
 
     {:ok,
      %RoomServer{
-       room_id: room_id
+       room_id: room_id,
+       game_config: game_config
      }}
   end
 
-  # TODO move to API module[?]
   @spec add_player(pid(), id()) :: :ok
   def add_player(pid, player) do
-    GenServer.cast(pid, {:add_player, player})
+    GenServer.call(pid, {:add_player, player})
   end
 
   @spec drop_player(pid(), id()) :: :ok
   def drop_player(pid, player) do
-    GenServer.cast(pid, {:drop_player, player})
+    GenServer.call(pid, {:drop_player, player})
   end
 
   @spec get_players(pid()) :: %MapSet{}
@@ -60,22 +62,56 @@ defmodule Progressions.Rooms.RoomServer do
   end
 
   @impl true
-  def handle_cast(
+  def handle_call(
         {:add_player, player},
-        %RoomServer{players: players} = state
+        _from,
+        %RoomServer{
+          players: players,
+          room_id: room_id,
+          game_config:
+            %GameServerConfig{
+              game_size_num_players: num_players_to_start
+            } = game_config,
+          game: game
+        } = state
       ) do
-    # TODO comm with game_server: start a game
     players = MapSet.put(players, player)
-    {:noreply, %RoomServer{state | players: players}}
+    state = %RoomServer{state | players: players}
+
+    enough_players_to_start? = MapSet.size(players) == num_players_to_start
+    free_for_new_game? = is_nil(game)
+
+    case {enough_players_to_start?, free_for_new_game?} do
+      {true, true} ->
+        {:ok, game} =
+          Supervisor.start_link([{Game, [{room_id, game_config}]}], strategy: :one_for_one)
+
+        state = %RoomServer{state | game: game}
+        {:reply, state, state}
+
+      {true, false} ->
+        # TODO waiting queue for next game
+        {:reply, state, state}
+
+      {false, _} ->
+        {:reply, state, state}
+    end
   end
 
   @impl true
-  def handle_cast(
+  def handle_call(
         {:drop_player, player},
-        %RoomServer{players: players} = state
+        _from,
+        %RoomServer{players: players, room_id: _room_id, game: game} = state
       ) do
-    # TODO comm with game_server: player has dropped, start a bot
-    {:noreply, %RoomServer{state | players: MapSet.delete(players, player)}}
+    state = %RoomServer{state | players: MapSet.delete(players, player)}
+
+    if is_nil(game) do
+      # TODO comm with game_server: player has dropped, start a bot
+      {:reply, state, state}
+    else
+      {:reply, state, state}
+    end
   end
 
   @impl true
