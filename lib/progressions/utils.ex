@@ -5,6 +5,7 @@ defmodule Progressions.Utils do
 
   alias Progressions.{
     Rooms.Room.GameServer,
+    Rooms.Room.NewGameServer,
     Types.Musician
   }
 
@@ -69,6 +70,37 @@ defmodule Progressions.Utils do
       winner: winner,
       ready_ups: ready_ups,
       recordings: recordings,
+      num_votes_cast: num_votes_cast
+    }
+  end
+
+  @spec new_server_to_client_game_state(%NewGameServer{}) :: any
+  @doc """
+  transform game server state into update payload for clients
+  """
+  def new_server_to_client_game_state(%NewGameServer{} = server_state) do
+    # votes are secret - should not expose actual votes to clients, only progress on
+    # voting as a whole
+    num_votes_cast =
+      server_state.votes
+      |> Map.keys()
+      |> length()
+
+    shallow_musicians =
+      server_state.musicians
+      |> MapSet.to_list()
+
+    %{
+      room_id: server_state.room_id,
+      round_recording_start_time: server_state.round_recording_start_time,
+      timestep_size: server_state.game_rules.timestep_size,
+      quantization_threshold: server_state.game_rules.quantization_threshold,
+      rounds_to_win: server_state.game_rules.rounds_to_win,
+      game_size_num_players: server_state.game_rules.game_size_num_players,
+      musicians: shallow_musicians,
+      winner: server_state.winner,
+      ready_ups: server_state.ready_ups,
+      recordings: server_state.recordings,
       num_votes_cast: num_votes_cast
     }
   end

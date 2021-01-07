@@ -11,7 +11,8 @@ defmodule Progressions.Rooms.Room.NewGameServer do
     Pids,
     Rooms.Room.Game.Bracket,
     Rooms.Room.NewGameLogic,
-    Types.GameRules
+    Types.GameRules,
+    Utils
   }
 
   require Logger
@@ -23,6 +24,7 @@ defmodule Progressions.Rooms.Room.NewGameServer do
   typedstruct do
     field(:game_rules, %GameRules{}, default: %GameRules{})
     field(:musicians, %MapSet{}, enforce: true)
+    field(:room_id, id(), enforce: true)
 
     field(:game_view, game_view(), default: :game_start)
     field(:bracket, %Bracket{}, default: %Bracket{})
@@ -49,7 +51,7 @@ defmodule Progressions.Rooms.Room.NewGameServer do
 
     Pids.register({:game_server, room_id}, self())
 
-    {:ok, NewGameLogic.start_game(game_rules, musicians)}
+    {:ok, NewGameLogic.start_game(game_rules, musicians, room_id)}
   end
 
   # TODO split into API module [?]
@@ -101,11 +103,33 @@ defmodule Progressions.Rooms.Room.NewGameServer do
           game_view: curr_game_view
         } = state
       ) do
-    case {event_type, curr_game_view} do
-      {:ready_up, :game_start} -> {:noreply, NewGameLogic.ready_up(state, event_payload)}
-      {:record, :recording} -> {:noreply, NewGameLogic.add_recording(state, event_payload)}
-      {:vote, :playback_voting} -> {:noreply, NewGameLogic.cast_vote(state, event_payload)}
-      _ -> {:noreply, state}
+    %{sync_clients?: sync_clients?, state: state} =
+      case {event_type, curr_game_view} do
+        {:ready_up, :game_start} ->
+          NewGameLogic.ready_up(state, event_payload)
+
+        {:record, :recording} ->
+          NewGameLogic.add_recording(state, event_payload)
+
+        {:vote, :playback_voting} ->
+          NewGameLogic.cast_vote(state, event_payload)
+
+        _ ->
+          %{sync_clients?: false, state: state}
+      end
+
+    if sync_clients? do
+      broadcast_gamestate(state)
+      {:noreply, state}
+    else
+      {:noreply, state}
     end
+  end
+
+  defp broadcast_gamestate(%NewGameServer{room_id: room_id, game_view: game_view} = state) do
+    ProgressionsWeb.Endpoint.broadcast("room:#{room_id}", "view_update", %{
+      view: game_view,
+      game_state: Utils.new_server_to_client_game_state(state)
+    })
   end
 end

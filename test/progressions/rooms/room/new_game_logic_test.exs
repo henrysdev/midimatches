@@ -17,6 +17,7 @@ defmodule Progressions.NewGameLogicTest do
       musicians = ["1", "2", "3", "4"]
 
       game_server_state = %NewGameServer{
+        room_id: "1",
         musicians: MapSet.new(musicians)
       }
 
@@ -25,7 +26,7 @@ defmodule Progressions.NewGameLogicTest do
           musicians,
           {game_server_state, []},
           fn musician, {gss, state_scan} ->
-            gss = NewGameLogic.ready_up(gss, musician)
+            %{state: gss} = NewGameLogic.ready_up(gss, musician)
             ready_ups = MapSet.to_list(gss.ready_ups)
             {gss, [{ready_ups, gss.game_view} | state_scan]}
           end
@@ -46,6 +47,7 @@ defmodule Progressions.NewGameLogicTest do
       duped_ready_ups = ["1", "1", "3", "1"]
 
       game_server_state = %NewGameServer{
+        room_id: "1",
         musicians: MapSet.new(musicians)
       }
 
@@ -54,7 +56,7 @@ defmodule Progressions.NewGameLogicTest do
           duped_ready_ups,
           {game_server_state, []},
           fn musician, {gss, state_scan} ->
-            gss = NewGameLogic.ready_up(gss, musician)
+            %{state: gss} = NewGameLogic.ready_up(gss, musician)
             ready_ups = MapSet.to_list(gss.ready_ups)
             {gss, [{ready_ups, gss.game_view} | state_scan]}
           end
@@ -77,6 +79,7 @@ defmodule Progressions.NewGameLogicTest do
       event_payloads = [{"1", %{"a" => "foo"}}, {"2", %{"b" => "bar"}}]
 
       game_server_state = %NewGameServer{
+        room_id: "1",
         musicians: MapSet.new(musicians),
         game_view: :recording,
         contestants: ["1", "2"]
@@ -87,7 +90,7 @@ defmodule Progressions.NewGameLogicTest do
           event_payloads,
           {game_server_state, []},
           fn ep, {gss, state_scan} ->
-            gss = NewGameLogic.add_recording(gss, ep)
+            %{state: gss} = NewGameLogic.add_recording(gss, ep)
             recordings = Map.values(gss.recordings)
             {gss, [{recordings, gss.game_view} | state_scan]}
           end
@@ -110,6 +113,7 @@ defmodule Progressions.NewGameLogicTest do
       event_payloads = [{"3", "1"}, {"4", "1"}]
 
       game_server_state = %NewGameServer{
+        room_id: "1",
         musicians: MapSet.new(musicians),
         game_view: :playback_voting,
         contestants: ["1", "2"],
@@ -121,7 +125,7 @@ defmodule Progressions.NewGameLogicTest do
           event_payloads,
           {game_server_state, []},
           fn ep, {gss, state_scan} ->
-            gss = NewGameLogic.cast_vote(gss, ep)
+            %{state: gss} = NewGameLogic.cast_vote(gss, ep)
             {gss, [{gss.votes, gss.winner, gss.game_view} | state_scan]}
           end
         )
@@ -141,6 +145,7 @@ defmodule Progressions.NewGameLogicTest do
       event_payloads = [{"3", "1"}, {"3", "1"}, {"1", "3"}, {"3", "2"}, {"0", "1"}, {"4", "1"}]
 
       game_server_state = %NewGameServer{
+        room_id: "1",
         musicians: MapSet.new(musicians),
         game_view: :playback_voting,
         contestants: contestants,
@@ -152,7 +157,7 @@ defmodule Progressions.NewGameLogicTest do
           event_payloads,
           {game_server_state, []},
           fn ep, {gss, state_scan} ->
-            gss = NewGameLogic.cast_vote(gss, ep)
+            %{state: gss} = NewGameLogic.cast_vote(gss, ep)
             {gss, [{gss.votes, gss.winner, gss.game_view} | state_scan]}
           end
         )
