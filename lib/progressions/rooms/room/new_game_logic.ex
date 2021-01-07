@@ -11,22 +11,20 @@ defmodule Progressions.Rooms.Room.NewGameLogic do
 
   @type id() :: String.t()
 
-  # TODO use dedicated config type
   @spec start_game(%GameRules{}, list(id)) :: %NewGameServer{}
   def start_game(game_rules, musicians) do
     bracket = Bracket.new_bracket(musicians)
 
-    [contestants] =
-      bracket
-      |> Bracket.remaining_matches()
-      |> Enum.take(1)
+    [contestants | judges] = Bracket.remaining_matches(bracket)
+    judges = Enum.flat_map(judges, & &1)
 
     %NewGameServer{
       game_rules: game_rules,
       musicians: MapSet.new(musicians),
       bracket: bracket,
       game_view: :game_start,
-      contestants: contestants
+      contestants: contestants,
+      judges: judges
     }
   end
 
@@ -51,7 +49,7 @@ defmodule Progressions.Rooms.Room.NewGameLogic do
       {true, false} ->
         %NewGameServer{state | ready_ups: MapSet.put(ready_ups, musician_id)}
 
-      # invalid ready up - return game server state unchanged
+      # invalid vote - return state unchanged
       _ ->
         state
     end
@@ -62,7 +60,6 @@ defmodule Progressions.Rooms.Room.NewGameLogic do
         %NewGameServer{contestants: contestants, recordings: recordings} = state,
         {musician_id, recording}
       ) do
-    # ).has_key?(musicians, musician_id) and !Map.has_key?(recordings, musician_id)
     valid_recording? =
       Enum.member?(contestants, musician_id) and
         !Map.has_key?(recordings, musician_id)
@@ -85,15 +82,53 @@ defmodule Progressions.Rooms.Room.NewGameLogic do
             game_view: :playback_voting
         }
 
-      # invalid recording - game server state unchanged
+      # invalid vote - return state unchanged
       _ ->
         state
     end
   end
 
   @spec cast_vote(%NewGameServer{}, {id(), id()}) :: %NewGameServer{}
-  def cast_vote(%NewGameServer{} = state, _vote) do
-    # TODO implement
-    state
+  def cast_vote(
+        %NewGameServer{bracket: bracket, contestants: contestants, judges: judges, votes: votes} =
+          state,
+        {musician_id, vote}
+      ) do
+    valid_vote? =
+      Enum.member?(judges, musician_id) and
+        Enum.member?(contestants, vote) and
+        !Map.has_key?(votes, musician_id)
+
+    last_vote? = length(judges) - map_size(votes) == 1
+
+    case {valid_vote?, last_vote?} do
+      # last vote - advance to next game view
+      {true, true} ->
+        votes = Map.put(votes, musician_id, vote)
+
+        winner =
+          votes
+          |> Map.values()
+          |> Enum.frequencies()
+          |> Enum.max()
+
+        bracket = Bracket.record_winner(bracket, winner)
+
+        %NewGameServer{
+          state
+          | votes: votes,
+            winner: winner,
+            bracket: bracket,
+            game_view: :game_start
+        }
+
+      # valid vote - count and continue
+      {true, false} ->
+        %NewGameServer{state | votes: Map.put(votes, musician_id, vote)}
+
+      # invalid vote - return state unchanged
+      _ ->
+        state
+    end
   end
 end

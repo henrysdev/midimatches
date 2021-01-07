@@ -101,4 +101,72 @@ defmodule Progressions.NewGameLogicTest do
       assert Enum.reverse(actual_state_scan) == expected_state_scan
     end
   end
+
+  describe "cast votes" do
+    test "are submitted from all judges and game view advances" do
+      contestants = ["1", "2"]
+      judges = ["3", "4"]
+      musicians = contestants ++ judges
+      event_payloads = [{"3", "1"}, {"4", "1"}]
+
+      game_server_state = %NewGameServer{
+        musicians: MapSet.new(musicians),
+        game_view: :playback_voting,
+        contestants: ["1", "2"],
+        judges: ["3", "4"]
+      }
+
+      {_bracket, actual_state_scan} =
+        Enum.reduce(
+          event_payloads,
+          {game_server_state, []},
+          fn ep, {gss, state_scan} ->
+            gss = NewGameLogic.cast_vote(gss, ep)
+            {gss, [{gss.votes, gss.winner, gss.game_view} | state_scan]}
+          end
+        )
+
+      expected_state_scan = [
+        {%{"3" => "1"}, nil, :playback_voting},
+        {%{"3" => "1", "4" => "1"}, {"1", 2}, :game_start}
+      ]
+
+      assert Enum.reverse(actual_state_scan) == expected_state_scan
+    end
+
+    test "have invalid votes that are not counted" do
+      contestants = ["1", "2"]
+      judges = ["3", "4"]
+      musicians = contestants ++ judges
+      event_payloads = [{"3", "1"}, {"3", "1"}, {"1", "3"}, {"3", "2"}, {"0", "1"}, {"4", "1"}]
+
+      game_server_state = %NewGameServer{
+        musicians: MapSet.new(musicians),
+        game_view: :playback_voting,
+        contestants: contestants,
+        judges: judges
+      }
+
+      {_bracket, actual_state_scan} =
+        Enum.reduce(
+          event_payloads,
+          {game_server_state, []},
+          fn ep, {gss, state_scan} ->
+            gss = NewGameLogic.cast_vote(gss, ep)
+            {gss, [{gss.votes, gss.winner, gss.game_view} | state_scan]}
+          end
+        )
+
+      expected_state_scan = [
+        {%{"3" => "1"}, nil, :playback_voting},
+        {%{"3" => "1"}, nil, :playback_voting},
+        {%{"3" => "1"}, nil, :playback_voting},
+        {%{"3" => "1"}, nil, :playback_voting},
+        {%{"3" => "1"}, nil, :playback_voting},
+        {%{"3" => "1", "4" => "1"}, {"1", 2}, :game_start}
+      ]
+
+      assert Enum.reverse(actual_state_scan) == expected_state_scan
+    end
+  end
 end

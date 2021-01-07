@@ -27,6 +27,8 @@ defmodule Progressions.Rooms.Room.NewGameServer do
     field(:game_view, game_view(), default: :game_start)
     field(:bracket, %Bracket{}, default: %Bracket{})
     field(:contestants, list(id), default: [])
+    field(:judges, list(id), default: [])
+    field(:winner, id())
     field(:round_recording_start_time, integer(), default: 0)
     field(:ready_ups, %MapSet{}, default: MapSet.new())
     field(:recordings, %{required(id()) => any}, default: %{})
@@ -84,7 +86,7 @@ defmodule Progressions.Rooms.Room.NewGameServer do
   state from recording to recording
   """
   def musician_vote(pid, musician_id, vote) do
-    GenServer.cast(pid, {:incoming_event, {:vote, musician_id, vote}})
+    GenServer.cast(pid, {:incoming_event, {:vote, {musician_id, vote}}})
   end
 
   @impl true
