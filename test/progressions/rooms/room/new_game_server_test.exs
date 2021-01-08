@@ -17,7 +17,7 @@ defmodule Progressions.NewGameServerTest do
     musicians = ["1", "2", "3", "4"]
     game_rules = %GameServerConfig{}
 
-    {:ok, game_server} = NewGameServer.start_link([room_id, musicians, game_rules])
+    {:ok, game_server} = NewGameServer.start_link([{room_id, musicians, game_rules}])
 
     bracket_contestants =
       :sys.get_state(game_server).bracket.match_ups
@@ -32,7 +32,7 @@ defmodule Progressions.NewGameServerTest do
     musicians = ["1", "2", "3", "4"]
     game_rules = %GameServerConfig{}
 
-    {:ok, game_server} = NewGameServer.start_link([room_id, musicians, game_rules])
+    {:ok, game_server} = NewGameServer.start_link([{room_id, musicians, game_rules}])
     game_view = NewGameServer.get_current_view(game_server)
 
     assert game_view == :game_start

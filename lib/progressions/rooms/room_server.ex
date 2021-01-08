@@ -67,11 +67,9 @@ defmodule Progressions.Rooms.RoomServer do
         _from,
         %RoomServer{
           players: players,
-          room_id: room_id,
-          game_config:
-            %GameServerConfig{
-              game_size_num_players: num_players_to_start
-            } = game_config,
+          game_config: %GameServerConfig{
+            game_size_num_players: num_players_to_start
+          },
           game: game
         } = state
       ) do
@@ -83,14 +81,11 @@ defmodule Progressions.Rooms.RoomServer do
 
     case {enough_players_to_start?, free_for_new_game?} do
       {true, true} ->
-        {:ok, game} =
-          Supervisor.start_link([{Game, [{room_id, game_config}]}], strategy: :one_for_one)
-
-        state = %RoomServer{state | game: game}
+        state = start_game(state)
         {:reply, state, state}
 
       {true, false} ->
-        # TODO waiting queue for next game
+        # TODO waiting queue for next game [?]
         {:reply, state, state}
 
       {false, _} ->
@@ -107,7 +102,7 @@ defmodule Progressions.Rooms.RoomServer do
     state = %RoomServer{state | players: MapSet.delete(players, player)}
 
     if is_nil(game) do
-      # TODO comm with game_server: player has dropped, start a bot
+      # TODO comm with game_server: player has dropped, replace with bot
       {:reply, state, state}
     else
       {:reply, state, state}
@@ -117,5 +112,22 @@ defmodule Progressions.Rooms.RoomServer do
   @impl true
   def handle_call(:get_players, _from, %RoomServer{players: players} = state) do
     {:reply, players, state}
+  end
+
+  defp start_game(
+         %RoomServer{room_id: room_id, players: players, game_config: game_config} = state
+       ) do
+    # TODO stop casting back and forth from mapset and list between here and new game server
+    musicians = MapSet.to_list(players)
+
+    {:ok, game} =
+      Supervisor.start_link([{Game, [{room_id, musicians, game_config}]}], strategy: :one_for_one)
+
+    broadcast_start_game(room_id)
+    %RoomServer{state | game: game}
+  end
+
+  defp broadcast_start_game(room_id) do
+    ProgressionsWeb.Endpoint.broadcast("room:#{room_id}", "start_game", %{})
   end
 end

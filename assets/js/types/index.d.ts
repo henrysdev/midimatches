@@ -27,18 +27,22 @@ export interface MIDINoteEvent {
 }
 
 export interface GameContextType {
+  // TODO add bracket!!
   gameSizeNumPlayers: number;
   musicians: Musician[];
   numVotesCast: number;
   quantizationThreshold: number;
-  readyUps: any; //Map<string, boolean>;
-  recordings: any; // Map<string, Loop>;
+  readyUps: any;
+  recordings: any;
   roomId: string;
   roundRecordingStartTime: number;
   round: number;
   roundsToWin: number;
-  scores: any; //Map<string, number>;
   timestepSize: number;
   winner: string;
   soloTimeLimit: number;
+}
+
+export interface NewGameContextType {
+  roomId: string;
 }

@@ -22,6 +22,7 @@ defmodule Progressions.Rooms.Room.NewGameLogic do
     %NewGameServer{
       room_id: room_id,
       game_rules: game_rules,
+      # TODO dont cast back and forth from a mapset
       musicians: MapSet.new(musicians),
       bracket: bracket,
       game_view: :game_start,

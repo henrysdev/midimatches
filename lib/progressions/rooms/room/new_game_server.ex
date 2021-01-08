@@ -45,8 +45,8 @@ defmodule Progressions.Rooms.Room.NewGameServer do
   def init(args) do
     {room_id, musicians, game_rules} =
       case args do
-        [room_id, musicians, game_rules] -> {room_id, musicians, game_rules}
-        [room_id, musicians] -> {room_id, musicians, %GameServerConfig{}}
+        [{room_id, musicians, game_rules}] -> {room_id, musicians, game_rules}
+        [{room_id, musicians}] -> {room_id, musicians, %GameServerConfig{}}
       end
 
     Pids.register({:game_server, room_id}, self())

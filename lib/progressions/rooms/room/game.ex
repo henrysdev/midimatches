@@ -6,7 +6,7 @@ defmodule Progressions.Rooms.Room.Game do
 
   alias Progressions.{
     Pids,
-    Rooms.Room.GameServer,
+    Rooms.Room.NewGameServer,
     Types.Configs.GameServerConfig
   }
 
@@ -16,15 +16,15 @@ defmodule Progressions.Rooms.Room.Game do
 
   @impl true
   def init(args) do
-    {room_id, game_config} =
+    {room_id, musicians, game_config} =
       case args do
-        [{room_id}] -> {room_id, %GameServerConfig{}}
-        [{room_id, room_config}] -> {room_id, room_config}
+        [{room_id, musicians}] -> {room_id, musicians, %GameServerConfig{}}
+        [{room_id, musicians, room_config}] -> {room_id, musicians, room_config}
       end
 
     Pids.register({:game_supervisor, room_id}, self())
 
-    children = [{GameServer, [room_id, game_config]}]
+    children = [{NewGameServer, [{room_id, musicians, game_config}]}]
 
     Supervisor.init(children, strategy: :one_for_one)
   end
