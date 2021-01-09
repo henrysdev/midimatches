@@ -26,23 +26,25 @@ export interface MIDINoteEvent {
   receivedTimestep: number;
 }
 
-export interface GameContextType {
-  // TODO add bracket!!
+export interface GameRules {
   gameSizeNumPlayers: number;
-  musicians: Musician[];
-  numVotesCast: number;
-  quantizationThreshold: number;
-  readyUps: any;
-  recordings: any;
-  roomId: string;
-  roundRecordingStartTime: number;
-  round: number;
-  roundsToWin: number;
   timestepSize: number;
-  winner: string;
   soloTimeLimit: number;
+  quantizationThreshold: number;
 }
 
-export interface NewGameContextType {
+export interface GameContextType {
+  // static fields
+  gameRules: GameRules;
   roomId: string;
+
+  // dynamic fields
+  musicians: string[];
+  numVotesCast: number;
+  readyUps: any;
+  recordings: any;
+  roundRecordingStartTime: number;
+  winner: string;
+  contestants: string[];
+  judges: string[];
 }

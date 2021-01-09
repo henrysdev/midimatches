@@ -12,7 +12,7 @@ defmodule Progressions.Rooms.RoomServer do
   alias Progressions.{
     Pids,
     Rooms.Room.Game,
-    Types.Configs.GameServerConfig
+    Types.GameRules
   }
 
   @type id() :: String.t()
@@ -21,7 +21,7 @@ defmodule Progressions.Rooms.RoomServer do
   typedstruct do
     field(:room_id, id(), enforce: true)
     field(:players, %MapSet{}, default: MapSet.new())
-    field(:game_config, %GameServerConfig{})
+    field(:game_config, %GameRules{})
     field(:game, pid)
   end
 
@@ -33,7 +33,7 @@ defmodule Progressions.Rooms.RoomServer do
   def init(args) do
     {room_id, game_config} =
       case args do
-        [{room_id}] -> {room_id, %GameServerConfig{}}
+        [{room_id}] -> {room_id, %GameRules{}}
         [{room_id, game_config}] -> {room_id, game_config}
       end
 
@@ -67,7 +67,7 @@ defmodule Progressions.Rooms.RoomServer do
         _from,
         %RoomServer{
           players: players,
-          game_config: %GameServerConfig{
+          game_config: %GameRules{
             game_size_num_players: num_players_to_start
           },
           game: game

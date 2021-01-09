@@ -1,4 +1,4 @@
-defmodule Progressions.Types.Configs.GameServerConfig do
+defmodule Progressions.Configs.Types.GameServerConfig do
   @moduledoc """
   Configurable fields for a new instance of a GameServer
   """

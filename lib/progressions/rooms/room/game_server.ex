@@ -7,7 +7,7 @@
 
 #   alias Progressions.{
 #     Pids,
-#     Types.Configs.GameServerConfig,
+#     Types.GameRules,
 #     Types.Loop,
 #     Types.Musician,
 #     Utils
@@ -47,7 +47,7 @@
 #   def init(args) do
 #     {room_id, server_config} =
 #       case args do
-#         [room_id] -> {room_id, %GameServerConfig{}}
+#         [room_id] -> {room_id, %GameRules{}}
 #         [room_id, server_config] -> {room_id, server_config}
 #       end
 

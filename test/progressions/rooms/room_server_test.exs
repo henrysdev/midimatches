@@ -5,7 +5,7 @@ defmodule Progressions.RoomServerTest do
     Pids,
     Rooms.RoomServer,
     TestHelpers,
-    Types.Configs.GameServerConfig
+    Types.GameRules
   }
 
   setup do
@@ -20,7 +20,7 @@ defmodule Progressions.RoomServerTest do
 
     assert :sys.get_state(room_server) == %RoomServer{
              players: MapSet.new(),
-             game_config: %GameServerConfig{},
+             game_config: %GameRules{},
              room_id: room_id
            }
   end
@@ -49,7 +49,7 @@ defmodule Progressions.RoomServerTest do
   test "starts game when enough players have joined" do
     room_id = "1"
 
-    game_config = %GameServerConfig{
+    game_config = %GameRules{
       game_size_num_players: 4
     }
 

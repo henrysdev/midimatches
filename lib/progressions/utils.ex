@@ -4,7 +4,8 @@ defmodule Progressions.Utils do
   """
 
   alias Progressions.{
-    Rooms.Room.NewGameServer
+    Rooms.Room.NewGameServer,
+    Types.ClientGameState
   }
 
   def calc_deadline(_curr_timestep, _loop_start_timestep, loop_length) when loop_length <= 0 do
@@ -92,18 +93,24 @@ defmodule Progressions.Utils do
       server_state.ready_ups
       |> MapSet.to_list()
 
-    %{
+    %ClientGameState{
+      # static fields
+      # game_size_num_players: server_state.game_rules.game_size_num_players,
+      # timestep_size: server_state.game_rules.timestep_size,
+      # solo_time_limit: server_state.game_rules.solo_time_limit,
+      # quantization_threshold: server_state.game_rules.quantization_threshold,
+      game_rules: server_state.game_rules,
       room_id: server_state.room_id,
-      round_recording_start_time: server_state.round_recording_start_time,
-      timestep_size: server_state.game_rules.timestep_size,
-      quantization_threshold: server_state.game_rules.quantization_threshold,
-      rounds_to_win: server_state.game_rules.rounds_to_win,
-      game_size_num_players: server_state.game_rules.game_size_num_players,
+
+      # dynamic fields
       musicians: musicians_list,
-      winner: server_state.winner,
+      num_votes_cast: num_votes_cast,
       ready_ups: ready_ups_list,
       recordings: server_state.recordings,
-      num_votes_cast: num_votes_cast
+      round_recording_start_time: server_state.round_recording_start_time,
+      winner: server_state.winner,
+      contestants: server_state.contestants,
+      judges: server_state.judges
     }
   end
 end

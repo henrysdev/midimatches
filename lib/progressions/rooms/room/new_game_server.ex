@@ -11,7 +11,7 @@ defmodule Progressions.Rooms.Room.NewGameServer do
     Pids,
     Rooms.Room.Game.Bracket,
     Rooms.Room.NewGameLogic,
-    Types.Configs.GameServerConfig,
+    Types.GameRules,
     Utils
   }
 
@@ -22,7 +22,7 @@ defmodule Progressions.Rooms.Room.NewGameServer do
   @type game_view() :: [:game_start | :recording | :playback_voting | :game_end]
 
   typedstruct do
-    field(:game_rules, %GameServerConfig{}, default: %GameServerConfig{})
+    field(:game_rules, %GameRules{}, default: %GameRules{})
     field(:musicians, %MapSet{}, enforce: true)
     field(:room_id, id(), enforce: true)
 
@@ -46,7 +46,7 @@ defmodule Progressions.Rooms.Room.NewGameServer do
     {room_id, musicians, game_rules} =
       case args do
         [{room_id, musicians, game_rules}] -> {room_id, musicians, game_rules}
-        [{room_id, musicians}] -> {room_id, musicians, %GameServerConfig{}}
+        [{room_id, musicians}] -> {room_id, musicians, %GameRules{}}
       end
 
     Pids.register({:game_server, room_id}, self())

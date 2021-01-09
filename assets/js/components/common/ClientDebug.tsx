@@ -5,12 +5,17 @@ import { DEFAULT_SYNTH_CONFIG } from '../../constants';
 import { GameContext } from '../../contexts';
 import { SimpleButton } from '../common';
 
-const GameContextDebug: React.FC = () => {
+interface ClientDebugProps {
+  musicianId: string;
+}
+
+const ClientDebug: React.FC<ClientDebugProps> = ({ musicianId }) => {
   const gameContext = useContext(GameContext);
   const debugSynth = new Tone.Synth(DEFAULT_SYNTH_CONFIG).toDestination();
 
   return (
     <div>
+      <div>Musician: {musicianId}</div>
       <SimpleButton
         label="play me for a middle C"
         callback={() => debugSynth.triggerAttackRelease("C4", "8n")}
@@ -20,4 +25,4 @@ const GameContextDebug: React.FC = () => {
     </div>
   );
 };
-export { GameContextDebug };
+export { ClientDebug };

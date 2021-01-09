@@ -5,7 +5,7 @@ import { GAME_VIEW } from '../../../../constants';
 import { GameContext } from '../../../../contexts';
 import { GameContextType } from '../../../../types';
 import { gameViewAtomToEnum, unmarshalBody } from '../../../../utils';
-import { GameContextDebug } from '../../../common';
+import { ClientDebug } from '../../../common';
 import { GameEndView, GameStartView, PlaybackVotingView, RecordingView } from './views';
 
 interface GameProps {
@@ -66,7 +66,7 @@ const Game: React.FC<GameProps> = ({ gameChannel, musicianId }) => {
             return <div></div>;
         }
       })()}
-      <GameContextDebug />
+      <ClientDebug musicianId={musicianId} />
     </GameContext.Provider>
   );
 };

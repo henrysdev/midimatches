@@ -7,7 +7,7 @@ defmodule Progressions.Rooms.Room.Game do
   alias Progressions.{
     Pids,
     Rooms.Room.NewGameServer,
-    Types.Configs.GameServerConfig
+    Types.GameRules
   }
 
   def start_link(args) do
@@ -18,7 +18,7 @@ defmodule Progressions.Rooms.Room.Game do
   def init(args) do
     {room_id, musicians, game_config} =
       case args do
-        [{room_id, musicians}] -> {room_id, musicians, %GameServerConfig{}}
+        [{room_id, musicians}] -> {room_id, musicians, %GameRules{}}
         [{room_id, musicians, room_config}] -> {room_id, musicians, room_config}
       end
 

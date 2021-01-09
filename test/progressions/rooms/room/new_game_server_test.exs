@@ -4,7 +4,7 @@ defmodule Progressions.NewGameServerTest do
   alias Progressions.{
     Rooms.Room.NewGameServer,
     TestHelpers,
-    Types.Configs.GameServerConfig
+    Types.GameRules
   }
 
   setup do
@@ -15,7 +15,7 @@ defmodule Progressions.NewGameServerTest do
   test "sets up new game server" do
     room_id = "1"
     musicians = ["1", "2", "3", "4"]
-    game_rules = %GameServerConfig{}
+    game_rules = %GameRules{}
 
     {:ok, game_server} = NewGameServer.start_link([{room_id, musicians, game_rules}])
 
@@ -30,7 +30,7 @@ defmodule Progressions.NewGameServerTest do
   test "get current game view" do
     room_id = "1"
     musicians = ["1", "2", "3", "4"]
-    game_rules = %GameServerConfig{}
+    game_rules = %GameRules{}
 
     {:ok, game_server} = NewGameServer.start_link([{room_id, musicians, game_rules}])
     game_view = NewGameServer.get_current_view(game_server)
