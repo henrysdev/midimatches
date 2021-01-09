@@ -43,18 +43,19 @@ const Game: React.FC<GameProps> = ({ gameChannel, musicianId }) => {
             return <GameStartView pushMessageToChannel={genericPushMessage} />;
 
           case GAME_VIEW.RECORDING:
-            return <RecordingView pushMessageToChannel={genericPushMessage} />;
+            return (
+              <RecordingView
+                isContestant={gameContext.contestants.includes(musicianId)}
+                pushMessageToChannel={genericPushMessage}
+              />
+            );
 
           case GAME_VIEW.PLAYBACK_VOTING:
             return (
               <PlaybackVotingView
+                isJudge={gameContext.judges.includes(musicianId)}
                 pushMessageToChannel={genericPushMessage}
-                eligibleMusiciansToVoteFor={
-                  // TODO replace with contestants when added to game context
-                  gameContext.musicians.filter(
-                    (mId: string) => mId !== musicianId
-                  )
-                }
+                eligibleMusiciansToVoteFor={gameContext.contestants}
               />
             );
 
