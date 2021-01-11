@@ -6,7 +6,7 @@ defmodule Progressions.TestHelpers do
   alias Progressions.{
     Persistence,
     Rooms,
-    Rooms.Room.NewGameServer,
+    Rooms.Room.GameServer,
     Rooms.RoomServer,
     Types.Loop
   }
@@ -30,7 +30,7 @@ defmodule Progressions.TestHelpers do
 
   def ready_up_musicians(game_server, musician_ids) do
     Enum.each(musician_ids, fn m_id ->
-      NewGameServer.musician_ready_up(game_server, m_id)
+      GameServer.musician_ready_up(game_server, m_id)
     end)
 
     game_server
@@ -38,7 +38,7 @@ defmodule Progressions.TestHelpers do
 
   def record_musicians(game_server, musician_ids) do
     Enum.each(musician_ids, fn m_id ->
-      NewGameServer.musician_recording(
+      GameServer.musician_recording(
         game_server,
         m_id,
         %Loop{
@@ -56,7 +56,7 @@ defmodule Progressions.TestHelpers do
     musician_votes
     |> Map.to_list()
     |> Enum.each(fn {m_id, m_vote} ->
-      NewGameServer.musician_vote(game_server, m_id, m_vote)
+      GameServer.musician_vote(game_server, m_id, m_vote)
     end)
 
     game_server

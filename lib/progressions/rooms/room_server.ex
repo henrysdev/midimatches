@@ -117,11 +117,8 @@ defmodule Progressions.Rooms.RoomServer do
   defp start_game(
          %RoomServer{room_id: room_id, players: players, game_config: game_config} = state
        ) do
-    # TODO stop casting back and forth from mapset and list between here and new game server
-    musicians = MapSet.to_list(players)
-
     {:ok, game} =
-      Supervisor.start_link([{Game, [{room_id, musicians, game_config}]}], strategy: :one_for_one)
+      Supervisor.start_link([{Game, [{room_id, players, game_config}]}], strategy: :one_for_one)
 
     broadcast_start_game(room_id)
     %RoomServer{state | game: game}

@@ -1,318 +1,135 @@
-# defmodule Progressions.Rooms.Room.GameServer do
-#   @moduledoc """
-#   The game logic for the game server represented as an event-driven state machine
-#   """
-#   use GenStateMachine
-#   use TypedStruct
+defmodule Progressions.Rooms.Room.GameServer do
+  @moduledoc """
+  Process for maintaining game state for a game in a room
+  """
+  use GenServer
+  use TypedStruct
 
-#   alias Progressions.{
-#     Pids,
-#     Types.GameRules,
-#     Types.Loop,
-#     Types.Musician,
-#     Utils
-#   }
+  alias __MODULE__
 
-#   require Logger
+  alias Progressions.{
+    Pids,
+    Rooms.Room.Game.Bracket,
+    Rooms.Room.GameLogic,
+    Types.GameRules,
+    Utils
+  }
 
-#   @type id() :: String.t()
-#   @type game_view() :: [:pregame_lobby | :game_start | :recording | :playback_voting | :game_end]
+  require Logger
 
-#   typedstruct do
-#     # server life cycle state
-#     field(:room_id, String.t(), enforce: true)
-#     field(:round_recording_start_time, integer(), enforce: true)
-#     field(:timestep_size, integer(), enforce: true)
-#     field(:quantization_threshold, float(), enforce: true)
-#     field(:rounds_to_win, integer(), enforce: true)
-#     field(:game_size_num_players, integer(), enforce: true)
-#     field(:solo_time_limit, integer(), enforce: true)
+  @type id() :: String.t()
+  # TODO add states for round_start and round_results
+  @type game_view() :: [:game_start | :recording | :playback_voting | :game_end]
 
-#     # game life cycle state
-#     field(:musicians, %{required(id()) => %Musician{}}, default: %{})
-#     field(:round, integer(), default: 0)
-#     field(:scores, %{required(id()) => integer()}, default: %{})
-#     field(:winner, id())
+  typedstruct do
+    field(:game_rules, %GameRules{}, default: %GameRules{})
+    field(:musicians, %MapSet{}, enforce: true)
+    field(:room_id, id(), enforce: true)
 
-#     # round life cycle state
-#     field(:ready_ups, %{required(id()) => boolean()}, default: %{})
-#     field(:recordings, %{required(id()) => %Loop{}}, default: %{})
-#     field(:votes, %{required(id()) => id()}, default: %{})
-#   end
+    field(:game_view, game_view(), default: :game_start)
+    field(:bracket, %Bracket{}, default: %Bracket{})
+    field(:contestants, list(id), default: [])
+    field(:judges, list(id), default: [])
+    field(:winner, id())
+    field(:round_recording_start_time, integer(), default: 0)
+    field(:ready_ups, %MapSet{}, default: MapSet.new())
+    field(:recordings, %{required(id()) => any}, default: %{})
+    field(:votes, %{required(id()) => id()}, default: %{})
+  end
 
-#   def start_link(args) do
-#     GenStateMachine.start_link(__MODULE__, args)
-#   end
+  def start_link(args) do
+    GenServer.start_link(GameServer, args)
+  end
 
-#   def init(args) do
-#     {room_id, server_config} =
-#       case args do
-#         [room_id] -> {room_id, %GameRules{}}
-#         [room_id, server_config] -> {room_id, server_config}
-#       end
+  @impl true
+  def init(args) do
+    {room_id, musicians, game_rules} =
+      case args do
+        [{room_id, musicians, game_rules}] -> {room_id, musicians, game_rules}
+        [{room_id, musicians}] -> {room_id, musicians, %GameRules{}}
+      end
 
-#     Pids.register({:game_server, room_id}, self())
+    Pids.register({:game_server, room_id}, self())
 
-#     data = %__MODULE__{
-#       room_id: room_id,
-#       round_recording_start_time: :os.system_time(:microsecond),
-#       timestep_size: server_config.timestep_size,
-#       quantization_threshold: server_config.quantization_threshold,
-#       game_size_num_players: server_config.game_size_num_players,
-#       rounds_to_win: server_config.rounds_to_win,
-#       solo_time_limit: server_config.solo_time_limit
-#     }
+    {:ok, GameLogic.start_game(game_rules, musicians, room_id)}
+  end
 
-#     {:ok, :pregame_lobby, data}
-#   end
+  # TODO split into API module [?]
 
-#   ## Event Callbacks
+  @spec get_current_view(pid()) :: atom()
+  @doc """
+  Get the current game view
+  """
+  def get_current_view(pid) do
+    GenServer.call(pid, :current_view)
+  end
 
-#   # Get current game view
-#   def handle_event(
-#         {:call, from},
-#         :current_view,
-#         view,
-#         data
-#       ) do
-#     {:next_state, view, data, [{:reply, from, view}]}
-#   end
+  @spec musician_ready_up(pid(), id()) :: :ok
+  @doc """
+  Ready up a musician in the game. All ready ups from active musicians required to progress
+  state from game start to recording
+  """
+  def musician_ready_up(pid, musician_id) do
+    GenServer.cast(pid, {:incoming_event, {:ready_up, musician_id}})
+  end
 
-#   def handle_event(
-#         {:call, from},
-#         {:drop_musician, musician_id},
-#         :pregame_lobby,
-#         %__MODULE__{
-#           musicians: musicians,
-#           scores: scores,
-#           ready_ups: ready_ups,
-#           votes: votes,
-#           recordings: recordings
-#         } = data
-#       ) do
-#     updated_musicians = Map.delete(musicians, musician_id)
-#     updated_scores = Map.delete(scores, musician_id)
-#     updated_ready_ups = Map.delete(ready_ups, musician_id)
-#     updated_votes = Map.delete(votes, musician_id)
-#     updated_recordings = Map.delete(recordings, musician_id)
+  @spec musician_recording(pid(), id(), any) :: :ok
+  @doc """
+  Collect a recording for a musician in the game. Recordings from all musicians required to progress
+  state from recording to playback voting
+  """
+  def musician_recording(pid, musician_id, recording) do
+    GenServer.cast(pid, {:incoming_event, {:record, {musician_id, recording}}})
+  end
 
-#     updated_data = %__MODULE__{
-#       data
-#       | musicians: updated_musicians,
-#         scores: updated_scores,
-#         ready_ups: updated_ready_ups,
-#         votes: updated_votes,
-#         recordings: updated_recordings
-#     }
+  @spec musician_vote(pid(), id(), id()) :: :ok
+  @doc """
+  Collect a vote for a musician recording. Votes from all musicians required to progress
+  state from recording to recording
+  """
+  def musician_vote(pid, musician_id, vote) do
+    GenServer.cast(pid, {:incoming_event, {:vote, {musician_id, vote}}})
+  end
 
-#     {:next_state, :pregame_lobby, updated_data,
-#      [{:reply, from, sync_across_clients(:pregame_lobby, updated_data)}]}
-#   end
+  @impl true
+  def handle_call(:current_view, _from, %GameServer{game_view: game_view} = state) do
+    {:reply, game_view, state}
+  end
 
-#   # Game View: Pregame Lobby
-#   def handle_event(
-#         {:call, from},
-#         {:add_musician, %Musician{musician_id: musician_id} = musician},
-#         :pregame_lobby,
-#         %__MODULE__{
-#           musicians: musicians,
-#           game_size_num_players: game_size_num_players
-#         } = data
-#       ) do
-#     updated_musicians = Map.put(musicians, musician_id, musician)
-#     enough_musicians_to_start? = length(Map.keys(updated_musicians)) == game_size_num_players
+  @impl true
+  def handle_cast(
+        {:incoming_event, {event_type, event_payload}},
+        %GameServer{
+          game_view: curr_game_view
+        } = state
+      ) do
+    %{sync_clients?: sync_clients?, state: state} =
+      case {event_type, curr_game_view} do
+        {:ready_up, :game_start} ->
+          GameLogic.ready_up(state, event_payload)
 
-#     updated_data = %__MODULE__{
-#       data
-#       | musicians: updated_musicians
-#     }
+        {:record, :recording} ->
+          GameLogic.add_recording(state, event_payload)
 
-#     if enough_musicians_to_start? do
-#       # progress to game start
-#       init_scores =
-#         updated_musicians
-#         |> Map.keys()
-#         |> Enum.reduce(%{}, &Map.put(&2, &1, 0))
+        {:vote, :playback_voting} ->
+          GameLogic.cast_vote(state, event_payload)
 
-#       updated_data = %__MODULE__{updated_data | scores: init_scores}
+        _ ->
+          %{sync_clients?: false, state: state}
+      end
 
-#       {:next_state, :game_start, updated_data,
-#        [{:reply, from, sync_across_clients(:game_start, updated_data)}]}
-#     else
-#       # wait for more musicians to join
-#       {:next_state, :pregame_lobby, updated_data,
-#        [{:reply, from, sync_across_clients(:pregame_lobby, updated_data)}]}
-#     end
-#   end
+    if sync_clients? do
+      broadcast_gamestate(state)
+      {:noreply, state}
+    else
+      {:noreply, state}
+    end
+  end
 
-#   # Game View: Game Start
-#   def handle_event(
-#         {:call, from},
-#         {:ready_up, musician_id},
-#         :game_start,
-#         %__MODULE__{musicians: musicians, ready_ups: ready_ups} = data
-#       ) do
-#     valid_ready_up? =
-#       Map.has_key?(musicians, musician_id) and !Map.has_key?(ready_ups, musician_id)
-
-#     enough_ready_ups? = length(Map.keys(ready_ups)) == length(Map.keys(musicians)) - 1
-
-#     case {valid_ready_up?, enough_ready_ups?} do
-#       # valid ready up - store ready up in game server state
-#       {true, false} ->
-#         updated_data = %__MODULE__{data | ready_ups: Map.put(ready_ups, musician_id, true)}
-
-#         {:next_state, :game_start, updated_data,
-#          [{:reply, from, sync_across_clients(:game_start, updated_data)}]}
-
-#       # last needed ready up - reset ready ups and transition to next game server state
-#       {true, true} ->
-#         updated_data = %__MODULE__{
-#           data
-#           | ready_ups: %{},
-#             round_recording_start_time: :os.system_time(:microsecond)
-#         }
-
-#         {:next_state, :recording, updated_data,
-#          [{:reply, from, sync_across_clients(:recording, updated_data)}]}
-
-#       # invalid ready up - game server state unchanged
-#       _ ->
-#         {:next_state, :game_start, data, [{:reply, from, data}]}
-#     end
-#   end
-
-#   # Game View: Recording
-#   def handle_event(
-#         {:call, from},
-#         {:record, musician_id, %Loop{} = recording},
-#         :recording,
-#         %__MODULE__{musicians: musicians, recordings: recordings} = data
-#       ) do
-#     valid_recording? =
-#       Map.has_key?(musicians, musician_id) and !Map.has_key?(recordings, musician_id)
-
-#     enough_recordings? = length(Map.keys(recordings)) == length(Map.keys(musicians)) - 1
-
-#     case {valid_recording?, enough_recordings?} do
-#       # valid recording - store recording in game server state
-#       {true, false} ->
-#         updated_data = %__MODULE__{data | recordings: Map.put(recordings, musician_id, recording)}
-
-#         {:next_state, :recording, updated_data,
-#          [{:reply, from, sync_across_clients(:recording, updated_data)}]}
-
-#       # last needed recording - store recording and transition to playback voting server state
-#       {true, true} ->
-#         updated_data = %__MODULE__{data | recordings: Map.put(recordings, musician_id, recording)}
-
-#         {:next_state, :playback_voting, updated_data,
-#          [{:reply, from, sync_across_clients(:playback_voting, updated_data)}]}
-
-#       # invalid recording - game server state unchanged
-#       _ ->
-#         {:next_state, :recording, data, [{:reply, from, data}]}
-#     end
-#   end
-
-#   # Game View: Playback Voting
-#   def handle_event(
-#         {:call, from},
-#         {:vote, musician_id, vote},
-#         :playback_voting,
-#         %__MODULE__{
-#           musicians: musicians,
-#           recordings: recordings,
-#           votes: votes,
-#           scores: scores,
-#           round: round,
-#           rounds_to_win: rounds_to_win
-#         } = data
-#       ) do
-#     valid_vote? =
-#       Map.has_key?(musicians, musician_id) and Map.has_key?(recordings, vote) and
-#         !Map.has_key?(votes, musician_id) and musician_id != vote
-
-#     enough_votes? = length(Map.keys(votes)) == length(Map.keys(musicians)) - 1
-
-#     case {valid_vote?, enough_votes?} do
-#       # valid vote - store vote in game server state
-#       {true, false} ->
-#         updated_data = %__MODULE__{data | votes: Map.put(votes, musician_id, vote)}
-
-#         {:next_state, :playback_voting, updated_data,
-#          [{:reply, from, sync_across_clients(:playback_voting, updated_data)}]}
-
-#       # last needed vote - calculate score and transition to next round or game end
-#       {true, true} ->
-#         [round_winner] =
-#           votes
-#           |> Map.put(musician_id, vote)
-#           |> Map.values()
-#           |> Enum.frequencies()
-#           |> Map.to_list()
-#           |> Enum.sort_by(fn {_, freq} -> freq end, :desc)
-#           |> Enum.map(fn {musician_id, _freq} -> musician_id end)
-#           |> Enum.take(1)
-
-#         updated_scores = Map.update(scores, round_winner, 1, &(&1 + 1))
-
-#         if Map.get(updated_scores, round_winner) >= rounds_to_win do
-#           # game has been won by round winner
-#           updated_data = %__MODULE__{
-#             data
-#             | votes: %{},
-#               scores: updated_scores,
-#               winner: round_winner
-#           }
-
-#           {:next_state, :game_end, updated_data,
-#            [{:reply, from, sync_across_clients(:game_end, updated_data)}]}
-#         else
-#           # continue to next round
-#           updated_data = %__MODULE__{
-#             data
-#             | votes: %{},
-#               scores: updated_scores,
-#               recordings: %{},
-#               round: round + 1
-#           }
-
-#           {:next_state, :recording, updated_data,
-#            [{:reply, from, sync_across_clients(:recording, updated_data)}]}
-#         end
-
-#       # invalid vote - game server state unchanged
-#       _ ->
-#         {:next_state, :playback_voting, data, [{:reply, from, data}]}
-#     end
-#   end
-
-#   # Game View: Game End
-#   def handle_event(:cast, :next_state, :game_end, %__MODULE__{winner: _winner} = data) do
-#     {:next_state, :game_end, data}
-#   end
-
-#   # Catchall for debug
-
-#   def handle_event({:call, from}, params, state, data) do
-#     Logger.warn(
-#       {:CATCHALL_CLAUSE_DEBUG, %{from: from, params: params, state: state, data: data}}
-#       |> inspect(pretty: true)
-#     )
-
-#     {:next_state, state, data, [{:reply, from, data}]}
-#   end
-
-#   ## Helpers
-
-#   defp sync_across_clients(view, %__MODULE__{room_id: room_id} = game_server_data)
-#        when is_atom(view) do
-#     ProgressionsWeb.Endpoint.broadcast("room:#{room_id}", "view_update", %{
-#       view: view,
-#       game_state: Utils.server_to_client_game_state(game_server_data)
-#     })
-
-#     game_server_data
-#   end
-# end
+  defp broadcast_gamestate(%GameServer{room_id: room_id, game_view: game_view} = state) do
+    ProgressionsWeb.Endpoint.broadcast("room:#{room_id}", "view_update", %{
+      view: game_view,
+      game_state: Utils.new_server_to_client_game_state(state)
+    })
+  end
+end

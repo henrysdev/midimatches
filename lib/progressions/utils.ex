@@ -4,7 +4,7 @@ defmodule Progressions.Utils do
   """
 
   alias Progressions.{
-    Rooms.Room.NewGameServer,
+    Rooms.Room.GameServer,
     Types.ClientGameState
   }
 
@@ -73,11 +73,11 @@ defmodule Progressions.Utils do
   #   }
   # end
 
-  @spec new_server_to_client_game_state(%NewGameServer{}) :: any
+  @spec new_server_to_client_game_state(%GameServer{}) :: any
   @doc """
   transform game server state into update payload for clients
   """
-  def new_server_to_client_game_state(%NewGameServer{} = server_state) do
+  def new_server_to_client_game_state(%GameServer{} = server_state) do
     # votes are secret - should not expose actual votes to clients, only progress on
     # voting as a whole
     num_votes_cast =
@@ -95,10 +95,6 @@ defmodule Progressions.Utils do
 
     %ClientGameState{
       # static fields
-      # game_size_num_players: server_state.game_rules.game_size_num_players,
-      # timestep_size: server_state.game_rules.timestep_size,
-      # solo_time_limit: server_state.game_rules.solo_time_limit,
-      # quantization_threshold: server_state.game_rules.quantization_threshold,
       game_rules: server_state.game_rules,
       room_id: server_state.room_id,
 

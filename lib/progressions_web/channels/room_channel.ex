@@ -9,7 +9,7 @@ defmodule ProgressionsWeb.RoomChannel do
     Persistence,
     Pids,
     Rooms,
-    Rooms.Room.NewGameServer,
+    Rooms.Room.GameServer,
     Rooms.RoomServer,
     Types.Loop,
     Types.Note,
@@ -92,7 +92,7 @@ defmodule ProgressionsWeb.RoomChannel do
         _params,
         %Phoenix.Socket{assigns: %{game_server: game_server, musician_id: musician_id}} = socket
       ) do
-    NewGameServer.musician_ready_up(game_server, musician_id)
+    GameServer.musician_ready_up(game_server, musician_id)
 
     {:noreply, socket}
   end
@@ -104,7 +104,7 @@ defmodule ProgressionsWeb.RoomChannel do
       ) do
     {:ok, recording} = Poison.decode(loop_json, as: @loop_schema)
 
-    NewGameServer.musician_recording(game_server, musician_id, recording)
+    GameServer.musician_recording(game_server, musician_id, recording)
 
     {:noreply, socket}
   end
@@ -114,7 +114,7 @@ defmodule ProgressionsWeb.RoomChannel do
         %{"vote" => vote},
         %Phoenix.Socket{assigns: %{game_server: game_server, musician_id: musician_id}} = socket
       ) do
-    NewGameServer.musician_vote(game_server, musician_id, vote)
+    GameServer.musician_vote(game_server, musician_id, vote)
 
     {:noreply, socket}
   end
