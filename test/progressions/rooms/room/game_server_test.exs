@@ -42,4 +42,26 @@ defmodule Progressions.GameServerTest do
 
     assert game_view == :game_start
   end
+
+  describe "advance from game view" do
+    test "when game view is consistent with actual game view" do
+      room_id = "1"
+      musicians = MapSet.new(["1", "2", "3", "4"])
+      game_rules = %GameRules{}
+
+      {:ok, game_server} = GameServer.start_link([{room_id, musicians, game_rules}])
+
+      assert :ok == GameServer.advance_from_game_view(game_server, :game_start)
+    end
+
+    test "when game view is inconsistent with actual game view" do
+      room_id = "1"
+      musicians = MapSet.new(["1", "2", "3", "4"])
+      game_rules = %GameRules{}
+
+      {:ok, game_server} = GameServer.start_link([{room_id, musicians, game_rules}])
+
+      assert :error == GameServer.advance_from_game_view(game_server, :recording)
+    end
+  end
 end

@@ -10,7 +10,7 @@ defmodule Progressions.Rooms.Room.GameLogic do
   }
 
   @type id() :: String.t()
-  @type as_instruction_map() :: %{sync_clients?: boolean(), state: %GameServer{}}
+  @type instruction_map() :: %{sync_clients?: boolean(), state: %GameServer{}}
 
   @spec start_game(%GameRules{}, list(id), id()) :: %GameServer{}
   def start_game(game_rules, musicians, room_id) do
@@ -30,7 +30,7 @@ defmodule Progressions.Rooms.Room.GameLogic do
     }
   end
 
-  @spec ready_up(%GameServer{}, id()) :: as_instruction_map()
+  @spec ready_up(%GameServer{}, id()) :: instruction_map()
   @doc """
   Handle ready-up player events.
   """
@@ -46,10 +46,9 @@ defmodule Progressions.Rooms.Room.GameLogic do
         %GameServer{
           state
           | ready_ups: MapSet.put(ready_ups, musician_id),
-            round_recording_start_time: :os.system_time(:microsecond),
-            game_view: :recording
+            round_recording_start_time: :os.system_time(:microsecond)
         }
-        |> as_instruction(true)
+        |> advance_game_view()
 
       # valid ready up - store ready up in game server state
       {true, false} ->
@@ -62,7 +61,7 @@ defmodule Progressions.Rooms.Room.GameLogic do
     end
   end
 
-  @spec add_recording(%GameServer{}, any) :: as_instruction_map()
+  @spec add_recording(%GameServer{}, any) :: instruction_map()
   @doc """
   Handle player event where a contestant submits a recording.
   """
@@ -84,12 +83,8 @@ defmodule Progressions.Rooms.Room.GameLogic do
 
       # last needed recording - store recording and transition to playback voting server state
       {true, true} ->
-        %GameServer{
-          state
-          | recordings: Map.put(recordings, musician_id, recording),
-            game_view: :playback_voting
-        }
-        |> as_instruction(true)
+        %GameServer{state | recordings: Map.put(recordings, musician_id, recording)}
+        |> advance_game_view()
 
       # invalid vote - return state unchanged
       _ ->
@@ -97,7 +92,7 @@ defmodule Progressions.Rooms.Room.GameLogic do
     end
   end
 
-  @spec cast_vote(%GameServer{}, {id(), id()}) :: as_instruction_map()
+  @spec cast_vote(%GameServer{}, {id(), id()}) :: instruction_map()
   @doc """
   Handle player event where a judge casts a vote.
   """
@@ -130,10 +125,9 @@ defmodule Progressions.Rooms.Room.GameLogic do
           state
           | votes: votes,
             winner: winner,
-            bracket: bracket,
-            game_view: :game_start
+            bracket: bracket
         }
-        |> as_instruction(true)
+        |> advance_game_view()
 
       # valid vote - count and continue
       {true, false} ->
@@ -144,6 +138,27 @@ defmodule Progressions.Rooms.Room.GameLogic do
       _ ->
         as_instruction(state, false)
     end
+  end
+
+  @spec advance_game_view(%GameServer{}) :: instruction_map()
+  @doc """
+  Execute default behavior for ending current game view and advance to next game view
+  """
+  def advance_game_view(%GameServer{game_view: game_view} = state) do
+    # TODO implement default advance behaviors for each. A default behavior includes
+    # - deciding what the next appropriate view is
+    # - executing view-specific actions that are overdue (such as casting votes randomly, spawning an AI player, etc)
+    # - switching the game server to the next appropriate view
+    # - starting the timeout clock for the next view
+    # - wrap as instruction to broadcast
+    case game_view do
+      :game_start -> %GameServer{state | game_view: :recording}
+      :recording -> %GameServer{state | game_view: :playback_voting}
+      :playback_voting -> %GameServer{state | game_view: :game_start}
+      :game_end -> %GameServer{state | game_view: :game_start}
+      _ -> state
+    end
+    |> as_instruction(true)
   end
 
   defp as_instruction(%GameServer{} = state, sync?), do: %{sync_clients?: sync?, state: state}

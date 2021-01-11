@@ -1,4 +1,3 @@
-
 h1 {
   color: #fff;
   font-size: 50px;
@@ -21,7 +20,7 @@ h2 {
   line-height: 1;
   color: #eee;
   text-shadow: 0 0 5rem #028ae9;
-  transition: all .07s ease;
+  transition: all 0.07s ease;
   min-height: 120px;
 }
 
@@ -37,8 +36,8 @@ h2 {
 .key {
   position: relative;
   border: 1px solid black;
-  border-radius: .5rem;
-  transition: all .07s ease;
+  border-radius: 0.5rem;
+  transition: all 0.07s ease;
   display: block;
   box-sizing: border-box;
   z-index: 2;
@@ -48,7 +47,7 @@ h2 {
   float: left;
   width: 1.9231%;
   height: 100%;
-  background: rgba(255, 255, 255, .8);    
+  background: rgba(255, 255, 255, 0.8);
 }
 
 .key.sharp {
@@ -62,7 +61,7 @@ h2 {
   z-index: 3;
 }
 
-.key:not(.sharp)[data-note-name^='A'] {
+.key:not(.sharp)[data-note-name^="A"] {
   background: red;
 }
 
@@ -96,7 +95,7 @@ h2 {
 } */
 
 .playing {
-  transform: scale(.95);
+  transform: scale(0.95);
   border-color: #028ae9;
   box-shadow: 0 0 1rem #028ae9;
 }
