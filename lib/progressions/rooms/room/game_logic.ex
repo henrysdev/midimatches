@@ -10,7 +10,11 @@ defmodule Progressions.Rooms.Room.GameLogic do
   }
 
   @type id() :: String.t()
-  @type instruction_map() :: %{sync_clients?: boolean(), state: %GameServer{}}
+  @type instruction_map() :: %{
+          sync_clients?: boolean(),
+          view_change?: boolean(),
+          state: %GameServer{}
+        }
 
   @spec start_game(%GameRules{}, list(id), id()) :: %GameServer{}
   def start_game(game_rules, musicians, room_id) do
@@ -53,11 +57,11 @@ defmodule Progressions.Rooms.Room.GameLogic do
       # valid ready up - store ready up in game server state
       {true, false} ->
         %GameServer{state | ready_ups: MapSet.put(ready_ups, musician_id)}
-        |> as_instruction(true)
+        |> as_instruction(sync?: true, view_change?: false)
 
       # invalid vote - return state unchanged
       _ ->
-        as_instruction(state, false)
+        as_instruction(state, sync?: false, view_change?: false)
     end
   end
 
@@ -79,7 +83,7 @@ defmodule Progressions.Rooms.Room.GameLogic do
       # valid recording - store recording in game server state
       {true, false} ->
         %GameServer{state | recordings: Map.put(recordings, musician_id, recording)}
-        |> as_instruction(true)
+        |> as_instruction(sync?: true, view_change?: false)
 
       # last needed recording - store recording and transition to playback voting server state
       {true, true} ->
@@ -88,7 +92,7 @@ defmodule Progressions.Rooms.Room.GameLogic do
 
       # invalid vote - return state unchanged
       _ ->
-        as_instruction(state, false)
+        as_instruction(state, sync?: false, view_change?: false)
     end
   end
 
@@ -132,11 +136,11 @@ defmodule Progressions.Rooms.Room.GameLogic do
       # valid vote - count and continue
       {true, false} ->
         %GameServer{state | votes: Map.put(votes, musician_id, vote)}
-        |> as_instruction(true)
+        |> as_instruction(sync?: true, view_change?: false)
 
       # invalid vote - return state unchanged
       _ ->
-        as_instruction(state, false)
+        as_instruction(state, sync?: false, view_change?: false)
     end
   end
 
@@ -151,15 +155,33 @@ defmodule Progressions.Rooms.Room.GameLogic do
     # - switching the game server to the next appropriate view
     # - starting the timeout clock for the next view
     # - wrap as instruction to broadcast
+
     case game_view do
-      :game_start -> %GameServer{state | game_view: :recording}
-      :recording -> %GameServer{state | game_view: :playback_voting}
-      :playback_voting -> %GameServer{state | game_view: :game_start}
-      :game_end -> %GameServer{state | game_view: :game_start}
-      _ -> state
+      :game_start ->
+        %GameServer{state | game_view: :round_start}
+
+      :round_start ->
+        %GameServer{state | game_view: :recording}
+
+      :recording ->
+        %GameServer{state | game_view: :playback_voting}
+
+      :playback_voting ->
+        %GameServer{state | game_view: :round_end}
+
+      :round_end ->
+        # TODO if winner, change to game end
+        %GameServer{state | game_view: :round_start}
+
+      :game_end ->
+        %GameServer{state | game_view: :game_start}
+
+      _ ->
+        state
     end
-    |> as_instruction(true)
+    |> as_instruction(sync?: true, view_change?: true)
   end
 
-  defp as_instruction(%GameServer{} = state, sync?), do: %{sync_clients?: sync?, state: state}
+  defp as_instruction(%GameServer{} = state, sync?: sync?, view_change?: view_change?),
+    do: %{sync_clients?: sync?, view_change?: view_change?, state: state}
 end

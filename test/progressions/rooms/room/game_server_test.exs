@@ -2,6 +2,7 @@ defmodule Progressions.GameServerTest do
   use ExUnit.Case
 
   alias Progressions.{
+    Rooms.Room.Game.ViewTimer,
     Rooms.Room.GameServer,
     TestHelpers,
     Types.GameRules
@@ -51,7 +52,7 @@ defmodule Progressions.GameServerTest do
 
       {:ok, game_server} = GameServer.start_link([{room_id, musicians, game_rules}])
 
-      assert :ok == GameServer.advance_from_game_view(game_server, :game_start)
+      assert :ok == GameServer.advance_from_game_view(game_server, :game_start, 0)
     end
 
     test "when game view is inconsistent with actual game view" do
@@ -61,7 +62,24 @@ defmodule Progressions.GameServerTest do
 
       {:ok, game_server} = GameServer.start_link([{room_id, musicians, game_rules}])
 
-      assert :error == GameServer.advance_from_game_view(game_server, :recording)
+      assert :error == GameServer.advance_from_game_view(game_server, :recording, 0)
+    end
+
+    test "triggered by view timer timeouts for game_start view" do
+      room_id = "1"
+      musicians = MapSet.new(["1", "2", "3", "4"])
+      game_rules = %GameRules{}
+
+      {:ok, game_server} = GameServer.start_link([{room_id, musicians, game_rules}])
+      {:ok, _view_timer} = ViewTimer.start_link([{room_id}])
+
+      # TODO turn into scan
+      assert GameServer.get_current_view(game_server) == :game_start
+      ctr = :sys.get_state(game_server).view_counter
+      GameServer.advance_from_game_view(game_server, :game_start, ctr)
+      assert GameServer.get_current_view(game_server) == :round_start
+      Process.sleep(1100)
+      assert GameServer.get_current_view(game_server) == :recording
     end
   end
 end

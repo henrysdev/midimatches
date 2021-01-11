@@ -10,6 +10,7 @@ defmodule Progressions.Rooms.Room.GameServer do
   alias Progressions.{
     Pids,
     Rooms.Room.Game.Bracket,
+    Rooms.Room.Game.ViewTimer,
     Rooms.Room.GameLogic,
     Types.GameRules,
     Utils
@@ -21,6 +22,11 @@ defmodule Progressions.Rooms.Room.GameServer do
   @type game_view() :: [
           :game_start | :round_start | :recording | :playback_voting | :round_end | :game_end
         ]
+  @type instruction_map() :: %{
+          sync_clients?: boolean(),
+          view_change?: boolean(),
+          state: %GameServer{}
+        }
 
   typedstruct do
     field(:game_rules, %GameRules{}, default: %GameRules{})
@@ -36,6 +42,8 @@ defmodule Progressions.Rooms.Room.GameServer do
     field(:ready_ups, %MapSet{}, default: MapSet.new())
     field(:recordings, %{required(id()) => any}, default: %{})
     field(:votes, %{required(id()) => id()}, default: %{})
+
+    field(:view_counter, integer(), default: 0)
   end
 
   def start_link(args) do
@@ -65,13 +73,13 @@ defmodule Progressions.Rooms.Room.GameServer do
     GenServer.call(pid, :current_view)
   end
 
-  @spec advance_from_game_view(pid(), game_view()) :: :ok
+  @spec advance_from_game_view(pid(), game_view(), integer()) :: :ok
   @doc """
   Advance to next game view by executing the default cleanup behavior of the current view and
   broadcasting the new view. Will only advance if game view to advance from is not stale.
   """
-  def advance_from_game_view(pid, curr_view) do
-    GenServer.call(pid, {:advance_from_game_view, curr_view})
+  def advance_from_game_view(pid, curr_view, view_counter) do
+    GenServer.call(pid, {:advance_from_game_view, curr_view, view_counter})
   end
 
   @spec musician_ready_up(pid(), id()) :: :ok
@@ -80,7 +88,7 @@ defmodule Progressions.Rooms.Room.GameServer do
   state from game start to recording
   """
   def musician_ready_up(pid, musician_id) do
-    GenServer.call(pid, {:incoming_event, {:ready_up, musician_id}})
+    GenServer.call(pid, {:client_event, {:ready_up, musician_id}})
   end
 
   @spec musician_recording(pid(), id(), any) :: :ok
@@ -89,7 +97,7 @@ defmodule Progressions.Rooms.Room.GameServer do
   state from recording to playback voting
   """
   def musician_recording(pid, musician_id, recording) do
-    GenServer.call(pid, {:incoming_event, {:record, {musician_id, recording}}})
+    GenServer.call(pid, {:client_event, {:record, {musician_id, recording}}})
   end
 
   @spec musician_vote(pid(), id(), id()) :: :ok
@@ -98,7 +106,7 @@ defmodule Progressions.Rooms.Room.GameServer do
   state from recording to recording
   """
   def musician_vote(pid, musician_id, vote) do
-    GenServer.call(pid, {:incoming_event, {:vote, {musician_id, vote}}})
+    GenServer.call(pid, {:client_event, {:vote, {musician_id, vote}}})
   end
 
   @impl true
@@ -108,22 +116,23 @@ defmodule Progressions.Rooms.Room.GameServer do
 
   @impl true
   def handle_call(
-        {:advance_from_game_view, curr_view},
+        {:advance_from_game_view, curr_view, curr_view_counter},
         _from,
-        %GameServer{game_view: game_view} = state
+        %GameServer{game_view: game_view, view_counter: view_counter} = state
       ) do
-    # TODO instead of comparing state, maintain a game view iteration counter and check this
-    # to prevent lapping issue
-    if game_view == curr_view do
-      %{sync_clients?: true, state: state} = GameLogic.advance_game_view(state)
-      broadcast_gamestate(state)
+    if game_view == curr_view and view_counter == curr_view_counter do
+      state =
+        state
+        |> GameLogic.advance_game_view()
+        |> exec_instruction()
+
       {:reply, :ok, state}
     else
       # stale advance message, do nothing
       Logger.warn(
-        "stale advance_from_game_view message receieved. expected view: #{curr_view} actual view: #{
-          game_view
-        }"
+        "stale advance_from_game_view message receieved. " <>
+          "expected view: #{curr_view} actual view: #{game_view}, " <>
+          "expected view_counter: #{curr_view_counter} actual view_counter: #{view_counter}"
       )
 
       {:reply, :error, state}
@@ -132,13 +141,13 @@ defmodule Progressions.Rooms.Room.GameServer do
 
   @impl true
   def handle_call(
-        {:incoming_event, {event_type, event_payload}},
+        {:client_event, {event_type, event_payload}},
         _from,
         %GameServer{
           game_view: curr_game_view
         } = state
       ) do
-    %{sync_clients?: sync_clients?, state: state} =
+    instruction =
       case {event_type, curr_game_view} do
         {:ready_up, :game_start} ->
           GameLogic.ready_up(state, event_payload)
@@ -153,12 +162,38 @@ defmodule Progressions.Rooms.Room.GameServer do
           %{sync_clients?: false, state: state}
       end
 
-    if sync_clients? do
-      broadcast_gamestate(state)
-      {:reply, :synced, state}
-    else
-      {:reply, :ok, state}
-    end
+    {:reply, :ok, exec_instruction(instruction)}
+  end
+
+  @spec exec_instruction(instruction_map()) :: %GameServer{}
+  defp exec_instruction(%{sync_clients?: sync_clients?, view_change?: view_change?, state: state}) do
+    state =
+      if sync_clients? do
+        broadcast_gamestate(state)
+      else
+        state
+      end
+
+    state =
+      if view_change? do
+        state
+        |> increment_view_counter()
+        |> schedule_view_timeout()
+      else
+        state
+      end
+
+    state
+  end
+
+  defp schedule_view_timeout(
+         %GameServer{room_id: room_id, game_view: game_view, view_counter: view_counter} = state
+       ) do
+    # TODO view-specific timeout duration / behavior (some views shouldnt even have a timeout[?])
+    view_timer = Pids.fetch({:view_timer, room_id})
+    ViewTimer.schedule_view_timeout(view_timer, game_view, view_counter, 1000)
+
+    state
   end
 
   defp broadcast_gamestate(%GameServer{room_id: room_id, game_view: game_view} = state) do
@@ -166,5 +201,10 @@ defmodule Progressions.Rooms.Room.GameServer do
       view: game_view,
       game_state: Utils.new_server_to_client_game_state(state)
     })
+
+    state
   end
+
+  defp increment_view_counter(%GameServer{view_counter: view_counter} = state),
+    do: %GameServer{state | view_counter: view_counter + 1}
 end
