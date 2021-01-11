@@ -18,7 +18,6 @@ defmodule Progressions.Rooms.Room.GameServer do
   require Logger
 
   @type id() :: String.t()
-  # TODO add states for round_start and round_results
   @type game_view() :: [
           :game_start | :round_start | :recording | :playback_voting | :round_end | :game_end
         ]

@@ -64,10 +64,14 @@ export function gameViewAtomToEnum(atom: string): any {
       return GAME_VIEW.PREGAME_LOBBY;
     case "game_start":
       return GAME_VIEW.GAME_START;
+    case "round_start":
+      return GAME_VIEW.ROUND_START;
     case "recording":
       return GAME_VIEW.RECORDING;
     case "playback_voting":
       return GAME_VIEW.PLAYBACK_VOTING;
+    case "round_end":
+      return GAME_VIEW.ROUND_END;
     case "game_end":
       return GAME_VIEW.GAME_END;
   }
