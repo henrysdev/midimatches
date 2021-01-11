@@ -6,11 +6,10 @@ defmodule Progressions.Rooms.Room do
 
   alias Progressions.{
     Pids,
-    Rooms.Room.GameServer,
+    Rooms.RoomServer,
     Types.Configs.RoomConfig
   }
 
-  @spec start_link(any) :: :ignore | {:error, any} | {:ok, pid}
   def start_link(args) do
     Supervisor.start_link(__MODULE__, args)
   end
@@ -26,9 +25,9 @@ defmodule Progressions.Rooms.Room do
     Pids.register({:room, room_id}, self())
 
     children = [
-      {GameServer, [room_id, room_config.server]}
+      {RoomServer, [{room_id, room_config.server}]}
     ]
 
-    Supervisor.init(children, strategy: :one_for_one)
+    Supervisor.init(children, strategy: :rest_for_one)
   end
 end

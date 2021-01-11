@@ -26,19 +26,25 @@ export interface MIDINoteEvent {
   receivedTimestep: number;
 }
 
-export interface GameContextType {
+export interface GameRules {
   gameSizeNumPlayers: number;
-  musicians: Musician[];
-  numVotesCast: number;
-  quantizationThreshold: number;
-  readyUps: any; //Map<string, boolean>;
-  recordings: any; // Map<string, Loop>;
-  roomId: string;
-  roundRecordingStartTime: number;
-  round: number;
-  roundsToWin: number;
-  scores: any; //Map<string, number>;
   timestepSize: number;
-  winner: string;
   soloTimeLimit: number;
+  quantizationThreshold: number;
+}
+
+export interface GameContextType {
+  // static fields
+  gameRules: GameRules;
+  roomId: string;
+
+  // dynamic fields
+  musicians: string[];
+  numVotesCast: number;
+  readyUps: any;
+  recordings: any;
+  roundRecordingStartTime: number;
+  winner: string;
+  contestants: string[];
+  judges: string[];
 }

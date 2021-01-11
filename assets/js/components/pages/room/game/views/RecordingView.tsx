@@ -5,15 +5,17 @@ import { MidiInput } from '../../../../audio';
 import { SimpleButton } from '../../../../common';
 
 interface RecordingViewProps {
+  isContestant: boolean;
   pushMessageToChannel: Function;
 }
 
 const RecordingView: React.FC<RecordingViewProps> = ({
+  isContestant,
   pushMessageToChannel,
 }) => {
   const [playerRecording, setPlayerRecording] = useState<Object>();
 
-  return (
+  return isContestant ? (
     <div>
       <h3>Recording View</h3>
       <MidiInput submitRecording={setPlayerRecording} />
@@ -31,6 +33,8 @@ const RecordingView: React.FC<RecordingViewProps> = ({
         disabled={!playerRecording}
       />
     </div>
+  ) : (
+    <div>WAITING FOR CONTESTANTS TO FINISH RECORDING...</div>
   );
 };
 export { RecordingView };

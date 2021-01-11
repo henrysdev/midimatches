@@ -5,9 +5,9 @@ defmodule Progressions.Types.Configs.RoomConfig do
 
   use TypedStruct
 
-  alias Progressions.Types.Configs.GameServerConfig
+  alias Progressions.Types.GameRules
 
   typedstruct do
-    field(:server, %GameServerConfig{}, default: %GameServerConfig{})
+    field(:server, %GameRules{}, default: %GameRules{})
   end
 end

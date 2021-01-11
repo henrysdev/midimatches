@@ -8,11 +8,13 @@ import { RecordingPlayer } from '../../../../audio';
 import { SimpleButton } from '../../../../common';
 
 interface PlaybackVotingViewProps {
+  isJudge: boolean;
   pushMessageToChannel: Function;
   eligibleMusiciansToVoteFor: string[];
 }
 
 const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
+  isJudge,
   pushMessageToChannel,
   eligibleMusiciansToVoteFor,
 }) => {
@@ -34,7 +36,7 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
     }
   }, [recordings]);
 
-  return (
+  return isJudge ? (
     <div>
       <h3>PlaybackVoting View</h3>
       {eligibleMusiciansToVoteFor.map((musicianId: string) => {
@@ -64,6 +66,8 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
         );
       })}
     </div>
+  ) : (
+    <div>WAITING FOR VOTES...</div>
   );
 };
 export { PlaybackVotingView };

@@ -4,16 +4,16 @@ defmodule Progressions.Types.Configs do
   """
 
   alias Progressions.Types.{
-    Configs.GameServerConfig,
     Configs.ProgressionsConfig,
-    Configs.RoomConfig
+    Configs.RoomConfig,
+    GameRules
   }
 
   # Schema to be followed for defining configurations
   @config_schema %ProgressionsConfig{
     rooms: [
       %RoomConfig{
-        server: %GameServerConfig{
+        server: %GameRules{
           timestep_size: nil,
           quantization_threshold: nil,
           rounds_to_win: nil,

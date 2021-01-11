@@ -3,7 +3,7 @@ defmodule Progressions.RoomTest do
 
   alias Progressions.{
     Rooms.Room,
-    Rooms.Room.GameServer,
+    Rooms.RoomServer,
     TestHelpers
   }
 
@@ -20,7 +20,7 @@ defmodule Progressions.RoomTest do
     started_children = Supervisor.which_children(sup) |> Enum.reverse()
 
     assert [
-             {GameServer, _, :worker, [GameServer]}
+             {RoomServer, _, :worker, [RoomServer]}
            ] = started_children
   end
 end

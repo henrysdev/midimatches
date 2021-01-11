@@ -3,9 +3,9 @@ defmodule Progressions.Types.ConfigsTest do
 
   alias Progressions.Types.{
     Configs,
-    Configs.GameServerConfig,
     Configs.ProgressionsConfig,
-    Configs.RoomConfig
+    Configs.RoomConfig,
+    GameRules
   }
 
   @test_file ".test.json"
@@ -35,7 +35,7 @@ defmodule Progressions.Types.ConfigsTest do
       expected = %ProgressionsConfig{
         rooms: [
           %RoomConfig{
-            server: %GameServerConfig{
+            server: %GameRules{
               timestep_size: 50_000,
               quantization_threshold: 0.4,
               rounds_to_win: 2,

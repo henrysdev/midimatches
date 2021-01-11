@@ -5,7 +5,7 @@ defmodule Progressions.Pids do
 
   require Logger
 
-  @proc_types [:room, :game_server]
+  @proc_types [:room, :room_server, :game_supervisor, :game_server]
 
   @type registry_resp() :: {:ok, pid()} | {:error, String.t() | tuple()}
   @type id() :: String.t()
@@ -24,7 +24,7 @@ defmodule Progressions.Pids do
     {:error, "cannot register unidentified process type #{proc_type}"}
   end
 
-  @spec fetch(registry_key()) :: pid()
+  @spec fetch(registry_key()) :: pid() | nil
   @doc """
   Returns the pid value for the provided tuple key if one exists, otherwise nil
   """

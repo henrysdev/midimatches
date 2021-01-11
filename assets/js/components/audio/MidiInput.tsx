@@ -215,8 +215,7 @@ function webMidiEventToMidiNoteEvent(
 
 function getCurrentTimestep({
   roundRecordingStartTime,
-  timestepSize,
-  quantizationThreshold,
+  gameRules: { timestepSize, quantizationThreshold },
 }: any): number {
   const nowMicros = Date.now() * 1000;
   return calculateTimestep(
