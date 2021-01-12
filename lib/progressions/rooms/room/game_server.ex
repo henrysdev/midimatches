@@ -37,7 +37,7 @@ defmodule Progressions.Rooms.Room.GameServer do
     field(:bracket, %Bracket{}, default: %Bracket{})
     field(:contestants, list(id), default: [])
     field(:judges, list(id), default: [])
-    field(:winner, id())
+    field(:winner, id(), default: nil)
     field(:round_recording_start_time, integer(), default: 0)
     field(:ready_ups, %MapSet{}, default: MapSet.new())
     field(:recordings, %{required(id()) => any}, default: %{})
