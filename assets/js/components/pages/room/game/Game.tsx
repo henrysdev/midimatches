@@ -6,7 +6,7 @@ import { GameContext } from '../../../../contexts';
 import { GameContextType } from '../../../../types';
 import { gameViewAtomToEnum, unmarshalBody } from '../../../../utils';
 import { ClientDebug } from '../../../common';
-import { GameEndView, GameStartView, PlaybackVotingView, RecordingView } from './views';
+import { GameEndView, GameStartView, PlaybackVotingView, RecordingView, RoundEndView, RoundStartView } from './views';
 
 interface GameProps {
   gameChannel: Channel;
@@ -22,6 +22,7 @@ const Game: React.FC<GameProps> = ({ gameChannel, musicianId }) => {
     gameChannel.on("view_update", (body) => {
       const { view, gameState } = unmarshalBody(body);
       const gameView = gameViewAtomToEnum(view);
+      console.log("gameView: ", gameView);
       setCurrentView(gameView);
       setGameContext(gameState);
     });
@@ -33,14 +34,15 @@ const Game: React.FC<GameProps> = ({ gameChannel, musicianId }) => {
     }
   };
 
-  console.log("GAME_CONTEXT_PLAYBACK_VOTING: ", gameContext);
-
   return (
     <GameContext.Provider value={gameContext} key={currentView}>
       {(() => {
         switch (currentView) {
           case GAME_VIEW.GAME_START:
             return <GameStartView pushMessageToChannel={genericPushMessage} />;
+
+          case GAME_VIEW.ROUND_START:
+            return <RoundStartView pushMessageToChannel={genericPushMessage} />;
 
           case GAME_VIEW.RECORDING:
             return (
@@ -58,6 +60,9 @@ const Game: React.FC<GameProps> = ({ gameChannel, musicianId }) => {
                 eligibleMusiciansToVoteFor={gameContext.contestants}
               />
             );
+
+          case GAME_VIEW.ROUND_END:
+            return <RoundEndView />;
 
           case GAME_VIEW.GAME_END:
             return <GameEndView />;

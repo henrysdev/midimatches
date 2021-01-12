@@ -31,7 +31,6 @@ const RoomPage: React.FC = () => {
 
     // listen for start game message
     channel.on("start_game", (_body) => {
-      console.log("starting game!!");
       setReadyToStartGame(true);
     });
     setGameChannel(channel);
@@ -46,9 +45,6 @@ const RoomPage: React.FC = () => {
       });
     }
   };
-
-  console.log("ready to start? ", readyToStartGame);
-  console.log("MUSICIAN_ID: ", musicianId);
 
   return readyToStartGame ? (
     <Game gameChannel={gameChannel} musicianId={musicianId} />

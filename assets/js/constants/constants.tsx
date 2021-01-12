@@ -6,8 +6,10 @@ export const NOTE_OFF = 0x8;
 export const enum GAME_VIEW {
   PREGAME_LOBBY,
   GAME_START,
+  ROUND_START,
   RECORDING,
   PLAYBACK_VOTING,
+  ROUND_END,
   GAME_END,
 }
 

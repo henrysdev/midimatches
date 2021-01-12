@@ -22,57 +22,6 @@ defmodule Progressions.Utils do
     end
   end
 
-  # @spec server_to_client_game_state(GameServer.t()) :: map()
-  # @doc """
-  # transform game server state into update payload for clients
-  # """
-  # def server_to_client_game_state(%GameServer{
-  #       room_id: room_id,
-  #       round_recording_start_time: round_recording_start_time,
-  #       timestep_size: timestep_size,
-  #       quantization_threshold: quantization_threshold,
-  #       rounds_to_win: rounds_to_win,
-  #       game_size_num_players: game_size_num_players,
-  #       musicians: musicians,
-  #       round: round,
-  #       scores: scores,
-  #       winner: winner,
-  #       ready_ups: ready_ups,
-  #       recordings: recordings,
-  #       votes: votes
-  #     }) do
-  #   # votes are secret - should not expose actual votes to clients, only progress on
-  #   # voting as a whole
-  #   num_votes_cast =
-  #     votes
-  #     |> Map.keys()
-  #     |> length()
-
-  #   # should only expose very limited info about musicians
-  #   shallow_musicians =
-  #     musicians
-  #     |> Map.values()
-  #     |> Enum.map(fn %Musician{musician_id: musician_id} ->
-  #       %{musician_id: musician_id}
-  #     end)
-
-  #   %{
-  #     room_id: room_id,
-  #     round_recording_start_time: round_recording_start_time,
-  #     timestep_size: timestep_size,
-  #     quantization_threshold: quantization_threshold,
-  #     rounds_to_win: rounds_to_win,
-  #     game_size_num_players: game_size_num_players,
-  #     musicians: shallow_musicians,
-  #     round: round,
-  #     scores: scores,
-  #     winner: winner,
-  #     ready_ups: ready_ups,
-  #     recordings: recordings,
-  #     num_votes_cast: num_votes_cast
-  #   }
-  # end
-
   @spec new_server_to_client_game_state(%GameServer{}) :: any
   @doc """
   transform game server state into update payload for clients
@@ -93,6 +42,18 @@ defmodule Progressions.Utils do
       server_state.ready_ups
       |> MapSet.to_list()
 
+    winner =
+      if is_nil(server_state.winner) do
+        server_state.winner
+      else
+        {winner, num_votes} = server_state.winner
+
+        %{
+          winner_id: winner,
+          num_votes: num_votes
+        }
+      end
+
     %ClientGameState{
       # static fields
       game_rules: server_state.game_rules,
@@ -104,7 +65,7 @@ defmodule Progressions.Utils do
       ready_ups: ready_ups_list,
       recordings: server_state.recordings,
       round_recording_start_time: server_state.round_recording_start_time,
-      winner: server_state.winner,
+      winner: winner,
       contestants: server_state.contestants,
       judges: server_state.judges
     }

@@ -5,7 +5,7 @@ defmodule Progressions.Pids do
 
   require Logger
 
-  @proc_types [:room, :room_server, :game_supervisor, :game_server]
+  @proc_types [:room, :room_server, :game_supervisor, :game_server, :view_timer]
 
   @type registry_resp() :: {:ok, pid()} | {:error, String.t() | tuple()}
   @type id() :: String.t()

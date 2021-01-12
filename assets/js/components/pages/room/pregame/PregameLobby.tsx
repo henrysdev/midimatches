@@ -16,7 +16,7 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
 
   return (
     <div>
-      <h3>REAL REAL PregameLobby</h3>
+      <h3>Pregame Lobby</h3>
       <SimpleButton
         label="Join Room"
         callback={() => {

@@ -6,6 +6,7 @@ defmodule Progressions.Rooms.Room.Game do
 
   alias Progressions.{
     Pids,
+    Rooms.Room.Game.ViewTimer,
     Rooms.Room.GameServer,
     Types.GameRules
   }
@@ -24,8 +25,11 @@ defmodule Progressions.Rooms.Room.Game do
 
     Pids.register({:game_supervisor, room_id}, self())
 
-    children = [{GameServer, [{room_id, musicians, game_config}]}]
+    children = [
+      {GameServer, [{room_id, musicians, game_config}]},
+      {ViewTimer, [{room_id}]}
+    ]
 
-    Supervisor.init(children, strategy: :one_for_one)
+    Supervisor.init(children, strategy: :rest_for_one)
   end
 end

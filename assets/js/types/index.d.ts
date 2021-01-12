@@ -44,7 +44,7 @@ export interface GameContextType {
   readyUps: any;
   recordings: any;
   roundRecordingStartTime: number;
-  winner: string;
+  winner: any;
   contestants: string[];
   judges: string[];
 }
