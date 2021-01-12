@@ -42,7 +42,6 @@ defmodule Progressions.Rooms.Room.GameServer do
     field(:ready_ups, %MapSet{}, default: MapSet.new())
     field(:recordings, %{required(id()) => any}, default: %{})
     field(:votes, %{required(id()) => id()}, default: %{})
-
     field(:view_counter, integer(), default: 0)
   end
 
@@ -187,13 +186,28 @@ defmodule Progressions.Rooms.Room.GameServer do
   end
 
   defp schedule_view_timeout(
-         %GameServer{room_id: room_id, game_view: game_view, view_counter: view_counter} = state
+         %GameServer{
+           room_id: room_id,
+           game_view: game_view,
+           view_counter: view_counter,
+           game_rules: %{view_timeouts: view_timeouts}
+         } = state
        ) do
-    # TODO view-specific timeout duration / behavior (some views shouldnt even have a timeout[?])
-    view_timer = Pids.fetch({:view_timer, room_id})
-    ViewTimer.schedule_view_timeout(view_timer, game_view, view_counter, 1_000)
+    if Map.has_key?(view_timeouts, game_view) do
+      view_timer = Pids.fetch({:view_timer, room_id})
+      timeout_duration = Map.get(view_timeouts, game_view)
 
-    state
+      ViewTimer.schedule_view_timeout(
+        view_timer,
+        game_view,
+        view_counter,
+        timeout_duration
+      )
+
+      state
+    else
+      state
+    end
   end
 
   defp broadcast_gamestate(%GameServer{room_id: room_id, game_view: game_view} = state) do

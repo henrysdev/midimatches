@@ -65,20 +65,25 @@ defmodule Progressions.GameServerTest do
       assert :error == GameServer.advance_from_game_view(game_server, :recording, 0)
     end
 
+    # TODO fix test... is flakey
     test "triggered by view timer timeouts for game_start view" do
       room_id = "1"
       musicians = MapSet.new(["1", "2", "3", "4"])
-      game_rules = %GameRules{}
+
+      game_rules = %GameRules{
+        view_timeouts: %{
+          round_start: 10
+        }
+      }
 
       {:ok, game_server} = GameServer.start_link([{room_id, musicians, game_rules}])
       {:ok, _view_timer} = ViewTimer.start_link([{room_id}])
 
-      # TODO turn into scan
       assert GameServer.get_current_view(game_server) == :game_start
       ctr = :sys.get_state(game_server).view_counter
       GameServer.advance_from_game_view(game_server, :game_start, ctr)
       assert GameServer.get_current_view(game_server) == :round_start
-      Process.sleep(1100)
+      Process.sleep(game_rules.view_timeouts.round_start + 5)
       assert GameServer.get_current_view(game_server) == :recording
     end
   end
