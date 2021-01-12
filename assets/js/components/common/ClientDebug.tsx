@@ -1,9 +1,9 @@
-import React, { useContext } from 'react';
-import * as Tone from 'tone';
+import React, { useContext } from "react";
+import * as Tone from "tone";
 
-import { DEFAULT_SYNTH_CONFIG } from '../../constants';
-import { GameContext } from '../../contexts';
-import { SimpleButton } from '../common';
+import { DEFAULT_SYNTH_CONFIG } from "../../constants";
+import { GameContext } from "../../contexts";
+import { SimpleButton } from "../common";
 
 interface ClientDebugProps {
   musicianId: string;

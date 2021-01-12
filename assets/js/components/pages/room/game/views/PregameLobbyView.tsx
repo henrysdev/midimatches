@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { SimpleButton } from "../../../../common/index";
 import {
   SUBMIT_ENTER_ROOM,

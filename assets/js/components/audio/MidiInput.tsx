@@ -1,13 +1,13 @@
-import _ from 'lodash';
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import * as Tone from 'tone';
-import WebMidi from 'webmidi';
+import _ from "lodash";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import * as Tone from "tone";
+import WebMidi from "webmidi";
 
-import { Keyboard } from '.';
-import { DEFAULT_SYNTH_CONFIG } from '../../constants';
-import { GameContext } from '../../contexts';
-import { Loop, MIDINoteEvent, Note, TimestepSlice } from '../../types';
-import { SimpleButton } from '../common';
+import { Keyboard } from ".";
+import { DEFAULT_SYNTH_CONFIG } from "../../constants";
+import { GameContext } from "../../contexts";
+import { Loop, MIDINoteEvent, Note, TimestepSlice } from "../../types";
+import { SimpleButton } from "../common";
 
 interface MidiInputProps {
   submitRecording: Function;
@@ -23,7 +23,9 @@ export interface MidiInputState {
 }
 
 const MidiInput: React.FC<MidiInputProps> = ({ submitRecording }) => {
-  const [midiInputState, _setMidiInputState] = useState<MidiInputState>({});
+  const [midiInputState, _setMidiInputState] = useState<MidiInputState>(
+    {} as MidiInputState
+  );
   const midiInputStateRef = useRef({});
   const setMidiInputState = (data: any) => {
     const updatedInputState = { ...midiInputStateRef.current, ...data };
@@ -69,10 +71,12 @@ const MidiInput: React.FC<MidiInputProps> = ({ submitRecording }) => {
     );
     const currTimestep: number = getCurrentTimestep(gameContext);
     const length = currTimestep - recordingStartTimestep;
-    const loop: Loop = {
+
+    // TODO format in a utility method rather than writing snake case here
+    const loop = {
       timestep_slices: timestepSlices,
       start_timestep: recordingStartTimestep,
-      length: length, // TODO calculate correctly (up to next multiple of 4)
+      length: length,
     };
     submitRecording(loop);
     setMidiInputState({ recordedTimesteps: new Map(), isRecording: false });
@@ -80,18 +84,14 @@ const MidiInput: React.FC<MidiInputProps> = ({ submitRecording }) => {
 
   // init midi access on first render
   useEffect(() => {
-    WebMidi.enable((error: WebMidi.Error) => {
+    WebMidi.enable((error) => {
       if (error) {
         console.warn("WebMidi could not be enabled.");
         return;
       } else {
-        WebMidi.inputs.forEach((input: WebMidi.Input) => {
-          input.addListener("noteon", "all", (event: WebMidi.MidiEvent) =>
-            handleNoteOn(event)
-          );
-          input.addListener("noteoff", "all", (event: WebMidi.MidiEvent) =>
-            handleNoteOff(event)
-          );
+        WebMidi.inputs.forEach((input) => {
+          input.addListener("noteon", "all", (event) => handleNoteOn(event));
+          input.addListener("noteoff", "all", (event) => handleNoteOff(event));
         });
       }
       console.log("WebMidi enabled.");
@@ -105,7 +105,10 @@ const MidiInput: React.FC<MidiInputProps> = ({ submitRecording }) => {
 
   // NOTE closured function - must use ref to manipulate state
   const handleNoteOn = (midiEvent: any) => {
-    const { gameContext, activeNotes } = midiInputStateRef.current;
+    const {
+      gameContext,
+      activeNotes,
+    } = midiInputStateRef.current as MidiInputState;
     const currTimestep = getCurrentTimestep(gameContext);
     const noteOnEvent = webMidiEventToMidiNoteEvent(midiEvent, currTimestep);
     console.log("note On event: ", noteOnEvent);
@@ -119,16 +122,19 @@ const MidiInput: React.FC<MidiInputProps> = ({ submitRecording }) => {
     const {
       gameContext,
       activeNotes,
-      recordedTimesteps,
+      recordedTimesteps = new Map(),
       isRecording,
-    } = midiInputStateRef.current;
+    } = midiInputStateRef.current as MidiInputState;
     let stateUpdate = {};
     const currTimestep = getCurrentTimestep(gameContext);
     const noteOffEvent = webMidiEventToMidiNoteEvent(midiEvent, currTimestep);
     const activeNotesCopy = _.cloneDeep(activeNotes);
     if (activeNotesCopy.has(noteOffEvent.value)) {
       const noteOnEvent = activeNotesCopy.get(noteOffEvent.value);
-      const { value: key_, receivedTimestep: startTimestep } = noteOnEvent;
+      const {
+        value: key_,
+        receivedTimestep: startTimestep,
+      } = noteOnEvent as MIDINoteEvent;
 
       // update recorded timestep slice with new note
       if (isRecording) {

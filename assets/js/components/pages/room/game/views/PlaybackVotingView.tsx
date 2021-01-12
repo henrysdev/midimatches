@@ -1,24 +1,24 @@
-import React, { useContext, useEffect } from 'react';
-import * as Tone from 'tone';
+import React, { useContext, useEffect } from "react";
+import * as Tone from "tone";
 
-import { SUBMIT_VOTE_EVENT } from '../../../../../constants';
-import { GameContext } from '../../../../../contexts';
-import { GameContextType } from '../../../../../types';
-import { RecordingPlayer } from '../../../../audio';
-import { SimpleButton } from '../../../../common';
+import { SUBMIT_VOTE_EVENT } from "../../../../../constants";
+import { GameContext } from "../../../../../contexts";
+import { GameContextType } from "../../../../../types";
+import { RecordingPlayer } from "../../../../audio";
+import { SimpleButton } from "../../../../common";
 
 interface PlaybackVotingViewProps {
   isJudge: boolean;
   pushMessageToChannel: Function;
-  eligibleMusiciansToVoteFor: string[];
+  contestants: string[];
 }
 
 const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
   isJudge,
   pushMessageToChannel,
-  eligibleMusiciansToVoteFor,
+  contestants,
 }) => {
-  const { recordings }: GameContextType = useContext(GameContext);
+  const { recordings } = useContext(GameContext) as GameContextType;
 
   useEffect(() => {
     if (!!recordings) {
@@ -39,7 +39,7 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
   return isJudge ? (
     <div>
       <h3>PlaybackVoting View</h3>
-      {eligibleMusiciansToVoteFor.map((musicianId: string) => {
+      {contestants.map((musicianId: string) => {
         return (
           <div key={`${musicianId}`}>
             <SimpleButton
@@ -52,16 +52,22 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
               }}
               disabled={false}
             />
-            {Object.entries(recordings).map(([musicianId, recording]) => {
-              return (
-                <RecordingPlayer
-                  key={`recording-player-${musicianId}`}
-                  recording={recording}
-                  musicianId={musicianId}
-                  scheduledStartTime={Tone.now()}
-                />
-              );
-            })}
+            {!!recordings ? (
+              Object.entries(recordings).map(
+                ([musicianId, recording]: [string, any]) => {
+                  return (
+                    <RecordingPlayer
+                      key={`recording-player-${musicianId}`}
+                      recording={recording}
+                      musicianId={musicianId}
+                      scheduledStartTime={Tone.now()}
+                    />
+                  );
+                }
+              )
+            ) : (
+              <div>No recordings available</div>
+            )}
           </div>
         );
       })}

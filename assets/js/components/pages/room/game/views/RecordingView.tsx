@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-import { SUBMIT_RECORDING_EVENT } from '../../../../../constants';
-import { MidiInput } from '../../../../audio';
-import { SimpleButton } from '../../../../common';
+import { SUBMIT_RECORDING_EVENT } from "../../../../../constants";
+import { MidiInput } from "../../../../audio";
+import { SimpleButton } from "../../../../common";
 
 interface RecordingViewProps {
   isContestant: boolean;

@@ -1,9 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
 
-import { Tournament } from '../../../common/Tournament';
-
-// import { SUBMIT_ENTER_ROOM, SUBMIT_LEAVE_ROOM } from "../../../../constants";
-// import { SimpleButton } from "../../../common";
+import { SUBMIT_ENTER_ROOM, SUBMIT_LEAVE_ROOM } from "../../../../constants";
+import { SimpleButton } from "../../../common";
 
 interface PregameLobbyProps {
   pushMessageToChannel: Function;
@@ -12,22 +10,21 @@ interface PregameLobbyProps {
 const PregameLobby: React.FC<PregameLobbyProps> = ({
   pushMessageToChannel,
 }) => {
-  // window.addEventListener("beforeunload", () =>
-  //   pushMessageToChannel(SUBMIT_LEAVE_ROOM, {})
-  // );
+  window.addEventListener("beforeunload", () =>
+    pushMessageToChannel(SUBMIT_LEAVE_ROOM, {})
+  );
 
-  return <Tournament />;
-  // return (
-  //   <div>
-  //     <h3>Pregame Lobby</h3>
-  //     <SimpleButton
-  //       label="Join Room"
-  //       callback={() => {
-  //         pushMessageToChannel(SUBMIT_ENTER_ROOM, {});
-  //       }}
-  //       disabled={false}
-  //     />
-  //   </div>
-  // );
+  return (
+    <div>
+      <h3>Pregame Lobby</h3>
+      <SimpleButton
+        label="Join Room"
+        callback={() => {
+          pushMessageToChannel(SUBMIT_ENTER_ROOM, {});
+        }}
+        disabled={false}
+      />
+    </div>
+  );
 };
 export { PregameLobby };

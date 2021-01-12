@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react';
-import * as Tone from 'tone';
+import React, { useContext, useEffect, useState } from "react";
+import * as Tone from "tone";
 
-import { GameContext } from '../../contexts';
-import { GameContextType, Loop } from '../../types';
-import { loopToEvents } from '../../utils';
-import { SimpleButton } from '../common';
+import { GameContext } from "../../contexts";
+import { GameContextType, Loop } from "../../types";
+import { loopToEvents } from "../../utils";
+import { SimpleButton } from "../common";
 
 interface RecordingPlayerProps {
   recording: Loop;
@@ -17,9 +17,9 @@ const RecordingPlayer: React.FC<RecordingPlayerProps> = ({
   musicianId,
   scheduledStartTime,
 }) => {
-  const { timestepSize, soloTimeLimit }: GameContextType = useContext(
-    GameContext
-  );
+  const {
+    gameRules: { timestepSize, soloTimeLimit },
+  } = useContext(GameContext) as GameContextType;
 
   const [synth, setSynth] = useState<Tone.Synth>();
 
@@ -57,7 +57,7 @@ function scheduleRecording(
   recording: Loop,
   startTime: number,
   timestepSize: number,
-  soloTimeLimit: number,
+  _soloTimeLimit: number,
   playNote: Function
 ): void {
   Tone.Transport.start(startTime);
