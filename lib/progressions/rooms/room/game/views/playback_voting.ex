@@ -56,7 +56,8 @@ defmodule Progressions.Rooms.Room.Game.Views.PlaybackVoting do
         state
         |> valid_vote(ballot)
         |> last_vote()
-        |> GameLogic.advance_game_view()
+        |> advance_view()
+        |> GameLogic.as_instruction(sync?: true, view_change?: true)
 
       # valid vote - count and continue
       :valid_vote ->

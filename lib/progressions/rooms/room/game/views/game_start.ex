@@ -37,7 +37,8 @@ defmodule Progressions.Rooms.Room.Game.Views.GameStart do
           | ready_ups: MapSet.put(ready_ups, musician_id),
             round_recording_start_time: :os.system_time(:microsecond)
         }
-        |> GameLogic.advance_game_view()
+        |> advance_view()
+        |> GameLogic.as_instruction(sync?: true, view_change?: true)
 
       # valid ready up - store ready up in game server state
       {true, false} ->

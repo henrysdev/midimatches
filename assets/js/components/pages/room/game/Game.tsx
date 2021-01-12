@@ -62,7 +62,7 @@ const Game: React.FC<GameProps> = ({ gameChannel, musicianId }) => {
             );
 
           case GAME_VIEW.ROUND_END:
-            return <RoundEndView pushMessageToChannel={genericPushMessage} />;
+            return <RoundEndView />;
 
           case GAME_VIEW.GAME_END:
             return <GameEndView />;

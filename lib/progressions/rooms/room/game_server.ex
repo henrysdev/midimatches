@@ -129,7 +129,7 @@ defmodule Progressions.Rooms.Room.GameServer do
       {:reply, :ok, state}
     else
       # stale advance message, do nothing
-      Logger.warn(
+      Logger.info(
         "stale advance_from_game_view message receieved. " <>
           "expected view: #{curr_view} actual view: #{game_view}, " <>
           "expected view_counter: #{curr_view_counter} actual view_counter: #{view_counter}"
@@ -191,7 +191,7 @@ defmodule Progressions.Rooms.Room.GameServer do
        ) do
     # TODO view-specific timeout duration / behavior (some views shouldnt even have a timeout[?])
     view_timer = Pids.fetch({:view_timer, room_id})
-    ViewTimer.schedule_view_timeout(view_timer, game_view, view_counter, 1000)
+    ViewTimer.schedule_view_timeout(view_timer, game_view, view_counter, 1_000)
 
     state
   end

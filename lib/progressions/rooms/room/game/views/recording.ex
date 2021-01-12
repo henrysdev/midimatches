@@ -44,7 +44,8 @@ defmodule Progressions.Rooms.Room.Game.Views.Recording do
       # last needed recording - store recording and transition to playback voting server state
       {true, true} ->
         %GameServer{state | recordings: Map.put(recordings, musician_id, recording)}
-        |> GameLogic.advance_game_view()
+        |> advance_view()
+        |> GameLogic.as_instruction(sync?: true, view_change?: true)
 
       # invalid vote - return state unchanged
       _ ->
