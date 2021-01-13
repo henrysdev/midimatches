@@ -3,23 +3,22 @@ import React, { useEffect, useState } from "react";
 import { SUBMIT_RECORDING_EVENT } from "../../../../../constants";
 import { MidiInput } from "../../../../audio";
 import { SimpleButton } from "../../../../common";
-import { SamplePlayer } from "../../../../../types";
 
 interface RecordingViewProps {
   isContestant: boolean;
   pushMessageToChannel: Function;
-  samplePlayer: SamplePlayer;
+  playSample: Function;
 }
 
 const RecordingView: React.FC<RecordingViewProps> = ({
   isContestant,
   pushMessageToChannel,
-  samplePlayer,
+  playSample,
 }) => {
   const [playerRecording, setPlayerRecording] = useState<Object>();
 
   useEffect(() => {
-    samplePlayer.start();
+    playSample();
   }, []);
 
   return isContestant ? (

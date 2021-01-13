@@ -35,5 +35,6 @@ export const DEFAULT_SYNTH_CONFIG = {
     sustain: 0.2,
     release: 1.5,
   },
+  volume: 3,
   portamento: 0.05,
 } as Tone.SynthOptions;

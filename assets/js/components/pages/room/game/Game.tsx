@@ -37,22 +37,30 @@ const Game: React.FC<GameProps> = ({ gameChannel, musicianId }) => {
     gameChannel.on(VIEW_UPDATE_EVENT, (body) => {
       const { gameState } = unmarshalBody(body) as ViewUpdatePayload;
       const gameView = gameViewAtomToEnum(gameState.gameView);
-      setCurrentView(gameView);
       setGameContext(gameState);
-      setSamplePlayer(
-        new Tone.Player("/sounds/ragga_sample.mp3").toDestination()
-      );
+      setCurrentView(gameView);
     });
+    const newSamplePlayer = new Tone.Player(
+      "/sounds/ragga_sample.mp3"
+    ).toDestination();
+    newSamplePlayer.volume.value = -6;
+    setSamplePlayer(newSamplePlayer);
   }, []);
 
   // stop and reset sample player on any view change
   useEffect(() => {
     if (!!samplePlayer) {
       if (currentView !== GAME_VIEW.RECORDING) {
-        samplePlayer.stop();
+        setSamplePlayer(samplePlayer.stop());
       }
     }
   }, [currentView]);
+
+  const playSample = () => {
+    if (!!samplePlayer) {
+      samplePlayer.start();
+    }
+  };
 
   const genericPushMessage = (event: string, payload: Object) => {
     if (!!gameChannel) {
@@ -79,7 +87,7 @@ const Game: React.FC<GameProps> = ({ gameChannel, musicianId }) => {
                     : false
                 }
                 pushMessageToChannel={genericPushMessage}
-                samplePlayer={samplePlayer}
+                playSample={playSample}
               />
             );
 
@@ -95,7 +103,7 @@ const Game: React.FC<GameProps> = ({ gameChannel, musicianId }) => {
                 contestants={
                   !!gameContext.contestants ? gameContext.contestants : []
                 }
-                samplePlayer={samplePlayer}
+                playSample={playSample}
               />
             );
 

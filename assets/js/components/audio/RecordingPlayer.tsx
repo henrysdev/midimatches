@@ -5,19 +5,20 @@ import { GameContext } from "../../contexts";
 import { GameContextType, Loop, SamplePlayer } from "../../types";
 import { loopToEvents } from "../../utils";
 import { SimpleButton } from "../common";
+import { DEFAULT_SYNTH_CONFIG } from "../../constants";
 
 interface RecordingPlayerProps {
   recording: Loop;
   musicianId: string;
   scheduledStartTime: number;
-  samplePlayer: SamplePlayer;
+  playSample: Function;
 }
 
 const RecordingPlayer: React.FC<RecordingPlayerProps> = ({
   recording,
   musicianId,
   scheduledStartTime,
-  samplePlayer,
+  playSample,
 }) => {
   const {
     gameRules: { timestepSize, soloTimeLimit },
@@ -27,7 +28,8 @@ const RecordingPlayer: React.FC<RecordingPlayerProps> = ({
 
   useEffect(() => {
     // TODO break out into instrument class
-    setSynth(new Tone.Synth().toDestination());
+    const newSynth = new Tone.Synth(DEFAULT_SYNTH_CONFIG).toDestination();
+    setSynth(newSynth);
   }, []);
 
   const playNote = (note: number, time: number, velocity: number) => {
@@ -37,7 +39,7 @@ const RecordingPlayer: React.FC<RecordingPlayerProps> = ({
     }
   };
 
-  return !!samplePlayer ? (
+  return (
     <SimpleButton
       label={`Playback recording for MusicianId ${musicianId}`}
       callback={() =>
@@ -47,13 +49,11 @@ const RecordingPlayer: React.FC<RecordingPlayerProps> = ({
           timestepSize,
           soloTimeLimit,
           playNote,
-          samplePlayer
+          playSample
         )
       }
       disabled={false}
     />
-  ) : (
-    <div></div>
   );
 };
 export { RecordingPlayer };
@@ -64,14 +64,14 @@ function scheduleRecording(
   timestepSize: number,
   _soloTimeLimit: number,
   playNote: Function,
-  samplePlayer: Tone.Player
+  playSample: Function
 ): void {
   Tone.Transport.start(startTime);
 
   const part = buildPart(recording, timestepSize, playNote);
 
   part.start();
-  samplePlayer.start();
+  playSample();
 }
 
 function buildPart(
