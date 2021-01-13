@@ -29,7 +29,6 @@ const Game: React.FC<GameProps> = ({ gameChannel, musicianId }) => {
 
   useEffect(() => {
     gameChannel.on(VIEW_UPDATE_EVENT, (body) => {
-      console.log("BODY: ", body);
       const { view, gameState } = unmarshalBody(body) as ViewUpdatePayload;
       const gameView = gameViewAtomToEnum(view);
       setCurrentView(gameView);

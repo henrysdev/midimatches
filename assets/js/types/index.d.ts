@@ -1,7 +1,5 @@
 // Audio Playback
 
-import { Tone } from "tone/build/esm/core/Tone";
-
 export interface Note {
   instrument: string;
   key: number;

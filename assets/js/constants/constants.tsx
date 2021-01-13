@@ -5,7 +5,7 @@ export const NOTE_ON = 0x9;
 export const NOTE_OFF = 0x8;
 
 // Possible game state views
-export const enum GAME_VIEW {
+export enum GAME_VIEW {
   PREGAME_LOBBY,
   GAME_START,
   ROUND_START,

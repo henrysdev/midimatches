@@ -28,7 +28,10 @@
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
+    "@babel/plugin-syntax-jsx": "^7.12.1",
     "@babel/preset-env": "^7.0.0",
+    "@babel/preset-react": "^7.12.10",
+    "@testing-library/react": "^11.2.3",
     "@types/lodash": "^4.14.165",
     "@types/phoenix": "^1.5.0",
     "@types/react": "^17.0.0",

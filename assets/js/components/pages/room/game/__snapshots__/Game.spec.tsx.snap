@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders Game component in game start view 1`] = `
+<body>
+  <div>
+    <div>
+      <h3>
+        GameStart View
+      </h3>
+      <button>
+        Ready Up
+      </button>
+    </div>
+    <div>
+      <div>
+        Musician: 
+        123
+      </div>
+      <pre>
+        {}
+      </pre>
+    </div>
+  </div>
+</body>
+`;
