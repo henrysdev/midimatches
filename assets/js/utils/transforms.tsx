@@ -52,6 +52,11 @@ function midiToPitchClass(midi: number): string {
   return scaleIndexToNote[note];
 }
 
+export function midiToPitch(midi: number): string {
+  const octave = Math.floor(midi / 12) - 1;
+  return midiToPitchClass(midi) + octave.toString();
+}
+
 export function unmarshalBody(payload: Object): Object {
   return keysToCamel(payload);
 }
@@ -73,11 +78,6 @@ export function gameViewAtomToEnum(atom: string): any {
     case "game_end":
       return GAME_VIEW.GAME_END;
   }
-}
-
-function midiToPitch(midi: number): string {
-  const octave = Math.floor(midi / 12) - 1;
-  return midiToPitchClass(midi) + octave.toString();
 }
 
 export function loopToEvents(
