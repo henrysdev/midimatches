@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import * as Tone from "tone";
 
 import { GameContext } from "../../contexts";
-import { GameContextType, Loop } from "../../types";
+import { GameContextType, Loop, SamplePlayer } from "../../types";
 import { loopToEvents } from "../../utils";
 import { SimpleButton } from "../common";
 
@@ -10,28 +10,20 @@ interface RecordingPlayerProps {
   recording: Loop;
   musicianId: string;
   scheduledStartTime: number;
+  samplePlayer: SamplePlayer;
 }
 
 const RecordingPlayer: React.FC<RecordingPlayerProps> = ({
   recording,
   musicianId,
   scheduledStartTime,
+  samplePlayer,
 }) => {
   const {
     gameRules: { timestepSize, soloTimeLimit },
   } = useContext(GameContext) as GameContextType;
 
   const [synth, setSynth] = useState<Tone.Synth>();
-
-  // TODO break up sample playback logic
-  const [samplePlayer, setPlayer] = useState<Tone.Player>();
-  useEffect(() => {
-    Tone.Transport.start();
-    const samplePlayer = new Tone.Player(
-      "/sounds/ragga_sample.mp3"
-    ).toDestination();
-    setPlayer(samplePlayer);
-  }, []);
 
   useEffect(() => {
     // TODO break out into instrument class
@@ -75,16 +67,23 @@ function scheduleRecording(
   samplePlayer: Tone.Player
 ): void {
   Tone.Transport.start(startTime);
-  console.log("recording ", recording);
-  const noteEvents = loopToEvents(recording, 0, timestepSize);
-  console.log("currTime: ", startTime);
-  console.log("noteEvents: ", noteEvents);
-  const part = new Tone.Part((time: number, { note, velocity }) => {
-    playNote(note, time, velocity);
-  }, noteEvents);
-  part.debug = true;
-  console.log("part: ", part);
+
+  const part = buildPart(recording, timestepSize, playNote);
 
   part.start();
   samplePlayer.start();
+}
+
+function buildPart(
+  recording: Loop,
+  timestepSize: number,
+  playNote: Function
+): Tone.Part {
+  const noteEvents = loopToEvents(recording, 0, timestepSize);
+  console.log("noteEvents: ", noteEvents);
+  console.log("currentTime: ", Tone.now());
+  const part = new Tone.Part((time: number, { note, velocity }) => {
+    playNote(note, time, velocity);
+  }, noteEvents);
+  return part;
 }

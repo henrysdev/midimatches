@@ -3,7 +3,7 @@ import * as Tone from "tone";
 
 import { SUBMIT_VOTE_EVENT } from "../../../../../constants";
 import { GameContext } from "../../../../../contexts";
-import { GameContextType } from "../../../../../types";
+import { GameContextType, SamplePlayer } from "../../../../../types";
 import { RecordingPlayer } from "../../../../audio";
 import { SimpleButton } from "../../../../common";
 
@@ -11,12 +11,14 @@ interface PlaybackVotingViewProps {
   isJudge: boolean;
   pushMessageToChannel: Function;
   contestants: string[];
+  samplePlayer: SamplePlayer;
 }
 
 const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
   isJudge,
   pushMessageToChannel,
   contestants,
+  samplePlayer,
 }) => {
   const { recordings } = useContext(GameContext) as GameContextType;
 
@@ -61,6 +63,7 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
                       recording={recording}
                       musicianId={musicianId}
                       scheduledStartTime={Tone.now()}
+                      samplePlayer={samplePlayer}
                     />
                   );
                 }

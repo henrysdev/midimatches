@@ -210,9 +210,8 @@ defmodule Progressions.Rooms.Room.GameServer do
     end
   end
 
-  defp broadcast_gamestate(%GameServer{room_id: room_id, game_view: game_view} = state) do
+  defp broadcast_gamestate(%GameServer{room_id: room_id} = state) do
     ProgressionsWeb.Endpoint.broadcast("room:#{room_id}", "view_update", %{
-      view: game_view,
       game_state: Utils.new_server_to_client_game_state(state)
     })
 

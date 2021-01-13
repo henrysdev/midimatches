@@ -1,11 +1,16 @@
 import { Channel } from "phoenix";
 import React, { useEffect, useState } from "react";
 
+import * as Tone from "tone";
 import { GAME_VIEW, VIEW_UPDATE_EVENT } from "../../../../constants";
 import { GameContext } from "../../../../contexts";
-import { GameContextType, ViewUpdatePayload } from "../../../../types";
+import {
+  GameContextType,
+  ViewUpdatePayload,
+  SamplePlayer,
+} from "../../../../types";
 import { gameViewAtomToEnum, unmarshalBody } from "../../../../utils";
-import { ClientDebug } from "../../../common";
+import { ClientDebug } from "../../../debug";
 import {
   GameEndView,
   GameStartView,
@@ -26,15 +31,28 @@ const Game: React.FC<GameProps> = ({ gameChannel, musicianId }) => {
   const [gameContext, setGameContext] = useState<GameContextType>(
     {} as GameContextType
   );
+  const [samplePlayer, setSamplePlayer] = useState<SamplePlayer>();
 
   useEffect(() => {
     gameChannel.on(VIEW_UPDATE_EVENT, (body) => {
-      const { view, gameState } = unmarshalBody(body) as ViewUpdatePayload;
-      const gameView = gameViewAtomToEnum(view);
+      const { gameState } = unmarshalBody(body) as ViewUpdatePayload;
+      const gameView = gameViewAtomToEnum(gameState.gameView);
       setCurrentView(gameView);
       setGameContext(gameState);
+      setSamplePlayer(
+        new Tone.Player("/sounds/ragga_sample.mp3").toDestination()
+      );
     });
   }, []);
+
+  // stop and reset sample player on any view change
+  useEffect(() => {
+    if (!!samplePlayer) {
+      if (currentView !== GAME_VIEW.RECORDING) {
+        samplePlayer.stop();
+      }
+    }
+  }, [currentView]);
 
   const genericPushMessage = (event: string, payload: Object) => {
     if (!!gameChannel) {
@@ -61,6 +79,7 @@ const Game: React.FC<GameProps> = ({ gameChannel, musicianId }) => {
                     : false
                 }
                 pushMessageToChannel={genericPushMessage}
+                samplePlayer={samplePlayer}
               />
             );
 
@@ -76,6 +95,7 @@ const Game: React.FC<GameProps> = ({ gameChannel, musicianId }) => {
                 contestants={
                   !!gameContext.contestants ? gameContext.contestants : []
                 }
+                samplePlayer={samplePlayer}
               />
             );
 

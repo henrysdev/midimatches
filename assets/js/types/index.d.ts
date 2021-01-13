@@ -1,4 +1,6 @@
-// Audio Playback
+import * as Tone from "tone";
+
+// Audio Playback Types
 
 export interface Note {
   instrument: string;
@@ -34,16 +36,19 @@ export interface LocalNoteEvent {
   velocity: number;
 }
 
-// Payloads
+export type SamplePlayer = Tone.Player;
+
+// Event Types
 
 export interface ViewUpdatePayload {
-  view: string;
   gameState: GameContextType;
 }
 
 export interface PlayerJoinPayload {
   musicianId: string;
 }
+
+// Payload Types
 
 export interface GameRules {
   gameSizeNumPlayers: number;
@@ -58,6 +63,7 @@ export interface GameContextType {
   roomId?: string;
 
   // dynamic fields
+  gameView: string;
   musicians?: string[];
   numVotesCast?: number;
   readyUps?: any;
