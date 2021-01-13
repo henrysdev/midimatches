@@ -73,3 +73,7 @@ export interface GameContextType {
   contestants?: string[];
   judges?: string[];
 }
+
+// Time Types
+type Seconds = number;
+type Milliseconds = number;
