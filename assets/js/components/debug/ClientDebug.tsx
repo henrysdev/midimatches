@@ -11,33 +11,18 @@ interface ClientDebugProps {
 
 const ClientDebug: React.FC<ClientDebugProps> = ({ musicianId }) => {
   const gameContext = useContext(GameContext);
-  const [samplePlayer, setSamplePlayer] = useSamplePlayer();
-
-  const loadSample = () => {
-    if (!!samplePlayer) {
-      samplePlayer.load("/sounds/ragga_sample.mp3");
-    }
-  };
-
-  const startPlayback = () => {
-    if (!!samplePlayer) {
-      samplePlayer.start();
-    }
-  };
-
-  const stopPlayback = () => {
-    if (!!samplePlayer) {
-      samplePlayer.stop();
-    }
-  };
+  const [loadSample, playSample, stopSample] = useSamplePlayer();
 
   return (
     <div>
       <div>Musician: {musicianId}</div>
 
-      <DebugButton label="Load Sample" callback={() => loadSample()} />
-      <DebugButton label="Start Playback" callback={() => startPlayback()} />
-      <DebugButton label="Stop Playback" callback={() => stopPlayback()} />
+      <DebugButton
+        label="Load Sample"
+        callback={() => loadSample("/sounds/ragga_sample.mp3")}
+      />
+      <DebugButton label="Start Playback" callback={() => playSample()} />
+      <DebugButton label="Stop Playback" callback={() => stopSample()} />
 
       <pre>{JSON.stringify(gameContext, null, 2)}</pre>
     </div>

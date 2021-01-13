@@ -2,7 +2,11 @@ import { Channel } from "phoenix";
 import React, { useEffect, useState } from "react";
 
 import * as Tone from "tone";
-import { GAME_VIEW, VIEW_UPDATE_EVENT } from "../../../../constants";
+import {
+  GAME_VIEW,
+  VIEW_UPDATE_EVENT,
+  SAMPLE_URLS,
+} from "../../../../constants";
 import { GameContext } from "../../../../contexts";
 import {
   GameContextType,
@@ -19,6 +23,7 @@ import {
   RoundEndView,
   RoundStartView,
 } from "./views";
+import { useSamplePlayer } from "../../../../hooks";
 
 interface GameProps {
   gameChannel: Channel;
@@ -31,7 +36,7 @@ const Game: React.FC<GameProps> = ({ gameChannel, musicianId }) => {
   const [gameContext, setGameContext] = useState<GameContextType>(
     {} as GameContextType
   );
-  const [samplePlayer, setSamplePlayer] = useState<SamplePlayer>();
+  const [loadSample, playSample, stopSample] = useSamplePlayer();
 
   useEffect(() => {
     gameChannel.on(VIEW_UPDATE_EVENT, (body) => {
@@ -40,27 +45,19 @@ const Game: React.FC<GameProps> = ({ gameChannel, musicianId }) => {
       setGameContext(gameState);
       setCurrentView(gameView);
     });
-    const newSamplePlayer = new Tone.Player(
-      "/sounds/ragga_sample.mp3"
-    ).toDestination();
-    newSamplePlayer.volume.value = -6;
-    setSamplePlayer(newSamplePlayer);
   }, []);
 
-  // stop and reset sample player on any view change
   useEffect(() => {
-    if (!!samplePlayer) {
-      if (currentView !== GAME_VIEW.RECORDING) {
-        setSamplePlayer(samplePlayer.stop());
-      }
+    if (currentView === GAME_VIEW.ROUND_START) {
+      // TODO random choice [?]
+      loadSample(SAMPLE_URLS[0]);
+    }
+    // TODO remove once recording timer is properly handled
+    if (currentView !== GAME_VIEW.RECORDING) {
+      // TODO replace with call to function that holistically resets Tone Transport and related stuff.
+      stopSample();
     }
   }, [currentView]);
-
-  const playSample = () => {
-    if (!!samplePlayer) {
-      samplePlayer.start();
-    }
-  };
 
   const genericPushMessage = (event: string, payload: Object) => {
     if (!!gameChannel) {

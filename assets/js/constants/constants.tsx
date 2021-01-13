@@ -22,6 +22,8 @@ export const SUBMIT_READY_UP_EVENT = "musician_ready_up";
 export const SUBMIT_RECORDING_EVENT = "musician_recording";
 export const SUBMIT_VOTE_EVENT = "musician_vote";
 
+export const SAMPLE_URLS = ["/sounds/ragga_sample.mp3"];
+
 export const DEFAULT_SYNTH_CONFIG = {
   oscillator: {
     type: "amtriangle",
