@@ -1,6 +1,5 @@
 import React from "react";
 import { ControlledPiano, MidiNumbers } from "react-piano";
-import "react-piano/dist/styles.css";
 
 interface KeyboardProps {
   activeMidiList: number[];

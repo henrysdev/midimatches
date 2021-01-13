@@ -116,13 +116,14 @@ defmodule Progressions.Rooms.Room.Game.Views.PlaybackVoting do
 
   @spec last_vote(%GameServer{}) :: %GameServer{}
   defp last_vote(%GameServer{bracket: bracket, votes: votes} = state) do
-    winner =
+    {winner_id, _freq} =
+      winner =
       votes
       |> Map.values()
       |> Enum.frequencies()
       |> Enum.max()
 
-    bracket = Bracket.record_winner(bracket, winner)
+    bracket = Bracket.record_winner(bracket, winner_id)
 
     %GameServer{
       state

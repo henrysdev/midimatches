@@ -1,9 +1,10 @@
-import { Channel, Socket } from 'phoenix';
-import React, { useEffect, useState } from 'react';
+import { Channel, Socket } from "phoenix";
+import React, { useEffect, useState } from "react";
 
-import { unmarshalBody } from '../../../utils';
-import { Game } from './game/Game';
-import { PregameLobby } from './pregame/PregameLobby';
+import { unmarshalBody } from "../../../utils";
+import { PlayerJoinPayload } from "../../../types";
+import { Game } from "./game/Game";
+import { PregameLobby } from "./pregame/PregameLobby";
 
 const RoomPage: React.FC = () => {
   // TODO
@@ -15,6 +16,7 @@ const RoomPage: React.FC = () => {
   const [musicianId, setMusicianId] = useState<string>();
 
   useEffect(() => {
+    /* tslint:disable-next-line */
     let socket = new Socket("/socket", { params: { token: window.userToken } });
     socket.connect();
     let path = window.location.pathname.split("/");
@@ -38,15 +40,14 @@ const RoomPage: React.FC = () => {
 
   const playerJoin = (event: string, payload: Object) => {
     if (!!gameChannel) {
-      console.log("player joining!");
       gameChannel.push(event, payload).receive("ok", (reply) => {
-        const { musicianId } = unmarshalBody(reply);
+        const { musicianId } = unmarshalBody(reply) as PlayerJoinPayload;
         setMusicianId(musicianId);
       });
     }
   };
 
-  return readyToStartGame ? (
+  return readyToStartGame && !!gameChannel && !!musicianId ? (
     <Game gameChannel={gameChannel} musicianId={musicianId} />
   ) : (
     <PregameLobby pushMessageToChannel={playerJoin} />

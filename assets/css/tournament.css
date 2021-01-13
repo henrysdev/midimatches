@@ -1,0 +1,60 @@
+.tournament {
+  display: flex;
+  flex-direction: row;
+}
+.tournament .round {
+  font-size: 0.75em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+  flex-grow: 9;
+  margin-bottom: 0;
+}
+.tournament .round .spacer {
+  flex-grow: 2;
+  margin: 0;
+}
+.tournament .round .spacer:first-child,
+.tournament .round .spacer:last-child {
+  flex-grow: 1;
+}
+.tournament .champion {
+  flex-grow: 1;
+}
+
+li.game_right {
+  text-align: right;
+  border-left: 1px solid #aaa;
+  margin-bottom: 0;
+  padding-right: 8px;
+}
+li.game_left {
+  border-right: 1px solid #aaa;
+  margin-bottom: 0;
+  padding-left: 8px;
+}
+li.game_bottom {
+  border-bottom: 1px solid #aaa;
+}
+li.game_top {
+  border: none;
+  border-bottom: 1px solid #aaa;
+}
+li.game_left.spacer {
+  border-right: 1px solid #aaa;
+  min-height: 5px;
+  padding-right: 0.25em;
+}
+li.game_right.spacer {
+  border-left: 1px solid #aaa;
+  min-height: 5px;
+  padding-left: 0.25em;
+  text-align: left;
+}
+li.game_center {
+  text-align: center;
+  margin: 0;
+  padding-top: 16px;
+}

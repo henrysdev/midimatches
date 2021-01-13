@@ -1,3 +1,5 @@
+// Audio Playback
+
 export interface Note {
   instrument: string;
   key: number;
@@ -26,6 +28,23 @@ export interface MIDINoteEvent {
   receivedTimestep: number;
 }
 
+export interface LocalNoteEvent {
+  time: number;
+  note: any;
+  velocity: number;
+}
+
+// Payloads
+
+export interface ViewUpdatePayload {
+  view: string;
+  gameState: GameContextType;
+}
+
+export interface PlayerJoinPayload {
+  musicianId: string;
+}
+
 export interface GameRules {
   gameSizeNumPlayers: number;
   timestepSize: number;
@@ -36,15 +55,15 @@ export interface GameRules {
 export interface GameContextType {
   // static fields
   gameRules: GameRules;
-  roomId: string;
+  roomId?: string;
 
   // dynamic fields
-  musicians: string[];
-  numVotesCast: number;
-  readyUps: any;
-  recordings: any;
-  roundRecordingStartTime: number;
-  winner: any;
-  contestants: string[];
-  judges: string[];
+  musicians?: string[];
+  numVotesCast?: number;
+  readyUps?: any;
+  recordings?: Object;
+  roundRecordingStartTime?: number;
+  winner?: any;
+  contestants?: string[];
+  judges?: string[];
 }

@@ -1,7 +1,5 @@
-import * as Tone from 'tone';
-
-import { GAME_VIEW } from '../constants';
-import { Loop } from '../types';
+import { GAME_VIEW } from "../constants";
+import { Loop, Note, LocalNoteEvent } from "../types";
 
 const isArray = function (a: Array<any>): boolean {
   return Array.isArray(a);
@@ -13,7 +11,7 @@ const isObject = function (o: Object): boolean {
 
 const keysToCamel = function (o: Object): Object {
   if (isObject(o)) {
-    const n = {};
+    const n = {} as Object;
 
     Object.keys(o).forEach((k) => {
       n[toCamel(k)] = keysToCamel(o[k]);
@@ -54,6 +52,11 @@ function midiToPitchClass(midi: number): string {
   return scaleIndexToNote[note];
 }
 
+export function midiToPitch(midi: number): string {
+  const octave = Math.floor(midi / 12) - 1;
+  return midiToPitchClass(midi) + octave.toString();
+}
+
 export function unmarshalBody(payload: Object): Object {
   return keysToCamel(payload);
 }
@@ -77,27 +80,25 @@ export function gameViewAtomToEnum(atom: string): any {
   }
 }
 
-function midiToPitch(midi: number): string {
-  const octave = Math.floor(midi / 12) - 1;
-  return midiToPitchClass(midi) + octave.toString();
-}
-
 export function loopToEvents(
   loop: Loop,
   now: number,
   timestepSize: number
-): Tone.Event[] {
-  return loop.timestepSlices.reduce((accEvents, timestepSlice, idx) => {
-    const timestepSizeInSeconds = 0.000001 * timestepSize;
-    const { timestep, notes } = timestepSlice;
-    const events = notes.map(({ key, instrument, duration }) => {
-      const note = midiToPitch(key);
-      return {
-        time: now + timestepSizeInSeconds * timestep,
-        note,
-        velocity: 0.2,
-      };
-    });
-    return accEvents.concat(events);
-  }, []);
+): LocalNoteEvent[] {
+  return loop.timestepSlices.reduce(
+    (accEvents: LocalNoteEvent[], timestepSlice, idx) => {
+      const timestepSizeInSeconds = 0.000001 * timestepSize;
+      const { timestep, notes } = timestepSlice;
+      const events = notes.map(({ key, instrument, duration }: Note) => {
+        const note = midiToPitch(key);
+        return {
+          time: now + timestepSizeInSeconds * timestep,
+          note,
+          velocity: 0.2,
+        } as LocalNoteEvent;
+      });
+      return accEvents.concat(events);
+    },
+    []
+  );
 }

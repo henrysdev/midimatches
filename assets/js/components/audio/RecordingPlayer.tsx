@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react';
-import * as Tone from 'tone';
+import React, { useContext, useEffect, useState } from "react";
+import * as Tone from "tone";
 
-import { GameContext } from '../../contexts';
-import { GameContextType, Loop } from '../../types';
-import { loopToEvents } from '../../utils';
-import { SimpleButton } from '../common';
+import { GameContext } from "../../contexts";
+import { GameContextType, Loop } from "../../types";
+import { loopToEvents } from "../../utils";
+import { SimpleButton } from "../common";
 
 interface RecordingPlayerProps {
   recording: Loop;
@@ -17,11 +17,21 @@ const RecordingPlayer: React.FC<RecordingPlayerProps> = ({
   musicianId,
   scheduledStartTime,
 }) => {
-  const { timestepSize, soloTimeLimit }: GameContextType = useContext(
-    GameContext
-  );
+  const {
+    gameRules: { timestepSize, soloTimeLimit },
+  } = useContext(GameContext) as GameContextType;
 
   const [synth, setSynth] = useState<Tone.Synth>();
+
+  // TODO break up sample playback logic
+  const [samplePlayer, setPlayer] = useState<Tone.Player>();
+  useEffect(() => {
+    Tone.Transport.start();
+    const samplePlayer = new Tone.Player(
+      "/sounds/ragga_sample.mp3"
+    ).toDestination();
+    setPlayer(samplePlayer);
+  }, []);
 
   useEffect(() => {
     // TODO break out into instrument class
@@ -35,7 +45,7 @@ const RecordingPlayer: React.FC<RecordingPlayerProps> = ({
     }
   };
 
-  return (
+  return !!samplePlayer ? (
     <SimpleButton
       label={`Playback recording for MusicianId ${musicianId}`}
       callback={() =>
@@ -44,11 +54,14 @@ const RecordingPlayer: React.FC<RecordingPlayerProps> = ({
           Tone.now(),
           timestepSize,
           soloTimeLimit,
-          playNote
+          playNote,
+          samplePlayer
         )
       }
       disabled={false}
     />
+  ) : (
+    <div></div>
   );
 };
 export { RecordingPlayer };
@@ -57,19 +70,21 @@ function scheduleRecording(
   recording: Loop,
   startTime: number,
   timestepSize: number,
-  soloTimeLimit: number,
-  playNote: Function
+  _soloTimeLimit: number,
+  playNote: Function,
+  samplePlayer: Tone.Player
 ): void {
   Tone.Transport.start(startTime);
-  const noteEvents = loopToEvents(recording, startTime, timestepSize);
+  console.log("recording ", recording);
+  const noteEvents = loopToEvents(recording, 0, timestepSize);
+  console.log("currTime: ", startTime);
   console.log("noteEvents: ", noteEvents);
   const part = new Tone.Part((time: number, { note, velocity }) => {
     playNote(note, time, velocity);
   }, noteEvents);
-  // part.set({
-  //   loop: true,
-  //   loopStart: recording.timestepSlices[0].timestep,
-  //   loopEnd: soloTimeLimit,
-  // });
-  part.start(0);
+  part.debug = true;
+  console.log("part: ", part);
+
+  part.start();
+  samplePlayer.start();
 }

@@ -32,11 +32,7 @@ defmodule Progressions.Rooms.Room.Game.Views.GameStart do
     case {valid_ready_up?, last_ready_up?} do
       # last needed ready up - reset ready ups and transition to next game server state
       {true, true} ->
-        %GameServer{
-          state
-          | ready_ups: MapSet.put(ready_ups, musician_id),
-            round_recording_start_time: :os.system_time(:microsecond)
-        }
+        %GameServer{state | ready_ups: MapSet.put(ready_ups, musician_id)}
         |> advance_view()
         |> GameLogic.as_instruction(sync?: true, view_change?: true)
 
