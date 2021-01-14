@@ -1,9 +1,7 @@
-import React, { useContext, useEffect } from "react";
-import * as Tone from "tone";
+import React, { useEffect } from "react";
 
 import { SUBMIT_VOTE_EVENT } from "../../../../../constants";
-import { GameContext } from "../../../../../contexts";
-import { GameContextType } from "../../../../../types";
+import { useGameContext, useToneAudioContext } from "../../../../../hooks";
 import { RecordingPlayer } from "../../../../audio";
 import { SimpleButton } from "../../../../common";
 
@@ -20,7 +18,8 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
   contestants,
   playSample,
 }) => {
-  const { recordings } = useContext(GameContext) as GameContextType;
+  const { recordings } = useGameContext();
+  const { Tone } = useToneAudioContext();
 
   useEffect(() => {
     if (!!recordings) {

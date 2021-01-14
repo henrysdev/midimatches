@@ -57,6 +57,8 @@ export interface GameRules {
   quantizationThreshold: number;
 }
 
+// Context Types
+
 export interface GameContextType {
   // static fields
   gameRules: GameRules;
@@ -74,6 +76,11 @@ export interface GameContextType {
   judges?: string[];
 }
 
+export interface ToneAudioContextType {
+  Tone: any;
+}
+
 // Time Types
+
 type Seconds = number;
 type Milliseconds = number;

@@ -1,7 +1,6 @@
 import { Channel } from "phoenix";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
-import * as Tone from "tone";
 import {
   GAME_VIEW,
   VIEW_UPDATE_EVENT,
@@ -23,7 +22,7 @@ import {
   RoundEndView,
   RoundStartView,
 } from "./views";
-import { useSamplePlayer } from "../../../../hooks";
+import { useSamplePlayer, useToneAudioContext } from "../../../../hooks";
 
 interface GameProps {
   gameChannel: Channel;
@@ -31,15 +30,14 @@ interface GameProps {
 }
 
 const Game: React.FC<GameProps> = ({ gameChannel, musicianId }) => {
-  // game state
   const [currentView, setCurrentView] = useState(GAME_VIEW.GAME_START);
-  const [gameContext, setGameContext] = useState<GameContextType>(
-    {} as GameContextType
-  );
-  const [loadSample, playSample, stopSample] = useSamplePlayer();
+  const [gameContext, setGameContext] = useState({} as GameContextType);
+  const { Tone } = useToneAudioContext();
+  const [loadSample, playSample, stopSample] = useSamplePlayer(Tone);
 
   useEffect(() => {
     gameChannel.on(VIEW_UPDATE_EVENT, (body) => {
+      console.log("FIRES!!");
       const { gameState } = unmarshalBody(body) as ViewUpdatePayload;
       const gameView = gameViewAtomToEnum(gameState.gameView);
       setGameContext(gameState);

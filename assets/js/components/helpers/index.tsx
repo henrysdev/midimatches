@@ -1,1 +1,1 @@
-export * from "./scheduling";
+export * from "./recording";

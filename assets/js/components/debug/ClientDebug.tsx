@@ -1,7 +1,6 @@
-import React, { useContext } from "react";
+import React from "react";
 
-import { DEFAULT_SYNTH_CONFIG } from "../../constants";
-import { GameContext } from "../../contexts";
+import { useGameContext, useToneAudioContext } from "../../hooks";
 import { DebugButton } from "./";
 import { useSamplePlayer } from "../../hooks";
 
@@ -10,8 +9,9 @@ interface ClientDebugProps {
 }
 
 const ClientDebug: React.FC<ClientDebugProps> = ({ musicianId }) => {
-  const gameContext = useContext(GameContext);
-  const [loadSample, playSample, stopSample] = useSamplePlayer();
+  const gameContext = useGameContext();
+  const { Tone } = useToneAudioContext();
+  const [loadSample, playSample, stopSample] = useSamplePlayer(Tone);
 
   return (
     <div>

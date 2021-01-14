@@ -5,23 +5,22 @@ import { unmarshalBody } from "../../../utils";
 import { PlayerJoinPayload } from "../../../types";
 import { Game } from "./game/Game";
 import { PregameLobby } from "./pregame/PregameLobby";
+import { ToneAudioContext } from "../../../contexts";
+import * as Tone from "tone";
 
 const RoomPage: React.FC = () => {
-  // TODO
-  // 1. Open up socket connection here
-  // 2. Have function that renders game on game start message receieved
-
   const [gameChannel, setGameChannel] = useState<Channel>();
   const [readyToStartGame, setReadyToStartGame] = useState<boolean>(false);
   const [musicianId, setMusicianId] = useState<string>();
 
   useEffect(() => {
-    /* tslint:disable-next-line */
-    let socket = new Socket("/socket", { params: { token: window.userToken } });
+    const socket = new Socket("/socket", {
+      params: { token: window.userToken },
+    });
     socket.connect();
-    let path = window.location.pathname.split("/");
-    let room_id = path[path.length - 1];
-    let channel: Channel = socket.channel(`room:${room_id}`);
+    const path = window.location.pathname.split("/");
+    const roomId = path[path.length - 1];
+    const channel: Channel = socket.channel(`room:${roomId}`);
     channel
       .join()
       .receive("ok", (resp) => {
@@ -31,7 +30,6 @@ const RoomPage: React.FC = () => {
         console.log("Unable to join", resp);
       });
 
-    // listen for start game message
     channel.on("start_game", (_body) => {
       setReadyToStartGame(true);
     });
@@ -48,7 +46,9 @@ const RoomPage: React.FC = () => {
   };
 
   return readyToStartGame && !!gameChannel && !!musicianId ? (
-    <Game gameChannel={gameChannel} musicianId={musicianId} />
+    <ToneAudioContext.Provider value={{ Tone }}>
+      <Game gameChannel={gameChannel} musicianId={musicianId} />
+    </ToneAudioContext.Provider>
   ) : (
     <PregameLobby pushMessageToChannel={playerJoin} />
   );

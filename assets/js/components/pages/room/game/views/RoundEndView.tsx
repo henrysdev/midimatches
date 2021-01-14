@@ -1,12 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import { GameContext } from "../../../../../contexts";
-import { GameContextType } from "../../../../../types";
+import { useGameContext } from "../../../../../hooks";
 
 interface RoundEndViewProps {}
 
 const RoundEndView: React.FC<RoundEndViewProps> = () => {
-  const gameContext: GameContextType = useContext(GameContext);
+  const gameContext = useGameContext();
   const [winner, setWinner] = useState({ winnerId: "", numVotes: 0 });
 
   useEffect(() => {
