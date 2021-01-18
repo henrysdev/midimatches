@@ -1,5 +1,5 @@
 import { Channel } from "phoenix";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   GAME_VIEW,
@@ -22,7 +22,11 @@ import {
   RoundEndView,
   RoundStartView,
 } from "./views";
-import { useSamplePlayer, useToneAudioContext } from "../../../../hooks";
+import {
+  useGameServerState,
+  useSamplePlayer,
+  useToneAudioContext,
+} from "../../../../hooks";
 
 interface GameProps {
   gameChannel: Channel;
@@ -30,20 +34,11 @@ interface GameProps {
 }
 
 const Game: React.FC<GameProps> = ({ gameChannel, musicianId }) => {
-  const [currentView, setCurrentView] = useState(GAME_VIEW.GAME_START);
-  const [gameContext, setGameContext] = useState({} as GameContextType);
+  const [currentView, gameContext, pushMessage] = useGameServerState(
+    gameChannel
+  );
   const { Tone } = useToneAudioContext();
   const [loadSample, playSample, stopSample] = useSamplePlayer(Tone);
-
-  useEffect(() => {
-    gameChannel.on(VIEW_UPDATE_EVENT, (body) => {
-      console.log("FIRES!!");
-      const { gameState } = unmarshalBody(body) as ViewUpdatePayload;
-      const gameView = gameViewAtomToEnum(gameState.gameView);
-      setGameContext(gameState);
-      setCurrentView(gameView);
-    });
-  }, []);
 
   useEffect(() => {
     if (currentView === GAME_VIEW.ROUND_START) {
@@ -57,21 +52,15 @@ const Game: React.FC<GameProps> = ({ gameChannel, musicianId }) => {
     }
   }, [currentView]);
 
-  const genericPushMessage = (event: string, payload: Object) => {
-    if (!!gameChannel) {
-      gameChannel.push(event, payload);
-    }
-  };
-
   return (
     <GameContext.Provider value={gameContext} key={currentView}>
       {(() => {
         switch (currentView) {
           case GAME_VIEW.GAME_START:
-            return <GameStartView pushMessageToChannel={genericPushMessage} />;
+            return <GameStartView pushMessageToChannel={pushMessage} />;
 
           case GAME_VIEW.ROUND_START:
-            return <RoundStartView pushMessageToChannel={genericPushMessage} />;
+            return <RoundStartView pushMessageToChannel={pushMessage} />;
 
           case GAME_VIEW.RECORDING:
             return (
@@ -81,7 +70,7 @@ const Game: React.FC<GameProps> = ({ gameChannel, musicianId }) => {
                     ? gameContext.contestants.includes(musicianId)
                     : false
                 }
-                pushMessageToChannel={genericPushMessage}
+                pushMessageToChannel={pushMessage}
                 playSample={playSample}
               />
             );
@@ -94,7 +83,7 @@ const Game: React.FC<GameProps> = ({ gameChannel, musicianId }) => {
                     ? gameContext.judges.includes(musicianId)
                     : false
                 }
-                pushMessageToChannel={genericPushMessage}
+                pushMessageToChannel={pushMessage}
                 contestants={
                   !!gameContext.contestants ? gameContext.contestants : []
                 }

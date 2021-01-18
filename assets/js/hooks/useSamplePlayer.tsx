@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 
 type SamplePlayerTuple = [(url: string) => void, () => void, () => void];
 
-export function useSamplePlayer(tone: any): SamplePlayerTuple {
+export function useSamplePlayer(Tone: any): SamplePlayerTuple {
   const [samplePlayer, setSamplePlayer] = useState() as any;
 
   useEffect(() => {
-    const newSamplePlayer = new tone.Player().toDestination();
+    const newSamplePlayer = new Tone.Player().toDestination();
     newSamplePlayer.volume.value = -6;
     setSamplePlayer(newSamplePlayer);
   }, []);

@@ -1,13 +1,12 @@
 import _ from "lodash";
-import React, { useContext, useEffect, useRef, useState } from "react";
-import * as Tone from "tone";
+import React, { useEffect, useRef, useState } from "react";
 import WebMidi from "webmidi";
 
 import { Keyboard } from ".";
 import { DEFAULT_SYNTH_CONFIG } from "../../constants";
-import { GameContext } from "../../contexts";
 import { Loop, MIDINoteEvent, Note, TimestepSlice } from "../../types";
 import { SimpleButton } from "../common";
+import { useGameContext, useToneAudioContext } from "../../hooks";
 
 interface MidiInputProps {
   submitRecording: Function;
@@ -17,12 +16,14 @@ export interface MidiInputState {
   activeNotes: Map<number, MIDINoteEvent>;
   recordingStartTimestep: number;
   recordedTimesteps: Map<number, TimestepSlice>;
-  synth: Tone.Synth;
+  synth: any;
   isRecording: boolean;
   gameContext: Object;
 }
 
 const MidiInput: React.FC<MidiInputProps> = ({ submitRecording }) => {
+  const { Tone } = useToneAudioContext();
+
   const [midiInputState, _setMidiInputState] = useState<MidiInputState>(
     {} as MidiInputState
   );
@@ -34,7 +35,7 @@ const MidiInput: React.FC<MidiInputProps> = ({ submitRecording }) => {
   };
 
   // game context event listener closure workaround
-  const consumedGameContext = useContext(GameContext);
+  const consumedGameContext = useGameContext();
   useEffect(() => {
     setMidiInputState({ gameContext: consumedGameContext });
   }, [consumedGameContext]);

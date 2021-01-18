@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as Tone from "tone";
 
-import { GameContext } from "../../contexts";
-import { GameContextType, Loop, SamplePlayer } from "../../types";
+import { Loop } from "../../types";
 import { loopToEvents } from "../../utils";
 import { SimpleButton } from "../common";
 import { DEFAULT_SYNTH_CONFIG } from "../../constants";
+import { useGameContext } from "../../hooks";
 
 interface RecordingPlayerProps {
   recording: Loop;
@@ -22,7 +22,7 @@ const RecordingPlayer: React.FC<RecordingPlayerProps> = ({
 }) => {
   const {
     gameRules: { timestepSize, soloTimeLimit },
-  } = useContext(GameContext) as GameContextType;
+  } = useGameContext();
 
   const [synth, setSynth] = useState<Tone.Synth>();
 

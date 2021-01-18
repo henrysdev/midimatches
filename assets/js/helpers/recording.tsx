@@ -3,9 +3,9 @@ import {
   DEFAULT_SAMPLE_PLAY_BUFFER_LENGTH,
   DEFAULT_SAMPLE_LENGTH,
   DEFAULT_RECORDING_LENGTH,
-} from "../../constants";
-import { Milliseconds, Seconds } from "../../types";
-import { msToSec, secToMs } from "../../utils";
+} from "../constants";
+import { Milliseconds, Seconds } from "../types";
+import { msToSec, secToMs } from "../utils";
 
 /**
  *  bufferTime = 5 seconds (the max time allowed for all clients to get view update)
@@ -40,7 +40,12 @@ interface ScheduleDeadlines {
   recordingEndTime: Seconds;
 }
 
-export function scheduleRecordingDeadlines(serverSendTimestamp: Milliseconds) {
+export function scheduleRecordingDeadlines(
+  serverSendTimestamp: Milliseconds,
+  playSample: Function,
+  startRecording: Function,
+  stopRecording: Function
+) {
   // calculate deadlines
   const {
     sampleStartTime,
