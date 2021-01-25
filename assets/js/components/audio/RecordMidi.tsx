@@ -11,15 +11,18 @@ import {
   GameContextType,
 } from "../../types";
 import { useGameContext, useToneAudioContext } from "../../hooks";
-import { recordingTimeline, getRecordingStartTimestamp } from "../../helpers";
+import {
+  scheduleRecordingDeadlines,
+  getRecordingStartTimestamp,
+} from "../../helpers";
 import { msToMicros, microsToMs } from "../../utils";
 
-interface MidiInputProps {
+interface RecordMidiProps {
   submitRecording: Function;
   playSample: Function;
 }
 
-export interface MidiInputState {
+export interface RecordMidiState {
   activeNotes: Map<number, MIDINoteEvent>;
   recordedTimesteps: Map<number, TimestepSlice>;
   synth: any;
@@ -28,26 +31,26 @@ export interface MidiInputState {
   recordingStartTime: number;
 }
 
-const MidiInput: React.FC<MidiInputProps> = ({
+const RecordMidi: React.FC<RecordMidiProps> = ({
   submitRecording,
   playSample,
 }) => {
   const { Tone } = useToneAudioContext();
 
-  const [midiInputState, _setMidiInputState] = useState<MidiInputState>(
-    {} as MidiInputState
+  const [recordMidiState, _setRecordMidiState] = useState<RecordMidiState>(
+    {} as RecordMidiState
   );
-  const midiInputStateRef = useRef({});
-  const setMidiInputState = (data: any) => {
-    const updatedInputState = { ...midiInputStateRef.current, ...data };
-    midiInputStateRef.current = updatedInputState;
-    _setMidiInputState(updatedInputState);
+  const recordMidiStateRef = useRef({});
+  const setRecordMidiState = (data: any) => {
+    const updatedInputState = { ...recordMidiStateRef.current, ...data };
+    recordMidiStateRef.current = updatedInputState;
+    _setRecordMidiState(updatedInputState);
   };
 
   // game context event listener closure workaround
   const consumedGameContext = useGameContext();
   useEffect(() => {
-    setMidiInputState({ gameContext: consumedGameContext });
+    setRecordMidiState({ gameContext: consumedGameContext });
   }, [consumedGameContext]);
 
   // init on load
@@ -55,7 +58,7 @@ const MidiInput: React.FC<MidiInputProps> = ({
     const niceSynth = new Tone.Synth(DEFAULT_SYNTH_CONFIG).toDestination();
     Tone.context.lookAhead = 0.02;
 
-    setMidiInputState({
+    setRecordMidiState({
       activeNotes: new Map(),
       recordedTimesteps: new Map(),
       synth: niceSynth,
@@ -65,18 +68,20 @@ const MidiInput: React.FC<MidiInputProps> = ({
   const startRecord = (): void => {
     const {
       gameContext: { roundRecordingStartTime },
-    } = midiInputStateRef.current as MidiInputState;
-    const recordingStartTime = getRecordingStartTimestamp(
-      microsToMs(roundRecordingStartTime)
-    );
-    setMidiInputState({
-      isRecording: true,
-      recordingStartTime,
-    });
+    } = recordMidiStateRef.current as RecordMidiState;
+    if (!!roundRecordingStartTime) {
+      const recordingStartTime = getRecordingStartTimestamp(
+        microsToMs(roundRecordingStartTime)
+      );
+      setRecordMidiState({
+        isRecording: true,
+        recordingStartTime,
+      });
+    }
   };
 
   const stopRecord = (): void => {
-    const { recordedTimesteps } = midiInputStateRef.current as MidiInputState;
+    const { recordedTimesteps } = recordMidiStateRef.current as RecordMidiState;
     const timestepSlices = Array.from(recordedTimesteps.values()).sort(
       (a, b) => a.timestep - b.timestep
     );
@@ -88,7 +93,7 @@ const MidiInput: React.FC<MidiInputProps> = ({
       length: length,
     };
     submitRecording(loop);
-    setMidiInputState({ recordedTimesteps: new Map(), isRecording: false });
+    setRecordMidiState({ recordedTimesteps: new Map(), isRecording: false });
   };
 
   // init midi access on first render
@@ -114,15 +119,15 @@ const MidiInput: React.FC<MidiInputProps> = ({
 
   // NOTE closured function - must use ref to manipulate state
   const handleNoteOn = (midiEvent: any) => {
-    const { activeNotes } = midiInputStateRef.current as MidiInputState;
+    const { activeNotes } = recordMidiStateRef.current as RecordMidiState;
     const currTimestep = getCurrentTimestep(
-      midiInputStateRef.current as MidiInputState
+      recordMidiStateRef.current as RecordMidiState
     );
     const noteOnEvent = webMidiEventToMidiNoteEvent(midiEvent, currTimestep);
     console.log("note On event: ", noteOnEvent);
     const activeNotesCopy = _.cloneDeep(activeNotes);
     activeNotesCopy.set(noteOnEvent.value, noteOnEvent);
-    setMidiInputState({ activeNotes: activeNotesCopy });
+    setRecordMidiState({ activeNotes: activeNotesCopy });
   };
 
   // NOTE closured function - must use ref to manipulate state
@@ -131,10 +136,10 @@ const MidiInput: React.FC<MidiInputProps> = ({
       activeNotes,
       recordedTimesteps = new Map(),
       isRecording,
-    } = midiInputStateRef.current as MidiInputState;
+    } = recordMidiStateRef.current as RecordMidiState;
     let stateUpdate = {};
     const currTimestep = getCurrentTimestep(
-      midiInputStateRef.current as MidiInputState
+      recordMidiStateRef.current as RecordMidiState
     );
     const noteOffEvent = webMidiEventToMidiNoteEvent(midiEvent, currTimestep);
     const activeNotesCopy = _.cloneDeep(activeNotes);
@@ -172,17 +177,17 @@ const MidiInput: React.FC<MidiInputProps> = ({
       }
 
       activeNotesCopy.delete(noteOffEvent.value);
-      setMidiInputState({ ...stateUpdate, activeNotes: activeNotesCopy });
+      setRecordMidiState({ ...stateUpdate, activeNotes: activeNotesCopy });
     }
   };
 
-  const activeMidiList = !!midiInputState.activeNotes
-    ? Array.from(midiInputState.activeNotes.keys())
+  const activeMidiList = !!recordMidiState.activeNotes
+    ? Array.from(recordMidiState.activeNotes.keys())
     : [];
 
   useEffect(() => {
     if (!!consumedGameContext.roundRecordingStartTime) {
-      recordingTimeline(
+      scheduleRecordingDeadlines(
         consumedGameContext.roundRecordingStartTime,
         playSample,
         startRecord,
@@ -196,10 +201,10 @@ const MidiInput: React.FC<MidiInputProps> = ({
       <Keyboard
         activeMidiList={activeMidiList}
         playNote={(midiNumber: number) => {
-          if (!!midiInputState.synth) {
+          if (!!recordMidiState.synth) {
             // play sound
             const noteName = midiNoteNumberToNoteName(midiNumber);
-            midiInputState.synth.triggerAttackRelease(noteName, "8n");
+            recordMidiState.synth.triggerAttackRelease(noteName, "8n");
           }
         }}
         stopNote={(midiNumber: number) => {
@@ -209,7 +214,7 @@ const MidiInput: React.FC<MidiInputProps> = ({
     </div>
   );
 };
-export { MidiInput };
+export { RecordMidi };
 
 function midiNoteNumberToNoteName(midiNoteId: number): string {
   const octave = Math.floor(midiNoteId / 12) - 1;
@@ -234,7 +239,7 @@ function getCurrentTimestep({
     gameRules: { timestepSize, quantizationThreshold },
   },
   recordingStartTime,
-}: MidiInputState): number {
+}: RecordMidiState): number {
   const nowMicros = msToMicros(Date.now());
   return calculateTimestep(
     nowMicros,

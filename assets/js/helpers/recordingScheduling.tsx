@@ -7,6 +7,12 @@ import {
 import { Milliseconds, Seconds } from "../types";
 import { msToSec, secToMs } from "../utils";
 
+interface ScheduleDeadlines {
+  sampleStartTime: Seconds;
+  recordingStartTime: Seconds;
+  recordingEndTime: Seconds;
+}
+
 /**
  *  bufferTime = 5 seconds (the max time allowed for all clients to get view update)
  *  sampleTime = 10 seconds (the duration of the sample clip)
@@ -34,13 +40,7 @@ import { msToSec, secToMs } from "../utils";
  *  stop recording - Recording is stopped and submitted.
  */
 
-interface ScheduleDeadlines {
-  sampleStartTime: Seconds;
-  recordingStartTime: Seconds;
-  recordingEndTime: Seconds;
-}
-
-export function recordingTimeline(
+export function scheduleRecordingDeadlines(
   serverSendTimestamp: number,
   playSample: Function,
   startRecording: Function,
@@ -57,7 +57,7 @@ export function recordingTimeline(
   );
 
   // schedule deadlines
-  scheduleRecordingDeadlines(
+  scheduleRecordingAudioTimeline(
     deadlines,
     playSample,
     startRecording,
@@ -76,7 +76,22 @@ export function getRecordingStartTimestamp(
   return recordingStartTimestamp;
 }
 
-function scheduleRecordingDeadlines(
+export function scheduleSampleLoop(
+  sampleStartTime: Seconds,
+  playSample: Function,
+  iterations: number
+): void {
+  new Tone.Loop({
+    interval: DEFAULT_SAMPLE_LENGTH,
+    iterations,
+    callback: (time: Seconds) => {
+      console.log("play sample loop iteration callback ", time);
+      playSample();
+    },
+  }).start(sampleStartTime);
+}
+
+function scheduleRecordingAudioTimeline(
   { sampleStartTime, recordingStartTime, recordingEndTime }: ScheduleDeadlines,
   playSample: Function,
   startRecording: Function,
@@ -85,14 +100,8 @@ function scheduleRecordingDeadlines(
   Tone.Transport.start(0);
 
   // start sample loop
-  new Tone.Loop({
-    interval: DEFAULT_SAMPLE_LENGTH,
-    iterations: 1 + 3, // one intro iteration + three recorded iterations
-    callback: (time: Seconds) => {
-      console.log("play sample loop iteration callback ", time);
-      playSample();
-    },
-  }).start(sampleStartTime);
+  const iterations = 1 + 3; // one intro iteration + three recorded iterations
+  scheduleSampleLoop(sampleStartTime, playSample, iterations);
 
   // start recording
   Tone.Transport.scheduleOnce((time: Seconds) => {
@@ -107,7 +116,7 @@ function scheduleRecordingDeadlines(
   }, recordingEndTime);
 }
 
-function calcRecordingDeadlines(
+export function calcRecordingDeadlines(
   serverSendTimestamp: Milliseconds, // ex: 1610577790924
   bufferTime: Seconds, // ex: 5
   sampleTime: Seconds, // ex: 10

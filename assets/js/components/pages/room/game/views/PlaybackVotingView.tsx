@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 
 import { SUBMIT_VOTE_EVENT } from "../../../../../constants";
 import { useGameContext, useToneAudioContext } from "../../../../../hooks";
-import { RecordingPlayer } from "../../../../audio";
+import { PlaybackAudio } from "../../../../audio";
 import { SimpleButton } from "../../../../common";
 
 interface PlaybackVotingViewProps {
@@ -57,7 +57,7 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
               Object.entries(recordings).map(
                 ([musicianId, recording]: [string, any]) => {
                   return (
-                    <RecordingPlayer
+                    <PlaybackAudio
                       key={`recording-player-${musicianId}`}
                       recording={recording}
                       musicianId={musicianId}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { SUBMIT_RECORDING_EVENT } from "../../../../../constants";
-import { MidiInput } from "../../../../audio";
+import { RecordMidi } from "../../../../audio";
 import { SimpleButton } from "../../../../common";
 
 interface RecordingViewProps {
@@ -29,7 +29,7 @@ const RecordingView: React.FC<RecordingViewProps> = ({
   return isContestant ? (
     <div>
       <h3>Recording View</h3>
-      <MidiInput submitRecording={submitRecording} playSample={playSample} />
+      <RecordMidi submitRecording={submitRecording} playSample={playSample} />
       <h1>Sample Recording View</h1>
       <SimpleButton
         label="Submit Recording"

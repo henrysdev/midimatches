@@ -1,4 +1,4 @@
-import { calcRecordingDeadlines } from "./recording";
+import { calcRecordingDeadlines } from "./recordingScheduling";
 
 const mockedToneModule = {
   now: () => 0,

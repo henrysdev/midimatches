@@ -6,15 +6,16 @@ import { loopToEvents } from "../../utils";
 import { SimpleButton } from "../common";
 import { DEFAULT_SYNTH_CONFIG } from "../../constants";
 import { useGameContext } from "../../hooks";
+import { scheduleSampleLoop } from "../../helpers";
 
-interface RecordingPlayerProps {
+interface PlaybackAudioProps {
   recording: Loop;
   musicianId: string;
   scheduledStartTime: number;
   playSample: Function;
 }
 
-const RecordingPlayer: React.FC<RecordingPlayerProps> = ({
+const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
   recording,
   musicianId,
   scheduledStartTime,
@@ -33,7 +34,6 @@ const RecordingPlayer: React.FC<RecordingPlayerProps> = ({
   }, []);
 
   const playNote = (note: number, time: number, velocity: number) => {
-    console.log("PLAY NOTE. time: ", time);
     if (!!synth) {
       synth.triggerAttackRelease(note, "8n", time, velocity);
     }
@@ -55,7 +55,7 @@ const RecordingPlayer: React.FC<RecordingPlayerProps> = ({
     />
   );
 };
-export { RecordingPlayer };
+export { PlaybackAudio };
 
 function playbackMusician(
   recording: Loop,
@@ -71,7 +71,7 @@ function playbackMusician(
   const part = buildPart(recording, timestepSize, playNote);
 
   part.start();
-  playSample();
+  scheduleSampleLoop(0, playSample, 3);
 }
 
 function buildPart(
