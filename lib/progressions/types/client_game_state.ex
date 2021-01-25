@@ -10,6 +10,9 @@ defmodule Progressions.Types.ClientGameState do
   use TypedStruct
 
   @type id() :: String.t()
+  @type game_view() :: [
+          :game_start | :round_start | :recording | :playback_voting | :round_end | :game_end
+        ]
 
   @derive Jason.Encoder
   typedstruct do
@@ -18,6 +21,7 @@ defmodule Progressions.Types.ClientGameState do
     # TODO maybe add musicianId field and hydrate at handle_out?
     field(:game_rules, %GameRules{}, default: %GameRules{})
 
+    field(:game_view, game_view())
     field(:musicians, list(id))
     field(:num_votes_cast, integer())
     field(:ready_ups, list(id))

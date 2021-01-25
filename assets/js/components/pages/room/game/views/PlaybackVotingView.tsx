@@ -1,24 +1,25 @@
-import React, { useContext, useEffect } from "react";
-import * as Tone from "tone";
+import React, { useEffect } from "react";
 
 import { SUBMIT_VOTE_EVENT } from "../../../../../constants";
-import { GameContext } from "../../../../../contexts";
-import { GameContextType } from "../../../../../types";
-import { RecordingPlayer } from "../../../../audio";
+import { useGameContext, useToneAudioContext } from "../../../../../hooks";
+import { PlaybackAudio } from "../../../../audio";
 import { SimpleButton } from "../../../../common";
 
 interface PlaybackVotingViewProps {
   isJudge: boolean;
   pushMessageToChannel: Function;
   contestants: string[];
+  playSample: Function;
 }
 
 const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
   isJudge,
   pushMessageToChannel,
   contestants,
+  playSample,
 }) => {
-  const { recordings } = useContext(GameContext) as GameContextType;
+  const { recordings } = useGameContext();
+  const { Tone } = useToneAudioContext();
 
   useEffect(() => {
     if (!!recordings) {
@@ -56,11 +57,12 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
               Object.entries(recordings).map(
                 ([musicianId, recording]: [string, any]) => {
                   return (
-                    <RecordingPlayer
+                    <PlaybackAudio
                       key={`recording-player-${musicianId}`}
                       recording={recording}
                       musicianId={musicianId}
                       scheduledStartTime={Tone.now()}
+                      playSample={playSample}
                     />
                   );
                 }

@@ -1,11 +1,19 @@
 import { Channel } from "phoenix";
 import React, { useEffect, useState } from "react";
 
-import { GAME_VIEW, VIEW_UPDATE_EVENT } from "../../../../constants";
+import {
+  GAME_VIEW,
+  VIEW_UPDATE_EVENT,
+  SAMPLE_URLS,
+} from "../../../../constants";
 import { GameContext } from "../../../../contexts";
-import { GameContextType, ViewUpdatePayload } from "../../../../types";
+import {
+  GameContextType,
+  ViewUpdatePayload,
+  SamplePlayer,
+} from "../../../../types";
 import { gameViewAtomToEnum, unmarshalBody } from "../../../../utils";
-import { ClientDebug } from "../../../common";
+import { ClientDebug } from "../../../debug";
 import {
   GameEndView,
   GameStartView,
@@ -14,6 +22,11 @@ import {
   RoundEndView,
   RoundStartView,
 } from "./views";
+import {
+  useGameServerState,
+  useSamplePlayer,
+  useToneAudioContext,
+} from "../../../../hooks";
 
 interface GameProps {
   gameChannel: Channel;
@@ -21,36 +34,33 @@ interface GameProps {
 }
 
 const Game: React.FC<GameProps> = ({ gameChannel, musicianId }) => {
-  // game state
-  const [currentView, setCurrentView] = useState(GAME_VIEW.GAME_START);
-  const [gameContext, setGameContext] = useState<GameContextType>(
-    {} as GameContextType
+  const [currentView, gameContext, pushMessage] = useGameServerState(
+    gameChannel
   );
+  const { Tone } = useToneAudioContext();
+  const [loadSample, playSample, stopSample] = useSamplePlayer(Tone);
 
   useEffect(() => {
-    gameChannel.on(VIEW_UPDATE_EVENT, (body) => {
-      const { view, gameState } = unmarshalBody(body) as ViewUpdatePayload;
-      const gameView = gameViewAtomToEnum(view);
-      setCurrentView(gameView);
-      setGameContext(gameState);
-    });
-  }, []);
-
-  const genericPushMessage = (event: string, payload: Object) => {
-    if (!!gameChannel) {
-      gameChannel.push(event, payload);
+    if (currentView === GAME_VIEW.ROUND_START) {
+      // TODO random choice [?]
+      loadSample(SAMPLE_URLS[0]);
     }
-  };
+    // TODO remove once recording timer is properly handled
+    if (currentView !== GAME_VIEW.RECORDING) {
+      // TODO replace with call to function that holistically resets Tone Transport and related stuff.
+      stopSample();
+    }
+  }, [currentView]);
 
   return (
     <GameContext.Provider value={gameContext} key={currentView}>
       {(() => {
         switch (currentView) {
           case GAME_VIEW.GAME_START:
-            return <GameStartView pushMessageToChannel={genericPushMessage} />;
+            return <GameStartView pushMessageToChannel={pushMessage} />;
 
           case GAME_VIEW.ROUND_START:
-            return <RoundStartView pushMessageToChannel={genericPushMessage} />;
+            return <RoundStartView pushMessageToChannel={pushMessage} />;
 
           case GAME_VIEW.RECORDING:
             return (
@@ -60,7 +70,8 @@ const Game: React.FC<GameProps> = ({ gameChannel, musicianId }) => {
                     ? gameContext.contestants.includes(musicianId)
                     : false
                 }
-                pushMessageToChannel={genericPushMessage}
+                pushMessageToChannel={pushMessage}
+                playSample={playSample}
               />
             );
 
@@ -72,10 +83,11 @@ const Game: React.FC<GameProps> = ({ gameChannel, musicianId }) => {
                     ? gameContext.judges.includes(musicianId)
                     : false
                 }
-                pushMessageToChannel={genericPushMessage}
+                pushMessageToChannel={pushMessage}
                 contestants={
                   !!gameContext.contestants ? gameContext.contestants : []
                 }
+                playSample={playSample}
               />
             );
 

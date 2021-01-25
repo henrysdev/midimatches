@@ -1,5 +1,6 @@
 import { GAME_VIEW } from "../constants";
 import { Loop, Note, LocalNoteEvent } from "../types";
+// import * as Tone from "tone";
 
 const isArray = function (a: Array<any>): boolean {
   return Array.isArray(a);

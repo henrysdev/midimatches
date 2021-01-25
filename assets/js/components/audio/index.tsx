@@ -1,3 +1,3 @@
 export { Keyboard } from "./Keyboard";
-export { MidiInput } from "./MidiInput";
-export { RecordingPlayer } from "./RecordingPlayer";
+export { RecordMidi } from "./RecordMidi";
+export { PlaybackAudio } from "./PlaybackAudio";

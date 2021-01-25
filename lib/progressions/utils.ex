@@ -60,6 +60,7 @@ defmodule Progressions.Utils do
       room_id: server_state.room_id,
 
       # dynamic fields
+      game_view: server_state.game_view,
       musicians: musicians_list,
       num_votes_cast: num_votes_cast,
       ready_ups: ready_ups_list,
