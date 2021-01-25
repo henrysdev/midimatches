@@ -84,3 +84,4 @@ export interface ToneAudioContextType {
 
 type Seconds = number;
 type Milliseconds = number;
+type Microseconds = number;

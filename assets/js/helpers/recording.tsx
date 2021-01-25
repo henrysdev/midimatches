@@ -6,7 +6,6 @@ import {
 } from "../constants";
 import { Milliseconds, Seconds } from "../types";
 import { msToSec, secToMs } from "../utils";
-import { sample } from "lodash";
 
 /**
  *  bufferTime = 5 seconds (the max time allowed for all clients to get view update)
@@ -41,19 +40,14 @@ interface ScheduleDeadlines {
   recordingEndTime: Seconds;
 }
 
-export function scheduleRecordingDeadlines(
+export function recordingTimeline(
   serverSendTimestamp: number,
   playSample: Function,
   startRecording: Function,
   stopRecording: Function
 ): void {
-  // calculate deadlines
-  const {
-    sampleStartTime,
-    recordingStartTime,
-    recordingEndTime,
-  } = calcRecordingDeadlines(
-    // TODO use millis instead of micros
+  // get deadlines
+  const deadlines = calcRecordingDeadlines(
     serverSendTimestamp / 1000,
     DEFAULT_SAMPLE_PLAY_BUFFER_LENGTH,
     DEFAULT_SAMPLE_LENGTH,
@@ -62,35 +56,58 @@ export function scheduleRecordingDeadlines(
     Date
   );
 
-  Tone.Transport.start();
+  // schedule deadlines
+  scheduleRecordingDeadlines(
+    deadlines,
+    playSample,
+    startRecording,
+    stopRecording
+  );
+}
 
-  console.log("Scheduling recording deadlines");
+export function getRecordingStartTimestamp(
+  serverSendTimestamp: Milliseconds
+): Milliseconds {
+  const bufferTime = secToMs(DEFAULT_SAMPLE_PLAY_BUFFER_LENGTH);
+  const sampleIntro = secToMs(DEFAULT_SAMPLE_LENGTH);
+  const recordingStartTimestamp = Math.abs(
+    serverSendTimestamp + bufferTime + sampleIntro
+  );
+  return recordingStartTimestamp;
+}
 
-  console.log("tone NOW: ", Tone.now());
-  console.log("tone START SAMPLE: ", sampleStartTime);
-  console.log("tone START RECORDING: ", recordingStartTime);
-  console.log("tone END RECORDING: ", recordingEndTime);
+function scheduleRecordingDeadlines(
+  { sampleStartTime, recordingStartTime, recordingEndTime }: ScheduleDeadlines,
+  playSample: Function,
+  startRecording: Function,
+  stopRecording: Function
+): void {
+  Tone.Transport.start(0);
 
-  // start sample
-  Tone.Transport.scheduleOnce((time: Seconds) => {
-    console.log("TODO trigger immediate sample start ", time);
-    playSample();
-  }, sampleStartTime);
+  // start sample loop
+  new Tone.Loop({
+    interval: DEFAULT_SAMPLE_LENGTH,
+    iterations: 1 + 3, // one intro iteration + three recorded iterations
+    callback: (time: Seconds) => {
+      console.log("play sample loop iteration callback ", time);
+      playSample();
+    },
+  }).start(sampleStartTime);
 
   // start recording
   Tone.Transport.scheduleOnce((time: Seconds) => {
-    console.log("TODO trigger immediate recording start ", time);
+    console.log("recording start callback ", time);
     startRecording();
   }, recordingStartTime);
 
-  // stop recording + sample
+  // stop recording
   Tone.Transport.scheduleOnce((time: Seconds) => {
-    console.log("TODO trigger immediate recording stop + sample stop ", time);
+    console.log("recording stop callback", time);
     stopRecording();
   }, recordingEndTime);
 }
 
-export function calcRecordingDeadlines(
+function calcRecordingDeadlines(
   serverSendTimestamp: Milliseconds, // ex: 1610577790924
   bufferTime: Seconds, // ex: 5
   sampleTime: Seconds, // ex: 10

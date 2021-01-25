@@ -4,9 +4,15 @@ import WebMidi from "webmidi";
 
 import { Keyboard } from ".";
 import { DEFAULT_SYNTH_CONFIG } from "../../constants";
-import { Loop, MIDINoteEvent, Note, TimestepSlice } from "../../types";
+import {
+  MIDINoteEvent,
+  Note,
+  TimestepSlice,
+  GameContextType,
+} from "../../types";
 import { useGameContext, useToneAudioContext } from "../../hooks";
-import { scheduleRecordingDeadlines } from "../../helpers";
+import { recordingTimeline, getRecordingStartTimestamp } from "../../helpers";
+import { msToMicros, microsToMs } from "../../utils";
 
 interface MidiInputProps {
   submitRecording: Function;
@@ -15,11 +21,11 @@ interface MidiInputProps {
 
 export interface MidiInputState {
   activeNotes: Map<number, MIDINoteEvent>;
-  recordingStartTimestep: number;
   recordedTimesteps: Map<number, TimestepSlice>;
   synth: any;
   isRecording: boolean;
-  gameContext: Object;
+  gameContext: GameContextType;
+  recordingStartTime: number;
 }
 
 const MidiInput: React.FC<MidiInputProps> = ({
@@ -57,30 +63,28 @@ const MidiInput: React.FC<MidiInputProps> = ({
   }, []);
 
   const startRecord = (): void => {
-    const { gameContext } = midiInputStateRef.current;
-    const currTimestep = getCurrentTimestep(gameContext);
+    const {
+      gameContext: { roundRecordingStartTime },
+    } = midiInputStateRef.current as MidiInputState;
+    const recordingStartTime = getRecordingStartTimestamp(
+      microsToMs(roundRecordingStartTime)
+    );
     setMidiInputState({
       isRecording: true,
-      recordingStartTimestep: currTimestep,
+      recordingStartTime,
     });
   };
 
   const stopRecord = (): void => {
-    const {
-      recordedTimesteps,
-      recordingStartTimestep,
-      gameContext,
-    } = midiInputStateRef.current;
+    const { recordedTimesteps } = midiInputStateRef.current as MidiInputState;
     const timestepSlices = Array.from(recordedTimesteps.values()).sort(
       (a, b) => a.timestep - b.timestep
     );
-    const currTimestep: number = getCurrentTimestep(gameContext);
-    const length = currTimestep - recordingStartTimestep;
 
     // TODO format in a utility method rather than writing snake case here
     const loop = {
       timestep_slices: timestepSlices,
-      start_timestep: recordingStartTimestep,
+      start_timestep: 0,
       length: length,
     };
     submitRecording(loop);
@@ -110,11 +114,10 @@ const MidiInput: React.FC<MidiInputProps> = ({
 
   // NOTE closured function - must use ref to manipulate state
   const handleNoteOn = (midiEvent: any) => {
-    const {
-      gameContext,
-      activeNotes,
-    } = midiInputStateRef.current as MidiInputState;
-    const currTimestep = getCurrentTimestep(gameContext);
+    const { activeNotes } = midiInputStateRef.current as MidiInputState;
+    const currTimestep = getCurrentTimestep(
+      midiInputStateRef.current as MidiInputState
+    );
     const noteOnEvent = webMidiEventToMidiNoteEvent(midiEvent, currTimestep);
     console.log("note On event: ", noteOnEvent);
     const activeNotesCopy = _.cloneDeep(activeNotes);
@@ -125,13 +128,14 @@ const MidiInput: React.FC<MidiInputProps> = ({
   // NOTE closured function - must use ref to manipulate state
   const handleNoteOff = (midiEvent: any) => {
     const {
-      gameContext,
       activeNotes,
       recordedTimesteps = new Map(),
       isRecording,
     } = midiInputStateRef.current as MidiInputState;
     let stateUpdate = {};
-    const currTimestep = getCurrentTimestep(gameContext);
+    const currTimestep = getCurrentTimestep(
+      midiInputStateRef.current as MidiInputState
+    );
     const noteOffEvent = webMidiEventToMidiNoteEvent(midiEvent, currTimestep);
     const activeNotesCopy = _.cloneDeep(activeNotes);
     if (activeNotesCopy.has(noteOffEvent.value)) {
@@ -178,7 +182,7 @@ const MidiInput: React.FC<MidiInputProps> = ({
 
   useEffect(() => {
     if (!!consumedGameContext.roundRecordingStartTime) {
-      scheduleRecordingDeadlines(
+      recordingTimeline(
         consumedGameContext.roundRecordingStartTime,
         playSample,
         startRecord,
@@ -226,13 +230,15 @@ function webMidiEventToMidiNoteEvent(
 }
 
 function getCurrentTimestep({
-  roundRecordingStartTime,
-  gameRules: { timestepSize, quantizationThreshold },
-}: any): number {
-  const nowMicros = Date.now() * 1000;
+  gameContext: {
+    gameRules: { timestepSize, quantizationThreshold },
+  },
+  recordingStartTime,
+}: MidiInputState): number {
+  const nowMicros = msToMicros(Date.now());
   return calculateTimestep(
     nowMicros,
-    roundRecordingStartTime,
+    msToMicros(recordingStartTime),
     timestepSize,
     quantizationThreshold
   );
@@ -240,11 +246,11 @@ function getCurrentTimestep({
 
 function calculateTimestep(
   timeUtc: number,
-  roundRecordingStartTime: number,
+  recordingStartTime: number,
   timestepSize: number,
   quantizationThreshold: number
 ): number {
-  const elapsedTime = Math.abs(timeUtc - roundRecordingStartTime);
+  const elapsedTime = Math.abs(timeUtc - recordingStartTime);
   const elapsedTimesteps = Math.floor(elapsedTime / timestepSize);
   const remainderTime = elapsedTime % timestepSize;
   const quantizeTimestep =

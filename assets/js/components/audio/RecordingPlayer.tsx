@@ -45,7 +45,6 @@ const RecordingPlayer: React.FC<RecordingPlayerProps> = ({
       callback={() =>
         playbackMusician(
           recording,
-          Tone.now(),
           timestepSize,
           soloTimeLimit,
           playNote,
@@ -60,12 +59,13 @@ export { RecordingPlayer };
 
 function playbackMusician(
   recording: Loop,
-  startTime: number,
   timestepSize: number,
   _soloTimeLimit: number,
   playNote: Function,
   playSample: Function
 ): void {
+  const startTime = Tone.now();
+  Tone.Transport.cancel(startTime);
   Tone.Transport.start(startTime);
 
   const part = buildPart(recording, timestepSize, playNote);
