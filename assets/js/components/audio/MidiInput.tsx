@@ -5,11 +5,12 @@ import WebMidi from "webmidi";
 import { Keyboard } from ".";
 import { DEFAULT_SYNTH_CONFIG } from "../../constants";
 import { Loop, MIDINoteEvent, Note, TimestepSlice } from "../../types";
-import { SimpleButton } from "../common";
 import { useGameContext, useToneAudioContext } from "../../hooks";
+import { scheduleRecordingDeadlines } from "../../helpers";
 
 interface MidiInputProps {
   submitRecording: Function;
+  playSample: Function;
 }
 
 export interface MidiInputState {
@@ -21,7 +22,10 @@ export interface MidiInputState {
   gameContext: Object;
 }
 
-const MidiInput: React.FC<MidiInputProps> = ({ submitRecording }) => {
+const MidiInput: React.FC<MidiInputProps> = ({
+  submitRecording,
+  playSample,
+}) => {
   const { Tone } = useToneAudioContext();
 
   const [midiInputState, _setMidiInputState] = useState<MidiInputState>(
@@ -53,7 +57,7 @@ const MidiInput: React.FC<MidiInputProps> = ({ submitRecording }) => {
   }, []);
 
   const startRecord = (): void => {
-    const { gameContext } = midiInputState;
+    const { gameContext } = midiInputStateRef.current;
     const currTimestep = getCurrentTimestep(gameContext);
     setMidiInputState({
       isRecording: true,
@@ -66,7 +70,7 @@ const MidiInput: React.FC<MidiInputProps> = ({ submitRecording }) => {
       recordedTimesteps,
       recordingStartTimestep,
       gameContext,
-    } = midiInputState;
+    } = midiInputStateRef.current;
     const timestepSlices = Array.from(recordedTimesteps.values()).sort(
       (a, b) => a.timestep - b.timestep
     );
@@ -172,6 +176,17 @@ const MidiInput: React.FC<MidiInputProps> = ({ submitRecording }) => {
     ? Array.from(midiInputState.activeNotes.keys())
     : [];
 
+  useEffect(() => {
+    if (!!consumedGameContext.roundRecordingStartTime) {
+      scheduleRecordingDeadlines(
+        consumedGameContext.roundRecordingStartTime,
+        playSample,
+        startRecord,
+        stopRecord
+      );
+    }
+  }, [consumedGameContext.roundRecordingStartTime]);
+
   return (
     <div>
       <Keyboard
@@ -186,16 +201,6 @@ const MidiInput: React.FC<MidiInputProps> = ({ submitRecording }) => {
         stopNote={(midiNumber: number) => {
           console.log("key up: ", midiNumber);
         }}
-      />
-      <SimpleButton
-        label="Start Recording"
-        callback={() => startRecord()}
-        disabled={midiInputState.isRecording}
-      />
-      <SimpleButton
-        label="Stop Recording"
-        callback={() => stopRecord()}
-        disabled={!midiInputState.isRecording}
       />
     </div>
   );

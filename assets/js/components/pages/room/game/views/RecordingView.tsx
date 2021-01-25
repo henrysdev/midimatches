@@ -17,14 +17,19 @@ const RecordingView: React.FC<RecordingViewProps> = ({
 }) => {
   const [playerRecording, setPlayerRecording] = useState<Object>();
 
-  useEffect(() => {
-    playSample();
-  }, []);
+  const submitRecording = (recording: any) => {
+    if (!!recording) {
+      pushMessageToChannel(SUBMIT_RECORDING_EVENT, {
+        recording: JSON.stringify(recording),
+      });
+      setPlayerRecording(recording);
+    }
+  };
 
   return isContestant ? (
     <div>
       <h3>Recording View</h3>
-      <MidiInput submitRecording={setPlayerRecording} />
+      <MidiInput submitRecording={submitRecording} playSample={playSample} />
       <h1>Sample Recording View</h1>
       <SimpleButton
         label="Submit Recording"

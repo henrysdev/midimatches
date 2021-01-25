@@ -13,7 +13,7 @@ defmodule Progressions.Types.GameRules do
   @default_view_timeouts %{
     round_start: 5_000,
     recording: 30_000,
-    # playback_voting: 60_000,
+    playback_voting: 60_000,
     round_end: 5_000
   }
 

@@ -6,6 +6,7 @@ import {
 } from "../constants";
 import { Milliseconds, Seconds } from "../types";
 import { msToSec, secToMs } from "../utils";
+import { sample } from "lodash";
 
 /**
  *  bufferTime = 5 seconds (the max time allowed for all clients to get view update)
@@ -41,18 +42,19 @@ interface ScheduleDeadlines {
 }
 
 export function scheduleRecordingDeadlines(
-  serverSendTimestamp: Milliseconds,
+  serverSendTimestamp: number,
   playSample: Function,
   startRecording: Function,
   stopRecording: Function
-) {
+): void {
   // calculate deadlines
   const {
     sampleStartTime,
     recordingStartTime,
     recordingEndTime,
   } = calcRecordingDeadlines(
-    serverSendTimestamp,
+    // TODO use millis instead of micros
+    serverSendTimestamp / 1000,
     DEFAULT_SAMPLE_PLAY_BUFFER_LENGTH,
     DEFAULT_SAMPLE_LENGTH,
     DEFAULT_RECORDING_LENGTH,
@@ -60,19 +62,31 @@ export function scheduleRecordingDeadlines(
     Date
   );
 
+  Tone.Transport.start();
+
+  console.log("Scheduling recording deadlines");
+
+  console.log("tone NOW: ", Tone.now());
+  console.log("tone START SAMPLE: ", sampleStartTime);
+  console.log("tone START RECORDING: ", recordingStartTime);
+  console.log("tone END RECORDING: ", recordingEndTime);
+
   // start sample
   Tone.Transport.scheduleOnce((time: Seconds) => {
     console.log("TODO trigger immediate sample start ", time);
+    playSample();
   }, sampleStartTime);
 
   // start recording
   Tone.Transport.scheduleOnce((time: Seconds) => {
     console.log("TODO trigger immediate recording start ", time);
+    startRecording();
   }, recordingStartTime);
 
   // stop recording + sample
   Tone.Transport.scheduleOnce((time: Seconds) => {
     console.log("TODO trigger immediate recording stop + sample stop ", time);
+    stopRecording();
   }, recordingEndTime);
 }
 

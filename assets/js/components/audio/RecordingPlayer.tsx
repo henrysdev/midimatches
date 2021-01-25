@@ -43,7 +43,7 @@ const RecordingPlayer: React.FC<RecordingPlayerProps> = ({
     <SimpleButton
       label={`Playback recording for MusicianId ${musicianId}`}
       callback={() =>
-        scheduleRecording(
+        playbackMusician(
           recording,
           Tone.now(),
           timestepSize,
@@ -58,7 +58,7 @@ const RecordingPlayer: React.FC<RecordingPlayerProps> = ({
 };
 export { RecordingPlayer };
 
-function scheduleRecording(
+function playbackMusician(
   recording: Loop,
   startTime: number,
   timestepSize: number,
@@ -80,8 +80,6 @@ function buildPart(
   playNote: Function
 ): Tone.Part {
   const noteEvents = loopToEvents(recording, 0, timestepSize);
-  console.log("noteEvents: ", noteEvents);
-  console.log("currentTime: ", Tone.now());
   const part = new Tone.Part((time: number, { note, velocity }) => {
     playNote(note, time, velocity);
   }, noteEvents);
