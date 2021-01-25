@@ -4,13 +4,19 @@ import { Milliseconds } from "../../types";
 
 interface TimerProps {
   duration: Milliseconds;
-  timesUpText: string;
+  descriptionText?: string;
+  timesUpText?: string;
 }
-const Timer: React.FC<TimerProps> = ({ duration, timesUpText }) => {
+const Timer: React.FC<TimerProps> = ({
+  duration,
+  descriptionText,
+  timesUpText,
+}) => {
   return (
-    <div>
+    <div style={{ fontSize: "16px", fontWeight: "bold" }}>
+      {!!descriptionText ? <span>{descriptionText}</span> : <></>}
       <Countdown date={Date.now() + duration}>
-        <div>{timesUpText}</div>
+        <div>{!!timesUpText ? <span>{timesUpText}</span> : <></>}</div>
       </Countdown>
     </div>
   );

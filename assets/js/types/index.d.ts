@@ -1,7 +1,5 @@
 import * as Tone from "tone";
 
-// Audio Playback Types
-
 export interface Note {
   instrument: string;
   key: number;
@@ -38,8 +36,6 @@ export interface LocalNoteEvent {
 
 export type SamplePlayer = Tone.Player;
 
-// Event Types
-
 export interface ViewUpdatePayload {
   gameState: GameContextType;
 }
@@ -48,17 +44,12 @@ export interface PlayerJoinPayload {
   musicianId: string;
 }
 
-// Payload Types
-
 export interface GameRules {
   gameSizeNumPlayers: number;
   timestepSize: number;
   soloTimeLimit: number;
   quantizationThreshold: number;
 }
-
-// Context Types
-
 export interface GameContextType {
   // static fields
   gameRules: GameRules;
@@ -79,8 +70,6 @@ export interface GameContextType {
 export interface ToneAudioContextType {
   Tone: any;
 }
-
-// Time Types
 
 type Seconds = number;
 type Milliseconds = number;
