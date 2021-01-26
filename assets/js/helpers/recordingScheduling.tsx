@@ -3,6 +3,7 @@ import {
   DEFAULT_SAMPLE_PLAY_BUFFER_LENGTH,
   DEFAULT_SAMPLE_LENGTH,
   DEFAULT_RECORDING_LENGTH,
+  DEFAULT_NUM_RECORDED_LOOPS,
 } from "../constants";
 import { Milliseconds, Seconds } from "../types";
 import { msToSec, secToMs } from "../utils";
@@ -52,7 +53,6 @@ export function scheduleRecordingDeadlines(
     DEFAULT_SAMPLE_PLAY_BUFFER_LENGTH,
     DEFAULT_SAMPLE_LENGTH,
     DEFAULT_RECORDING_LENGTH,
-    Tone,
     Date
   );
 
@@ -105,7 +105,7 @@ function scheduleRecordingAudioTimeline(
   Tone.Transport.start("+0");
 
   // start sample loop
-  const iterations = 1 + 3; // one intro iteration + three recorded iterations
+  const iterations = 1 + DEFAULT_NUM_RECORDED_LOOPS; // one intro iteration + three recorded iterations
   scheduleSampleLoop(sampleStartTime, playSample, iterations, false);
 
   // start recording
@@ -126,11 +126,10 @@ export function calcRecordingDeadlines(
   bufferTime: Seconds, // ex: 5
   sampleTime: Seconds, // ex: 10
   recordingTime: Seconds, // ex: 30
-  tone: any,
   date: any
 ): ScheduleDeadlines {
   const nowUtc: Milliseconds = date.now();
-  const nowTone: Seconds = 0; //tone.now();
+  const nowTone: Seconds = 0;
 
   const timeTilSampleStart = msToSec(
     Math.abs(serverSendTimestamp + secToMs(bufferTime) - nowUtc)

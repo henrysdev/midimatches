@@ -4,7 +4,10 @@ import * as Tone from "tone";
 import { Loop } from "../../types";
 import { loopToEvents } from "../../utils";
 import { SimpleButton } from "../common";
-import { DEFAULT_SYNTH_CONFIG } from "../../constants";
+import {
+  DEFAULT_SYNTH_CONFIG,
+  DEFAULT_NUM_RECORDED_LOOPS,
+} from "../../constants";
 import { useGameContext } from "../../hooks";
 import { scheduleSampleLoop } from "../../helpers";
 
@@ -69,7 +72,7 @@ function playbackMusician(
   const part = buildPart(recording, timestepSize, playNote);
 
   part.start();
-  scheduleSampleLoop(0, playSample, 3, true);
+  scheduleSampleLoop(0, playSample, DEFAULT_NUM_RECORDED_LOOPS, true);
 }
 
 function buildPart(

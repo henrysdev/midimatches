@@ -24,9 +24,11 @@ export const SUBMIT_VOTE_EVENT = "musician_vote";
 
 export const SAMPLE_URLS = ["/sounds/ragga_sample.mp3"];
 
-export const DEFAULT_SAMPLE_PLAY_BUFFER_LENGTH = 5;
+export const DEFAULT_SAMPLE_PLAY_BUFFER_LENGTH = 2;
 export const DEFAULT_SAMPLE_LENGTH = 10.6667;
-export const DEFAULT_RECORDING_LENGTH = DEFAULT_SAMPLE_LENGTH * 3;
+export const DEFAULT_NUM_RECORDED_LOOPS = 1;
+export const DEFAULT_RECORDING_LENGTH =
+  DEFAULT_SAMPLE_LENGTH * DEFAULT_NUM_RECORDED_LOOPS;
 
 export const DEFAULT_SYNTH_CONFIG = {
   oscillator: {

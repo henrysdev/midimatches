@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import {
   SUBMIT_RECORDING_EVENT,
-  DEFAULT_SAMPLE_PLAY_BUFFER_LENGTH,
   DEFAULT_SAMPLE_LENGTH,
   DEFAULT_RECORDING_LENGTH,
 } from "../../../../../constants";
 import { RecordMidi } from "../../../../audio";
 import { Timer } from "../../../../common";
 import { secToMs } from "../../../../../utils";
-import { useGameContext } from "../../../../../hooks";
 
 interface RecordingViewProps {
   isContestant: boolean;

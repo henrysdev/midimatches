@@ -102,12 +102,14 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
 
   // init midi access on first render
   useEffect(() => {
+    let midiInputs: any[] = [];
     WebMidi.enable((error) => {
       if (error) {
         console.warn("WebMidi could not be enabled.");
         return;
       } else {
-        WebMidi.inputs.forEach((input) => {
+        midiInputs = WebMidi.inputs;
+        midiInputs.forEach((input) => {
           input.addListener("noteon", "all", (event) => handleNoteOn(event));
           input.addListener("noteoff", "all", (event) => handleNoteOff(event));
         });
@@ -119,6 +121,12 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
         return;
       }
     });
+    return () => {
+      midiInputs.forEach((input) => {
+        input.removeListener("noteon", "all");
+        input.removeListener("noteoff", "all");
+      });
+    };
   }, []);
 
   // NOTE closured function - must use ref to manipulate state
