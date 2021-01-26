@@ -25,6 +25,7 @@ export function useSamplePlayer(Tone: any): SamplePlayerTuple {
 
   const stopSample = () => {
     if (!!samplePlayer) {
+      Tone.Transport.cancel(0);
       samplePlayer.stop();
     }
   };

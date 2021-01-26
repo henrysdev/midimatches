@@ -16,7 +16,7 @@ const Timer: React.FC<TimerProps> = ({
     <div style={{ fontSize: "16px", fontWeight: "bold" }}>
       {!!descriptionText ? <span>{descriptionText}</span> : <></>}
       <Countdown date={Date.now() + duration}>
-        <div>{!!timesUpText ? <span>{timesUpText}</span> : <></>}</div>
+        <div>{timesUpText}</div>
       </Countdown>
     </div>
   );

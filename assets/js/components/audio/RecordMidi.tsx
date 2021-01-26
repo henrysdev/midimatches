@@ -20,6 +20,7 @@ import { msToMicros, microsToMs } from "../../utils";
 interface RecordMidiProps {
   submitRecording: Function;
   playSample: Function;
+  setIsRecording: Function;
 }
 
 export interface RecordMidiState {
@@ -34,6 +35,7 @@ export interface RecordMidiState {
 const RecordMidi: React.FC<RecordMidiProps> = ({
   submitRecording,
   playSample,
+  setIsRecording,
 }) => {
   const { Tone } = useToneAudioContext();
 
@@ -66,6 +68,7 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
   }, []);
 
   const startRecord = (): void => {
+    setIsRecording(true);
     const {
       gameContext: { roundRecordingStartTime },
     } = recordMidiStateRef.current as RecordMidiState;
@@ -81,6 +84,7 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
   };
 
   const stopRecord = (): void => {
+    setIsRecording(false);
     const { recordedTimesteps } = recordMidiStateRef.current as RecordMidiState;
     const timestepSlices = Array.from(recordedTimesteps.values()).sort(
       (a, b) => a.timestep - b.timestep

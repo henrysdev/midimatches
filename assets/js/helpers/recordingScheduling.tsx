@@ -79,16 +79,21 @@ export function getRecordingStartTimestamp(
 export function scheduleSampleLoop(
   sampleStartTime: Seconds,
   playSample: Function,
-  iterations: number
+  iterations: number,
+  startImmediately: boolean
 ): void {
-  new Tone.Loop({
+  const sampleLoop = new Tone.Loop({
     interval: DEFAULT_SAMPLE_LENGTH,
     iterations,
     callback: (time: Seconds) => {
       console.log("play sample loop iteration callback ", time);
       playSample();
     },
-  }).start(sampleStartTime);
+  });
+
+  startImmediately
+    ? sampleLoop.start()
+    : sampleLoop.start(`+${sampleStartTime}`);
 }
 
 function scheduleRecordingAudioTimeline(
@@ -97,23 +102,23 @@ function scheduleRecordingAudioTimeline(
   startRecording: Function,
   stopRecording: Function
 ): void {
-  Tone.Transport.start(0);
+  Tone.Transport.start("+0");
 
   // start sample loop
   const iterations = 1 + 3; // one intro iteration + three recorded iterations
-  scheduleSampleLoop(sampleStartTime, playSample, iterations);
+  scheduleSampleLoop(sampleStartTime, playSample, iterations, false);
 
   // start recording
   Tone.Transport.scheduleOnce((time: Seconds) => {
     console.log("recording start callback ", time);
     startRecording();
-  }, recordingStartTime);
+  }, `+${recordingStartTime}`);
 
   // stop recording
   Tone.Transport.scheduleOnce((time: Seconds) => {
     console.log("recording stop callback", time);
     stopRecording();
-  }, recordingEndTime);
+  }, `+${recordingEndTime}`);
 }
 
 export function calcRecordingDeadlines(
@@ -125,7 +130,7 @@ export function calcRecordingDeadlines(
   date: any
 ): ScheduleDeadlines {
   const nowUtc: Milliseconds = date.now();
-  const nowTone: Seconds = tone.now();
+  const nowTone: Seconds = 0; //tone.now();
 
   const timeTilSampleStart = msToSec(
     Math.abs(serverSendTimestamp + secToMs(bufferTime) - nowUtc)

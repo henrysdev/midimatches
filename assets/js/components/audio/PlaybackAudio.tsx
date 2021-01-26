@@ -11,14 +11,12 @@ import { scheduleSampleLoop } from "../../helpers";
 interface PlaybackAudioProps {
   recording: Loop;
   musicianId: string;
-  scheduledStartTime: number;
   playSample: Function;
 }
 
 const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
   recording,
   musicianId,
-  scheduledStartTime,
   playSample,
 }) => {
   const {
@@ -65,13 +63,13 @@ function playbackMusician(
   playSample: Function
 ): void {
   const startTime = Tone.now();
-  Tone.Transport.cancel(startTime);
+  Tone.Transport.cancel(0);
   Tone.Transport.start(startTime);
 
   const part = buildPart(recording, timestepSize, playNote);
 
   part.start();
-  scheduleSampleLoop(0, playSample, 3);
+  scheduleSampleLoop(0, playSample, 3, true);
 }
 
 function buildPart(

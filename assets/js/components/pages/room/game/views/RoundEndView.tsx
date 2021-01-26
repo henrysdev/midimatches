@@ -1,27 +1,36 @@
 import React, { useEffect, useState } from "react";
-
+import { Timer } from "../../../../common";
 import { useGameContext } from "../../../../../hooks";
 
 interface RoundEndViewProps {}
 
 const RoundEndView: React.FC<RoundEndViewProps> = () => {
-  const gameContext = useGameContext();
+  const {
+    winner: gameWinner,
+    gameRules: {
+      viewTimeouts: { roundEnd: roundEndTimeout },
+    },
+  } = useGameContext();
   const [winner, setWinner] = useState({ winnerId: "", numVotes: 0 });
 
   useEffect(() => {
-    if (!!gameContext.winner) {
-      setWinner(gameContext.winner);
+    if (!!gameWinner) {
+      setWinner(gameWinner);
     }
-  }, [gameContext.winner]);
+  }, [gameWinner]);
 
   return (
     <div>
       <h3>RoundEnd View</h3>
-      {!!gameContext.winner ? (
+      {!!gameWinner ? (
         <div>{`${winner.winnerId} won with ${winner.numVotes} votes`}</div>
       ) : (
-        <div></div>
+        <></>
       )}
+      <Timer
+        descriptionText={"Next round starting in "}
+        duration={roundEndTimeout}
+      />
     </div>
   );
 };

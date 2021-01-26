@@ -44,12 +44,21 @@ export interface PlayerJoinPayload {
   musicianId: string;
 }
 
+export interface ViewTimeouts {
+  roundStart: Milliseconds;
+  recording?: Milliseconds;
+  playbackVoting?: Milliseconds;
+  roundEnd: Milliseconds;
+}
+
 export interface GameRules {
   gameSizeNumPlayers: number;
   timestepSize: number;
   soloTimeLimit: number;
   quantizationThreshold: number;
+  viewTimeouts: ViewTimeouts;
 }
+
 export interface GameContextType {
   // static fields
   gameRules: GameRules;
