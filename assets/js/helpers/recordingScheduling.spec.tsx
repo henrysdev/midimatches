@@ -26,7 +26,6 @@ describe("scheduleRecordingStart", () => {
       bufferTime,
       sampleTime,
       recordingTime,
-      mockedToneModule,
       mockedDateModule
     );
 

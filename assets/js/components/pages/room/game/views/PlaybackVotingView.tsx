@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { SUBMIT_VOTE_EVENT } from "../../../../../constants";
 import { useGameContext, useToneAudioContext } from "../../../../../hooks";
 import { PlaybackAudio } from "../../../../audio";
-import { SimpleButton } from "../../../../common";
+import { SimpleButton, Timer } from "../../../../common";
 
 interface PlaybackVotingViewProps {
   isJudge: boolean;
@@ -18,7 +18,12 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
   contestants,
   playSample,
 }) => {
-  const { recordings } = useGameContext();
+  const {
+    recordings,
+    gameRules: {
+      viewTimeouts: { playbackVoting: playbackVotingTimeout },
+    },
+  } = useGameContext();
   const { Tone } = useToneAudioContext();
 
   useEffect(() => {
@@ -40,39 +45,44 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
   return isJudge ? (
     <div>
       <h3>PlaybackVoting View</h3>
-      {contestants.map((musicianId: string) => {
-        return (
-          <div key={`${musicianId}`}>
-            <SimpleButton
-              key={`vote-${musicianId}`}
-              label={`Vote for ${musicianId}`}
-              callback={() => {
-                pushMessageToChannel(SUBMIT_VOTE_EVENT, {
-                  vote: musicianId,
-                });
-              }}
-              disabled={false}
-            />
-            {!!recordings ? (
-              Object.entries(recordings).map(
-                ([musicianId, recording]: [string, any]) => {
-                  return (
-                    <PlaybackAudio
-                      key={`recording-player-${musicianId}`}
-                      recording={recording}
-                      musicianId={musicianId}
-                      scheduledStartTime={Tone.now()}
-                      playSample={playSample}
-                    />
-                  );
-                }
-              )
-            ) : (
-              <div>No recordings available</div>
-            )}
-          </div>
-        );
-      })}
+      {!!playbackVotingTimeout ? (
+        <Timer
+          descriptionText={"Voting ends in "}
+          duration={playbackVotingTimeout}
+        />
+      ) : (
+        <></>
+      )}
+      {!!recordings ? (
+        Object.entries(recordings).map(
+          ([musicianId, recording]: [string, any]) => {
+            return (
+              <div key={`playback-${musicianId}`}>
+                <PlaybackAudio
+                  key={`player-${musicianId}`}
+                  recording={recording}
+                  musicianId={musicianId}
+                  playSample={playSample}
+                />
+                <div>
+                  <SimpleButton
+                    key={`vote-${musicianId}`}
+                    label={`Vote for ${musicianId}`}
+                    callback={() => {
+                      pushMessageToChannel(SUBMIT_VOTE_EVENT, {
+                        vote: musicianId,
+                      });
+                    }}
+                    disabled={false}
+                  />
+                </div>
+              </div>
+            );
+          }
+        )
+      ) : (
+        <div>No recordings available</div>
+      )}
     </div>
   ) : (
     <div>WAITING FOR VOTES...</div>

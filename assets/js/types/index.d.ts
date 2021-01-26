@@ -1,11 +1,11 @@
 import * as Tone from "tone";
-
-// Audio Playback Types
+import { Input } from "webmidi";
 
 export interface Note {
   instrument: string;
   key: number;
   duration: number;
+  velocity: number;
 }
 
 export interface TimestepSlice {
@@ -34,11 +34,10 @@ export interface LocalNoteEvent {
   time: number;
   note: any;
   velocity: number;
+  duration?: number;
 }
 
 export type SamplePlayer = Tone.Player;
-
-// Event Types
 
 export interface ViewUpdatePayload {
   gameState: GameContextType;
@@ -48,16 +47,20 @@ export interface PlayerJoinPayload {
   musicianId: string;
 }
 
-// Payload Types
+export interface ViewTimeouts {
+  roundStart: Milliseconds;
+  recording?: Milliseconds;
+  playbackVoting?: Milliseconds;
+  roundEnd: Milliseconds;
+}
 
 export interface GameRules {
   gameSizeNumPlayers: number;
   timestepSize: number;
   soloTimeLimit: number;
   quantizationThreshold: number;
+  viewTimeouts: ViewTimeouts;
 }
-
-// Context Types
 
 export interface GameContextType {
   // static fields
@@ -78,9 +81,8 @@ export interface GameContextType {
 
 export interface ToneAudioContextType {
   Tone: any;
+  midiInputs: Input[];
 }
-
-// Time Types
 
 type Seconds = number;
 type Milliseconds = number;

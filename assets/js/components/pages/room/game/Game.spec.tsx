@@ -43,7 +43,10 @@ jest.mock("../../../../hooks/context", () => ({
 
 describe("renders Game component", () => {
   beforeEach(() => {
-    mocked(useToneAudioContext).mockReturnValueOnce({ Tone: toneMock });
+    mocked(useToneAudioContext).mockReturnValueOnce({
+      Tone: toneMock,
+      midiInputs: [],
+    });
   });
   test("in game start view", () => {
     // mocked(useGameServerState).mockReturnValueOnce([

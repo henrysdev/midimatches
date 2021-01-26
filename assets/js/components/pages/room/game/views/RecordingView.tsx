@@ -1,8 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
-import { SUBMIT_RECORDING_EVENT } from "../../../../../constants";
+import {
+  SUBMIT_RECORDING_EVENT,
+  DEFAULT_SAMPLE_LENGTH,
+  DEFAULT_RECORDING_LENGTH,
+} from "../../../../../constants";
 import { RecordMidi } from "../../../../audio";
-import { SimpleButton } from "../../../../common";
+import { Timer } from "../../../../common";
+import { secToMs } from "../../../../../utils";
 
 interface RecordingViewProps {
   isContestant: boolean;
@@ -15,33 +20,48 @@ const RecordingView: React.FC<RecordingViewProps> = ({
   pushMessageToChannel,
   playSample,
 }) => {
-  const [playerRecording, setPlayerRecording] = useState<Object>();
-
   const submitRecording = (recording: any) => {
     if (!!recording) {
       pushMessageToChannel(SUBMIT_RECORDING_EVENT, {
         recording: JSON.stringify(recording),
       });
-      setPlayerRecording(recording);
     }
+  };
+
+  const [isSamplePlaying, setIsSamplePlaying] = useState<boolean>(false);
+  const [isRecording, setIsRecording] = useState<boolean>(false);
+
+  const playSampleWithEffect = () => {
+    setIsSamplePlaying(true);
+    playSample();
   };
 
   return isContestant ? (
     <div>
       <h3>Recording View</h3>
-      <RecordMidi submitRecording={submitRecording} playSample={playSample} />
-      <h1>Sample Recording View</h1>
-      <SimpleButton
-        label="Submit Recording"
-        callback={() => {
-          if (!!playerRecording) {
-            pushMessageToChannel(SUBMIT_RECORDING_EVENT, {
-              recording: JSON.stringify(playerRecording),
-            });
-            setPlayerRecording(undefined);
-          }
-        }}
-        disabled={!playerRecording}
+      {isRecording ? (
+        <Timer
+          key={`record-timer-${isRecording}`}
+          descriptionText={"Recording ends in "}
+          duration={secToMs(DEFAULT_RECORDING_LENGTH)}
+        />
+      ) : (
+        <></>
+      )}
+      {isSamplePlaying && !isRecording ? (
+        <Timer
+          key={`sample-timer-${isSamplePlaying}`}
+          descriptionText={"Recording starts in "}
+          duration={secToMs(DEFAULT_SAMPLE_LENGTH)}
+        />
+      ) : (
+        <></>
+      )}
+
+      <RecordMidi
+        submitRecording={submitRecording}
+        playSample={playSampleWithEffect}
+        setIsRecording={setIsRecording}
       />
     </div>
   ) : (

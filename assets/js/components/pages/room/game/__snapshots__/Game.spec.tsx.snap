@@ -16,21 +16,6 @@ exports[`renders Game component in game start view 1`] = `
         Musician: 
         123
       </div>
-      <button
-        style="background-color: purple;"
-      >
-        Load Sample
-      </button>
-      <button
-        style="background-color: purple;"
-      >
-        Start Playback
-      </button>
-      <button
-        style="background-color: purple;"
-      >
-        Stop Playback
-      </button>
       <pre />
     </div>
   </div>

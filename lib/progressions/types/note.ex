@@ -9,5 +9,6 @@ defmodule Progressions.Types.Note do
     field(:instrument, String.t())
     field(:key, integer())
     field(:duration, integer())
+    field(:velocity, float())
   end
 end

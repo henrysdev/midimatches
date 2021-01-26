@@ -25,7 +25,8 @@
           {
             "instrument": "piano",
             "key": 72,
-            "duration": 1
+            "duration": 1,
+            "velocity": 127
           }
         ]
       },
@@ -35,7 +36,8 @@
           {
             "instrument": "piano",
             "key": 76,
-            "duration": 1
+            "duration": 2,
+            "velocity": 0
           }
         ]
       },
@@ -45,7 +47,8 @@
           {
             "instrument": "piano",
             "key": 79,
-            "duration": 1
+            "duration": 1,
+            "velocity": 95
           }
         ]
       }

@@ -40,15 +40,31 @@ const Game: React.FC<GameProps> = ({ gameChannel, musicianId }) => {
   const { Tone } = useToneAudioContext();
   const [loadSample, playSample, stopSample] = useSamplePlayer(Tone);
 
+  const resetTone = () => {
+    stopSample();
+    Tone.Transport.cancel(0);
+    Tone.Transport.stop();
+  };
+
   useEffect(() => {
-    if (currentView === GAME_VIEW.ROUND_START) {
-      // TODO random choice [?]
-      loadSample(SAMPLE_URLS[0]);
-    }
-    // TODO remove once recording timer is properly handled
-    if (currentView !== GAME_VIEW.RECORDING) {
-      // TODO replace with call to function that holistically resets Tone Transport and related stuff.
-      stopSample();
+    switch (currentView) {
+      case GAME_VIEW.GAME_START:
+        break;
+      case GAME_VIEW.ROUND_START:
+        // TODO random choice [?]
+        loadSample(SAMPLE_URLS[0]);
+        break;
+      case GAME_VIEW.RECORDING:
+        break;
+      case GAME_VIEW.PLAYBACK_VOTING:
+        resetTone();
+        break;
+      case GAME_VIEW.ROUND_END:
+        resetTone();
+        break;
+      case GAME_VIEW.GAME_END:
+        resetTone();
+        break;
     }
   }, [currentView]);
 
