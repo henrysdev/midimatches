@@ -17,12 +17,12 @@ const ClientDebug: React.FC<ClientDebugProps> = ({ musicianId }) => {
     <div>
       <div>Musician: {musicianId}</div>
 
-      <DebugButton
+      {/* <DebugButton
         label="Load Sample"
         callback={() => loadSample("/sounds/ragga_sample.mp3")}
       />
       <DebugButton label="Start Playback" callback={() => playSample()} />
-      <DebugButton label="Stop Playback" callback={() => stopSample()} />
+      <DebugButton label="Stop Playback" callback={() => stopSample()} /> */}
 
       <pre>{JSON.stringify(gameContext, null, 2)}</pre>
     </div>
