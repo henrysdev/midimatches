@@ -15,7 +15,11 @@ import {
   scheduleRecordingDeadlines,
   getRecordingStartTimestamp,
 } from "../../helpers";
-import { msToMicros, microsToMs } from "../../utils";
+import {
+  msToMicros,
+  microsToMs,
+  midiVelocityToToneVelocity,
+} from "../../utils";
 
 interface RecordMidiProps {
   submitRecording: Function;
@@ -57,8 +61,7 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
 
   // init on load
   useEffect(() => {
-    const niceSynth = new Tone.Synth(DEFAULT_SYNTH_CONFIG).toDestination();
-    Tone.context.lookAhead = 0.02;
+    const niceSynth = new Tone.PolySynth(DEFAULT_SYNTH_CONFIG).toDestination();
 
     setRecordMidiState({
       activeNotes: new Map(),
@@ -85,10 +88,19 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
 
   const stopRecord = (): void => {
     setIsRecording(false);
-    const { recordedTimesteps } = recordMidiStateRef.current as RecordMidiState;
+    const {
+      recordedTimesteps,
+      activeNotes,
+      synth,
+    } = recordMidiStateRef.current as RecordMidiState;
     const timestepSlices = Array.from(recordedTimesteps.values()).sort(
       (a, b) => a.timestep - b.timestep
     );
+    // auto release notes that are still active
+    Array.from(activeNotes.keys()).forEach((midiNumber) => {
+      const noteName = midiNoteNumberToNoteName(midiNumber);
+      synth.triggerRelease(noteName);
+    });
 
     // TODO format in a utility method rather than writing snake case here
     const loop = {
@@ -121,7 +133,6 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
       recordMidiStateRef.current as RecordMidiState
     );
     const noteOnEvent = webMidiEventToMidiNoteEvent(midiEvent, currTimestep);
-    console.log("note On event: ", noteOnEvent);
     const activeNotesCopy = _.cloneDeep(activeNotes);
     activeNotesCopy.set(noteOnEvent.value, noteOnEvent);
     setRecordMidiState({ activeNotes: activeNotesCopy });
@@ -143,19 +154,21 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
     if (activeNotesCopy.has(noteOffEvent.value)) {
       const noteOnEvent = activeNotesCopy.get(noteOffEvent.value);
       const {
-        value: key_,
+        value: key,
         receivedTimestep: startTimestep,
+        velocity,
       } = noteOnEvent as MIDINoteEvent;
 
       // update recorded timestep slice with new note
       if (isRecording) {
         const newNote: Note = {
-          instrument: "abc",
-          key: key_,
+          instrument: "",
+          key: key,
           duration: Math.max(
             1,
             Math.abs(startTimestep - noteOffEvent.receivedTimestep)
           ),
+          velocity,
         };
         const updatedNotes = recordedTimesteps.has(startTimestep)
           ? [newNote].concat(recordedTimesteps.get(startTimestep).notes)
@@ -198,14 +211,22 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
       <Keyboard
         activeMidiList={activeMidiList}
         playNote={(midiNumber: number) => {
-          if (!!recordMidiState.synth) {
-            // play sound
+          if (
+            !!recordMidiState.synth &&
+            recordMidiState.activeNotes.has(midiNumber)
+          ) {
+            const noteVelocity = midiVelocityToToneVelocity(
+              recordMidiState.activeNotes.get(midiNumber).velocity
+            );
             const noteName = midiNoteNumberToNoteName(midiNumber);
-            recordMidiState.synth.triggerAttackRelease(noteName, "8n");
+            recordMidiState.synth.triggerAttack(noteName, "+0", noteVelocity);
           }
         }}
         stopNote={(midiNumber: number) => {
-          console.log("key up: ", midiNumber);
+          if (!!recordMidiState.synth) {
+            const noteName = midiNoteNumberToNoteName(midiNumber);
+            recordMidiState.synth.triggerRelease(noteName);
+          }
         }}
       />
     </div>

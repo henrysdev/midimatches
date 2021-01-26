@@ -26,17 +26,22 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
     gameRules: { timestepSize, soloTimeLimit },
   } = useGameContext();
 
-  const [synth, setSynth] = useState<Tone.Synth>();
+  const [synth, setSynth] = useState<Tone.PolySynth>();
 
   useEffect(() => {
     // TODO break out into instrument class
-    const newSynth = new Tone.Synth(DEFAULT_SYNTH_CONFIG).toDestination();
+    const newSynth = new Tone.PolySynth(DEFAULT_SYNTH_CONFIG).toDestination();
     setSynth(newSynth);
   }, []);
 
-  const playNote = (note: number, time: number, velocity: number) => {
+  const playNote = (
+    note: number,
+    duration: number,
+    time: number,
+    velocity: number
+  ) => {
     if (!!synth) {
-      synth.triggerAttackRelease(note, "8n", time, velocity);
+      synth.triggerAttackRelease(note, duration, time, velocity);
     }
   };
 
@@ -81,8 +86,8 @@ function buildPart(
   playNote: Function
 ): Tone.Part {
   const noteEvents = loopToEvents(recording, 0, timestepSize);
-  const part = new Tone.Part((time: number, { note, velocity }) => {
-    playNote(note, time, velocity);
+  const part = new Tone.Part((time: number, { note, duration, velocity }) => {
+    playNote(note, duration, time, velocity);
   }, noteEvents);
   return part;
 }

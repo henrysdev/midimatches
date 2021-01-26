@@ -5,6 +5,7 @@ export interface Note {
   instrument: string;
   key: number;
   duration: number;
+  velocity: number;
 }
 
 export interface TimestepSlice {
@@ -33,6 +34,7 @@ export interface LocalNoteEvent {
   time: number;
   note: any;
   velocity: number;
+  duration?: number;
 }
 
 export type SamplePlayer = Tone.Player;

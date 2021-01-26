@@ -1,6 +1,5 @@
 import { GAME_VIEW } from "../constants";
-import { Loop, Note, LocalNoteEvent } from "../types";
-// import * as Tone from "tone";
+import { Loop, Note, LocalNoteEvent, Microseconds, Seconds } from "../types";
 
 const isArray = function (a: Array<any>): boolean {
   return Array.isArray(a);
@@ -62,6 +61,10 @@ export function unmarshalBody(payload: Object): Object {
   return keysToCamel(payload);
 }
 
+export function midiVelocityToToneVelocity(velocity: number): number {
+  return velocity / 127.0;
+}
+
 export function gameViewAtomToEnum(atom: string): any {
   switch (atom) {
     case "pregame_lobby":
@@ -84,18 +87,19 @@ export function gameViewAtomToEnum(atom: string): any {
 export function loopToEvents(
   loop: Loop,
   now: number,
-  timestepSize: number
+  timestepSize: Microseconds
 ): LocalNoteEvent[] {
   return loop.timestepSlices.reduce(
     (accEvents: LocalNoteEvent[], timestepSlice, idx) => {
-      const timestepSizeInSeconds = 0.000001 * timestepSize;
+      const timestepSizeInSeconds: Seconds = 0.000001 * timestepSize;
       const { timestep, notes } = timestepSlice;
-      const events = notes.map(({ key, instrument, duration }: Note) => {
+      const events = notes.map(({ key, duration, velocity }: Note) => {
         const note = midiToPitch(key);
         return {
           time: now + timestepSizeInSeconds * timestep,
           note,
-          velocity: 0.2,
+          velocity: midiVelocityToToneVelocity(velocity),
+          duration: duration * timestepSizeInSeconds,
         } as LocalNoteEvent;
       });
       return accEvents.concat(events);

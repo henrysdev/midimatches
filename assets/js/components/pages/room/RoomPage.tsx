@@ -17,6 +17,7 @@ const RoomPage: React.FC = () => {
   const [midiInputs] = useWebMidi();
 
   useEffect(() => {
+    // websocket channel init
     const windowRef = window as any;
     const socket = new Socket("/socket", {
       params: { token: windowRef.userToken },
@@ -38,6 +39,9 @@ const RoomPage: React.FC = () => {
       setReadyToStartGame(true);
     });
     setGameChannel(channel);
+
+    // audio init
+    Tone.context.lookAhead = 0.01;
   }, []);
 
   const playerJoin = (event: string, payload: Object) => {

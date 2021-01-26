@@ -25,7 +25,8 @@ defmodule ProgressionsWeb.RoomChannel do
           %Note{
             duration: nil,
             instrument: nil,
-            key: nil
+            key: nil,
+            velocity: nil
           }
         ],
         timestep: nil
