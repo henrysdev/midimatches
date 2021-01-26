@@ -2,7 +2,7 @@
   "rooms": [
     {
       "server": {
-        "timestep_size": 10000,
+        "timestep_size": 50,
         "quantization_threshold": 0.5,
         "rounds_to_win": 2,
         "game_size_num_players": 4

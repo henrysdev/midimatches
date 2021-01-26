@@ -7,15 +7,18 @@ import { Game } from "./game/Game";
 import { PregameLobby } from "./pregame/PregameLobby";
 import { ToneAudioContext } from "../../../contexts";
 import * as Tone from "tone";
+import { useWebMidi } from "../../../hooks";
 
 const RoomPage: React.FC = () => {
   const [gameChannel, setGameChannel] = useState<Channel>();
   const [readyToStartGame, setReadyToStartGame] = useState<boolean>(false);
   const [musicianId, setMusicianId] = useState<string>();
+  const [midiInputs] = useWebMidi();
 
   useEffect(() => {
+    const windowRef = window as any;
     const socket = new Socket("/socket", {
-      params: { token: window.userToken },
+      params: { token: windowRef.userToken },
     });
     socket.connect();
     const path = window.location.pathname.split("/");
@@ -46,7 +49,7 @@ const RoomPage: React.FC = () => {
   };
 
   return readyToStartGame && !!gameChannel && !!musicianId ? (
-    <ToneAudioContext.Provider value={{ Tone }}>
+    <ToneAudioContext.Provider value={{ Tone, midiInputs }}>
       <Game gameChannel={gameChannel} musicianId={musicianId} />
     </ToneAudioContext.Provider>
   ) : (

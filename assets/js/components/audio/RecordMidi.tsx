@@ -1,6 +1,6 @@
 import _ from "lodash";
 import React, { useEffect, useRef, useState } from "react";
-import WebMidi from "webmidi";
+import { Input } from "webmidi";
 
 import { Keyboard } from ".";
 import { DEFAULT_SYNTH_CONFIG } from "../../constants";
@@ -37,7 +37,7 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
   playSample,
   setIsRecording,
 }) => {
-  const { Tone } = useToneAudioContext();
+  const { Tone, midiInputs } = useToneAudioContext();
 
   const [recordMidiState, _setRecordMidiState] = useState<RecordMidiState>(
     {} as RecordMidiState
@@ -100,29 +100,14 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
     setRecordMidiState({ recordedTimesteps: new Map(), isRecording: false });
   };
 
-  // init midi access on first render
+  // init midi event listeners on initial render
   useEffect(() => {
-    let midiInputs: any[] = [];
-    WebMidi.enable((error) => {
-      if (error) {
-        console.warn("WebMidi could not be enabled.");
-        return;
-      } else {
-        midiInputs = WebMidi.inputs;
-        midiInputs.forEach((input) => {
-          input.addListener("noteon", "all", (event) => handleNoteOn(event));
-          input.addListener("noteoff", "all", (event) => handleNoteOff(event));
-        });
-      }
-      console.log("WebMidi enabled.");
-      if (WebMidi.inputs.length === 0) {
-        // TODO handle properly
-        console.log("No MIDI inputs.");
-        return;
-      }
+    midiInputs.forEach((input: Input) => {
+      input.addListener("noteon", "all", (event) => handleNoteOn(event));
+      input.addListener("noteoff", "all", (event) => handleNoteOff(event));
     });
     return () => {
-      midiInputs.forEach((input) => {
+      midiInputs.forEach((input: Input) => {
         input.removeListener("noteon", "all");
         input.removeListener("noteoff", "all");
       });

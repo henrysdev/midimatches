@@ -1,4 +1,5 @@
 import * as Tone from "tone";
+import { Input } from "webmidi";
 
 export interface Note {
   instrument: string;
@@ -78,6 +79,7 @@ export interface GameContextType {
 
 export interface ToneAudioContextType {
   Tone: any;
+  midiInputs: Input[];
 }
 
 type Seconds = number;
