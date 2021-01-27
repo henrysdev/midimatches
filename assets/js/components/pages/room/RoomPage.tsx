@@ -8,7 +8,6 @@ import { PregameLobby } from "./pregame/PregameLobby";
 import { ToneAudioContext } from "../../../contexts";
 import * as Tone from "tone";
 import { useWebMidi } from "../../../hooks";
-import { GameLayout } from "../../common";
 
 const RoomPage: React.FC = () => {
   const [gameChannel, setGameChannel] = useState<Channel>();
@@ -55,9 +54,7 @@ const RoomPage: React.FC = () => {
 
   return readyToStartGame && !!gameChannel && !!musicianId ? (
     <ToneAudioContext.Provider value={{ Tone, midiInputs }}>
-      <GameLayout>
-        <Game gameChannel={gameChannel} musicianId={musicianId} />
-      </GameLayout>
+      <Game gameChannel={gameChannel} musicianId={musicianId} />
     </ToneAudioContext.Provider>
   ) : (
     <PregameLobby pushMessageToChannel={playerJoin} />

@@ -27,6 +27,7 @@ import {
   useSamplePlayer,
   useToneAudioContext,
 } from "../../../../hooks";
+import { GameLayout } from "./GameLayout";
 
 interface GameProps {
   gameChannel: Channel;
@@ -70,51 +71,53 @@ const Game: React.FC<GameProps> = ({ gameChannel, musicianId }) => {
 
   return (
     <GameContext.Provider value={gameContext} key={currentView}>
-      {(() => {
-        switch (currentView) {
-          case GAME_VIEW.GAME_START:
-            return <GameStartView pushMessageToChannel={pushMessage} />;
+      <GameLayout>
+        {(() => {
+          switch (currentView) {
+            case GAME_VIEW.GAME_START:
+              return <GameStartView pushMessageToChannel={pushMessage} />;
 
-          case GAME_VIEW.ROUND_START:
-            return <RoundStartView pushMessageToChannel={pushMessage} />;
+            case GAME_VIEW.ROUND_START:
+              return <RoundStartView pushMessageToChannel={pushMessage} />;
 
-          case GAME_VIEW.RECORDING:
-            return (
-              <RecordingView
-                isContestant={
-                  !!gameContext.contestants
-                    ? gameContext.contestants.includes(musicianId)
-                    : false
-                }
-                pushMessageToChannel={pushMessage}
-                playSample={playSample}
-              />
-            );
+            case GAME_VIEW.RECORDING:
+              return (
+                <RecordingView
+                  isContestant={
+                    !!gameContext.contestants
+                      ? gameContext.contestants.includes(musicianId)
+                      : false
+                  }
+                  pushMessageToChannel={pushMessage}
+                  playSample={playSample}
+                />
+              );
 
-          case GAME_VIEW.PLAYBACK_VOTING:
-            return (
-              <PlaybackVotingView
-                isJudge={
-                  !!gameContext.judges
-                    ? gameContext.judges.includes(musicianId)
-                    : false
-                }
-                pushMessageToChannel={pushMessage}
-                contestants={
-                  !!gameContext.contestants ? gameContext.contestants : []
-                }
-                playSample={playSample}
-              />
-            );
+            case GAME_VIEW.PLAYBACK_VOTING:
+              return (
+                <PlaybackVotingView
+                  isJudge={
+                    !!gameContext.judges
+                      ? gameContext.judges.includes(musicianId)
+                      : false
+                  }
+                  pushMessageToChannel={pushMessage}
+                  contestants={
+                    !!gameContext.contestants ? gameContext.contestants : []
+                  }
+                  playSample={playSample}
+                />
+              );
 
-          case GAME_VIEW.ROUND_END:
-            return <RoundEndView />;
+            case GAME_VIEW.ROUND_END:
+              return <RoundEndView />;
 
-          case GAME_VIEW.GAME_END:
-            return <GameEndView />;
-        }
-      })()}
-      <ClientDebug musicianId={musicianId} />
+            case GAME_VIEW.GAME_END:
+              return <GameEndView />;
+          }
+        })()}
+        <ClientDebug musicianId={musicianId} />
+      </GameLayout>
     </GameContext.Provider>
   );
 };
