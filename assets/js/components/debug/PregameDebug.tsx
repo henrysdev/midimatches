@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 
-import { GameLayout, Instructions } from "../pages/room/game";
+import { GameLayout } from "../pages/room/game";
 import { GameContext } from "../../contexts";
+import { Instructions } from "../common";
 
 interface PregameDebugProps {}
 

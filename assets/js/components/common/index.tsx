@@ -3,3 +3,4 @@ export { Main } from "./Main";
 export { SimpleButton } from "./SimpleButton";
 export { Tournament } from "./Tournament";
 export { Timer } from "./Timer";
+export { Instructions } from "./Instructions";

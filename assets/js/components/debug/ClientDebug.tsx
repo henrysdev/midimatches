@@ -24,7 +24,7 @@ const ClientDebug: React.FC<ClientDebugProps> = ({ musicianId }) => {
       <DebugButton label="Start Playback" callback={() => playSample()} />
       <DebugButton label="Stop Playback" callback={() => stopSample()} /> */}
 
-      <pre>{JSON.stringify(gameContext, null, 2)}</pre>
+      {/* <pre>{JSON.stringify(gameContext, null, 2)}</pre> */}
     </div>
   );
 };

@@ -6,11 +6,15 @@ interface GameLayoutProps {
   children?: any;
 }
 const GameLayout: React.FC<GameLayoutProps> = ({ children }) => {
-  const { musicians } = useGameContext();
+  const { musicians, readyUps } = useGameContext();
   return (
     <div className="game_layout uk-background-muted">
       <div className="left_sidebar">
-        <Scoreboard musicianIds={musicians} />
+        <Scoreboard
+          musicianIds={musicians?.filter((musicianId) =>
+            readyUps.includes(musicianId)
+          )}
+        />
         <div className="settings_box">
           <h4 className="uk-heading-divider uk-text-center">
             <span>Statistics</span>
