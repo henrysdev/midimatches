@@ -16,7 +16,6 @@ export function useWebMidi(): WebMidiTuple {
       }
       console.log("WebMidi enabled.");
       if (WebMidi.inputs.length === 0) {
-        // TODO alert user no midi available OR use computer keyboard
         console.log("No MIDI inputs.");
         return;
       }

@@ -5,6 +5,7 @@
   max-height: 1200px;
   max-width: 1200px;
   padding: 8px;
+  border-radius: 4px;
 }
 
 /* left sidebar */
@@ -13,7 +14,8 @@
   flex-direction: column;
   min-width: 200px;
   padding: 8px;
-  border: 1px solid gray;
+  border: 1px solid black;
+  border-radius: 4px;
 }
 .game_layout .left_sidebar {
   flex-grow: 1;
@@ -23,6 +25,7 @@
 .game_content_container {
   border: 1px solid black;
   padding: 8px;
+  border-radius: 4px;
 }
 .game_layout .game_content_container {
   flex-grow: 6;
@@ -31,8 +34,9 @@
 /* players box */
 .players_box {
   height: 400px;
-  border: 1px solid green;
+  border: 1px solid black;
   padding: 8px;
+  border-radius: 4px;
 }
 .left_sidebar .players_box {
   flex-grow: 2;
@@ -41,8 +45,9 @@
 /* settings box */
 .settings_box {
   height: 200px;
-  border: 1px solid red;
+  border: 1px solid black;
   padding: 8px;
+  border-radius: 4px;
 }
 .left_sidebar .settings_box {
   flex-grow: 1;
