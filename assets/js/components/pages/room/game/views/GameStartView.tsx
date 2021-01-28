@@ -1,5 +1,10 @@
 import React from "react";
-import { SimpleButton, Instructions } from "../../../../common/index";
+import {
+  SimpleButton,
+  Instructions,
+  Title,
+  DynamicContent,
+} from "../../../../common/index";
 import { SUBMIT_READY_UP_EVENT } from "../../../../../constants/index";
 
 interface GameStartViewProps {
@@ -15,7 +20,8 @@ const GameStartView: React.FC<GameStartViewProps> = ({
 }) => {
   return (
     <div>
-      <Instructions title="Starting Game" description={desc}>
+      <Title title="Starting Game" />
+      <DynamicContent>
         <SimpleButton
           label="Ready Up"
           callback={() => {
@@ -23,7 +29,8 @@ const GameStartView: React.FC<GameStartViewProps> = ({
           }}
           disabled={false}
         />
-      </Instructions>
+      </DynamicContent>
+      <Instructions description={desc}></Instructions>
     </div>
   );
 };

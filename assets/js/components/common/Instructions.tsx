@@ -11,7 +11,7 @@ const Instructions: React.FC<InstructionsProps> = ({
   children,
 }) => {
   return (
-    <div className="uk-card uk-card-small uk-card-default uk-card-body">
+    <div className="game_content_instructions uk-card uk-card-small uk-card-default uk-card-body">
       {!!title ? (
         <div className="uk-card-title uk-text-center">{title}</div>
       ) : (

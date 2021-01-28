@@ -26,6 +26,22 @@
   flex-grow: 6;
 }
 
+/* game_content_dynamic */
+.game_content_dynamic {
+  margin-bottom: 8px;
+  min-height: 300px;
+  background-color: green;
+}
+
+/* game_content_instructions */
+.game_content_instructions {
+  background-color: red;
+  max-height: 220px;
+  overflow: scroll;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
 /* scoreboard */
 .scoreboard {
   height: 400px;

@@ -3,7 +3,13 @@ import React, { useEffect } from "react";
 import { SUBMIT_VOTE_EVENT } from "../../../../../constants";
 import { useGameContext, useToneAudioContext } from "../../../../../hooks";
 import { PlaybackAudio } from "../../../../audio";
-import { SimpleButton, Timer, Instructions } from "../../../../common";
+import {
+  SimpleButton,
+  Timer,
+  Instructions,
+  DynamicContent,
+  Title,
+} from "../../../../common";
 
 interface PlaybackVotingViewProps {
   isJudge: boolean;
@@ -50,7 +56,8 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
 
   return isJudge ? (
     <div>
-      <Instructions title="Playback and Voting" description={desc}>
+      <Title title="Playback Voting" />
+      <DynamicContent>
         {!!playbackVotingTimeout ? (
           <Timer
             descriptionText={"Voting ends in "}
@@ -89,7 +96,8 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
         ) : (
           <div>No recordings available</div>
         )}
-      </Instructions>
+      </DynamicContent>
+      <Instructions description={desc} />
     </div>
   ) : (
     <div>WAITING FOR VOTES...</div>

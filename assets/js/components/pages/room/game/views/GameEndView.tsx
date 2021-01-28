@@ -1,11 +1,15 @@
 import React from "react";
 
+import { Title, DynamicContent, Instructions } from "../../../../common";
+
 interface GameEndViewProps {}
 
 const GameEndView: React.FC<GameEndViewProps> = () => {
   return (
     <div>
-      <h3>GameEnd View</h3>
+      <Title title="End of Game" />
+      <DynamicContent />
+      <Instructions description="Game has ended" />
     </div>
   );
 };

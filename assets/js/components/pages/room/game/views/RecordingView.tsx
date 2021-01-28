@@ -6,7 +6,7 @@ import {
   DEFAULT_RECORDING_LENGTH,
 } from "../../../../../constants";
 import { RecordMidi } from "../../../../audio";
-import { Timer, Instructions } from "../../../../common";
+import { Timer, Instructions, Title, DynamicContent } from "../../../../common";
 import { secToMs } from "../../../../../utils";
 
 interface RecordingViewProps {
@@ -38,10 +38,8 @@ const RecordingView: React.FC<RecordingViewProps> = ({
 
   return isContestant ? (
     <div>
-      <Instructions
-        title="Improv Time"
-        description={`warm up on the sample before recording begins`}
-      >
+      <Title title="Time to Play!" />
+      <DynamicContent>
         {isRecording ? (
           <Timer
             key={`record-timer-${isRecording}`}
@@ -66,7 +64,10 @@ const RecordingView: React.FC<RecordingViewProps> = ({
           playSample={playSampleWithEffect}
           setIsRecording={setIsRecording}
         />
-      </Instructions>
+      </DynamicContent>
+      <Instructions
+        description={`warm up on the sample before recording begins`}
+      />
     </div>
   ) : (
     <div>WAITING FOR CONTESTANTS TO FINISH RECORDING...</div>
