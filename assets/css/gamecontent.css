@@ -1,0 +1,6 @@
+/* instructions */
+.instructions_text_box {
+  max-height: 300px;
+  overflow: scroll;
+  overflow: auto;
+}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Timer } from "../../../../common";
+import { Timer, Instructions } from "../../../../common";
 import { useGameContext } from "../../../../../hooks";
 
 interface RoundEndViewProps {}
@@ -21,16 +21,19 @@ const RoundEndView: React.FC<RoundEndViewProps> = () => {
 
   return (
     <div>
-      <h3>RoundEnd View</h3>
       {!!gameWinner ? (
-        <div>{`${winner.winnerId} won with ${winner.numVotes} votes`}</div>
+        <Instructions
+          title="Round End"
+          description={`Round over. ${winner.winnerId} won with ${winner.numVotes} votes`}
+        >
+          <Timer
+            descriptionText={"Next round starting in "}
+            duration={roundEndTimeout}
+          />
+        </Instructions>
       ) : (
         <></>
       )}
-      <Timer
-        descriptionText={"Next round starting in "}
-        duration={roundEndTimeout}
-      />
     </div>
   );
 };

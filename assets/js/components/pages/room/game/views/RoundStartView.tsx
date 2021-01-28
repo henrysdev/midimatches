@@ -1,10 +1,14 @@
 import React from "react";
-import { Timer } from "../../../../common";
+import { Timer, Instructions } from "../../../../common";
 import { useGameContext } from "../../../../../hooks";
 
 interface RoundStartViewProps {
   pushMessageToChannel: Function;
 }
+
+const desc = `
+You will be playing this round. A sample to play over has been picked.
+`;
 
 const RoundStartView: React.FC<RoundStartViewProps> = ({
   pushMessageToChannel,
@@ -16,11 +20,12 @@ const RoundStartView: React.FC<RoundStartViewProps> = ({
   } = useGameContext();
   return (
     <div>
-      <h3>RoundStart View</h3>
-      <Timer
-        descriptionText={"Faceoff starting in "}
-        duration={roundStartTimeout}
-      />
+      <Instructions title="Round Start" description={desc}>
+        <Timer
+          descriptionText={"Faceoff starting in "}
+          duration={roundStartTimeout}
+        />
+      </Instructions>
     </div>
   );
 };

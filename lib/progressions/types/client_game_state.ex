@@ -4,7 +4,8 @@ defmodule Progressions.Types.ClientGameState do
   """
 
   alias Progressions.{
-    Types.GameRules
+    Types.GameRules,
+    Types.Player
   }
 
   use TypedStruct
@@ -22,14 +23,15 @@ defmodule Progressions.Types.ClientGameState do
     field(:game_rules, %GameRules{}, default: %GameRules{})
 
     field(:game_view, game_view())
+    field(:players, list(Player.t()))
     field(:musicians, list(id))
     field(:num_votes_cast, integer())
     field(:ready_ups, list(id))
-    # TODO recordings type
     field(:recordings, any)
     field(:round_recording_start_time, integer())
     field(:winner, id())
     field(:contestants, list(id))
     field(:judges, list(id))
+    field(:round_num, integer())
   end
 end

@@ -6,7 +6,7 @@ import {
   DEFAULT_RECORDING_LENGTH,
 } from "../../../../../constants";
 import { RecordMidi } from "../../../../audio";
-import { Timer } from "../../../../common";
+import { Timer, Instructions } from "../../../../common";
 import { secToMs } from "../../../../../utils";
 
 interface RecordingViewProps {
@@ -38,31 +38,35 @@ const RecordingView: React.FC<RecordingViewProps> = ({
 
   return isContestant ? (
     <div>
-      <h3>Recording View</h3>
-      {isRecording ? (
-        <Timer
-          key={`record-timer-${isRecording}`}
-          descriptionText={"Recording ends in "}
-          duration={secToMs(DEFAULT_RECORDING_LENGTH)}
-        />
-      ) : (
-        <></>
-      )}
-      {isSamplePlaying && !isRecording ? (
-        <Timer
-          key={`sample-timer-${isSamplePlaying}`}
-          descriptionText={"Recording starts in "}
-          duration={secToMs(DEFAULT_SAMPLE_LENGTH)}
-        />
-      ) : (
-        <></>
-      )}
+      <Instructions
+        title="Improv Time"
+        description={`warm up on the sample before recording begins`}
+      >
+        {isRecording ? (
+          <Timer
+            key={`record-timer-${isRecording}`}
+            descriptionText={"Recording ends in "}
+            duration={secToMs(DEFAULT_RECORDING_LENGTH)}
+          />
+        ) : (
+          <></>
+        )}
+        {isSamplePlaying && !isRecording ? (
+          <Timer
+            key={`sample-timer-${isSamplePlaying}`}
+            descriptionText={"Recording starts in "}
+            duration={secToMs(DEFAULT_SAMPLE_LENGTH)}
+          />
+        ) : (
+          <></>
+        )}
 
-      <RecordMidi
-        submitRecording={submitRecording}
-        playSample={playSampleWithEffect}
-        setIsRecording={setIsRecording}
-      />
+        <RecordMidi
+          submitRecording={submitRecording}
+          playSample={playSampleWithEffect}
+          setIsRecording={setIsRecording}
+        />
+      </Instructions>
     </div>
   ) : (
     <div>WAITING FOR CONTESTANTS TO FINISH RECORDING...</div>

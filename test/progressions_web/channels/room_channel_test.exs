@@ -96,8 +96,11 @@ defmodule ProgressionsWeb.RoomChannelTest do
   #   assert_push("view_update", %{})
   # end
 
-  defp enter_room({:ok, params, socket}) do
-    push(socket, "musician_enter_room", %{})
+  defp enter_room({:ok, params, socket}, player_alias \\ "foo") do
+    push(socket, "musician_enter_room", %{
+      player_alias: player_alias
+    })
+
     {:ok, params, socket}
   end
 

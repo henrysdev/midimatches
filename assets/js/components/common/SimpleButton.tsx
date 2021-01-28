@@ -11,7 +11,11 @@ const SimpleButton: React.FC<SimpleButtonProps> = ({
   callback,
 }) => {
   return (
-    <button disabled={disabled} onClick={() => callback()}>
+    <button
+      className="uk-button uk-button-default"
+      disabled={disabled}
+      onClick={() => callback()}
+    >
       {label}
     </button>
   );

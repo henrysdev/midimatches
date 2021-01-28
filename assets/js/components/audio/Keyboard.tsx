@@ -23,7 +23,7 @@ const Keyboard: React.FC<KeyboardProps> = ({
       stopNote={(midiNumber: number) => stopNote(midiNumber)}
       onPlayNoteInput={() => {}}
       onStopNoteInput={() => {}}
-      width={1000}
+      width={600}
     />
   );
 };

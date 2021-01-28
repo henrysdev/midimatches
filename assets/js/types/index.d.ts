@@ -19,9 +19,9 @@ export interface Loop {
   timestepSlices: TimestepSlice[];
 }
 
-export interface Musician {
+export interface Player {
   musicianId: string;
-  loop: Loop;
+  playerAlias: string;
 }
 
 export interface MIDINoteEvent {
@@ -44,7 +44,7 @@ export interface ViewUpdatePayload {
 }
 
 export interface PlayerJoinPayload {
-  musicianId: string;
+  player: Player;
 }
 
 export interface ViewTimeouts {
@@ -69,7 +69,7 @@ export interface GameContextType {
 
   // dynamic fields
   gameView: string;
-  musicians?: string[];
+  players?: Player[];
   numVotesCast?: number;
   readyUps?: any;
   recordings?: Object;
@@ -77,6 +77,7 @@ export interface GameContextType {
   winner?: any;
   contestants?: string[];
   judges?: string[];
+  roundNum: number;
 }
 
 export interface ToneAudioContextType {

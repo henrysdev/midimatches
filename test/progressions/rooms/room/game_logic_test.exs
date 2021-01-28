@@ -4,7 +4,8 @@ defmodule Progressions.GameLogicTest do
   alias Progressions.{
     Rooms.Room.GameLogic,
     Rooms.Room.GameServer,
-    TestHelpers
+    TestHelpers,
+    Types.Player
   }
 
   setup do
@@ -14,10 +15,31 @@ defmodule Progressions.GameLogicTest do
 
   describe "ready up" do
     test "all musicians and advance to next game view" do
+      players =
+        MapSet.new([
+          %Player{
+            musician_id: "1",
+            player_alias: "foo"
+          },
+          %Player{
+            musician_id: "2",
+            player_alias: "zoo"
+          },
+          %Player{
+            musician_id: "3",
+            player_alias: "fee"
+          },
+          %Player{
+            musician_id: "4",
+            player_alias: "fum"
+          }
+        ])
+
       musicians = MapSet.new(["1", "2", "3", "4"])
 
       game_server_state = %GameServer{
         room_id: "1",
+        players: players,
         musicians: musicians
       }
 
@@ -43,11 +65,32 @@ defmodule Progressions.GameLogicTest do
     end
 
     test "handles duplicate ready up case" do
+      players =
+        MapSet.new([
+          %Player{
+            musician_id: "1",
+            player_alias: "foo"
+          },
+          %Player{
+            musician_id: "2",
+            player_alias: "zoo"
+          },
+          %Player{
+            musician_id: "3",
+            player_alias: "fee"
+          },
+          %Player{
+            musician_id: "4",
+            player_alias: "fum"
+          }
+        ])
+
       musicians = MapSet.new(["1", "2", "3", "4"])
       duped_ready_ups = ["1", "1", "3", "1"]
 
       game_server_state = %GameServer{
         room_id: "1",
+        players: players,
         musicians: musicians
       }
 
@@ -75,11 +118,32 @@ defmodule Progressions.GameLogicTest do
 
   describe "recordings" do
     test "are submitted from all contestants and game view advances" do
+      players =
+        MapSet.new([
+          %Player{
+            musician_id: "1",
+            player_alias: "foo"
+          },
+          %Player{
+            musician_id: "2",
+            player_alias: "zoo"
+          },
+          %Player{
+            musician_id: "3",
+            player_alias: "fee"
+          },
+          %Player{
+            musician_id: "4",
+            player_alias: "fum"
+          }
+        ])
+
       musicians = MapSet.new(["1", "2", "3", "4"])
       event_payloads = [{"1", %{"a" => "foo"}}, {"2", %{"b" => "bar"}}]
 
       game_server_state = %GameServer{
         room_id: "1",
+        players: players,
         musicians: musicians,
         game_view: :recording,
         contestants: ["1", "2"]
@@ -107,6 +171,26 @@ defmodule Progressions.GameLogicTest do
 
   describe "cast votes" do
     test "are submitted from all judges and game view advances" do
+      players =
+        MapSet.new([
+          %Player{
+            musician_id: "1",
+            player_alias: "foo"
+          },
+          %Player{
+            musician_id: "2",
+            player_alias: "zoo"
+          },
+          %Player{
+            musician_id: "3",
+            player_alias: "fee"
+          },
+          %Player{
+            musician_id: "4",
+            player_alias: "fum"
+          }
+        ])
+
       contestants = ["1", "2"]
       judges = ["3", "4"]
       musicians = MapSet.new(contestants ++ judges)
@@ -114,6 +198,7 @@ defmodule Progressions.GameLogicTest do
 
       game_server_state = %GameServer{
         room_id: "1",
+        players: players,
         musicians: musicians,
         game_view: :playback_voting,
         contestants: ["1", "2"],
@@ -139,6 +224,26 @@ defmodule Progressions.GameLogicTest do
     end
 
     test "have invalid votes that are not counted" do
+      players =
+        MapSet.new([
+          %Player{
+            musician_id: "1",
+            player_alias: "foo"
+          },
+          %Player{
+            musician_id: "2",
+            player_alias: "zoo"
+          },
+          %Player{
+            musician_id: "3",
+            player_alias: "fee"
+          },
+          %Player{
+            musician_id: "4",
+            player_alias: "fum"
+          }
+        ])
+
       contestants = ["1", "2"]
       judges = ["3", "4"]
       musicians = MapSet.new(contestants ++ judges)
@@ -146,6 +251,7 @@ defmodule Progressions.GameLogicTest do
 
       game_server_state = %GameServer{
         room_id: "1",
+        players: players,
         musicians: musicians,
         game_view: :playback_voting,
         contestants: contestants,

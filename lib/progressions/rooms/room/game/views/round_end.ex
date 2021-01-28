@@ -21,9 +21,11 @@ defmodule Progressions.Rooms.Room.Game.Views.RoundEnd do
   def reset_round(%GameServer{
         room_id: room_id,
         game_rules: game_rules,
+        players: players,
         musicians: musicians,
         bracket: bracket,
-        view_counter: view_counter
+        view_counter: view_counter,
+        round_num: round_num
       }) do
     [contestants | _rest] = Bracket.remaining_matches(bracket)
 
@@ -36,11 +38,13 @@ defmodule Progressions.Rooms.Room.Game.Views.RoundEnd do
       game_view: :round_start,
       room_id: room_id,
       game_rules: game_rules,
+      players: players,
       musicians: musicians,
       bracket: bracket,
       view_counter: view_counter,
       contestants: contestants,
-      judges: judges
+      judges: judges,
+      round_num: round_num + 1
     }
   end
 end

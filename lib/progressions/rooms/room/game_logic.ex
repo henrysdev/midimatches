@@ -7,7 +7,8 @@ defmodule Progressions.Rooms.Room.GameLogic do
     Rooms.Room.Game.Bracket,
     Rooms.Room.Game.Views,
     Rooms.Room.GameServer,
-    Types.GameRules
+    Types.GameRules,
+    Types.Player
   }
 
   require Logger
@@ -19,9 +20,14 @@ defmodule Progressions.Rooms.Room.GameLogic do
           state: %GameServer{}
         }
 
-  @spec start_game(%GameRules{}, list(id), id()) :: %GameServer{}
-  def start_game(game_rules, musicians, room_id) do
-    bracket = Bracket.new_bracket(musicians)
+  @spec start_game(%GameRules{}, MapSet.t(Player), id()) :: %GameServer{}
+  def start_game(game_rules, players, room_id) do
+    musicians_list =
+      players
+      |> MapSet.to_list()
+      |> Enum.map(& &1.musician_id)
+
+    bracket = Bracket.new_bracket(musicians_list)
 
     [contestants | judges] = Bracket.remaining_matches(bracket)
     judges = Enum.flat_map(judges, & &1)
@@ -29,7 +35,8 @@ defmodule Progressions.Rooms.Room.GameLogic do
     %GameServer{
       room_id: room_id,
       game_rules: game_rules,
-      musicians: musicians,
+      players: players,
+      musicians: MapSet.new(musicians_list),
       bracket: bracket,
       game_view: :game_start,
       contestants: contestants,

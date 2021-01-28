@@ -30,7 +30,8 @@ defmodule Progressions.Rooms.Room.GameServer do
 
   typedstruct do
     field(:game_rules, %GameRules{}, default: %GameRules{})
-    field(:musicians, %MapSet{}, enforce: true)
+    field(:musicians, MapSet.t(id()), enforce: true)
+    field(:players, MapSet.t(Player), enforce: true)
     field(:room_id, id(), enforce: true)
 
     field(:game_view, game_view(), default: :game_start)
@@ -43,6 +44,7 @@ defmodule Progressions.Rooms.Room.GameServer do
     field(:recordings, %{required(id()) => any}, default: %{})
     field(:votes, %{required(id()) => id()}, default: %{})
     field(:view_counter, integer(), default: 0)
+    field(:round_num, integer(), default: 1)
   end
 
   def start_link(args) do
@@ -51,18 +53,16 @@ defmodule Progressions.Rooms.Room.GameServer do
 
   @impl true
   def init(args) do
-    {room_id, musicians, game_rules} =
+    {room_id, players, game_rules} =
       case args do
-        [{room_id, musicians, game_rules}] -> {room_id, musicians, game_rules}
-        [{room_id, musicians}] -> {room_id, musicians, %GameRules{}}
+        [{room_id, players, game_rules}] -> {room_id, players, game_rules}
+        [{room_id, players}] -> {room_id, players, %GameRules{}}
       end
 
     Pids.register({:game_server, room_id}, self())
 
-    {:ok, GameLogic.start_game(game_rules, musicians, room_id)}
+    {:ok, GameLogic.start_game(game_rules, players, room_id)}
   end
-
-  # TODO split into API module [?]
 
   @spec get_current_view(pid()) :: atom()
   @doc """

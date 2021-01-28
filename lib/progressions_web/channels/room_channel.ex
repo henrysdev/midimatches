@@ -13,6 +13,7 @@ defmodule ProgressionsWeb.RoomChannel do
     Rooms.RoomServer,
     Types.Loop,
     Types.Note,
+    Types.Player,
     Types.TimestepSlice
   }
 
@@ -33,8 +34,6 @@ defmodule ProgressionsWeb.RoomChannel do
       }
     ]
   }
-
-  # TODO look into splitting up room channel and game channel (or maybe different topics?)
 
   intercept ["start_game", "view_update"]
 
@@ -59,18 +58,23 @@ defmodule ProgressionsWeb.RoomChannel do
     end
   end
 
-  # TODO rename message to be clear it is room-level not game-level
   def handle_in(
         "musician_enter_room",
-        _params,
+        %{"player_alias" => player_alias},
         %Phoenix.Socket{assigns: %{room_id: room_id}} = socket
       ) do
     room_server = Pids.fetch!({:room_server, room_id})
+
     musician_id = Persistence.gen_serial_id()
 
-    RoomServer.add_player(room_server, musician_id)
+    player = %Player{
+      musician_id: musician_id,
+      player_alias: player_alias
+    }
 
-    {:reply, {:ok, %{musician_id: musician_id}},
+    RoomServer.add_player(room_server, player)
+
+    {:reply, {:ok, %{player: player}},
      socket
      |> assign(room_server: room_server)
      |> assign(musician_id: musician_id)}
