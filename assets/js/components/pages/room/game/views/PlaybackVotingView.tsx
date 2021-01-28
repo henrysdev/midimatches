@@ -10,9 +10,9 @@ import {
   DynamicContent,
   Title,
 } from "../../../../common";
+import { shuffleArray } from "../../../../../utils";
 
 interface PlaybackVotingViewProps {
-  isJudge: boolean;
   pushMessageToChannel: Function;
   contestants: string[];
   playSample: Function;
@@ -25,7 +25,6 @@ you have heard all the recordings, you will be able to cast your vote.
 `;
 
 const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
-  isJudge,
   pushMessageToChannel,
   contestants,
   playSample,
@@ -54,7 +53,7 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
     }
   }, [recordings]);
 
-  return isJudge ? (
+  return (
     <div>
       <Title title="Playback Voting" />
       <DynamicContent>
@@ -67,7 +66,7 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
           <></>
         )}
         {!!recordings ? (
-          Object.entries(recordings).map(
+          shuffleArray(Object.entries(recordings)).map(
             ([musicianId, recording]: [string, any]) => {
               return (
                 <div key={`playback-${musicianId}`}>
@@ -99,8 +98,6 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
       </DynamicContent>
       <Instructions description={desc} />
     </div>
-  ) : (
-    <div>WAITING FOR VOTES...</div>
   );
 };
 export { PlaybackVotingView };

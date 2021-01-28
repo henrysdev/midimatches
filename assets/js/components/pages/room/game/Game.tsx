@@ -85,8 +85,10 @@ const Game: React.FC<GameProps> = ({ gameChannel, currMusicianId }) => {
               return (
                 <RecordingView
                   isContestant={
-                    !!gameContext.contestants
-                      ? gameContext.contestants.includes(currMusicianId)
+                    !!gameContext.players
+                      ? gameContext.players
+                          .map(({ musicianId }) => musicianId)
+                          .includes(currMusicianId)
                       : false
                   }
                   pushMessageToChannel={pushMessage}
@@ -97,11 +99,6 @@ const Game: React.FC<GameProps> = ({ gameChannel, currMusicianId }) => {
             case GAME_VIEW.PLAYBACK_VOTING:
               return (
                 <PlaybackVotingView
-                  isJudge={
-                    !!gameContext.judges
-                      ? gameContext.judges.includes(currMusicianId)
-                      : false
-                  }
                   pushMessageToChannel={pushMessage}
                   contestants={
                     !!gameContext.contestants ? gameContext.contestants : []

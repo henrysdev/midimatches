@@ -47,6 +47,12 @@ export interface PlayerJoinPayload {
   player: Player;
 }
 
+interface PlayerScore {
+  playerScore: number;
+  playerRank: number;
+}
+export type PlayerData = Player & PlayerScore;
+
 export interface ViewTimeouts {
   roundStart: Milliseconds;
   recording?: Milliseconds;
@@ -76,8 +82,8 @@ export interface GameContextType {
   roundRecordingStartTime?: number;
   winner?: any;
   contestants?: string[];
-  judges?: string[];
   roundNum: number;
+  scores: any;
 }
 
 export interface ToneAudioContextType {

@@ -31,6 +31,7 @@ defmodule Progressions.Rooms.Room.Game.Views.RoundEnd do
         musicians: musicians,
         contestants: contestants,
         view_counter: view_counter,
+        scores: scores,
         round_num: round_num
       }) do
     %GameServer{
@@ -41,6 +42,7 @@ defmodule Progressions.Rooms.Room.Game.Views.RoundEnd do
       musicians: musicians,
       view_counter: view_counter,
       contestants: contestants,
+      scores: scores,
       round_num: round_num + 1
     }
   end

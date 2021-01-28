@@ -61,29 +61,7 @@
   flex-grow: 1;
 }
 
-/* player_row */
-.player_row {
-  display: flex;
-  flex-direction: row;
-}
-.player_row_name {
-  background-color: antiquewhite;
-  padding: 8px;
-  width: 100px;
-}
-.player_row_score {
-  background-color: white;
-  padding: 8px;
-}
-.player_row .player_row_score {
-  flex-grow: 1;
-}
+/* player_row_rank */
 .player_row_rank {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  margin-left: 8px;
-  position: absolute;
-}
-.player_row_rank h5 {
-  font-weight: bold;
+  width: 20px;
 }

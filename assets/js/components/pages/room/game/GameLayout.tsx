@@ -7,7 +7,7 @@ interface GameLayoutProps {
   children?: any;
 }
 const GameLayout: React.FC<GameLayoutProps> = ({ children }) => {
-  const { players, readyUps, roundNum } = useGameContext();
+  const { players, readyUps, roundNum, scores } = useGameContext();
   return (
     <div className="game_layout uk-background-muted">
       <div className="left_sidebar">
@@ -21,6 +21,7 @@ const GameLayout: React.FC<GameLayoutProps> = ({ children }) => {
                 : players
               : ([] as Player[])
           }
+          scores={scores}
         />
         <div className="settings_box">
           <h4 className="uk-heading-divider uk-text-center">

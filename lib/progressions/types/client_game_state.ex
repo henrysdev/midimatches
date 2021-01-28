@@ -31,7 +31,7 @@ defmodule Progressions.Types.ClientGameState do
     field(:round_recording_start_time, integer())
     field(:winner, id())
     field(:contestants, list(id))
-    field(:judges, list(id))
     field(:round_num, integer())
+    field(:scores, any)
   end
 end

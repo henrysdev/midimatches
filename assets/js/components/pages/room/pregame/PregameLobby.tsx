@@ -66,7 +66,7 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
           )}
         </form>
       )}
-      {/* <PregameDebug /> */}
+      <PregameDebug />
     </div>
   );
 };

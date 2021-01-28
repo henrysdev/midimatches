@@ -28,7 +28,14 @@ const PregameDebug: React.FC<PregameDebugProps> = ({}) => {
       <GameContext.Provider
         value={{
           readyUps: [],
-          players: [{ playerAlias: "xb4z", musicianId: "1199" }],
+          players: [
+            { playerAlias: "xb4z", musicianId: "1199" },
+            { playerAlias: "fearz123", musicianId: "1111" },
+          ],
+          scores: {
+            fearz123: 0,
+            xb4z: 2,
+          },
         }}
       >
         <GameLayout>
