@@ -19,9 +19,9 @@ export interface Loop {
   timestepSlices: TimestepSlice[];
 }
 
-export interface Musician {
+export interface Player {
   musicianId: string;
-  loop: Loop;
+  playerName: string;
 }
 
 export interface MIDINoteEvent {
@@ -44,7 +44,7 @@ export interface ViewUpdatePayload {
 }
 
 export interface PlayerJoinPayload {
-  musicianId: string;
+  player: Player;
 }
 
 export interface ViewTimeouts {

@@ -1,13 +1,34 @@
 defmodule Progressions.PlaybackVotingTest do
   use ExUnit.Case
 
-  alias Progressions.Rooms.Room.{
-    Game.Bracket,
-    Game.Views.PlaybackVoting,
-    GameServer
+  alias Progressions.{
+    Rooms.Room.Game.Bracket,
+    Rooms.Room.Game.Views.PlaybackVoting,
+    Rooms.Room.GameServer,
+    Types.Player
   }
 
   test "advance view through entirely simulated votes" do
+    players =
+      MapSet.new([
+        %Player{
+          musician_id: "1",
+          player_alias: "foo"
+        },
+        %Player{
+          musician_id: "2",
+          player_alias: "zoo"
+        },
+        %Player{
+          musician_id: "3",
+          player_alias: "fee"
+        },
+        %Player{
+          musician_id: "4",
+          player_alias: "fum"
+        }
+      ])
+
     contestants = ["1", "2"]
     judges = ["3", "4"]
     musicians = MapSet.new(contestants ++ judges)
@@ -21,6 +42,7 @@ defmodule Progressions.PlaybackVotingTest do
 
     game_server_state = %GameServer{
       room_id: "1",
+      players: players,
       musicians: musicians,
       game_view: :playback_voting,
       contestants: contestants,

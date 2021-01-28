@@ -21,6 +21,7 @@ defmodule Progressions.Rooms.Room.Game.Views.RoundEnd do
   def reset_round(%GameServer{
         room_id: room_id,
         game_rules: game_rules,
+        players: players,
         musicians: musicians,
         bracket: bracket,
         view_counter: view_counter
@@ -36,6 +37,7 @@ defmodule Progressions.Rooms.Room.Game.Views.RoundEnd do
       game_view: :round_start,
       room_id: room_id,
       game_rules: game_rules,
+      players: players,
       musicians: musicians,
       bracket: bracket,
       view_counter: view_counter,

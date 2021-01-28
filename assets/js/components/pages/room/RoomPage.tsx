@@ -2,7 +2,7 @@ import { Channel, Socket } from "phoenix";
 import React, { useEffect, useState } from "react";
 
 import { unmarshalBody } from "../../../utils";
-import { PlayerJoinPayload } from "../../../types";
+import { PlayerJoinPayload, Player } from "../../../types";
 import { Game } from "./game/Game";
 import { PregameLobby } from "./pregame/PregameLobby";
 import { ToneAudioContext } from "../../../contexts";
@@ -12,7 +12,7 @@ import { useWebMidi } from "../../../hooks";
 const RoomPage: React.FC = () => {
   const [gameChannel, setGameChannel] = useState<Channel>();
   const [readyToStartGame, setReadyToStartGame] = useState<boolean>(false);
-  const [musicianId, setMusicianId] = useState<string>();
+  const [currPlayer, setCurrPlayer] = useState<Player>();
   const [midiInputs] = useWebMidi();
 
   useEffect(() => {
@@ -46,15 +46,15 @@ const RoomPage: React.FC = () => {
   const playerJoin = (event: string, payload: Object) => {
     if (!!gameChannel) {
       gameChannel.push(event, payload).receive("ok", (reply) => {
-        const { musicianId } = unmarshalBody(reply) as PlayerJoinPayload;
-        setMusicianId(musicianId);
+        const { player } = unmarshalBody(reply) as PlayerJoinPayload;
+        setCurrPlayer(player);
       });
     }
   };
 
-  return readyToStartGame && !!gameChannel && !!musicianId ? (
+  return readyToStartGame && !!gameChannel && !!currPlayer ? (
     <ToneAudioContext.Provider value={{ Tone, midiInputs }}>
-      <Game gameChannel={gameChannel} musicianId={musicianId} />
+      <Game gameChannel={gameChannel} musicianId={currPlayer.musicianId} />
     </ToneAudioContext.Provider>
   ) : (
     <PregameLobby pushMessageToChannel={playerJoin} />

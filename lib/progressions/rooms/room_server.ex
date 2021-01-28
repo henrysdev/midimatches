@@ -12,7 +12,8 @@ defmodule Progressions.Rooms.RoomServer do
   alias Progressions.{
     Pids,
     Rooms.Room.Game,
-    Types.GameRules
+    Types.GameRules,
+    Types.Player
   }
 
   @type id() :: String.t()
@@ -20,7 +21,7 @@ defmodule Progressions.Rooms.RoomServer do
 
   typedstruct do
     field(:room_id, id(), enforce: true)
-    field(:players, %MapSet{}, default: MapSet.new())
+    field(:players, MapSet.t(Player), default: MapSet.new())
     field(:game_config, %GameRules{})
     field(:game, pid)
   end
@@ -46,7 +47,7 @@ defmodule Progressions.Rooms.RoomServer do
      }}
   end
 
-  @spec add_player(pid(), id()) :: :ok
+  @spec add_player(pid(), %Player{}) :: :ok
   def add_player(pid, player) do
     GenServer.call(pid, {:add_player, player})
   end
@@ -56,7 +57,7 @@ defmodule Progressions.Rooms.RoomServer do
     GenServer.call(pid, {:drop_player, player})
   end
 
-  @spec get_players(pid()) :: %MapSet{}
+  @spec get_players(pid()) :: MapSet.t(Player)
   def get_players(pid) do
     GenServer.call(pid, :get_players)
   end
@@ -95,11 +96,11 @@ defmodule Progressions.Rooms.RoomServer do
 
   @impl true
   def handle_call(
-        {:drop_player, player},
+        {:drop_player, player_id},
         _from,
         %RoomServer{players: players, room_id: _room_id, game: game} = state
       ) do
-    state = %RoomServer{state | players: MapSet.delete(players, player)}
+    state = %RoomServer{state | players: MapSet.delete(players, player_id)}
 
     if is_nil(game) do
       # TODO comm with game_server: player has dropped, replace with bot

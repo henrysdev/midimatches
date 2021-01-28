@@ -51,7 +51,7 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
               label="Join Room"
               callback={() => {
                 pushMessageToChannel(SUBMIT_ENTER_ROOM, {
-                  playerName: alias,
+                  player_alias: alias,
                 });
                 setHasJoined(true);
               }}
