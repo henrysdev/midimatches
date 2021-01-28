@@ -21,7 +21,7 @@ export interface Loop {
 
 export interface Player {
   musicianId: string;
-  playerName: string;
+  playerAlias: string;
 }
 
 export interface MIDINoteEvent {
@@ -69,7 +69,7 @@ export interface GameContextType {
 
   // dynamic fields
   gameView: string;
-  musicians?: string[];
+  players?: Player[];
   numVotesCast?: number;
   readyUps?: any;
   recordings?: Object;
@@ -77,6 +77,7 @@ export interface GameContextType {
   winner?: any;
   contestants?: string[];
   judges?: string[];
+  roundNum: number;
 }
 
 export interface ToneAudioContextType {

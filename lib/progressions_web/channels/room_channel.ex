@@ -35,8 +35,6 @@ defmodule ProgressionsWeb.RoomChannel do
     ]
   }
 
-  # TODO look into splitting up room channel and game channel (or maybe different topics?)
-
   intercept ["start_game", "view_update"]
 
   def handle_out("view_update", msg, socket) do

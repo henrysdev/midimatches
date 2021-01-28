@@ -31,13 +31,14 @@ import { GameLayout } from "./GameLayout";
 
 interface GameProps {
   gameChannel: Channel;
-  musicianId: string;
+  currMusicianId: string;
 }
 
-const Game: React.FC<GameProps> = ({ gameChannel, musicianId }) => {
+const Game: React.FC<GameProps> = ({ gameChannel, currMusicianId }) => {
   const [currentView, gameContext, pushMessage] = useGameServerState(
     gameChannel
   );
+  console.log("GAME CONTEXT ", gameContext);
   const { Tone } = useToneAudioContext();
   const [loadSample, playSample, stopSample] = useSamplePlayer(Tone);
 
@@ -85,7 +86,7 @@ const Game: React.FC<GameProps> = ({ gameChannel, musicianId }) => {
                 <RecordingView
                   isContestant={
                     !!gameContext.contestants
-                      ? gameContext.contestants.includes(musicianId)
+                      ? gameContext.contestants.includes(currMusicianId)
                       : false
                   }
                   pushMessageToChannel={pushMessage}
@@ -98,7 +99,7 @@ const Game: React.FC<GameProps> = ({ gameChannel, musicianId }) => {
                 <PlaybackVotingView
                   isJudge={
                     !!gameContext.judges
-                      ? gameContext.judges.includes(musicianId)
+                      ? gameContext.judges.includes(currMusicianId)
                       : false
                   }
                   pushMessageToChannel={pushMessage}
@@ -116,7 +117,7 @@ const Game: React.FC<GameProps> = ({ gameChannel, musicianId }) => {
               return <GameEndView />;
           }
         })()}
-        <ClientDebug musicianId={musicianId} />
+        <ClientDebug musicianId={currMusicianId} />
       </GameLayout>
     </GameContext.Provider>
   );

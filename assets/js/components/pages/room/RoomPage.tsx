@@ -54,7 +54,7 @@ const RoomPage: React.FC = () => {
 
   return readyToStartGame && !!gameChannel && !!currPlayer ? (
     <ToneAudioContext.Provider value={{ Tone, midiInputs }}>
-      <Game gameChannel={gameChannel} musicianId={currPlayer.musicianId} />
+      <Game gameChannel={gameChannel} currMusicianId={currPlayer.musicianId} />
     </ToneAudioContext.Provider>
   ) : (
     <PregameLobby pushMessageToChannel={playerJoin} />

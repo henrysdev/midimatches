@@ -44,6 +44,7 @@ defmodule Progressions.Rooms.Room.GameServer do
     field(:recordings, %{required(id()) => any}, default: %{})
     field(:votes, %{required(id()) => id()}, default: %{})
     field(:view_counter, integer(), default: 0)
+    field(:round_num, integer(), default: 1)
   end
 
   def start_link(args) do

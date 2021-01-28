@@ -24,7 +24,8 @@ defmodule Progressions.Rooms.Room.Game.Views.RoundEnd do
         players: players,
         musicians: musicians,
         bracket: bracket,
-        view_counter: view_counter
+        view_counter: view_counter,
+        round_num: round_num
       }) do
     [contestants | _rest] = Bracket.remaining_matches(bracket)
 
@@ -42,7 +43,8 @@ defmodule Progressions.Rooms.Room.Game.Views.RoundEnd do
       bracket: bracket,
       view_counter: view_counter,
       contestants: contestants,
-      judges: judges
+      judges: judges,
+      round_num: round_num + 1
     }
   end
 end

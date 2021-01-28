@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 import { SUBMIT_ENTER_ROOM, SUBMIT_LEAVE_ROOM } from "../../../../constants";
 import { SimpleButton, Instructions } from "../../../common";
+import { PregameDebug } from "../../../debug";
 
 interface PregameLobbyProps {
   pushMessageToChannel: Function;
@@ -67,6 +68,7 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
           </form>
         )}
       </Instructions>
+      <PregameDebug />
     </div>
   );
 };

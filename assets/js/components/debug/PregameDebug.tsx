@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { GameLayout } from "../pages/room/game";
 import { GameContext } from "../../contexts";
 import { Instructions } from "../common";
+import { Keyboard } from "../audio";
 
 interface PregameDebugProps {}
 
@@ -22,17 +23,22 @@ diam interdum ut.
 const PregameDebug: React.FC<PregameDebugProps> = ({}) => {
   return (
     <div>
-      <GameContext.Provider
+      {/* <GameContext.Provider
         value={{
-          musicians: ["xb4z", "fear this team", "__kai__", "favtowin"],
+          readyUps: [],
+          players: [{playerAlias: "xb4z", musicianId: "1199"}],
         }}
       >
         <GameLayout>
           <Instructions title={"Game Start"} description={desc}>
-            <div style={{ border: "1px solid black" }}>ajlaksd</div>
+            <Keyboard
+              activeMidiList={[]}
+              playNote={() => {}}
+              stopNote={() => {}}
+            />
           </Instructions>
         </GameLayout>
-      </GameContext.Provider>
+      </GameContext.Provider> */}
     </div>
   );
 };

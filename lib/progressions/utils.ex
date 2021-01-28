@@ -38,6 +38,10 @@ defmodule Progressions.Utils do
       server_state.musicians
       |> MapSet.to_list()
 
+    players_list =
+      server_state.players
+      |> MapSet.to_list()
+
     ready_ups_list =
       server_state.ready_ups
       |> MapSet.to_list()
@@ -61,6 +65,7 @@ defmodule Progressions.Utils do
 
       # dynamic fields
       game_view: server_state.game_view,
+      players: players_list,
       musicians: musicians_list,
       num_votes_cast: num_votes_cast,
       ready_ups: ready_ups_list,
@@ -68,7 +73,8 @@ defmodule Progressions.Utils do
       round_recording_start_time: server_state.round_recording_start_time,
       winner: winner,
       contestants: server_state.contestants,
-      judges: server_state.judges
+      judges: server_state.judges,
+      round_num: server_state.round_num
     }
   end
 end

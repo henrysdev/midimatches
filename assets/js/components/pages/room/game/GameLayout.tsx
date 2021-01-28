@@ -1,19 +1,26 @@
 import React from "react";
 import { useGameContext } from "../../../../hooks";
 import { Scoreboard } from "./Scoreboard";
+import { Player } from "../../../../types";
 
 interface GameLayoutProps {
   children?: any;
 }
 const GameLayout: React.FC<GameLayoutProps> = ({ children }) => {
-  const { musicians, readyUps } = useGameContext();
+  const { players, readyUps, roundNum } = useGameContext();
   return (
     <div className="game_layout uk-background-muted">
       <div className="left_sidebar">
         <Scoreboard
-          musicianIds={musicians?.filter((musicianId) =>
-            readyUps.includes(musicianId)
-          )}
+          players={
+            !!players
+              ? roundNum === 1
+                ? players.filter((player) =>
+                    readyUps.includes(player.musicianId)
+                  )
+                : players
+              : ([] as Player[])
+          }
         />
         <div className="settings_box">
           <h4 className="uk-heading-divider uk-text-center">

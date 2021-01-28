@@ -84,7 +84,8 @@ defmodule Progressions.RoundEndTest do
       round_recording_start_time: 0,
       view_counter: 0,
       votes: %{},
-      winner: nil
+      winner: nil,
+      round_num: 2
     }
 
     assert actual_game_state == expected_game_state
