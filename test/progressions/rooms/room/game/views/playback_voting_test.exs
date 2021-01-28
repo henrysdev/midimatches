@@ -42,7 +42,7 @@ defmodule Progressions.PlaybackVotingTest do
 
     %GameServer{
       votes: votes,
-      winner: {winner, _vote_count}
+      winner: nil
     } = PlaybackVoting.advance_view(game_server_state)
 
     expected_contestants =
@@ -51,6 +51,45 @@ defmodule Progressions.PlaybackVotingTest do
       |> Enum.map(&Enum.member?(contestants, &1))
 
     assert expected_contestants == [true, true, true, true]
-    assert Enum.member?(contestants, winner)
+  end
+
+  test "update scores accuractely" do
+    players =
+      MapSet.new([
+        %Player{
+          musician_id: "1",
+          player_alias: "foo"
+        },
+        %Player{
+          musician_id: "2",
+          player_alias: "zoo"
+        },
+        %Player{
+          musician_id: "3",
+          player_alias: "fee"
+        },
+        %Player{
+          musician_id: "4",
+          player_alias: "fum"
+        }
+      ])
+
+    contestants = ["1", "2", "3", "4"]
+    musicians = MapSet.new(contestants)
+
+    game_server_state = %GameServer{
+      room_id: "1",
+      players: players,
+      musicians: musicians,
+      game_view: :playback_voting,
+      contestants: contestants,
+      scores: %{"1" => 3, "2" => 0, "3" => 1, "4" => 0},
+      votes: %{"1" => "2", "2" => "4", "4" => "2", "3" => "1"}
+    }
+
+    actual_scores = PlaybackVoting.update_scores(game_server_state).scores
+    expected_scores = %{"1" => 4, "2" => 2, "3" => 1, "4" => 1}
+
+    assert actual_scores == expected_scores
   end
 end

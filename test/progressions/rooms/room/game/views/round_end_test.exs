@@ -101,6 +101,8 @@ defmodule Progressions.RoundEndTest do
     contestants = ["1", "2", "3", "4"]
     musicians = MapSet.new(contestants)
 
+    scores = %{"1" => 0, "2" => 4, "3" => 2, "4" => 2}
+
     game_server_state = %GameServer{
       room_id: "1",
       players: players,
@@ -108,7 +110,8 @@ defmodule Progressions.RoundEndTest do
       game_view: :round_end,
       contestants: contestants,
       recordings: %{},
-      winner: "2",
+      scores: scores,
+      winner: nil,
       round_num: 3
     }
 
@@ -116,7 +119,8 @@ defmodule Progressions.RoundEndTest do
 
     expected_game_state = %GameServer{
       game_server_state
-      | game_view: :game_end
+      | game_view: :game_end,
+        winner: {"2", 4}
     }
 
     assert actual_game_state == expected_game_state

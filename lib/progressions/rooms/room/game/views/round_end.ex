@@ -5,18 +5,21 @@ defmodule Progressions.Rooms.Room.Game.Views.RoundEnd do
 
   alias Progressions.Rooms.Room.GameServer
 
+  @type id() :: String.t()
+
   @spec advance_view(%GameServer{}) :: %GameServer{}
   def advance_view(
         %GameServer{
           game_view: :round_end,
           round_num: round_num,
-          game_rules: %{rounds_to_win: rounds_to_win}
+          game_rules: %{rounds_to_win: rounds_to_win},
+          scores: scores
         } = state
       ) do
     if round_num < rounds_to_win do
       reset_round(state)
     else
-      %GameServer{state | game_view: :game_end}
+      %GameServer{state | game_view: :game_end, winner: get_winner(scores)}
     end
   end
 
@@ -40,5 +43,10 @@ defmodule Progressions.Rooms.Room.Game.Views.RoundEnd do
       contestants: contestants,
       round_num: round_num + 1
     }
+  end
+
+  @spec get_winner(%{required(id()) => integer()}) :: id()
+  defp get_winner(scores) do
+    Enum.max_by(scores, fn {_id, num_points} -> num_points end)
   end
 end

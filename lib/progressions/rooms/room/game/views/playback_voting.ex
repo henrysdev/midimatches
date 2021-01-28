@@ -118,17 +118,33 @@ defmodule Progressions.Rooms.Room.Game.Views.PlaybackVoting do
   end
 
   @spec last_vote(%GameServer{}) :: %GameServer{}
-  defp last_vote(%GameServer{votes: votes} = state) do
-    winner =
-      votes
-      |> Map.values()
-      |> Enum.frequencies()
-      |> Enum.max_by(fn {_id, num_votes} -> num_votes end)
+  defp last_vote(%GameServer{} = state) do
+    # winner =
+    #   votes
+    #   |> Map.values()
+    #   |> Enum.frequencies()
+    #   |> Enum.max_by(fn {_id, num_votes} -> num_votes end)
 
-    %GameServer{
-      state
-      | votes: votes,
-        winner: winner
-    }
+    # %GameServer{
+    #   state
+    #   | votes: votes,
+    #     winner: winner
+    # }
+
+    update_scores(state)
+  end
+
+  @spec update_scores(%GameServer{}) :: %GameServer{}
+  def update_scores(%GameServer{votes: votes, scores: scores} = state) do
+    scores =
+      Enum.reduce(
+        votes,
+        scores,
+        fn {_voter, candidate_id}, acc ->
+          Map.update(acc, candidate_id, 1, &(&1 + 1))
+        end
+      )
+
+    %GameServer{state | scores: scores}
   end
 end
