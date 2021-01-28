@@ -191,18 +191,16 @@ defmodule Progressions.GameLogicTest do
           }
         ])
 
-      contestants = ["1", "2"]
-      judges = ["3", "4"]
-      musicians = MapSet.new(contestants ++ judges)
-      event_payloads = [{"3", "1"}, {"4", "1"}]
+      contestants = ["1", "2", "3", "4"]
+      musicians = MapSet.new(contestants)
+      event_payloads = [{"3", "1"}, {"4", "1"}, {"2", "1"}, {"1", "4"}]
 
       game_server_state = %GameServer{
         room_id: "1",
         players: players,
         musicians: musicians,
         game_view: :playback_voting,
-        contestants: ["1", "2"],
-        judges: ["3", "4"]
+        contestants: ["1", "2", "3", "4"]
       }
 
       {_bracket, actual_state_scan} =
@@ -217,7 +215,9 @@ defmodule Progressions.GameLogicTest do
 
       expected_state_scan = [
         {%{"3" => "1"}, nil, :playback_voting},
-        {%{"3" => "1", "4" => "1"}, {"1", 2}, :round_end}
+        {%{"3" => "1", "4" => "1"}, nil, :playback_voting},
+        {%{"2" => "1", "3" => "1", "4" => "1"}, nil, :playback_voting},
+        {%{"1" => "4", "2" => "1", "3" => "1", "4" => "1"}, {"1", 3}, :round_end}
       ]
 
       assert Enum.reverse(actual_state_scan) == expected_state_scan
@@ -244,18 +244,25 @@ defmodule Progressions.GameLogicTest do
           }
         ])
 
-      contestants = ["1", "2"]
-      judges = ["3", "4"]
-      musicians = MapSet.new(contestants ++ judges)
-      event_payloads = [{"3", "1"}, {"3", "1"}, {"1", "3"}, {"3", "2"}, {"0", "1"}, {"4", "1"}]
+      contestants = ["1", "2", "3", "4"]
+      musicians = MapSet.new(contestants)
+
+      event_payloads = [
+        {"3", "1"},
+        {"3", "1"},
+        {"1", "3"},
+        {"3", "2"},
+        {"0", "1"},
+        {"4", "1"},
+        {"2", "1"}
+      ]
 
       game_server_state = %GameServer{
         room_id: "1",
         players: players,
         musicians: musicians,
         game_view: :playback_voting,
-        contestants: contestants,
-        judges: judges
+        contestants: contestants
       }
 
       {_bracket, actual_state_scan} =
@@ -271,10 +278,11 @@ defmodule Progressions.GameLogicTest do
       expected_state_scan = [
         {%{"3" => "1"}, nil, :playback_voting},
         {%{"3" => "1"}, nil, :playback_voting},
-        {%{"3" => "1"}, nil, :playback_voting},
-        {%{"3" => "1"}, nil, :playback_voting},
-        {%{"3" => "1"}, nil, :playback_voting},
-        {%{"3" => "1", "4" => "1"}, {"1", 2}, :round_end}
+        {%{"3" => "1", "1" => "3"}, nil, :playback_voting},
+        {%{"3" => "1", "1" => "3"}, nil, :playback_voting},
+        {%{"3" => "1", "1" => "3"}, nil, :playback_voting},
+        {%{"3" => "1", "1" => "3", "4" => "1"}, nil, :playback_voting},
+        {%{"1" => "3", "3" => "1", "4" => "1", "2" => "1"}, {"1", 3}, :round_end}
       ]
 
       assert Enum.reverse(actual_state_scan) == expected_state_scan

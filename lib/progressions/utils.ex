@@ -68,7 +68,8 @@ defmodule Progressions.Utils do
       round_recording_start_time: server_state.round_recording_start_time,
       winner: winner,
       contestants: server_state.contestants,
-      judges: server_state.judges,
+      # TODO remove judges all together
+      judges: server_state.contestants,
       round_num: server_state.round_num
     }
   end

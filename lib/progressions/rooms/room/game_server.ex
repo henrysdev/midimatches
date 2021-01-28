@@ -9,7 +9,6 @@ defmodule Progressions.Rooms.Room.GameServer do
 
   alias Progressions.{
     Pids,
-    Rooms.Room.Game.Bracket,
     Rooms.Room.Game.ViewTimer,
     Rooms.Room.GameLogic,
     Types.GameRules,
@@ -35,9 +34,7 @@ defmodule Progressions.Rooms.Room.GameServer do
     field(:room_id, id(), enforce: true)
 
     field(:game_view, game_view(), default: :game_start)
-    field(:bracket, %Bracket{}, default: %Bracket{})
     field(:contestants, list(id), default: [])
-    field(:judges, list(id), default: [])
     field(:winner, id(), default: nil)
     field(:round_recording_start_time, integer(), default: 0)
     field(:ready_ups, %MapSet{}, default: MapSet.new())
@@ -45,6 +42,7 @@ defmodule Progressions.Rooms.Room.GameServer do
     field(:votes, %{required(id()) => id()}, default: %{})
     field(:view_counter, integer(), default: 0)
     field(:round_num, integer(), default: 1)
+    field(:scores, %{required(id()) => integer()}, default: %{})
   end
 
   def start_link(args) do

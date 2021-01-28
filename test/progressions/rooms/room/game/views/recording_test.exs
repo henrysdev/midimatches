@@ -28,9 +28,8 @@ defmodule Progressions.RecordingTest do
         }
       ])
 
-    contestants = ["1", "2"]
-    judges = ["3", "4"]
-    musicians = MapSet.new(contestants ++ judges)
+    contestants = ["1", "2", "3", "4"]
+    musicians = MapSet.new(contestants)
 
     game_server_state = %GameServer{
       room_id: "1",
@@ -38,7 +37,6 @@ defmodule Progressions.RecordingTest do
       musicians: musicians,
       game_view: :recording,
       contestants: contestants,
-      judges: judges,
       recordings: %{}
     }
 
@@ -49,7 +47,9 @@ defmodule Progressions.RecordingTest do
 
     expected_recordings = %{
       "1" => %{},
-      "2" => %{}
+      "2" => %{},
+      "3" => %{},
+      "4" => %{}
     }
 
     assert recordings == expected_recordings

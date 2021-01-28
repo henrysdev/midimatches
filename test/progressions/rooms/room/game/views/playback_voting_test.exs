@@ -2,7 +2,6 @@ defmodule Progressions.PlaybackVotingTest do
   use ExUnit.Case
 
   alias Progressions.{
-    Rooms.Room.Game.Bracket,
     Rooms.Room.Game.Views.PlaybackVoting,
     Rooms.Room.GameServer,
     Types.Player
@@ -29,16 +28,8 @@ defmodule Progressions.PlaybackVotingTest do
         }
       ])
 
-    contestants = ["1", "2"]
-    judges = ["3", "4"]
-    musicians = MapSet.new(contestants ++ judges)
-
-    bracket = %Bracket{
-      match_ups: %{
-        "1" => ["1", "2"],
-        "2" => ["1", "2"]
-      }
-    }
+    contestants = ["1", "2", "3", "4"]
+    musicians = MapSet.new(contestants)
 
     game_server_state = %GameServer{
       room_id: "1",
@@ -46,8 +37,6 @@ defmodule Progressions.PlaybackVotingTest do
       musicians: musicians,
       game_view: :playback_voting,
       contestants: contestants,
-      judges: judges,
-      bracket: bracket,
       votes: %{}
     }
 
@@ -61,7 +50,7 @@ defmodule Progressions.PlaybackVotingTest do
       |> Map.values()
       |> Enum.map(&Enum.member?(contestants, &1))
 
-    assert expected_contestants == [true, true]
+    assert expected_contestants == [true, true, true, true]
     assert Enum.member?(contestants, winner)
   end
 end

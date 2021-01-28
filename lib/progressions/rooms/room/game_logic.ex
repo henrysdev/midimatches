@@ -4,7 +4,6 @@ defmodule Progressions.Rooms.Room.GameLogic do
   """
 
   alias Progressions.{
-    Rooms.Room.Game.Bracket,
     Rooms.Room.Game.Views,
     Rooms.Room.GameServer,
     Types.GameRules,
@@ -27,20 +26,14 @@ defmodule Progressions.Rooms.Room.GameLogic do
       |> MapSet.to_list()
       |> Enum.map(& &1.musician_id)
 
-    bracket = Bracket.new_bracket(musicians_list)
-
-    [contestants | judges] = Bracket.remaining_matches(bracket)
-    judges = Enum.flat_map(judges, & &1)
-
     %GameServer{
       room_id: room_id,
       game_rules: game_rules,
       players: players,
       musicians: MapSet.new(musicians_list),
-      bracket: bracket,
       game_view: :game_start,
-      contestants: contestants,
-      judges: judges
+      contestants: musicians_list,
+      scores: musicians_list |> Enum.map(&{&1, 0}) |> Map.new()
     }
   end
 
