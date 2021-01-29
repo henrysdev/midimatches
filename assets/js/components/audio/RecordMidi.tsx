@@ -68,6 +68,20 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
       recordedTimesteps: new Map(),
       synth: niceSynth,
     });
+
+    return () => {
+      const {
+        activeNotes,
+        synth,
+      } = recordMidiStateRef.current as RecordMidiState;
+
+      // releases any active notes on component dismount to prevent orphaned sustains
+      // TODO record the notes that are still being played when this happens
+      Array.from(activeNotes.keys()).forEach((midiNumber) => {
+        const noteName = midiNoteNumberToNoteName(midiNumber);
+        synth.triggerRelease(noteName);
+      });
+    };
   }, []);
 
   const startRecord = (): void => {
@@ -96,11 +110,6 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
     const timestepSlices = Array.from(recordedTimesteps.values()).sort(
       (a, b) => a.timestep - b.timestep
     );
-    // auto release notes that are still active
-    Array.from(activeNotes.keys()).forEach((midiNumber) => {
-      const noteName = midiNoteNumberToNoteName(midiNumber);
-      synth.triggerRelease(noteName);
-    });
 
     // TODO format in a utility method rather than writing snake case here
     const loop = {
