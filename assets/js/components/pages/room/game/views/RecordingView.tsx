@@ -40,24 +40,26 @@ const RecordingView: React.FC<RecordingViewProps> = ({
     <div>
       <Title title="Time to Play!" />
       <DynamicContent>
-        {isRecording ? (
-          <Timer
-            key={`record-timer-${isRecording}`}
-            descriptionText={"Recording ends in "}
-            duration={secToMs(DEFAULT_RECORDING_LENGTH)}
-          />
-        ) : (
-          <></>
-        )}
-        {isSamplePlaying && !isRecording ? (
-          <Timer
-            key={`sample-timer-${isSamplePlaying}`}
-            descriptionText={"Recording starts in "}
-            duration={secToMs(DEFAULT_SAMPLE_LENGTH)}
-          />
-        ) : (
-          <></>
-        )}
+        <div style={{ height: "20px" }}>
+          {isRecording ? (
+            <Timer
+              key={`record-timer-${isRecording}`}
+              descriptionText={"Recording ends in "}
+              duration={secToMs(DEFAULT_RECORDING_LENGTH)}
+            />
+          ) : (
+            <></>
+          )}
+          {isSamplePlaying && !isRecording ? (
+            <Timer
+              key={`sample-timer-${isSamplePlaying}`}
+              descriptionText={"Recording starts in "}
+              duration={secToMs(DEFAULT_SAMPLE_LENGTH)}
+            />
+          ) : (
+            <></>
+          )}
+        </div>
 
         <RecordMidi
           submitRecording={submitRecording}

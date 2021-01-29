@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 
 import { GameLayout } from "../pages/room/game";
-import { GameContext } from "../../contexts";
+import { GameContext, ToneAudioContext } from "../../contexts";
 import { Instructions, Title, DynamicContent } from "../common";
 import { Keyboard } from "../audio";
+import { GameStartView } from "../pages/room/game/views";
+import { useWebMidi } from "../../hooks";
 
 interface PregameDebugProps {}
 
@@ -23,6 +25,7 @@ gravida tincidunt est, vel bibendum libero pulvinar vel. Vivamus tristique aliqu
 `;
 
 const PregameDebug: React.FC<PregameDebugProps> = ({}) => {
+  const [midiInputs] = useWebMidi();
   return (
     <div>
       <GameContext.Provider
@@ -38,7 +41,14 @@ const PregameDebug: React.FC<PregameDebugProps> = ({}) => {
           },
         }}
       >
-        <GameLayout>
+        <ToneAudioContext.Provider value={{ midiInputs }}>
+          <GameLayout>
+            <GameStartView
+              pushMessageToChannel={() => {}}
+              setMidiInputs={() => {}}
+            />
+          </GameLayout>
+          {/* <GameLayout>
           <Title title="Starting Game" />
           <DynamicContent>
             <div>
@@ -50,7 +60,8 @@ const PregameDebug: React.FC<PregameDebugProps> = ({}) => {
             </div>
           </DynamicContent>
           <Instructions title="asdf" description={desc}></Instructions>
-        </GameLayout>
+        </GameLayout> */}
+        </ToneAudioContext.Provider>
       </GameContext.Provider>
     </div>
   );

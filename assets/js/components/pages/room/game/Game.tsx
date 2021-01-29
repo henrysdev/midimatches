@@ -1,18 +1,9 @@
 import { Channel } from "phoenix";
 import React, { useEffect, useState } from "react";
 
-import {
-  GAME_VIEW,
-  VIEW_UPDATE_EVENT,
-  SAMPLE_URLS,
-} from "../../../../constants";
-import { GameContext } from "../../../../contexts";
-import {
-  GameContextType,
-  ViewUpdatePayload,
-  SamplePlayer,
-} from "../../../../types";
-import { gameViewAtomToEnum, unmarshalBody } from "../../../../utils";
+import * as Tone from "tone";
+import { GAME_VIEW, SAMPLE_URLS } from "../../../../constants";
+import { GameContext, ToneAudioContext } from "../../../../contexts";
 import { ClientDebug } from "../../../debug";
 import {
   GameEndView,
@@ -22,12 +13,9 @@ import {
   RoundEndView,
   RoundStartView,
 } from "./views";
-import {
-  useGameServerState,
-  useSamplePlayer,
-  useToneAudioContext,
-} from "../../../../hooks";
+import { useGameServerState, useSamplePlayer } from "../../../../hooks";
 import { GameLayout } from "./GameLayout";
+import { Input } from "webmidi";
 
 interface GameProps {
   gameChannel: Channel;
@@ -38,8 +26,8 @@ const Game: React.FC<GameProps> = ({ gameChannel, currMusicianId }) => {
   const [currentView, gameContext, pushMessage] = useGameServerState(
     gameChannel
   );
+  const [midiInputs, setMidiInputs] = useState<Array<Input>>([]);
   console.log("GAME CONTEXT ", gameContext);
-  const { Tone } = useToneAudioContext();
   const [loadSample, playSample, stopSample] = useSamplePlayer(Tone);
 
   const resetTone = () => {
@@ -47,6 +35,10 @@ const Game: React.FC<GameProps> = ({ gameChannel, currMusicianId }) => {
     Tone.Transport.cancel(0);
     Tone.Transport.stop();
   };
+
+  useEffect(() => {
+    Tone.context.lookAhead = 0.01;
+  }, []);
 
   useEffect(() => {
     switch (currentView) {
@@ -72,50 +64,57 @@ const Game: React.FC<GameProps> = ({ gameChannel, currMusicianId }) => {
 
   return (
     <GameContext.Provider value={gameContext} key={currentView}>
-      <GameLayout>
-        {(() => {
-          switch (currentView) {
-            case GAME_VIEW.GAME_START:
-              return <GameStartView pushMessageToChannel={pushMessage} />;
+      <ToneAudioContext.Provider value={{ Tone, midiInputs }}>
+        <GameLayout>
+          {(() => {
+            switch (currentView) {
+              case GAME_VIEW.GAME_START:
+                return (
+                  <GameStartView
+                    pushMessageToChannel={pushMessage}
+                    setMidiInputs={setMidiInputs}
+                  />
+                );
 
-            case GAME_VIEW.ROUND_START:
-              return <RoundStartView pushMessageToChannel={pushMessage} />;
+              case GAME_VIEW.ROUND_START:
+                return <RoundStartView pushMessageToChannel={pushMessage} />;
 
-            case GAME_VIEW.RECORDING:
-              return (
-                <RecordingView
-                  isContestant={
-                    !!gameContext.players
-                      ? gameContext.players
-                          .map(({ musicianId }) => musicianId)
-                          .includes(currMusicianId)
-                      : false
-                  }
-                  pushMessageToChannel={pushMessage}
-                  playSample={playSample}
-                />
-              );
+              case GAME_VIEW.RECORDING:
+                return (
+                  <RecordingView
+                    isContestant={
+                      !!gameContext.players
+                        ? gameContext.players
+                            .map(({ musicianId }) => musicianId)
+                            .includes(currMusicianId)
+                        : false
+                    }
+                    pushMessageToChannel={pushMessage}
+                    playSample={playSample}
+                  />
+                );
 
-            case GAME_VIEW.PLAYBACK_VOTING:
-              return (
-                <PlaybackVotingView
-                  pushMessageToChannel={pushMessage}
-                  contestants={
-                    !!gameContext.contestants ? gameContext.contestants : []
-                  }
-                  playSample={playSample}
-                />
-              );
+              case GAME_VIEW.PLAYBACK_VOTING:
+                return (
+                  <PlaybackVotingView
+                    pushMessageToChannel={pushMessage}
+                    contestants={
+                      !!gameContext.contestants ? gameContext.contestants : []
+                    }
+                    playSample={playSample}
+                  />
+                );
 
-            case GAME_VIEW.ROUND_END:
-              return <RoundEndView />;
+              case GAME_VIEW.ROUND_END:
+                return <RoundEndView />;
 
-            case GAME_VIEW.GAME_END:
-              return <GameEndView />;
-          }
-        })()}
-        <ClientDebug musicianId={currMusicianId} />
-      </GameLayout>
+              case GAME_VIEW.GAME_END:
+                return <GameEndView />;
+            }
+          })()}
+          <ClientDebug musicianId={currMusicianId} />
+        </GameLayout>
+      </ToneAudioContext.Provider>
     </GameContext.Provider>
   );
 };

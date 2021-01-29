@@ -23,11 +23,11 @@ const GameLayout: React.FC<GameLayoutProps> = ({ children }) => {
           }
           scores={scores}
         />
-        <div className="settings_box">
+        {/* <div className="settings_box">
           <h4 className="uk-heading-divider uk-text-center">
             <span>Statistics</span>
           </h4>
-        </div>
+        </div> */}
       </div>
       <div className="game_content_container uk-background-default">
         {children}
