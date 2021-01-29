@@ -1,5 +1,5 @@
 import React from "react";
-import { useGameContext } from "../../../../hooks";
+import { useGameContext, usePlayerContext } from "../../../../hooks";
 import { Scoreboard } from "./Scoreboard";
 import { Player } from "../../../../types";
 
@@ -8,6 +8,7 @@ interface GameLayoutProps {
 }
 const GameLayout: React.FC<GameLayoutProps> = ({ children }) => {
   const { players, readyUps, roundNum, scores } = useGameContext();
+  const { player: currPlayer } = usePlayerContext();
   return (
     <div className="game_layout uk-background-muted">
       <div className="left_sidebar">
@@ -15,12 +16,13 @@ const GameLayout: React.FC<GameLayoutProps> = ({ children }) => {
           players={
             !!players
               ? roundNum === 1
-                ? players.filter((player) =>
-                    readyUps.includes(player.musicianId)
-                  )
+                ? players
+                    .filter((player) => readyUps.includes(player.musicianId))
+                    .sort((a, b) => a.playerAlias.localeCompare(b.playerAlias))
                 : players
               : ([] as Player[])
           }
+          currPlayer={currPlayer}
           scores={scores}
         />
         {/* <div className="settings_box">

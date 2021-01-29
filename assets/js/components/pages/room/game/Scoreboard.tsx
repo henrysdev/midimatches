@@ -4,10 +4,15 @@ import { Player, PlayerData } from "../../../../types";
 
 interface ScoreboardProps {
   players: Player[];
+  currPlayer: Player;
   scores: any;
 }
 
-const Scoreboard: React.FC<ScoreboardProps> = ({ players, scores }) => {
+const Scoreboard: React.FC<ScoreboardProps> = ({
+  players,
+  currPlayer,
+  scores,
+}) => {
   const [playersRowData, setPlayersRowData] = useState<PlayerData[]>();
 
   useEffect(() => {
@@ -38,6 +43,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ players, scores }) => {
           playersRowData.map((playerData, idx) => (
             <PlayerRow
               key={`player-card-${playerData.musicianId}`}
+              isCurrPlayer={playerData.musicianId === currPlayer.musicianId}
               player={playerData}
               rank={idx + 1}
             />

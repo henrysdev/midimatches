@@ -5,7 +5,7 @@ import { unmarshalBody } from "../../../utils";
 import { PlayerJoinPayload, Player } from "../../../types";
 import { Game } from "./game/Game";
 import { PregameLobby } from "./pregame/PregameLobby";
-import { ToneAudioContext } from "../../../contexts";
+import { PlayerContext } from "../../../contexts";
 
 const RoomPage: React.FC = () => {
   const [gameChannel, setGameChannel] = useState<Channel>();
@@ -47,7 +47,9 @@ const RoomPage: React.FC = () => {
   };
 
   return readyToStartGame && !!gameChannel && !!currPlayer ? (
-    <Game gameChannel={gameChannel} currMusicianId={currPlayer.musicianId} />
+    <PlayerContext.Provider value={{ player: currPlayer }}>
+      <Game gameChannel={gameChannel} />
+    </PlayerContext.Provider>
   ) : (
     <PregameLobby pushMessageToChannel={playerJoin} />
   );

@@ -68,6 +68,7 @@ export interface GameRules {
   viewTimeouts: ViewTimeouts;
 }
 
+/* Context Types */
 export interface GameContextType {
   // static fields
   gameRules: GameRules;
@@ -91,6 +92,11 @@ export interface ToneAudioContextType {
   midiInputs: Input[];
 }
 
+export interface PlayerContextType {
+  player: Player;
+}
+
+/* Time Units */
 type Seconds = number;
 type Milliseconds = number;
 type Microseconds = number;
