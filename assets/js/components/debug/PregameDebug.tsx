@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 
 import { GameLayout } from "../pages/room/game";
-import { GameContext } from "../../contexts";
-import { Instructions } from "../common";
+import { GameContext, ToneAudioContext } from "../../contexts";
+import { Instructions, Title, DynamicContent } from "../common";
 import { Keyboard } from "../audio";
+import { GameStartView } from "../pages/room/game/views";
+import { useWebMidi } from "../../hooks";
 
 interface PregameDebugProps {}
 
@@ -14,31 +16,53 @@ massa mi pharetra ante, sagittis efficitur libero purus vel leo. Integer element
 sagittis dolor rhoncus bibendum. Duis pharetra mi sed nibh pretium semper. Morbi in 
 tincidunt tellus. Mauris et dolor placerat, venenatis ex in, semper risus. Mauris 
 gravida tincidunt est, vel bibendum libero pulvinar vel. Vivamus tristique aliquet 
-nibh sit amet consequat. Ut ultrices tempor eros non ultrices. Duis venenatis, mi sit 
-amet dignissim sollicitudin, eros massa dignissim quam, nec condimentum nunc leo sed 
-leo. Curabitur tincidunt bibendum sodales. Morbi dictum tempus nisi, sit amet tincidunt 
-diam interdum ut.
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus id pharetra urna. 
+Curabitur efficitur non urna nec consequat. Nam volutpat, ex et bibendum egestas, 
+massa mi pharetra ante, sagittis efficitur libero purus vel leo. Integer elementum 
+sagittis dolor rhoncus bibendum. Duis pharetra mi sed nibh pretium semper. Morbi in 
+tincidunt tellus. Mauris et dolor placerat, venenatis ex in, semper risus. Mauris 
+gravida tincidunt est, vel bibendum libero pulvinar vel. Vivamus tristique aliquet 
 `;
 
 const PregameDebug: React.FC<PregameDebugProps> = ({}) => {
+  const [midiInputs] = useWebMidi();
   return (
     <div>
-      {/* <GameContext.Provider
+      <GameContext.Provider
         value={{
           readyUps: [],
-          players: [{playerAlias: "xb4z", musicianId: "1199"}],
+          players: [
+            { playerAlias: "xb4z", musicianId: "1199" },
+            { playerAlias: "fearz123", musicianId: "1111" },
+          ],
+          scores: {
+            fearz123: 0,
+            xb4z: 2,
+          },
         }}
       >
-        <GameLayout>
-          <Instructions title={"Game Start"} description={desc}>
-            <Keyboard
-              activeMidiList={[]}
-              playNote={() => {}}
-              stopNote={() => {}}
+        <ToneAudioContext.Provider value={{ midiInputs }}>
+          <GameLayout>
+            <GameStartView
+              pushMessageToChannel={() => {}}
+              setMidiInputs={() => {}}
             />
-          </Instructions>
-        </GameLayout>
-      </GameContext.Provider> */}
+          </GameLayout>
+          {/* <GameLayout>
+          <Title title="Starting Game" />
+          <DynamicContent>
+            <div>
+              <Keyboard
+                activeMidiList={[]}
+                playNote={() => {}}
+                stopNote={() => {}}
+              />
+            </div>
+          </DynamicContent>
+          <Instructions title="asdf" description={desc}></Instructions>
+        </GameLayout> */}
+        </ToneAudioContext.Provider>
+      </GameContext.Provider>
     </div>
   );
 };

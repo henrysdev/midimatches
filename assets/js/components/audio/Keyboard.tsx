@@ -13,18 +13,20 @@ const Keyboard: React.FC<KeyboardProps> = ({
   stopNote,
 }) => {
   return (
-    <ControlledPiano
-      noteRange={{
-        first: MidiNumbers.fromNote("c3"),
-        last: MidiNumbers.fromNote("c5"),
-      }}
-      activeNotes={activeMidiList}
-      playNote={(midiNumber: number) => playNote(midiNumber)}
-      stopNote={(midiNumber: number) => stopNote(midiNumber)}
-      onPlayNoteInput={() => {}}
-      onStopNoteInput={() => {}}
-      width={600}
-    />
+    <div>
+      <ControlledPiano
+        noteRange={{
+          first: MidiNumbers.fromNote("c3"),
+          last: MidiNumbers.fromNote("c5"),
+        }}
+        activeNotes={activeMidiList}
+        playNote={(midiNumber: number) => playNote(midiNumber)}
+        stopNote={(midiNumber: number) => stopNote(midiNumber)}
+        onPlayNoteInput={() => {}}
+        onStopNoteInput={() => {}}
+        width={800}
+      />
+    </div>
   );
 };
 export { Keyboard };

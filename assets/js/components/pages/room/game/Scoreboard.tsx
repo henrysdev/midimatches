@@ -1,29 +1,52 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { PlayerRow } from "./";
-import { Player } from "../../../../types";
+import { Player, PlayerData } from "../../../../types";
 
 interface ScoreboardProps {
   players: Player[];
+  scores: any;
 }
-const Scoreboard: React.FC<ScoreboardProps> = ({ players }) => {
+
+const Scoreboard: React.FC<ScoreboardProps> = ({ players, scores }) => {
+  const [playersRowData, setPlayersRowData] = useState<PlayerData[]>();
+
+  useEffect(() => {
+    const playersData = players
+      .map((player) => {
+        const playerScore =
+          player.musicianId in scores ? scores[player.musicianId] : 0;
+        return {
+          ...player,
+          playerScore,
+        } as PlayerData;
+      })
+      .sort((a: PlayerData, b: PlayerData) => b.playerScore - a.playerScore);
+    setPlayersRowData(playersData);
+  }, [scores]);
+
   return (
-    <div className="scoreboard">
-      <h4 className="uk-heading-divider uk-text-center">
-        <span>Scoreboard</span>
-      </h4>
-      <ul className="uk-list uk-list-divider players_list">
-        {!!players && players.length > 0 ? (
-          players.map((player) => (
+    <table className="uk-table uk-table-divider">
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Player</th>
+          <th>Score</th>
+        </tr>
+      </thead>
+      <tbody>
+        {!!playersRowData && playersRowData.length > 0 ? (
+          playersRowData.map((playerData, idx) => (
             <PlayerRow
-              key={`player-card-${player.musicianId}`}
-              player={player}
+              key={`player-card-${playerData.musicianId}`}
+              player={playerData}
+              rank={idx + 1}
             />
           ))
         ) : (
           <></>
         )}
-      </ul>
-    </div>
+      </tbody>
+    </table>
   );
 };
 export { Scoreboard };

@@ -3,17 +3,23 @@ defmodule Progressions.Rooms.Room.Game.Views.RoundEnd do
   Game logic specific to the round_end game view
   """
 
-  alias Progressions.Rooms.Room.{
-    Game.Bracket,
-    GameServer
-  }
+  alias Progressions.Rooms.Room.GameServer
+
+  @type id() :: String.t()
 
   @spec advance_view(%GameServer{}) :: %GameServer{}
-  def advance_view(%GameServer{bracket: bracket, game_view: :round_end} = state) do
-    if is_nil(bracket.final_winner) do
+  def advance_view(
+        %GameServer{
+          game_view: :round_end,
+          round_num: round_num,
+          game_rules: %{rounds_to_win: rounds_to_win},
+          scores: scores
+        } = state
+      ) do
+    if round_num < rounds_to_win do
       reset_round(state)
     else
-      %GameServer{state | game_view: :game_end}
+      %GameServer{state | game_view: :game_end, winner: get_winner(scores)}
     end
   end
 
@@ -23,28 +29,26 @@ defmodule Progressions.Rooms.Room.Game.Views.RoundEnd do
         game_rules: game_rules,
         players: players,
         musicians: musicians,
-        bracket: bracket,
+        contestants: contestants,
         view_counter: view_counter,
+        scores: scores,
         round_num: round_num
       }) do
-    [contestants | _rest] = Bracket.remaining_matches(bracket)
-
-    judges =
-      musicians
-      |> MapSet.to_list()
-      |> Enum.reject(&Enum.member?(contestants, &1))
-
     %GameServer{
       game_view: :round_start,
       room_id: room_id,
       game_rules: game_rules,
       players: players,
       musicians: musicians,
-      bracket: bracket,
       view_counter: view_counter,
       contestants: contestants,
-      judges: judges,
+      scores: scores,
       round_num: round_num + 1
     }
+  end
+
+  @spec get_winner(%{required(id()) => integer()}) :: id()
+  defp get_winner(scores) do
+    Enum.max_by(scores, fn {_id, num_points} -> num_points end)
   end
 end

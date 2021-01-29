@@ -42,9 +42,8 @@ defmodule Progressions.GameServerTest do
 
     {:ok, game_server} = GameServer.start_link([{room_id, players, game_rules}])
 
-    bracket_contestants =
-      :sys.get_state(game_server).bracket.match_ups
-      |> Map.keys()
+    contestants =
+      :sys.get_state(game_server).contestants
       |> Enum.sort()
 
     expected_musicians =
@@ -52,7 +51,7 @@ defmodule Progressions.GameServerTest do
       |> MapSet.to_list()
       |> Enum.sort()
 
-    assert bracket_contestants == expected_musicians
+    assert contestants == expected_musicians
   end
 
   test "get current game view" do

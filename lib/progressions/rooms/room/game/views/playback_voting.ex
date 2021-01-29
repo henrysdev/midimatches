@@ -4,7 +4,6 @@ defmodule Progressions.Rooms.Room.Game.Views.PlaybackVoting do
   """
 
   alias Progressions.Rooms.Room.{
-    Game.Bracket,
     GameLogic,
     GameServer
   }
@@ -28,9 +27,11 @@ defmodule Progressions.Rooms.Room.Game.Views.PlaybackVoting do
           game_view: :playback_voting,
           votes: votes,
           contestants: contestants,
-          judges: judges
+          musicians: musicians
         } = state
       ) do
+    judges = musicians |> MapSet.to_list()
+
     missing_voters =
       judges
       |> Stream.reject(&(votes |> Map.keys() |> Enum.member?(&1)))
@@ -92,9 +93,11 @@ defmodule Progressions.Rooms.Room.Game.Views.PlaybackVoting do
 
   @spec vote_status(%GameServer{}, ballot()) :: vote_status()
   defp vote_status(
-         %GameServer{judges: judges, contestants: contestants, votes: votes},
+         %GameServer{musicians: musicians, contestants: contestants, votes: votes},
          {musician_id, vote}
        ) do
+    judges = MapSet.to_list(musicians)
+
     valid_vote? =
       Enum.member?(judges, musician_id) and
         Enum.member?(contestants, vote) and
@@ -115,21 +118,33 @@ defmodule Progressions.Rooms.Room.Game.Views.PlaybackVoting do
   end
 
   @spec last_vote(%GameServer{}) :: %GameServer{}
-  defp last_vote(%GameServer{bracket: bracket, votes: votes} = state) do
-    {winner_id, _freq} =
-      winner =
-      votes
-      |> Map.values()
-      |> Enum.frequencies()
-      |> Enum.max()
+  defp last_vote(%GameServer{} = state) do
+    # winner =
+    #   votes
+    #   |> Map.values()
+    #   |> Enum.frequencies()
+    #   |> Enum.max_by(fn {_id, num_votes} -> num_votes end)
 
-    bracket = Bracket.record_winner(bracket, winner_id)
+    # %GameServer{
+    #   state
+    #   | votes: votes,
+    #     winner: winner
+    # }
 
-    %GameServer{
-      state
-      | votes: votes,
-        winner: winner,
-        bracket: bracket
-    }
+    update_scores(state)
+  end
+
+  @spec update_scores(%GameServer{}) :: %GameServer{}
+  def update_scores(%GameServer{votes: votes, scores: scores} = state) do
+    scores =
+      Enum.reduce(
+        votes,
+        scores,
+        fn {_voter, candidate_id}, acc ->
+          Map.update(acc, candidate_id, 1, &(&1 + 1))
+        end
+      )
+
+    %GameServer{state | scores: scores}
   end
 end

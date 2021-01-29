@@ -41,7 +41,12 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
     velocity: number
   ) => {
     if (!!synth) {
-      synth.triggerAttackRelease(note, duration, time, velocity);
+      synth.triggerAttackRelease(
+        note,
+        Math.max(0.000000000001, duration),
+        time,
+        velocity
+      );
     }
   };
 

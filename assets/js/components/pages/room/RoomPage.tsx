@@ -6,14 +6,11 @@ import { PlayerJoinPayload, Player } from "../../../types";
 import { Game } from "./game/Game";
 import { PregameLobby } from "./pregame/PregameLobby";
 import { ToneAudioContext } from "../../../contexts";
-import * as Tone from "tone";
-import { useWebMidi } from "../../../hooks";
 
 const RoomPage: React.FC = () => {
   const [gameChannel, setGameChannel] = useState<Channel>();
   const [readyToStartGame, setReadyToStartGame] = useState<boolean>(false);
   const [currPlayer, setCurrPlayer] = useState<Player>();
-  const [midiInputs] = useWebMidi();
 
   useEffect(() => {
     // websocket channel init
@@ -38,9 +35,6 @@ const RoomPage: React.FC = () => {
       setReadyToStartGame(true);
     });
     setGameChannel(channel);
-
-    // audio init
-    Tone.context.lookAhead = 0.01;
   }, []);
 
   const playerJoin = (event: string, payload: Object) => {
@@ -53,9 +47,7 @@ const RoomPage: React.FC = () => {
   };
 
   return readyToStartGame && !!gameChannel && !!currPlayer ? (
-    <ToneAudioContext.Provider value={{ Tone, midiInputs }}>
-      <Game gameChannel={gameChannel} currMusicianId={currPlayer.musicianId} />
-    </ToneAudioContext.Provider>
+    <Game gameChannel={gameChannel} currMusicianId={currPlayer.musicianId} />
   ) : (
     <PregameLobby pushMessageToChannel={playerJoin} />
   );

@@ -3,10 +3,16 @@ import React, { useEffect } from "react";
 import { SUBMIT_VOTE_EVENT } from "../../../../../constants";
 import { useGameContext, useToneAudioContext } from "../../../../../hooks";
 import { PlaybackAudio } from "../../../../audio";
-import { SimpleButton, Timer, Instructions } from "../../../../common";
+import {
+  SimpleButton,
+  Timer,
+  Instructions,
+  DynamicContent,
+  Title,
+} from "../../../../common";
+import { shuffleArray } from "../../../../../utils";
 
 interface PlaybackVotingViewProps {
-  isJudge: boolean;
   pushMessageToChannel: Function;
   contestants: string[];
   playSample: Function;
@@ -19,7 +25,6 @@ you have heard all the recordings, you will be able to cast your vote.
 `;
 
 const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
-  isJudge,
   pushMessageToChannel,
   contestants,
   playSample,
@@ -48,9 +53,10 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
     }
   }, [recordings]);
 
-  return isJudge ? (
+  return (
     <div>
-      <Instructions title="Playback and Voting" description={desc}>
+      <Title title="Playback Voting" />
+      <DynamicContent>
         {!!playbackVotingTimeout ? (
           <Timer
             descriptionText={"Voting ends in "}
@@ -60,7 +66,7 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
           <></>
         )}
         {!!recordings ? (
-          Object.entries(recordings).map(
+          shuffleArray(Object.entries(recordings)).map(
             ([musicianId, recording]: [string, any]) => {
               return (
                 <div key={`playback-${musicianId}`}>
@@ -89,10 +95,9 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
         ) : (
           <div>No recordings available</div>
         )}
-      </Instructions>
+      </DynamicContent>
+      <Instructions description={desc} />
     </div>
-  ) : (
-    <div>WAITING FOR VOTES...</div>
   );
 };
 export { PlaybackVotingView };

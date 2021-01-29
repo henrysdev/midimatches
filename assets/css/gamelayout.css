@@ -26,6 +26,22 @@
   flex-grow: 6;
 }
 
+/* game_content_dynamic */
+.game_content_dynamic {
+  margin-bottom: 8px;
+  min-height: 300px;
+  background-color: green;
+}
+
+/* game_content_instructions */
+.game_content_instructions {
+  background-color: red;
+  max-height: 220px;
+  overflow: scroll;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
 /* scoreboard */
 .scoreboard {
   height: 400px;
@@ -45,29 +61,7 @@
   flex-grow: 1;
 }
 
-/* player_row */
-.player_row {
-  display: flex;
-  flex-direction: row;
-}
-.player_row_name {
-  background-color: antiquewhite;
-  padding: 8px;
-  width: 100px;
-}
-.player_row_score {
-  background-color: white;
-  padding: 8px;
-}
-.player_row .player_row_score {
-  flex-grow: 1;
-}
+/* player_row_rank */
 .player_row_rank {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  margin-left: 8px;
-  position: absolute;
-}
-.player_row_rank h5 {
-  font-weight: bold;
+  width: 20px;
 }

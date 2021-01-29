@@ -1,5 +1,6 @@
 import { GAME_VIEW } from "../constants";
 import { Loop, Note, LocalNoteEvent, Microseconds, Seconds } from "../types";
+import _ from "lodash";
 
 const isArray = function (a: Array<any>): boolean {
   return Array.isArray(a);
@@ -82,6 +83,19 @@ export function gameViewAtomToEnum(atom: string): any {
     case "game_end":
       return GAME_VIEW.GAME_END;
   }
+}
+
+// Randomize array in-place using Durstenfeld shuffle algorithm
+// https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+export function shuffleArray(array: Array<any>): Array<any> {
+  const newArray = _.cloneDeep(array);
+  for (let i = newArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const temp = newArray[i];
+    newArray[i] = newArray[j];
+    newArray[j] = temp;
+  }
+  return newArray;
 }
 
 export function loopToEvents(

@@ -6,7 +6,7 @@ import {
   DEFAULT_RECORDING_LENGTH,
 } from "../../../../../constants";
 import { RecordMidi } from "../../../../audio";
-import { Timer, Instructions } from "../../../../common";
+import { Timer, Instructions, Title, DynamicContent } from "../../../../common";
 import { secToMs } from "../../../../../utils";
 
 interface RecordingViewProps {
@@ -38,35 +38,38 @@ const RecordingView: React.FC<RecordingViewProps> = ({
 
   return isContestant ? (
     <div>
-      <Instructions
-        title="Improv Time"
-        description={`warm up on the sample before recording begins`}
-      >
-        {isRecording ? (
-          <Timer
-            key={`record-timer-${isRecording}`}
-            descriptionText={"Recording ends in "}
-            duration={secToMs(DEFAULT_RECORDING_LENGTH)}
-          />
-        ) : (
-          <></>
-        )}
-        {isSamplePlaying && !isRecording ? (
-          <Timer
-            key={`sample-timer-${isSamplePlaying}`}
-            descriptionText={"Recording starts in "}
-            duration={secToMs(DEFAULT_SAMPLE_LENGTH)}
-          />
-        ) : (
-          <></>
-        )}
+      <Title title="Time to Play!" />
+      <DynamicContent>
+        <div style={{ height: "20px" }}>
+          {isRecording ? (
+            <Timer
+              key={`record-timer-${isRecording}`}
+              descriptionText={"Recording ends in "}
+              duration={secToMs(DEFAULT_RECORDING_LENGTH)}
+            />
+          ) : (
+            <></>
+          )}
+          {isSamplePlaying && !isRecording ? (
+            <Timer
+              key={`sample-timer-${isSamplePlaying}`}
+              descriptionText={"Recording starts in "}
+              duration={secToMs(DEFAULT_SAMPLE_LENGTH)}
+            />
+          ) : (
+            <></>
+          )}
+        </div>
 
         <RecordMidi
           submitRecording={submitRecording}
           playSample={playSampleWithEffect}
           setIsRecording={setIsRecording}
         />
-      </Instructions>
+      </DynamicContent>
+      <Instructions
+        description={`warm up on the sample before recording begins`}
+      />
     </div>
   ) : (
     <div>WAITING FOR CONTESTANTS TO FINISH RECORDING...</div>

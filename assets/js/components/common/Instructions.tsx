@@ -11,7 +11,10 @@ const Instructions: React.FC<InstructionsProps> = ({
   children,
 }) => {
   return (
-    <div className="uk-card uk-card-small uk-card-default uk-card-body">
+    <div
+      className="uk-card uk-card-small uk-card-default uk-card-body"
+      style={{ maxHeight: "300px", overflow: "scroll" }}
+    >
       {!!title ? (
         <div className="uk-card-title uk-text-center">{title}</div>
       ) : (
