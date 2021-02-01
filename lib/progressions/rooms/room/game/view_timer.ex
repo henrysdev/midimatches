@@ -18,30 +18,26 @@ defmodule Progressions.Rooms.Room.Game.ViewTimer do
           :game_start | :round_start | :recording | :playback_voting | :round_end | :game_end
         ]
 
-  # TODO replace with configs for view times
-  @default_view_timeout 5 * 1000
-
   def start_link(args) do
     GenServer.start_link(ViewTimer, args)
   end
 
   def init([{room_id}]) do
-    game_server = Pids.fetch!({:game_server, room_id})
     Pids.register({:view_timer, room_id}, self())
 
-    {:ok, %{game_server: game_server}}
+    {:ok, %{}}
   end
 
-  @spec schedule_view_timeout(pid(), game_view(), integer(), integer()) :: any
-  def schedule_view_timeout(pid, view, view_counter, timeout \\ @default_view_timeout) do
-    Process.send_after(pid, {:view_timeout, view, view_counter}, timeout)
+  @spec schedule_view_timeout(pid(), game_view(), integer(), integer(), pid()) :: any
+  def schedule_view_timeout(pid, view, view_counter, timeout, game_server_pid) do
+    Process.send_after(pid, {:view_timeout, view, view_counter, game_server_pid}, timeout)
   end
 
   def handle_info(
-        {:view_timeout, timeout_view, view_counter},
-        %{game_server: game_server} = state
+        {:view_timeout, timeout_view, view_counter, game_server_pid},
+        state
       ) do
-    GameServer.advance_from_game_view(game_server, timeout_view, view_counter)
+    GameServer.advance_from_game_view(game_server_pid, timeout_view, view_counter)
 
     {:noreply, state}
   end

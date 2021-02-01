@@ -11,6 +11,7 @@ defmodule Progressions.Types.GameRules do
   @default_game_size_num_players 4
   @default_solo_time_limit 30
   @default_view_timeouts %{
+    game_start: 1_000,
     round_start: 3_000,
     # recording: 30_000,
     playback_voting: 90_000,

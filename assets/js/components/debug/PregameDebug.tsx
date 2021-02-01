@@ -39,6 +39,11 @@ const PregameDebug: React.FC<PregameDebugProps> = ({}) => {
             fearz123: 0,
             xb4z: 2,
           },
+          gameRules: {
+            viewTimeouts: {
+              gameStart: 10_000,
+            },
+          },
         }}
       >
         <PlayerContext.Provider

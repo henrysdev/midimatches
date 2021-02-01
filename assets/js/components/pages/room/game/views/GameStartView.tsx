@@ -8,6 +8,7 @@ import {
 } from "../../../../common/index";
 import { SUBMIT_READY_UP_EVENT } from "../../../../../constants/index";
 import { MidiConfiguration } from "../../../../audio";
+import { useGameContext } from "../../../../../hooks";
 
 interface GameStartViewProps {
   pushMessageToChannel: Function;
@@ -25,11 +26,23 @@ const GameStartView: React.FC<GameStartViewProps> = ({
   setMidiInputs,
 }) => {
   const [isReady, setIsReady] = useState<boolean>(false);
+  const {
+    gameRules: { viewTimeouts: { gameStart: gameStartTimeout } = {} } = {},
+  } = useGameContext();
 
   return (
     <div>
       <Title title="MIDI Setup" />
-      <Timer descriptionText={"Game starts in"} duration={40_000} />
+      {!!gameStartTimeout ? (
+        <Timer
+          key={gameStartTimeout}
+          descriptionText={"Game starts in"}
+          duration={gameStartTimeout}
+        />
+      ) : (
+        <></>
+      )}
+
       <DynamicContent>
         {isReady ? (
           <div>

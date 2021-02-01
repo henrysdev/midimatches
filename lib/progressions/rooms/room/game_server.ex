@@ -59,7 +59,11 @@ defmodule Progressions.Rooms.Room.GameServer do
 
     Pids.register({:game_server, room_id}, self())
 
-    {:ok, GameLogic.start_game(game_rules, players, room_id)}
+    game_state =
+      GameLogic.start_game(game_rules, players, room_id)
+      |> schedule_view_timeout()
+
+    {:ok, game_state}
   end
 
   @spec get_current_view(pid()) :: atom()
@@ -183,6 +187,7 @@ defmodule Progressions.Rooms.Room.GameServer do
     state
   end
 
+  @spec schedule_view_timeout(%GameServer{}) :: %GameServer{}
   defp schedule_view_timeout(
          %GameServer{
            room_id: room_id,
@@ -199,7 +204,8 @@ defmodule Progressions.Rooms.Room.GameServer do
         view_timer,
         game_view,
         view_counter,
-        timeout_duration
+        timeout_duration,
+        self()
       )
 
       state

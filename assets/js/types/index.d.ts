@@ -54,10 +54,12 @@ interface PlayerScore {
 export type PlayerData = Player & PlayerScore;
 
 export interface ViewTimeouts {
+  gameStart?: Milliseconds;
   roundStart: Milliseconds;
   recording?: Milliseconds;
   playbackVoting?: Milliseconds;
   roundEnd: Milliseconds;
+  gameEnd?: Milliseconds;
 }
 
 export interface GameRules {
