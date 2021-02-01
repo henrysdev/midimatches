@@ -12,12 +12,30 @@ const Timer: React.FC<TimerProps> = ({
   descriptionText,
   timesUpText,
 }) => {
+  // Renderer callback with condition
+  const renderer = ({
+    seconds,
+    completed,
+  }: {
+    seconds: number;
+    completed: boolean;
+  }) => {
+    if (completed) {
+      // Render a completed state
+      return <div>{timesUpText}</div>;
+    } else {
+      // Render a countdown
+      return <span style={{ paddingLeft: "4px" }}>{seconds}</span>;
+    }
+  };
+
   return (
-    <div style={{ fontSize: "16px", fontWeight: "bold" }}>
+    <div
+      className="uk-text-center"
+      style={{ fontSize: "16px", fontWeight: "bold" }}
+    >
       {!!descriptionText ? <span>{descriptionText}</span> : <></>}
-      <Countdown date={Date.now() + duration}>
-        <div>{timesUpText}</div>
-      </Countdown>
+      <Countdown date={Date.now() + duration} renderer={renderer} />
     </div>
   );
 };

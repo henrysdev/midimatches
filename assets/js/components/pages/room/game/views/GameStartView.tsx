@@ -4,6 +4,7 @@ import {
   Instructions,
   Title,
   DynamicContent,
+  Timer,
 } from "../../../../common/index";
 import { SUBMIT_READY_UP_EVENT } from "../../../../../constants/index";
 import { MidiConfiguration } from "../../../../audio";
@@ -28,6 +29,7 @@ const GameStartView: React.FC<GameStartViewProps> = ({
   return (
     <div>
       <Title title="MIDI Setup" />
+      <Timer descriptionText={"Game starts in"} duration={40_000} />
       <DynamicContent>
         {isReady ? (
           <div>
