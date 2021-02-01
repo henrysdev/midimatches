@@ -2,6 +2,7 @@ import React from "react";
 import { useGameContext, usePlayerContext } from "../../../../hooks";
 import { Scoreboard } from "./Scoreboard";
 import { Player } from "../../../../types";
+import { LeftSidebar } from "./";
 
 interface GameLayoutProps {
   children?: any;
@@ -11,7 +12,7 @@ const GameLayout: React.FC<GameLayoutProps> = ({ children }) => {
   const { player: currPlayer } = usePlayerContext();
   return (
     <div className="game_layout uk-background-muted">
-      <div className="left_sidebar">
+      <LeftSidebar>
         <Scoreboard
           players={
             !!players
@@ -30,7 +31,7 @@ const GameLayout: React.FC<GameLayoutProps> = ({ children }) => {
             <span>Statistics</span>
           </h4>
         </div> */}
-      </div>
+      </LeftSidebar>
       <div className="game_content_container uk-background-default">
         {children}
       </div>

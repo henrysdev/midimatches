@@ -11,7 +11,7 @@
 .left_sidebar {
   display: flex;
   flex-direction: column;
-  min-width: 300px;
+  min-width: 100px;
 }
 .game_layout .left_sidebar {
   flex-grow: 1;
