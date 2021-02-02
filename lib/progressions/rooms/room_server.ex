@@ -48,18 +48,35 @@ defmodule Progressions.Rooms.RoomServer do
   end
 
   @spec add_player(pid(), %Player{}) :: :ok
+  @doc """
+  Add a new player to a room
+  """
   def add_player(pid, player) do
     GenServer.call(pid, {:add_player, player})
   end
 
   @spec drop_player(pid(), id()) :: :ok
+  @doc """
+  Drop a player from a room
+  """
   def drop_player(pid, player) do
     GenServer.call(pid, {:drop_player, player})
   end
 
   @spec get_players(pid()) :: MapSet.t(Player)
+  @doc """
+  Return all players that are in a room
+  """
   def get_players(pid) do
     GenServer.call(pid, :get_players)
+  end
+
+  @spec reset_game(pid()) :: :ok
+  @doc """
+  Reset the current game by stopping and restarting
+  """
+  def reset_game(pid) do
+    GenServer.call(pid, :reset_game)
   end
 
   @impl true
@@ -113,6 +130,12 @@ defmodule Progressions.Rooms.RoomServer do
   @impl true
   def handle_call(:get_players, _from, %RoomServer{players: players} = state) do
     {:reply, players, state}
+  end
+
+  @impl true
+  def handle_call(:reset_game, _from, %RoomServer{game: game} = state) do
+    Game.stop_game(game)
+    {:reply, state, state}
   end
 
   @spec start_game(%RoomServer{}) :: %RoomServer{}

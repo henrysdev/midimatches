@@ -32,4 +32,10 @@ defmodule Progressions.Rooms.Room.Game do
 
     Supervisor.init(children, strategy: :one_for_one)
   end
+
+  @spec stop_game(pid()) :: atom()
+  @doc """
+  Gracefully shut down a game supervisor and its children
+  """
+  def stop_game(pid), do: Supervisor.stop(pid)
 end

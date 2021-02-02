@@ -233,6 +233,7 @@ defmodule Progressions.Rooms.Room.GameServer do
     state
   end
 
+  @spec increment_view_counter(%GameServer{}) :: %GameServer{}
   defp increment_view_counter(%GameServer{view_counter: view_counter} = state),
     do: %GameServer{state | view_counter: view_counter + 1}
 end

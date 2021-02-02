@@ -26,7 +26,7 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
   return (
     <div>
       <Title title="Pregame Lobby" />
-      {/* <div>
+      <div>
         {hasJoined
           ? `Joined successfully as ${alias}. Waiting for other players...`
           : "Game has not started yet. Enter an alias then join!"}
@@ -65,8 +65,8 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
             <></>
           )}
         </form>
-      )} */}
-      <PregameDebug />
+      )}
+      {/* <PregameDebug /> */}
     </div>
   );
 };

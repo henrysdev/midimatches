@@ -1,5 +1,5 @@
 import { Channel } from "phoenix";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 
 import * as Tone from "tone";
 import { GAME_VIEW, SAMPLE_URLS } from "../../../../constants";
@@ -44,6 +44,10 @@ const Game: React.FC<GameProps> = ({ gameChannel, initGameState }) => {
   useEffect(() => {
     Tone.context.lookAhead = 0.01;
   }, []);
+
+  useMemo(() => {
+    console.log("CURRENT_VIEW: ", currentView);
+  }, [currentView]);
 
   useEffect(() => {
     switch (currentView) {
