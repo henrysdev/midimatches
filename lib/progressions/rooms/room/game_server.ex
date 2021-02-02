@@ -197,7 +197,7 @@ defmodule Progressions.Rooms.Room.GameServer do
            game_rules: %{view_timeouts: view_timeouts}
          } = state
        ) do
-    if Map.has_key?(view_timeouts, game_view) do
+    if !is_nil(Map.get(view_timeouts, game_view)) do
       view_timer = Pids.fetch({:view_timer, room_id})
       timeout_duration = Map.get(view_timeouts, game_view)
 
