@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 
 import { GameLayout } from "../pages/room/game";
-import { GameContext, ToneAudioContext } from "../../contexts";
+import { GameContext, ToneAudioContext, PlayerContext } from "../../contexts";
 import { Instructions, Title, DynamicContent } from "../common";
 import { Keyboard } from "../audio";
 import { GameStartView } from "../pages/room/game/views";
 import { useWebMidi } from "../../hooks";
+import Tone from "tone";
 
 interface PregameDebugProps {}
 
@@ -39,16 +40,24 @@ const PregameDebug: React.FC<PregameDebugProps> = ({}) => {
             fearz123: 0,
             xb4z: 2,
           },
+          gameRules: {
+            viewTimeouts: {
+              gameStart: 10_000,
+            },
+          },
         }}
       >
-        <ToneAudioContext.Provider value={{ midiInputs }}>
-          <GameLayout>
-            <GameStartView
-              pushMessageToChannel={() => {}}
-              setMidiInputs={() => {}}
-            />
-          </GameLayout>
-          {/* <GameLayout>
+        <PlayerContext.Provider
+          value={{ player: { playerAlias: "xb4z", musicianId: "1199" } }}
+        >
+          <ToneAudioContext.Provider value={{ midiInputs, Tone: Tone }}>
+            <GameLayout>
+              <GameStartView
+                pushMessageToChannel={() => {}}
+                setMidiInputs={() => {}}
+              />
+            </GameLayout>
+            {/* <GameLayout>
           <Title title="Starting Game" />
           <DynamicContent>
             <div>
@@ -61,7 +70,8 @@ const PregameDebug: React.FC<PregameDebugProps> = ({}) => {
           </DynamicContent>
           <Instructions title="asdf" description={desc}></Instructions>
         </GameLayout> */}
-        </ToneAudioContext.Provider>
+          </ToneAudioContext.Provider>
+        </PlayerContext.Provider>
       </GameContext.Provider>
     </div>
   );

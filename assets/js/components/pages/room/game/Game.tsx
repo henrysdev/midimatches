@@ -13,22 +13,28 @@ import {
   RoundEndView,
   RoundStartView,
 } from "./views";
-import { useGameServerState, useSamplePlayer } from "../../../../hooks";
+import {
+  useGameServerState,
+  useSamplePlayer,
+  usePlayerContext,
+} from "../../../../hooks";
 import { GameLayout } from "./GameLayout";
 import { Input } from "webmidi";
+import { GameContextType } from "../../../../types";
 
 interface GameProps {
   gameChannel: Channel;
-  currMusicianId: string;
+  initGameState: GameContextType;
 }
 
-const Game: React.FC<GameProps> = ({ gameChannel, currMusicianId }) => {
+const Game: React.FC<GameProps> = ({ gameChannel, initGameState }) => {
   const [currentView, gameContext, pushMessage] = useGameServerState(
-    gameChannel
+    gameChannel,
+    initGameState
   );
   const [midiInputs, setMidiInputs] = useState<Array<Input>>([]);
-  console.log("GAME CONTEXT ", gameContext);
   const [loadSample, playSample, stopSample] = useSamplePlayer(Tone);
+  const { player: currPlayer } = usePlayerContext();
 
   const resetTone = () => {
     stopSample();
@@ -86,7 +92,7 @@ const Game: React.FC<GameProps> = ({ gameChannel, currMusicianId }) => {
                       !!gameContext.players
                         ? gameContext.players
                             .map(({ musicianId }) => musicianId)
-                            .includes(currMusicianId)
+                            .includes(currPlayer.musicianId)
                         : false
                     }
                     pushMessageToChannel={pushMessage}
@@ -112,7 +118,7 @@ const Game: React.FC<GameProps> = ({ gameChannel, currMusicianId }) => {
                 return <GameEndView />;
             }
           })()}
-          <ClientDebug musicianId={currMusicianId} />
+          <ClientDebug musicianId={currPlayer.musicianId} />
         </GameLayout>
       </ToneAudioContext.Provider>
     </GameContext.Provider>

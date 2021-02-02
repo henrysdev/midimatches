@@ -115,17 +115,13 @@ defmodule Progressions.Rooms.RoomServer do
     {:reply, players, state}
   end
 
+  @spec start_game(%RoomServer{}) :: %RoomServer{}
   defp start_game(
          %RoomServer{room_id: room_id, players: players, game_config: game_config} = state
        ) do
     {:ok, game} =
       Supervisor.start_link([{Game, [{room_id, players, game_config}]}], strategy: :one_for_one)
 
-    broadcast_start_game(room_id)
     %RoomServer{state | game: game}
-  end
-
-  defp broadcast_start_game(room_id) do
-    ProgressionsWeb.Endpoint.broadcast("room:#{room_id}", "start_game", %{})
   end
 end

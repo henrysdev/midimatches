@@ -50,7 +50,7 @@ const MidiConfiguration: React.FC<MidiConfigurationProps> = ({
 
   return (
     <div>
-      <h4>Found MIDI Inputs (click an input to toggle disable)</h4>
+      <h4>Found MIDI Inputs (click to toggle)</h4>
       {!!midiInputs ? (
         <ul
           style={{
@@ -62,9 +62,9 @@ const MidiConfiguration: React.FC<MidiConfigurationProps> = ({
         >
           {midiInputs
             .sort((a, b) => a.name.localeCompare(b.name))
-            .map((midiInput) => (
+            .map((midiInput, idx) => (
               <MidiInput
-                key={`midi-input-${midiInput.id}`}
+                key={`midi-input-${idx}`}
                 input={midiInput}
                 toggleEnabled={toggleInputEnabled}
               />

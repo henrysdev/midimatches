@@ -75,17 +75,14 @@ defmodule Progressions.Rooms.Room.Game.Views.PlaybackVoting do
   @spec simulate_vote(%GameServer{}, ballot()) :: %GameServer{}
   defp simulate_vote(%GameServer{} = state, ballot) do
     case vote_status(state, ballot) do
-      # last vote - advance to next game view
       :last_valid_vote ->
         state
         |> valid_vote(ballot)
         |> last_vote()
 
-      # valid vote - count and continue
       :valid_vote ->
         valid_vote(state, ballot)
 
-      # invalid vote - return state unchanged
       _bad_vote ->
         state
     end
@@ -118,21 +115,7 @@ defmodule Progressions.Rooms.Room.Game.Views.PlaybackVoting do
   end
 
   @spec last_vote(%GameServer{}) :: %GameServer{}
-  defp last_vote(%GameServer{} = state) do
-    # winner =
-    #   votes
-    #   |> Map.values()
-    #   |> Enum.frequencies()
-    #   |> Enum.max_by(fn {_id, num_votes} -> num_votes end)
-
-    # %GameServer{
-    #   state
-    #   | votes: votes,
-    #     winner: winner
-    # }
-
-    update_scores(state)
-  end
+  defp last_vote(%GameServer{} = state), do: update_scores(state)
 
   @spec update_scores(%GameServer{}) :: %GameServer{}
   def update_scores(%GameServer{votes: votes, scores: scores} = state) do

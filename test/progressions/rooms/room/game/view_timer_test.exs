@@ -43,7 +43,7 @@ defmodule Progressions.ViewTimerTest do
         views,
         {0, []},
         fn view, {ctr, acc_views} ->
-          ViewTimer.schedule_view_timeout(view_timer, view, ctr, timeout_duration)
+          ViewTimer.schedule_view_timeout(view_timer, view, ctr, timeout_duration, game_server)
 
           Process.sleep(timeout_duration)
 

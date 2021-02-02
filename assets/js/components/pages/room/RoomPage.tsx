@@ -2,15 +2,23 @@ import { Channel, Socket } from "phoenix";
 import React, { useEffect, useState } from "react";
 
 import { unmarshalBody } from "../../../utils";
-import { PlayerJoinPayload, Player } from "../../../types";
+import {
+  PlayerJoinPayload,
+  Player,
+  GameContextType,
+  ViewUpdatePayload,
+} from "../../../types";
 import { Game } from "./game/Game";
 import { PregameLobby } from "./pregame/PregameLobby";
-import { ToneAudioContext } from "../../../contexts";
+import { PlayerContext } from "../../../contexts";
+import { START_GAME_EVENT, VIEW_UPDATE_EVENT } from "../../../constants";
+import { gameViewAtomToEnum } from "../../../utils";
 
 const RoomPage: React.FC = () => {
   const [gameChannel, setGameChannel] = useState<Channel>();
   const [readyToStartGame, setReadyToStartGame] = useState<boolean>(false);
   const [currPlayer, setCurrPlayer] = useState<Player>();
+  const [initGameState, setInitGameState] = useState<GameContextType>();
 
   useEffect(() => {
     // websocket channel init
@@ -31,9 +39,12 @@ const RoomPage: React.FC = () => {
         console.log("Unable to join", resp);
       });
 
-    channel.on("start_game", (_body) => {
+    channel.on(START_GAME_EVENT, (body) => {
+      const { gameState } = unmarshalBody(body) as ViewUpdatePayload;
+      setInitGameState(gameState);
       setReadyToStartGame(true);
     });
+
     setGameChannel(channel);
   }, []);
 
@@ -46,8 +57,13 @@ const RoomPage: React.FC = () => {
     }
   };
 
-  return readyToStartGame && !!gameChannel && !!currPlayer ? (
-    <Game gameChannel={gameChannel} currMusicianId={currPlayer.musicianId} />
+  return readyToStartGame &&
+    !!gameChannel &&
+    !!currPlayer &&
+    !!initGameState ? (
+    <PlayerContext.Provider value={{ player: currPlayer }}>
+      <Game gameChannel={gameChannel} initGameState={initGameState} />
+    </PlayerContext.Provider>
   ) : (
     <PregameLobby pushMessageToChannel={playerJoin} />
   );

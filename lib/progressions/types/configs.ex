@@ -6,7 +6,8 @@ defmodule Progressions.Types.Configs do
   alias Progressions.Types.{
     Configs.ProgressionsConfig,
     Configs.RoomConfig,
-    GameRules
+    GameRules,
+    GameRules.ViewTimeouts
   }
 
   # Schema to be followed for defining configurations
@@ -17,7 +18,14 @@ defmodule Progressions.Types.Configs do
           timestep_size: nil,
           quantization_threshold: nil,
           rounds_to_win: nil,
-          game_size_num_players: nil
+          game_size_num_players: nil,
+          view_timeouts: %ViewTimeouts{
+            game_start: nil,
+            round_start: nil,
+            recording: nil,
+            playback_voting: nil,
+            round_end: nil
+          }
         }
       }
     ]

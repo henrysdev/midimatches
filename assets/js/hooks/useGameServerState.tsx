@@ -11,9 +11,12 @@ type GameServerStateTuple = [
   (event: string, payload: Object) => void
 ];
 
-export function useGameServerState(gameChannel: Channel): GameServerStateTuple {
+export function useGameServerState(
+  gameChannel: Channel,
+  initGameState: GameContextType
+): GameServerStateTuple {
   const [currentView, setCurrentView] = useState(GAME_VIEW.GAME_START);
-  const [gameContext, setGameContext] = useState({} as GameContextType);
+  const [gameContext, setGameContext] = useState(initGameState);
 
   useEffect(() => {
     gameChannel.on(VIEW_UPDATE_EVENT, (body) => {

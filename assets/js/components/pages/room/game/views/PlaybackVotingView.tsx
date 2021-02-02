@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 
 import { SUBMIT_VOTE_EVENT } from "../../../../../constants";
-import { useGameContext, useToneAudioContext } from "../../../../../hooks";
+import { useGameContext, usePlayerContext } from "../../../../../hooks";
 import { PlaybackAudio } from "../../../../audio";
 import {
   SimpleButton,
@@ -35,7 +35,8 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
       viewTimeouts: { playbackVoting: playbackVotingTimeout },
     },
   } = useGameContext();
-  const { Tone } = useToneAudioContext();
+
+  const { player: currPlayer } = usePlayerContext();
 
   useEffect(() => {
     if (!!recordings) {
@@ -66,8 +67,11 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
           <></>
         )}
         {!!recordings ? (
-          shuffleArray(Object.entries(recordings)).map(
-            ([musicianId, recording]: [string, any]) => {
+          shuffleArray(Object.entries(recordings))
+            .filter(
+              ([musicianId, _recording]) => musicianId !== currPlayer.musicianId
+            )
+            .map(([musicianId, recording]: [string, any]) => {
               return (
                 <div key={`playback-${musicianId}`}>
                   <PlaybackAudio
@@ -90,8 +94,7 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
                   </div>
                 </div>
               );
-            }
-          )
+            })
         ) : (
           <div>No recordings available</div>
         )}

@@ -3,6 +3,8 @@ defmodule Progressions.Types.GameRules do
   Configurable fields for a new instance of a GameServer
   """
 
+  alias Progressions.Types.GameRules.ViewTimeouts
+
   use TypedStruct
 
   @default_timestep_size 50
@@ -10,12 +12,7 @@ defmodule Progressions.Types.GameRules do
   @default_rounds_to_win 3
   @default_game_size_num_players 4
   @default_solo_time_limit 30
-  @default_view_timeouts %{
-    round_start: 3_000,
-    # recording: 30_000,
-    playback_voting: 90_000,
-    round_end: 5_000
-  }
+  @default_view_timeouts %ViewTimeouts{}
 
   @derive Jason.Encoder
   typedstruct do

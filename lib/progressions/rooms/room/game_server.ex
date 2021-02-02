@@ -59,7 +59,12 @@ defmodule Progressions.Rooms.Room.GameServer do
 
     Pids.register({:game_server, room_id}, self())
 
-    {:ok, GameLogic.start_game(game_rules, players, room_id)}
+    game_state =
+      GameLogic.start_game(game_rules, players, room_id)
+      |> broadcast_start_game()
+      |> schedule_view_timeout()
+
+    {:ok, game_state}
   end
 
   @spec get_current_view(pid()) :: atom()
@@ -183,6 +188,7 @@ defmodule Progressions.Rooms.Room.GameServer do
     state
   end
 
+  @spec schedule_view_timeout(%GameServer{}) :: %GameServer{}
   defp schedule_view_timeout(
          %GameServer{
            room_id: room_id,
@@ -191,7 +197,9 @@ defmodule Progressions.Rooms.Room.GameServer do
            game_rules: %{view_timeouts: view_timeouts}
          } = state
        ) do
-    if Map.has_key?(view_timeouts, game_view) do
+    if is_nil(Map.get(view_timeouts, game_view)) do
+      state
+    else
       view_timer = Pids.fetch({:view_timer, room_id})
       timeout_duration = Map.get(view_timeouts, game_view)
 
@@ -199,15 +207,24 @@ defmodule Progressions.Rooms.Room.GameServer do
         view_timer,
         game_view,
         view_counter,
-        timeout_duration
+        timeout_duration,
+        self()
       )
 
-      state
-    else
       state
     end
   end
 
+  @spec broadcast_start_game(%GameServer{}) :: %GameServer{}
+  defp broadcast_start_game(%GameServer{room_id: room_id} = state) do
+    ProgressionsWeb.Endpoint.broadcast("room:#{room_id}", "start_game", %{
+      game_state: Utils.new_server_to_client_game_state(state)
+    })
+
+    state
+  end
+
+  @spec broadcast_gamestate(%GameServer{}) :: %GameServer{}
   defp broadcast_gamestate(%GameServer{room_id: room_id} = state) do
     ProgressionsWeb.Endpoint.broadcast("room:#{room_id}", "view_update", %{
       game_state: Utils.new_server_to_client_game_state(state)
