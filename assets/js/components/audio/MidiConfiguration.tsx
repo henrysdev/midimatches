@@ -50,7 +50,7 @@ const MidiConfiguration: React.FC<MidiConfigurationProps> = ({
 
   return (
     <div>
-      <p style={{ textAlign: "left" }}>Active MIDI Inputs</p>
+      <p style={{ textAlign: "left" }}>Connected MIDI Inputs</p>
       {!!midiInputs ? (
         <ul
           style={{

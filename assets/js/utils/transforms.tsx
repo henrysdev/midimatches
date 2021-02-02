@@ -131,10 +131,5 @@ export function loopToEvents(
 }
 
 export function genRandomColors(count: number): Array<Color> {
-  let colors = [];
-  for (let i = 0; i < count; i++) {
-    const newColor = randomColor();
-    colors.push(newColor);
-  }
-  return colors;
+  return randomColor({ count, luminosity: "bright" });
 }

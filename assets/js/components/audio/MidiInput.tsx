@@ -14,8 +14,8 @@ const MidiInput: React.FC<MidiInputProps> = ({ input, toggleEnabled }) => {
       className={"uk-text-left uk-button uk-button-default"}
       style={
         enabled
-          ? { width: "100%" }
-          : { width: "100%", backgroundColor: "#c9c9c9" }
+          ? { width: "100%", paddingLeft: "4px" }
+          : { width: "100%", paddingLeft: "4px", backgroundColor: "#c9c9c9" }
       }
       onClick={() => {
         const toggled = !enabled;
@@ -23,18 +23,18 @@ const MidiInput: React.FC<MidiInputProps> = ({ input, toggleEnabled }) => {
         toggleEnabled(input, toggled);
       }}
     >
-      {input.name}
       {enabled ? (
         <span
-          style={{ marginLeft: "8px", color: "green" }}
+          style={{ width: "20px", marginRight: "8px", color: "green" }}
           uk-icon="icon: check; ratio: 1.4"
         ></span>
       ) : (
         <span
-          style={{ marginLeft: "8px", color: "red" }}
+          style={{ width: "20px", marginRight: "8px", color: "red" }}
           uk-icon="icon: ban; ratio: 1.2"
         ></span>
       )}
+      {input.name}
     </button>
   );
 };
