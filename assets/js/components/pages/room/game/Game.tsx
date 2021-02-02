@@ -20,17 +20,19 @@ import {
 } from "../../../../hooks";
 import { GameLayout } from "./GameLayout";
 import { Input } from "webmidi";
+import { GameContextType } from "../../../../types";
 
 interface GameProps {
   gameChannel: Channel;
+  initGameState: GameContextType;
 }
 
-const Game: React.FC<GameProps> = ({ gameChannel }) => {
+const Game: React.FC<GameProps> = ({ gameChannel, initGameState }) => {
   const [currentView, gameContext, pushMessage] = useGameServerState(
-    gameChannel
+    gameChannel,
+    initGameState
   );
   const [midiInputs, setMidiInputs] = useState<Array<Input>>([]);
-  console.log("GAME CONTEXT ", gameContext);
   const [loadSample, playSample, stopSample] = useSamplePlayer(Tone);
   const { player: currPlayer } = usePlayerContext();
 

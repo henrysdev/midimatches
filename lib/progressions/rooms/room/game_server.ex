@@ -61,6 +61,7 @@ defmodule Progressions.Rooms.Room.GameServer do
 
     game_state =
       GameLogic.start_game(game_rules, players, room_id)
+      |> broadcast_start_game()
       |> schedule_view_timeout()
 
     {:ok, game_state}
@@ -214,6 +215,16 @@ defmodule Progressions.Rooms.Room.GameServer do
     end
   end
 
+  @spec broadcast_start_game(%GameServer{}) :: %GameServer{}
+  defp broadcast_start_game(%GameServer{room_id: room_id} = state) do
+    ProgressionsWeb.Endpoint.broadcast("room:#{room_id}", "start_game", %{
+      game_state: Utils.new_server_to_client_game_state(state)
+    })
+
+    state
+  end
+
+  @spec broadcast_gamestate(%GameServer{}) :: %GameServer{}
   defp broadcast_gamestate(%GameServer{room_id: room_id} = state) do
     ProgressionsWeb.Endpoint.broadcast("room:#{room_id}", "view_update", %{
       game_state: Utils.new_server_to_client_game_state(state)
