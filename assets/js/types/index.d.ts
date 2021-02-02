@@ -64,7 +64,7 @@ export interface ViewTimeouts {
 
 export interface GameRules {
   gameSizeNumPlayers: number;
-  timestepSize: number;
+  timestepSize: Microseconds;
   soloTimeLimit: number;
   quantizationThreshold: number;
   viewTimeouts: ViewTimeouts;
@@ -98,7 +98,8 @@ export interface PlayerContextType {
   player: Player;
 }
 
-/* Time Units */
 type Seconds = number;
 type Milliseconds = number;
 type Microseconds = number;
+
+type Color = string;

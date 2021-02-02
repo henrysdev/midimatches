@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 
 import { SUBMIT_VOTE_EVENT } from "../../../../../constants";
 import { useGameContext, usePlayerContext } from "../../../../../hooks";
@@ -10,11 +10,11 @@ import {
   DynamicContent,
   Title,
 } from "../../../../common";
-import { shuffleArray } from "../../../../../utils";
+import { shuffleArray, genRandomColors } from "../../../../../utils";
+import { Color } from "../../../../../types";
 
 interface PlaybackVotingViewProps {
   pushMessageToChannel: Function;
-  contestants: string[];
   playSample: Function;
 }
 
@@ -26,11 +26,10 @@ you have heard all the recordings, you will be able to cast your vote.
 
 const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
   pushMessageToChannel,
-  contestants,
   playSample,
 }) => {
   const {
-    recordings,
+    recordings = {},
     gameRules: {
       viewTimeouts: { playbackVoting: playbackVotingTimeout },
     },
@@ -38,21 +37,16 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
 
   const { player: currPlayer } = usePlayerContext();
 
-  useEffect(() => {
-    if (!!recordings) {
-      // TODO automatically schedule all to fully playback
-      // Object.entries(recordings).reduce((now, [musicianId, recording]) => {
-      //   scheduleRecording(ß
-      //     recording,
-      //     now,
-      //     timestepSize,
-      //     soloTimeLimit,
-      //     playNote
-      //   );
-      //   return now + soloTimeLimit;
-      // }, Tone.now());
-    }
-  }, [recordings]);
+  const randomColors: Array<Color> = useMemo(() => {
+    const numColorsNeeded = Object.keys(recordings).length;
+    return genRandomColors(numColorsNeeded);
+  }, [Object.keys(recordings).length]);
+
+  // useEffect(() => {
+  //   if (!!recordings) {
+  //     // TODO automatically schedule all to fully playback
+  //   }
+  // }, [Object.keys(recordings).length]);
 
   return (
     <div>
@@ -71,30 +65,36 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
             .filter(
               ([musicianId, _recording]) => musicianId !== currPlayer.musicianId
             )
-            .map(([musicianId, recording]: [string, any]) => {
-              return (
-                <div key={`playback-${musicianId}`}>
-                  <PlaybackAudio
-                    key={`player-${musicianId}`}
-                    recording={recording}
-                    musicianId={musicianId}
-                    playSample={playSample}
-                  />
-                  <div>
-                    <SimpleButton
-                      key={`vote-${musicianId}`}
-                      label={`Vote for ${musicianId}`}
-                      callback={() => {
-                        pushMessageToChannel(SUBMIT_VOTE_EVENT, {
-                          vote: musicianId,
-                        });
-                      }}
-                      disabled={false}
-                    />
-                  </div>
-                </div>
-              );
+            .map((entry, idx): [[string, any], string] => {
+              return [entry, randomColors[idx]];
             })
+            .map(
+              ([[musicianId, recording], color]: [[string, any], string]) => {
+                return (
+                  <div key={`playback-${musicianId}`}>
+                    <PlaybackAudio
+                      key={`player-${musicianId}`}
+                      recording={recording}
+                      musicianId={musicianId}
+                      playSample={playSample}
+                      color={color}
+                    />
+                    <div>
+                      <SimpleButton
+                        key={`vote-${musicianId}`}
+                        label={`Vote for ${musicianId}`}
+                        callback={() => {
+                          pushMessageToChannel(SUBMIT_VOTE_EVENT, {
+                            vote: musicianId,
+                          });
+                        }}
+                        disabled={false}
+                      />
+                    </div>
+                  </div>
+                );
+              }
+            )
         ) : (
           <div>No recordings available</div>
         )}

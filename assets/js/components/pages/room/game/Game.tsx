@@ -103,9 +103,6 @@ const Game: React.FC<GameProps> = ({ gameChannel, initGameState }) => {
                 return (
                   <PlaybackVotingView
                     pushMessageToChannel={pushMessage}
-                    contestants={
-                      !!gameContext.contestants ? gameContext.contestants : []
-                    }
                     playSample={playSample}
                   />
                 );
