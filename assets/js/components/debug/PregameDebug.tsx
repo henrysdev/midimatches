@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { GameLayout } from "../pages/room/game";
 import { GameContext, ToneAudioContext, PlayerContext } from "../../contexts";
@@ -6,7 +6,7 @@ import { Instructions, Title, DynamicContent } from "../common";
 import { Keyboard } from "../audio";
 import { GameStartView } from "../pages/room/game/views";
 import { useWebMidi } from "../../hooks";
-import Tone from "tone";
+// import Tone from "tone";
 
 interface PregameDebugProps {}
 
@@ -24,6 +24,12 @@ sagittis dolor rhoncus bibendum. Duis pharetra mi sed nibh pretium semper. Morbi
 tincidunt tellus. Mauris et dolor placerat, venenatis ex in, semper risus. Mauris 
 gravida tincidunt est, vel bibendum libero pulvinar vel. Vivamus tristique aliquet 
 `;
+
+const mockTone = {
+  Master: {
+    mute: false,
+  },
+};
 
 const PregameDebug: React.FC<PregameDebugProps> = ({}) => {
   const [midiInputs] = useWebMidi();
@@ -50,7 +56,7 @@ const PregameDebug: React.FC<PregameDebugProps> = ({}) => {
         <PlayerContext.Provider
           value={{ player: { playerAlias: "xb4z", musicianId: "1199" } }}
         >
-          <ToneAudioContext.Provider value={{ midiInputs, Tone: Tone }}>
+          <ToneAudioContext.Provider value={{ midiInputs, Tone: mockTone }}>
             <GameLayout>
               <GameStartView
                 pushMessageToChannel={() => {}}

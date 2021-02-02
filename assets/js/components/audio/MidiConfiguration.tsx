@@ -50,7 +50,7 @@ const MidiConfiguration: React.FC<MidiConfigurationProps> = ({
 
   return (
     <div>
-      <h4>Found MIDI Inputs (click to toggle)</h4>
+      <p style={{ textAlign: "left" }}>Active MIDI Inputs</p>
       {!!midiInputs ? (
         <ul
           style={{
@@ -58,6 +58,7 @@ const MidiConfiguration: React.FC<MidiConfigurationProps> = ({
             overflow: "scroll",
             overflowY: "auto",
             overflowX: "auto",
+            paddingLeft: "8px",
           }}
         >
           {midiInputs

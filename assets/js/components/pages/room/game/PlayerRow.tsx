@@ -6,28 +6,34 @@ interface PlayerRowProps {
   player: PlayerData;
   rank: number;
 }
+
+const tdStyle = {
+  paddingTop: "1px",
+  paddingBottom: "1px",
+};
+
 const PlayerRow: React.FC<PlayerRowProps> = ({
   isCurrPlayer,
   player: { playerAlias, playerScore },
   rank,
 }) => {
   return isCurrPlayer ? (
-    <tr style={{ backgroundColor: "#fffde6" }}>
-      <td className="player_row_rank">
+    <tr style={{ ...tdStyle, backgroundColor: "#fffde6" }}>
+      <td style={{ ...tdStyle, textAlign: "center" }}>
         <strong>{rank}</strong>
       </td>
-      <td className="player_row_alias">
+      <td style={tdStyle}>
         <strong>{playerAlias}</strong>
       </td>
-      <td className="player_row_score">
+      <td style={{ ...tdStyle, textAlign: "center" }}>
         <strong>{playerScore}</strong>
       </td>
     </tr>
   ) : (
     <tr>
-      <td className="player_row_rank">{rank}</td>
-      <td className="player_row_alias">{playerAlias}</td>
-      <td className="player_row_score">{playerScore}</td>
+      <td style={{ ...tdStyle, textAlign: "center" }}>{rank}</td>
+      <td style={tdStyle}>{playerAlias}</td>
+      <td style={{ ...tdStyle, textAlign: "center" }}>{playerScore}</td>
     </tr>
   );
 };

@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import * as Tone from "tone";
 import { GAME_VIEW, SAMPLE_URLS } from "../../../../constants";
 import { GameContext, ToneAudioContext } from "../../../../contexts";
-import { ClientDebug } from "../../../debug";
 import {
   GameEndView,
   GameStartView,
@@ -118,7 +117,6 @@ const Game: React.FC<GameProps> = ({ gameChannel, initGameState }) => {
                 return <GameEndView />;
             }
           })()}
-          <ClientDebug musicianId={currPlayer.musicianId} />
         </GameLayout>
       </ToneAudioContext.Provider>
     </GameContext.Provider>
