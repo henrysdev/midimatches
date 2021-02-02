@@ -9,12 +9,13 @@ interface TimerProps {
 }
 const Timer: React.FC<TimerProps> = memo(
   ({ duration, descriptionText, timesUpText }) => {
-    console.log({ duration, descriptionText, timesUpText });
     // Renderer callback with condition
     const renderer = ({
+      minutes,
       seconds,
       completed,
     }: {
+      minutes: number;
       seconds: number;
       completed: boolean;
     }) => {
@@ -23,7 +24,12 @@ const Timer: React.FC<TimerProps> = memo(
         return <div>{timesUpText}</div>;
       } else {
         // Render a countdown
-        return <span>{seconds}</span>;
+        return (
+          <div>
+            {!!descriptionText ? <span>{descriptionText}</span> : <></>}{" "}
+            <span>{seconds + minutes * 60}</span>
+          </div>
+        );
       }
     };
 
@@ -32,7 +38,6 @@ const Timer: React.FC<TimerProps> = memo(
         className="uk-text-center"
         style={{ fontSize: "16px", fontWeight: "bold" }}
       >
-        {!!descriptionText ? <span>{descriptionText}</span> : <></>}
         <Countdown date={Date.now() + duration} renderer={renderer} />
       </div>
     );

@@ -27,7 +27,9 @@ const GameStartView: React.FC<GameStartViewProps> = ({
 }) => {
   const [isReady, setIsReady] = useState<boolean>(false);
   const {
-    gameRules: { viewTimeouts: { gameStart: gameStartTimeout } = {} } = {},
+    gameRules: {
+      viewTimeouts: { gameStart: gameStartTimeout },
+    },
   } = useGameContext();
 
   return (
@@ -36,7 +38,7 @@ const GameStartView: React.FC<GameStartViewProps> = ({
       {!!gameStartTimeout ? (
         <Timer
           key={gameStartTimeout}
-          descriptionText={"Game starts in"}
+          descriptionText={"Game starts in "}
           duration={gameStartTimeout}
         />
       ) : (
