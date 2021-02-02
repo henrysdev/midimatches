@@ -6,7 +6,7 @@ interface GameSettingsProps {}
 
 const GameSettings: React.FC<GameSettingsProps> = ({}) => {
   const { Tone } = useToneAudioContext();
-  const [isMuted, setIsMuted] = useState<boolean>(false);
+  const [isMuted, setIsMuted] = useState<boolean>(Tone.Master.mute);
 
   const toggleMute = () => {
     const newIsMuted = !isMuted;
@@ -16,12 +16,21 @@ const GameSettings: React.FC<GameSettingsProps> = ({}) => {
 
   return (
     <div className="settings_box">
-      <button
-        className="uk-button uk-button-default"
-        onClick={() => toggleMute()}
-      >
-        toggle mute
-      </button>
+      <ul className="uk-iconnav uk-iconnav-vertical">
+        <li>
+          <i style={{ verticalAlign: "middle" }} className="material-icons">
+            volume_off
+          </i>
+          <label className="switch">
+            <input
+              type="checkbox"
+              checked={isMuted}
+              onChange={() => toggleMute()}
+            />
+            <span className="slider round"></span>
+          </label>
+        </li>
+      </ul>
     </div>
   );
 };

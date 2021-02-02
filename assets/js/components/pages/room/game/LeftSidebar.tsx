@@ -24,6 +24,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({}) => {
         currPlayer={currPlayer}
         scores={scores}
       />
+      <hr className="uk-divider-icon"></hr>
       <GameSettings />
     </div>
   );

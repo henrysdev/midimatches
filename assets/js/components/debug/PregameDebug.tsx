@@ -6,6 +6,7 @@ import { Instructions, Title, DynamicContent } from "../common";
 import { Keyboard } from "../audio";
 import { GameStartView } from "../pages/room/game/views";
 import { useWebMidi } from "../../hooks";
+import Tone from "tone";
 
 interface PregameDebugProps {}
 
@@ -49,7 +50,7 @@ const PregameDebug: React.FC<PregameDebugProps> = ({}) => {
         <PlayerContext.Provider
           value={{ player: { playerAlias: "xb4z", musicianId: "1199" } }}
         >
-          <ToneAudioContext.Provider value={{ midiInputs }}>
+          <ToneAudioContext.Provider value={{ midiInputs, Tone: Tone }}>
             <GameLayout>
               <GameStartView
                 pushMessageToChannel={() => {}}
