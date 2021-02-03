@@ -228,9 +228,9 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
             !!recordMidiState.synth &&
             recordMidiState.activeNotes.has(midiNumber)
           ) {
-            const noteVelocity = midiVelocityToToneVelocity(
-              recordMidiState.activeNotes.get(midiNumber).velocity
-            );
+            const origNote = recordMidiState.activeNotes.get(midiNumber);
+            const origVelocity = !!origNote ? origNote.velocity : 0;
+            const noteVelocity = midiVelocityToToneVelocity(origVelocity);
             const noteName = midiNoteNumberToNoteName(midiNumber);
             recordMidiState.synth.triggerAttack(noteName, "+0", noteVelocity);
           }
