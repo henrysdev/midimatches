@@ -28,32 +28,44 @@ const Scoreboard: React.FC<ScoreboardProps> = memo(
 
     return (
       <div style={{ paddingBottom: "8px" }}>
-        <table
-          className="uk-table uk-table-divider"
-          style={{ marginBottom: 0 }}
-        >
-          <thead>
-            <tr>
-              <th>Rank</th>
-              <th>Player</th>
-              <th>Score</th>
-            </tr>
-          </thead>
-          <tbody>
-            {!!playersRowData && playersRowData.length > 0 ? (
-              playersRowData.map((playerData, idx) => (
-                <PlayerRow
-                  key={`player-card-${playerData.musicianId}`}
-                  isCurrPlayer={playerData.musicianId === currPlayer.musicianId}
-                  player={playerData}
-                  rank={idx + 1}
-                />
-              ))
-            ) : (
-              <></>
-            )}
-          </tbody>
-        </table>
+        {!!playersRowData && playersRowData.length > 0 ? (
+          <table
+            className="uk-table uk-table-divider"
+            style={{
+              marginTop: 0,
+              marginBottom: 0,
+              overflow: "scroll",
+              overflowY: "auto",
+              overflowX: "auto",
+            }}
+          >
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Player</th>
+                <th>Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              {!!playersRowData && playersRowData.length > 0 ? (
+                playersRowData.map((playerData, idx) => (
+                  <PlayerRow
+                    key={`player-card-${playerData.musicianId}`}
+                    isCurrPlayer={
+                      playerData.musicianId === currPlayer.musicianId
+                    }
+                    player={playerData}
+                    rank={idx + 1}
+                  />
+                ))
+              ) : (
+                <></>
+              )}
+            </tbody>
+          </table>
+        ) : (
+          <></>
+        )}
       </div>
     );
   }

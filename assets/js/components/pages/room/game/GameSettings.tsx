@@ -17,13 +17,13 @@ const GameSettings: React.FC<GameSettingsProps> = ({}) => {
   return (
     <div
       style={{
-        height: "200px",
-        padding: "8px",
+        minHeight: "200px",
         flexGrow: 1,
       }}
     >
-      <ul className="uk-iconnav uk-iconnav-vertical">
-        <li>
+      <h5 style={{ textAlign: "left", color: "#999" }}>Settings</h5>
+      <ul style={{ listStyleType: "none", paddingLeft: 0 }}>
+        <li style={{ padding: 0 }}>
           <i style={{ verticalAlign: "middle" }} className="material-icons">
             volume_off
           </i>
