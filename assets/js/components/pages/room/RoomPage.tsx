@@ -7,6 +7,7 @@ import {
   Player,
   GameContextType,
   ViewUpdatePayload,
+  InitConnPayload,
 } from "../../../types";
 import { Game } from "./game/Game";
 import { PregameLobby } from "./pregame/PregameLobby";
@@ -14,17 +15,18 @@ import { PlayerContext } from "../../../contexts";
 import {
   START_GAME_EVENT,
   RESET_ROOM_EVENT,
+  INIT_CONN_EVENT,
   SUBMIT_LEAVE_ROOM,
 } from "../../../constants";
 
 const RoomPage: React.FC = () => {
   const [gameChannel, setGameChannel] = useState<Channel>();
-  const [readyToStartGame, setReadyToStartGame] = useState<boolean>(false);
+  const [gameInProgress, setGameInProgress] = useState<boolean>(false);
   const [currPlayer, setCurrPlayer] = useState<Player>();
   const [initGameState, setInitGameState] = useState<GameContextType>();
 
   const resetRoom = () => {
-    setReadyToStartGame(false);
+    setGameInProgress(false);
     setCurrPlayer(undefined);
     setInitGameState(undefined);
   };
@@ -50,11 +52,17 @@ const RoomPage: React.FC = () => {
         console.log("Unable to join", resp);
       });
 
+    // room status
+    channel.on(INIT_CONN_EVENT, (body) => {
+      const { gameInProgress } = unmarshalBody(body) as InitConnPayload;
+      setGameInProgress(gameInProgress);
+    });
+
     // start game
     channel.on(START_GAME_EVENT, (body) => {
       const { gameState } = unmarshalBody(body) as ViewUpdatePayload;
       setInitGameState(gameState);
-      setReadyToStartGame(true);
+      setGameInProgress(true);
     });
 
     // reset room
@@ -83,15 +91,15 @@ const RoomPage: React.FC = () => {
     }
   };
 
-  return readyToStartGame &&
-    !!gameChannel &&
-    !!currPlayer &&
-    !!initGameState ? (
+  return gameInProgress && !!gameChannel && !!currPlayer && !!initGameState ? (
     <PlayerContext.Provider value={{ player: currPlayer }}>
       <Game gameChannel={gameChannel} initGameState={initGameState} />
     </PlayerContext.Provider>
   ) : (
-    <PregameLobby pushMessageToChannel={playerJoin} />
+    <PregameLobby
+      pushMessageToChannel={playerJoin}
+      gameInProgress={gameInProgress}
+    />
   );
 };
 export { RoomPage };

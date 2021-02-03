@@ -43,6 +43,10 @@ export interface ViewUpdatePayload {
   gameState: GameContextType;
 }
 
+export interface InitConnPayload {
+  gameInProgress: boolean;
+}
+
 export interface PlayerJoinPayload {
   player: Player;
 }

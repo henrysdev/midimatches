@@ -57,12 +57,26 @@ defmodule ProgressionsWeb.RoomChannel do
 
   def join("room:" <> room_id, _params, socket) do
     if Rooms.room_exists?(room_id) do
+      send(self(), {:init_conn, room_id})
+
       {:ok,
        socket
        |> assign(room_id: room_id)}
     else
       {:error, "room #{room_id} does not exist"}
     end
+  end
+
+  def handle_info({:init_conn, room_id}, socket) do
+    game_in_progress? =
+      Pids.fetch!({:room_server, room_id})
+      |> RoomServer.game_in_progress?()
+
+    push(socket, "init_conn", %{
+      game_in_progress: game_in_progress?
+    })
+
+    {:noreply, socket}
   end
 
   def handle_in(

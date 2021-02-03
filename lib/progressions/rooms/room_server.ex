@@ -80,6 +80,14 @@ defmodule Progressions.Rooms.RoomServer do
     GenServer.call(pid, :reset_room)
   end
 
+  @spec game_in_progress?(pid()) :: boolean()
+  @doc """
+  Return whether or not there is an active game in progress in the room
+  """
+  def game_in_progress?(pid) do
+    GenServer.call(pid, :game_in_progress?)
+  end
+
   @impl true
   def handle_cast(
         {:drop_player, player_id},
@@ -152,6 +160,14 @@ defmodule Progressions.Rooms.RoomServer do
 
     {:reply, state, state}
   end
+
+  @impl true
+  def handle_call(
+        :game_in_progress?,
+        _from,
+        %RoomServer{game: game} = state
+      ),
+      do: {:reply, !is_nil(game), state}
 
   @spec start_game(%RoomServer{}) :: %RoomServer{}
   defp start_game(
