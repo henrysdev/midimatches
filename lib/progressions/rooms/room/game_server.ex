@@ -33,6 +33,7 @@ defmodule Progressions.Rooms.Room.GameServer do
     field(:musicians, MapSet.t(id()), enforce: true)
     field(:players, MapSet.t(Player), enforce: true)
     field(:room_id, id(), enforce: true)
+    field(:game_id, id(), enforce: true)
 
     field(:game_view, game_view(), default: :game_start)
     field(:contestants, list(id), default: [])
@@ -52,16 +53,16 @@ defmodule Progressions.Rooms.Room.GameServer do
 
   @impl true
   def init(args) do
-    {room_id, players, game_rules} =
+    {room_id, game_id, players, game_rules} =
       case args do
-        [{room_id, players, game_rules}] -> {room_id, players, game_rules}
-        [{room_id, players}] -> {room_id, players, %GameRules{}}
+        [{room_id, game_id, players, game_rules}] -> {room_id, game_id, players, game_rules}
+        [{room_id, game_id, players}] -> {room_id, game_id, players, %GameRules{}}
       end
 
     Pids.register({:game_server, room_id}, self())
 
     game_state =
-      GameLogic.start_game(game_rules, players, room_id)
+      GameLogic.start_game(game_rules, players, room_id, game_id)
       |> broadcast_start_game()
       |> schedule_view_timeout()
 
@@ -246,7 +247,7 @@ defmodule Progressions.Rooms.Room.GameServer do
   @spec broadcast_start_game(%GameServer{}) :: %GameServer{}
   defp broadcast_start_game(%GameServer{room_id: room_id} = state) do
     ProgressionsWeb.Endpoint.broadcast("room:#{room_id}", "start_game", %{
-      game_state: Utils.new_server_to_client_game_state(state)
+      game_state: Utils.server_to_client_game_state(state)
     })
 
     state
@@ -255,7 +256,7 @@ defmodule Progressions.Rooms.Room.GameServer do
   @spec broadcast_gamestate(%GameServer{}) :: %GameServer{}
   defp broadcast_gamestate(%GameServer{room_id: room_id} = state) do
     ProgressionsWeb.Endpoint.broadcast("room:#{room_id}", "game_update", %{
-      game_state: Utils.new_server_to_client_game_state(state)
+      game_state: Utils.server_to_client_game_state(state)
     })
 
     state

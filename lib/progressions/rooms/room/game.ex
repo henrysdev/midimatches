@@ -8,7 +8,8 @@ defmodule Progressions.Rooms.Room.Game do
     Pids,
     Rooms.Room.Game.ViewTimer,
     Rooms.Room.GameServer,
-    Types.GameRules
+    Types.GameRules,
+    Utils
   }
 
   def start_link(args) do
@@ -25,9 +26,12 @@ defmodule Progressions.Rooms.Room.Game do
 
     Pids.register({:game_supervisor, room_id}, self())
 
+    # assign game a unique id
+    game_id = Utils.gen_random_string(16)
+
     children = [
       {ViewTimer, [{room_id}]},
-      {GameServer, [{room_id, players, game_config}]}
+      {GameServer, [{room_id, game_id, players, game_config}]}
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

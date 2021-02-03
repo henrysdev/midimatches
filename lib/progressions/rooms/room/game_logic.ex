@@ -19,8 +19,8 @@ defmodule Progressions.Rooms.Room.GameLogic do
           state: %GameServer{}
         }
 
-  @spec start_game(%GameRules{}, MapSet.t(Player), id()) :: %GameServer{}
-  def start_game(game_rules, players, room_id) do
+  @spec start_game(%GameRules{}, MapSet.t(Player), id(), id()) :: %GameServer{}
+  def start_game(game_rules, players, room_id, game_id) do
     musicians_list =
       players
       |> MapSet.to_list()
@@ -28,6 +28,7 @@ defmodule Progressions.Rooms.Room.GameLogic do
 
     %GameServer{
       room_id: room_id,
+      game_id: game_id,
       game_rules: game_rules,
       players: players,
       musicians: MapSet.new(musicians_list),

@@ -8,25 +8,19 @@ defmodule Progressions.Utils do
     Types.ClientGameState
   }
 
-  def calc_deadline(_curr_timestep, _loop_start_timestep, loop_length) when loop_length <= 0 do
-    {:error, "loop length must be greater than zero"}
-  end
-
-  def calc_deadline(curr_timestep, loop_start_timestep, loop_length) do
-    loop_rem = rem(curr_timestep - loop_start_timestep, loop_length)
-
-    case loop_rem do
-      _ when curr_timestep < loop_start_timestep -> loop_start_timestep
-      0 -> curr_timestep + loop_length
-      loop_rem -> curr_timestep + loop_length - loop_rem
-    end
-  end
-
-  @spec new_server_to_client_game_state(%GameServer{}) :: any
+  @spec gen_random_string(number) :: binary()
   @doc """
-  transform game server state into update payload for clients
+  Generate a random string of the given length
   """
-  def new_server_to_client_game_state(%GameServer{} = server_state) do
+  def gen_random_string(length) do
+    :crypto.strong_rand_bytes(length) |> Base.url_encode64() |> binary_part(0, length)
+  end
+
+  @spec server_to_client_game_state(%GameServer{}) :: any
+  @doc """
+  Transform game server state into update payload for clients
+  """
+  def server_to_client_game_state(%GameServer{} = server_state) do
     # votes are secret - should not expose actual votes to clients, only progress on
     # voting as a whole
     num_votes_cast =

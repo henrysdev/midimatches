@@ -33,6 +33,7 @@ defmodule Progressions.PlaybackVotingTest do
 
     game_server_state = %GameServer{
       room_id: "1",
+      game_id: "abc",
       players: players,
       musicians: musicians,
       game_view: :playback_voting,
@@ -79,6 +80,7 @@ defmodule Progressions.PlaybackVotingTest do
 
     game_server_state = %GameServer{
       room_id: "1",
+      game_id: "abc",
       players: players,
       musicians: musicians,
       game_view: :playback_voting,

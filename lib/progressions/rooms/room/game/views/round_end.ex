@@ -26,6 +26,7 @@ defmodule Progressions.Rooms.Room.Game.Views.RoundEnd do
   @spec reset_round(%GameServer{}) :: %GameServer{}
   def reset_round(%GameServer{
         room_id: room_id,
+        game_id: game_id,
         game_rules: game_rules,
         players: players,
         musicians: musicians,
@@ -37,6 +38,7 @@ defmodule Progressions.Rooms.Room.Game.Views.RoundEnd do
     %GameServer{
       game_view: :round_start,
       room_id: room_id,
+      game_id: game_id,
       game_rules: game_rules,
       players: players,
       musicians: musicians,

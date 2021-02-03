@@ -49,6 +49,7 @@ defmodule Progressions.RoundEndTest do
 
     game_server_state = %GameServer{
       room_id: "1",
+      game_id: "abc",
       players: players,
       musicians: musicians,
       game_view: :round_end,
@@ -67,6 +68,7 @@ defmodule Progressions.RoundEndTest do
       ready_ups: MapSet.new(),
       recordings: %{},
       room_id: "1",
+      game_id: "abc",
       round_recording_start_time: 0,
       view_counter: 0,
       votes: %{},
@@ -105,6 +107,7 @@ defmodule Progressions.RoundEndTest do
 
     game_server_state = %GameServer{
       room_id: "1",
+      game_id: "abc",
       players: players,
       musicians: musicians,
       game_view: :round_end,

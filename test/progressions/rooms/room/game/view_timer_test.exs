@@ -10,6 +10,7 @@ defmodule Progressions.ViewTimerTest do
 
   test "trigger view timeout and advanced views" do
     room_id = "1"
+    game_id = "abc"
 
     players =
       MapSet.new([
@@ -35,7 +36,7 @@ defmodule Progressions.ViewTimerTest do
     timeout_duration = 10
     views = [:game_start, :round_start, :recording, :playback_voting, :round_end]
 
-    {:ok, game_server} = GameServer.start_link([{room_id, players, game_rules}])
+    {:ok, game_server} = GameServer.start_link([{room_id, game_id, players, game_rules}])
     {:ok, view_timer} = ViewTimer.start_link([{room_id}])
 
     {_ctr, actual_views} =
