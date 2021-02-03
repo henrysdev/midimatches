@@ -11,14 +11,19 @@ import {
 import { Game } from "./game/Game";
 import { PregameLobby } from "./pregame/PregameLobby";
 import { PlayerContext } from "../../../contexts";
-import { START_GAME_EVENT, VIEW_UPDATE_EVENT } from "../../../constants";
-import { gameViewAtomToEnum } from "../../../utils";
+import { START_GAME_EVENT, RESET_GAME_EVENT } from "../../../constants";
 
 const RoomPage: React.FC = () => {
   const [gameChannel, setGameChannel] = useState<Channel>();
   const [readyToStartGame, setReadyToStartGame] = useState<boolean>(false);
   const [currPlayer, setCurrPlayer] = useState<Player>();
   const [initGameState, setInitGameState] = useState<GameContextType>();
+
+  const resetRoom = () => {
+    setReadyToStartGame(false);
+    setCurrPlayer(undefined);
+    setInitGameState(undefined);
+  };
 
   useEffect(() => {
     // websocket channel init
@@ -43,6 +48,10 @@ const RoomPage: React.FC = () => {
       const { gameState } = unmarshalBody(body) as ViewUpdatePayload;
       setInitGameState(gameState);
       setReadyToStartGame(true);
+    });
+
+    channel.on(RESET_GAME_EVENT, (_body) => {
+      resetRoom();
     });
 
     setGameChannel(channel);

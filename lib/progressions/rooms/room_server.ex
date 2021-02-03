@@ -133,8 +133,21 @@ defmodule Progressions.Rooms.RoomServer do
   end
 
   @impl true
-  def handle_call(:reset_game, _from, %RoomServer{game: game} = state) do
+  def handle_call(
+        :reset_game,
+        _from,
+        %RoomServer{game: game, room_id: room_id, game_config: game_config} = state
+      ) do
     Game.stop_game(game)
+
+    # reset all room state besides id and config
+    state = %RoomServer{
+      room_id: room_id,
+      game_config: game_config,
+    }
+
+    broadcast_reset_game(state)
+
     {:reply, state, state}
   end
 
@@ -146,5 +159,10 @@ defmodule Progressions.Rooms.RoomServer do
       Supervisor.start_link([{Game, [{room_id, players, game_config}]}], strategy: :one_for_one)
 
     %RoomServer{state | game: game}
+  end
+
+  @spec broadcast_reset_game(%RoomServer{}) :: atom()
+  defp broadcast_reset_game(%RoomServer{room_id: room_id} = state) do
+    ProgressionsWeb.Endpoint.broadcast("room:#{room_id}", "reset_game", %{})
   end
 end

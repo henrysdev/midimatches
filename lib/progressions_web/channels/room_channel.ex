@@ -35,7 +35,7 @@ defmodule ProgressionsWeb.RoomChannel do
     ]
   }
 
-  intercept ["start_game", "view_update"]
+  intercept ["start_game", "view_update", "reset_game"]
 
   def handle_out("view_update", msg, socket) do
     push(socket, "view_update", msg)
@@ -46,6 +46,11 @@ defmodule ProgressionsWeb.RoomChannel do
     push(socket, "start_game", msg)
     game_server = Pids.fetch!({:game_server, room_id})
     {:noreply, socket |> assign(game_server: game_server)}
+  end
+
+  def handle_out("reset_game", msg, %Phoenix.Socket{} = socket) do
+    push(socket, "reset_game", msg)
+    {:noreply, socket}
   end
 
   def join("room:" <> room_id, _params, socket) do
