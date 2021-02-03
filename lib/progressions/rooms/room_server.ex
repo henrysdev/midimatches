@@ -80,12 +80,12 @@ defmodule Progressions.Rooms.RoomServer do
     GenServer.call(pid, :reset_room)
   end
 
-  @spec game_in_progress?(pid()) :: boolean()
+  @spec sync_lobby_state(pid()) :: :ok
   @doc """
-  Return whether or not there is an active game in progress in the room
+  Update clients with most recent lobby state
   """
-  def game_in_progress?(pid) do
-    GenServer.call(pid, :game_in_progress?)
+  def sync_lobby_state(pid) do
+    GenServer.call(pid, :sync_lobby_state)
   end
 
   @impl true
@@ -94,9 +94,17 @@ defmodule Progressions.Rooms.RoomServer do
         # _from,
         %RoomServer{players: players, game: game, room_id: room_id} = state
       ) do
-    state = %RoomServer{state | players: MapSet.delete(players, player_id)}
+    state = %RoomServer{
+      state
+      | players:
+          players
+          |> MapSet.to_list()
+          |> Enum.reject(&(&1.musician_id == player_id))
+          |> MapSet.new()
+    }
 
     if is_nil(game) do
+      broadcast_lobby_state(state)
       {:noreply, state}
     else
       game_server = Pids.fetch!({:game_server, room_id})
@@ -122,6 +130,8 @@ defmodule Progressions.Rooms.RoomServer do
 
     enough_players_to_start? = MapSet.size(players) == num_players_to_start
     free_for_new_game? = is_nil(game)
+
+    broadcast_lobby_state(state)
 
     case {enough_players_to_start?, free_for_new_game?} do
       {true, true} ->
@@ -157,17 +167,21 @@ defmodule Progressions.Rooms.RoomServer do
     }
 
     broadcast_reset_room(state)
+    broadcast_lobby_state(state)
 
     {:reply, state, state}
   end
 
   @impl true
   def handle_call(
-        :game_in_progress?,
+        :sync_lobby_state,
         _from,
-        %RoomServer{game: game} = state
-      ),
-      do: {:reply, !is_nil(game), state}
+        %RoomServer{} = state
+      ) do
+    broadcast_lobby_state(state)
+
+    {:reply, state, state}
+  end
 
   @spec start_game(%RoomServer{}) :: %RoomServer{}
   defp start_game(
@@ -182,5 +196,21 @@ defmodule Progressions.Rooms.RoomServer do
   @spec broadcast_reset_room(%RoomServer{}) :: atom()
   defp broadcast_reset_room(%RoomServer{room_id: room_id}) do
     ProgressionsWeb.Endpoint.broadcast("room:#{room_id}", "reset_room", %{})
+  end
+
+  @spec broadcast_lobby_state(%RoomServer{}) :: atom()
+  defp broadcast_lobby_state(%RoomServer{
+         room_id: room_id,
+         game: game,
+         players: players,
+         game_config: %GameRules{
+           game_size_num_players: game_size_num_players
+         }
+       }) do
+    ProgressionsWeb.Endpoint.broadcast("room:#{room_id}", "lobby_update", %{
+      num_players_joined: MapSet.size(players),
+      num_players_to_start: game_size_num_players,
+      game_in_progress: !is_nil(game)
+    })
   end
 end

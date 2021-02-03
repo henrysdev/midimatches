@@ -37,10 +37,15 @@ defmodule ProgressionsWeb.RoomChannel do
     ]
   }
 
-  intercept ["start_game", "view_update", "reset_room"]
+  intercept ["lobby_update", "start_game", "game_update", "reset_room"]
 
-  def handle_out("view_update", msg, socket) do
-    push(socket, "view_update", msg)
+  def handle_out("lobby_update", msg, socket) do
+    push(socket, "lobby_update", msg)
+    {:noreply, socket}
+  end
+
+  def handle_out("game_update", msg, socket) do
+    push(socket, "game_update", msg)
     {:noreply, socket}
   end
 
@@ -68,13 +73,8 @@ defmodule ProgressionsWeb.RoomChannel do
   end
 
   def handle_info({:init_conn, room_id}, socket) do
-    game_in_progress? =
-      Pids.fetch!({:room_server, room_id})
-      |> RoomServer.game_in_progress?()
-
-    push(socket, "init_conn", %{
-      game_in_progress: game_in_progress?
-    })
+    Pids.fetch!({:room_server, room_id})
+    |> RoomServer.sync_lobby_state()
 
     {:noreply, socket}
   end
