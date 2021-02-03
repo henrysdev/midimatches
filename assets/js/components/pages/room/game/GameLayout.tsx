@@ -15,6 +15,8 @@ const GameLayout: React.FC<GameLayoutProps> = ({ children }) => {
         maxHeight: "2000px",
         maxWidth: "2000px",
         padding: "8px",
+        margin: "auto",
+        marginTop: "16px",
         boxShadow: "0 5px 15px rgb(0 0 0 / 8%)",
         color: "#666",
       }}

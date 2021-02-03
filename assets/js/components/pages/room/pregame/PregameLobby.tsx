@@ -27,10 +27,10 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
 
   return (
     <div
-      // className="uk-card uk-card-small uk-card-default uk-card-body"
       style={{
-        maxWidth: 400,
+        maxWidth: "400px",
         margin: "auto",
+        marginTop: "16px",
         padding: "24px",
         boxShadow: "0 5px 15px rgb(0 0 0 / 8%)",
         color: "#666",
@@ -48,13 +48,12 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
           <div>
             {hasJoined ? (
               <p>
-                Joined successfully as <strong>{alias}</strong>. Waiting for{" "}
-                <strong>{numPlayersToStart - numPlayersJoined}</strong> more
-                players...
+                Joined successfully as <strong>{alias}</strong>. Waiting for
+                more players...
               </p>
             ) : (
               <p style={{ marginBottom: "8px" }}>
-                Game has not started yet. Enter an alias then join!"
+                Game has not started yet. Enter an alias then join!
               </p>
             )}
           </div>
@@ -73,7 +72,7 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
                 />
               </fieldset>
               <FullWidthButton
-                label="Join Room"
+                label="Join"
                 callback={() => {
                   pushMessageToChannel(SUBMIT_ENTER_ROOM, {
                     player_alias: alias,
@@ -92,8 +91,8 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
             </form>
           )}
           <div
-            style={{ marginTop: "8px" }}
-          >{`${numPlayersJoined}/${numPlayersToStart} Joined. Need ${
+            style={{ marginTop: "16px" }}
+          >{`${numPlayersJoined}/${numPlayersToStart} Players. Need ${
             numPlayersToStart - numPlayersJoined
           } more players to start game`}</div>
         </div>

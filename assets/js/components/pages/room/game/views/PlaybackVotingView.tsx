@@ -51,6 +51,7 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
   return (
     <div>
       <Title title="Playback Voting" />
+      <Instructions description={desc} />
       <DynamicContent>
         {!!playbackVotingTimeout ? (
           <Timer
@@ -99,7 +100,6 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
           <div>No recordings available</div>
         )}
       </DynamicContent>
-      <Instructions description={desc} />
     </div>
   );
 };

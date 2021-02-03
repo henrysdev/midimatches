@@ -7,9 +7,10 @@ interface DynamicContentProps {
 const DynamicContent: React.FC<DynamicContentProps> = ({ children, style }) => {
   return (
     <div
-      className="uk-card uk-card-small uk-card-default uk-card-body"
       style={{
         ...style,
+        padding: "8px",
+        color: "#666",
         marginBottom: "8px",
         minHeight: "300px",
       }}

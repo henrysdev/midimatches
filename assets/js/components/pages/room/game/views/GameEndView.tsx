@@ -8,8 +8,8 @@ const GameEndView: React.FC<GameEndViewProps> = () => {
   return (
     <div>
       <Title title="End of Game" />
-      <DynamicContent />
       <Instructions description="Game has ended" />
+      <DynamicContent />
     </div>
   );
 };

@@ -60,7 +60,7 @@
  * Styles of "active" or pressed-down keys
  */
 .ReactPiano__Key--active {
-  background: #ceeec0;
+  background: #ccdcff;
 }
 
 .ReactPiano__Key--active.ReactPiano__Key--accidental {

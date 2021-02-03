@@ -18,7 +18,7 @@ const PlayerRow: React.FC<PlayerRowProps> = ({
   rank,
 }) => {
   return isCurrPlayer ? (
-    <tr style={{ ...tdStyle, backgroundColor: "#fffde6" }}>
+    <tr style={{ ...tdStyle, backgroundColor: "#ccdcff" }}>
       <td style={{ ...tdStyle, textAlign: "center" }}>
         <strong>{rank}</strong>
       </td>

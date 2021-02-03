@@ -12,16 +12,19 @@ const Instructions: React.FC<InstructionsProps> = ({
 }) => {
   return (
     <div
-      className="uk-card uk-card-small uk-card-default uk-card-body"
-      style={{ maxHeight: "300px", overflow: "scroll" }}
+      style={{
+        maxHeight: "300px",
+        overflow: "scroll",
+        overflowY: "auto",
+        overflowX: "auto",
+        padding: "8px",
+        boxShadow: "0 3px 10px rgb(0 0 0 / 8%)",
+        color: "#666",
+      }}
     >
-      {!!title ? (
-        <div className="uk-card-title uk-text-center">{title}</div>
-      ) : (
-        <></>
-      )}
-      <div className="uk-card-body">
-        <p className="instructions_text_box">{description}</p>
+      {!!title ? <div>{title}</div> : <></>}
+      <div>
+        <p>{description}</p>
         {children}
       </div>
     </div>

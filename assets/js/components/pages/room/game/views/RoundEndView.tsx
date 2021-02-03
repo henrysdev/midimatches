@@ -24,15 +24,15 @@ const RoundEndView: React.FC<RoundEndViewProps> = () => {
       {!!gameWinner ? (
         <div>
           <Title title="End of Round" />
+          <Instructions
+            description={`Round over. ${winner.winnerId} won with ${winner.numVotes} votes`}
+          />
           <DynamicContent>
             <Timer
               descriptionText={"Next round starting in "}
               duration={roundEndTimeout}
             />
           </DynamicContent>
-          <Instructions
-            description={`Round over. ${winner.winnerId} won with ${winner.numVotes} votes`}
-          ></Instructions>
         </div>
       ) : (
         <></>

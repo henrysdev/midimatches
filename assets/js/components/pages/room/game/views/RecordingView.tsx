@@ -41,6 +41,9 @@ const RecordingView: React.FC<RecordingViewProps> = ({
   return isContestant ? (
     <div>
       <Title title="Time to Play!" />
+      <Instructions
+        description={`Listen to the sample and warm up before recording begins.`}
+      />
       <DynamicContent style={isRecording ? { backgroundColor: "#ffd9db" } : {}}>
         <div style={{ height: "20px" }}>
           {isRecording ? (
@@ -85,9 +88,6 @@ const RecordingView: React.FC<RecordingViewProps> = ({
           setIsRecording={setIsRecording}
         />
       </DynamicContent>
-      <Instructions
-        description={`Listen to the sample and warm up before recording begins.`}
-      />
     </div>
   ) : (
     <div>WAITING FOR CONTESTANTS TO FINISH RECORDING...</div>
