@@ -13,7 +13,7 @@ defmodule ProgressionsWeb.PageController do
     if Rooms.room_exists?(room_id) do
       render(conn, "room.html")
     else
-      render(conn, "not_found.html")
+      render(conn, "missing_room.html")
     end
   end
 end
