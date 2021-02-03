@@ -290,4 +290,67 @@ defmodule Progressions.GameLogicTest do
       assert Enum.reverse(actual_state_scan) == expected_state_scan
     end
   end
+
+  test "remove musician from game" do
+    players =
+      MapSet.new([
+        %Player{
+          musician_id: "1",
+          player_alias: "foo"
+        },
+        %Player{
+          musician_id: "2",
+          player_alias: "zoo"
+        },
+        %Player{
+          musician_id: "3",
+          player_alias: "fee"
+        },
+        %Player{
+          musician_id: "4",
+          player_alias: "fum"
+        }
+      ])
+
+    contestants = ["1", "2", "3", "4"]
+    musicians = MapSet.new(contestants)
+
+    game_server_state = %GameServer{
+      room_id: "1",
+      players: players,
+      musicians: musicians,
+      game_view: :playback_voting,
+      contestants: contestants,
+      round_num: 3,
+      game_rules: %{rounds_to_win: 3}
+    }
+
+    %{state: actual_state} = GameLogic.remove_musician(game_server_state, "1")
+
+    expected_state = %GameServer{
+      room_id: "1",
+      players:
+        MapSet.new([
+          %Player{
+            musician_id: "2",
+            player_alias: "zoo"
+          },
+          %Player{
+            musician_id: "3",
+            player_alias: "fee"
+          },
+          %Player{
+            musician_id: "4",
+            player_alias: "fum"
+          }
+        ]),
+      musicians: MapSet.new(["2", "3", "4"]),
+      game_view: :playback_voting,
+      contestants: ["2", "3", "4"],
+      round_num: 3,
+      game_rules: %{rounds_to_win: 3}
+    }
+
+    assert actual_state == expected_state
+  end
 end

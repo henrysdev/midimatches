@@ -1,57 +1,126 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { GameLayout } from "../pages/room/game";
 import { GameContext, ToneAudioContext, PlayerContext } from "../../contexts";
 import { Instructions, Title, DynamicContent } from "../common";
 import { Keyboard } from "../audio";
-import { GameStartView } from "../pages/room/game/views";
+import { GameStartView, PlaybackVotingView } from "../pages/room/game/views";
+import { Loop } from "../../types";
 import { useWebMidi } from "../../hooks";
-import Tone from "tone";
 
-interface PregameDebugProps {}
+const mockTone = {
+  Master: {
+    mute: false,
+  },
+};
 
-const desc = `
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus id pharetra urna. 
-Curabitur efficitur non urna nec consequat. Nam volutpat, ex et bibendum egestas, 
-massa mi pharetra ante, sagittis efficitur libero purus vel leo. Integer elementum 
-sagittis dolor rhoncus bibendum. Duis pharetra mi sed nibh pretium semper. Morbi in 
-tincidunt tellus. Mauris et dolor placerat, venenatis ex in, semper risus. Mauris 
-gravida tincidunt est, vel bibendum libero pulvinar vel. Vivamus tristique aliquet 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus id pharetra urna. 
-Curabitur efficitur non urna nec consequat. Nam volutpat, ex et bibendum egestas, 
-massa mi pharetra ante, sagittis efficitur libero purus vel leo. Integer elementum 
-sagittis dolor rhoncus bibendum. Duis pharetra mi sed nibh pretium semper. Morbi in 
-tincidunt tellus. Mauris et dolor placerat, venenatis ex in, semper risus. Mauris 
-gravida tincidunt est, vel bibendum libero pulvinar vel. Vivamus tristique aliquet 
-`;
+const mockedPlayers = [
+  { playerAlias: "xb4z", musicianId: "1199" },
+  { playerAlias: "fearz123", musicianId: "1111" },
+];
 
-const PregameDebug: React.FC<PregameDebugProps> = ({}) => {
+const mockedRecordings = {
+  xb4z: {
+    startTimestep: 0,
+    length: 0,
+    timestepSlices: [
+      {
+        timestep: 1,
+        notes: [
+          {
+            key: 65,
+            duration: 2,
+            velocity: 1,
+          },
+          {
+            key: 67,
+            duration: 2,
+            velocity: 1,
+          },
+          {
+            key: 69,
+            duration: 2,
+            velocity: 1,
+          },
+        ],
+      },
+    ],
+  } as Loop,
+};
+
+const PregameDebug: React.FC = () => {
   const [midiInputs] = useWebMidi();
   return (
     <div>
       <GameContext.Provider
         value={{
-          readyUps: [],
-          players: [
-            { playerAlias: "xb4z", musicianId: "1199" },
-            { playerAlias: "fearz123", musicianId: "1111" },
-          ],
+          players: mockedPlayers,
+          gameRules: {
+            viewTimeouts: {
+              gameStart: 10_000,
+              playbackVoting: 10_000,
+            },
+            timestepSize: 10_000,
+          },
           scores: {
             fearz123: 0,
             xb4z: 2,
           },
-          gameRules: {
-            viewTimeouts: {
-              gameStart: 10_000,
+          readyUps: [],
+          recordings: {
+            xb4z: {
+              timestepSlices: [
+                {
+                  timestep: 4,
+                  notes: [
+                    {
+                      key: 54,
+                      duration: 14,
+                    },
+                    {
+                      key: 64,
+                      duration: 12,
+                    },
+                  ],
+                },
+                {
+                  timestep: 41,
+                  notes: [
+                    {
+                      key: 14,
+                      duration: 20,
+                    },
+                    {
+                      key: 4,
+                      duration: 14,
+                    },
+                  ],
+                },
+                {
+                  timestep: 200,
+                  notes: [
+                    {
+                      key: 88,
+                      duration: 4,
+                    },
+                    {
+                      key: 65,
+                      duration: 40,
+                    },
+                  ],
+                },
+              ],
             },
           },
         }}
       >
-        <PlayerContext.Provider
-          value={{ player: { playerAlias: "xb4z", musicianId: "1199" } }}
-        >
-          <ToneAudioContext.Provider value={{ midiInputs, Tone: Tone }}>
+        <PlayerContext.Provider value={{ player: mockedPlayers[0] }}>
+          <ToneAudioContext.Provider value={{ midiInputs, Tone: mockTone }}>
             <GameLayout>
+              {/* <PlaybackVotingView
+                pushMessageToChannel={() => {}}
+                playSample={() => {}}
+              /> */}
               <GameStartView
                 pushMessageToChannel={() => {}}
                 setMidiInputs={() => {}}

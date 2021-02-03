@@ -3,10 +3,14 @@ defmodule Progressions.Rooms.Room.Game.Views.GameEnd do
   Game logic specific to the game_end game view
   """
 
-  alias Progressions.Rooms.Room.GameServer
+  alias Progressions.{
+    Rooms.Room.GameServer
+  }
 
   @spec advance_view(%GameServer{}) :: %GameServer{}
-  def advance_view(%GameServer{game_view: :game_start} = state) do
-    %GameServer{state | game_view: :game_start}
+  def advance_view(%GameServer{game_view: :game_end} = state) do
+    # tell room server to reset
+    GameServer.back_to_room_lobby(state)
+    state
   end
 end

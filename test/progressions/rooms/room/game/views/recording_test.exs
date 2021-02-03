@@ -46,10 +46,10 @@ defmodule Progressions.RecordingTest do
     } = Recording.advance_view(game_server_state)
 
     expected_recordings = %{
-      "1" => %{},
-      "2" => %{},
-      "3" => %{},
-      "4" => %{}
+      "1" => %{timestep_slices: []},
+      "2" => %{timestep_slices: []},
+      "3" => %{timestep_slices: []},
+      "4" => %{timestep_slices: []}
     }
 
     assert recordings == expected_recordings

@@ -1,4 +1,3 @@
-export { PregameLobbyView } from "./PregameLobbyView";
 export { GameStartView } from "./GameStartView";
 export { RoundStartView } from "./RoundStartView";
 export { RecordingView } from "./RecordingView";

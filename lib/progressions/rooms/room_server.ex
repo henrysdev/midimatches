@@ -12,6 +12,7 @@ defmodule Progressions.Rooms.RoomServer do
   alias Progressions.{
     Pids,
     Rooms.Room.Game,
+    Rooms.Room.GameServer,
     Types.GameRules,
     Types.Player
   }
@@ -22,8 +23,8 @@ defmodule Progressions.Rooms.RoomServer do
   typedstruct do
     field(:room_id, id(), enforce: true)
     field(:players, MapSet.t(Player), default: MapSet.new())
-    field(:game_config, %GameRules{})
-    field(:game, pid)
+    field(:game_config, %GameRules{}, default: %GameRules{})
+    field(:game, pid, default: nil)
   end
 
   def start_link(args) do
@@ -48,18 +49,60 @@ defmodule Progressions.Rooms.RoomServer do
   end
 
   @spec add_player(pid(), %Player{}) :: :ok
+  @doc """
+  Add a new player to a room
+  """
   def add_player(pid, player) do
     GenServer.call(pid, {:add_player, player})
   end
 
   @spec drop_player(pid(), id()) :: :ok
+  @doc """
+  Drop a player from a room
+  """
   def drop_player(pid, player) do
-    GenServer.call(pid, {:drop_player, player})
+    GenServer.cast(pid, {:drop_player, player})
   end
 
   @spec get_players(pid()) :: MapSet.t(Player)
+  @doc """
+  Return all players that are in a room
+  """
   def get_players(pid) do
     GenServer.call(pid, :get_players)
+  end
+
+  @spec reset_room(pid()) :: :ok
+  @doc """
+  Reset the current game by stopping and restarting
+  """
+  def reset_room(pid) do
+    GenServer.call(pid, :reset_room)
+  end
+
+  @spec game_in_progress?(pid()) :: boolean()
+  @doc """
+  Return whether or not there is an active game in progress in the room
+  """
+  def game_in_progress?(pid) do
+    GenServer.call(pid, :game_in_progress?)
+  end
+
+  @impl true
+  def handle_cast(
+        {:drop_player, player_id},
+        # _from,
+        %RoomServer{players: players, game: game, room_id: room_id} = state
+      ) do
+    state = %RoomServer{state | players: MapSet.delete(players, player_id)}
+
+    if is_nil(game) do
+      {:noreply, state}
+    else
+      game_server = Pids.fetch!({:game_server, room_id})
+      GameServer.drop_musician(game_server, player_id)
+      {:noreply, state}
+    end
   end
 
   @impl true
@@ -95,25 +138,36 @@ defmodule Progressions.Rooms.RoomServer do
   end
 
   @impl true
-  def handle_call(
-        {:drop_player, player_id},
-        _from,
-        %RoomServer{players: players, room_id: _room_id, game: game} = state
-      ) do
-    state = %RoomServer{state | players: MapSet.delete(players, player_id)}
-
-    if is_nil(game) do
-      # TODO comm with game_server: player has dropped, replace with bot
-      {:reply, state, state}
-    else
-      {:reply, state, state}
-    end
-  end
-
-  @impl true
   def handle_call(:get_players, _from, %RoomServer{players: players} = state) do
     {:reply, players, state}
   end
+
+  @impl true
+  def handle_call(
+        :reset_room,
+        _from,
+        %RoomServer{game: game, room_id: room_id, game_config: game_config}
+      ) do
+    Game.stop_game(game)
+
+    # reset all state besides id and config
+    state = %RoomServer{
+      room_id: room_id,
+      game_config: game_config
+    }
+
+    broadcast_reset_room(state)
+
+    {:reply, state, state}
+  end
+
+  @impl true
+  def handle_call(
+        :game_in_progress?,
+        _from,
+        %RoomServer{game: game} = state
+      ),
+      do: {:reply, !is_nil(game), state}
 
   @spec start_game(%RoomServer{}) :: %RoomServer{}
   defp start_game(
@@ -123,5 +177,10 @@ defmodule Progressions.Rooms.RoomServer do
       Supervisor.start_link([{Game, [{room_id, players, game_config}]}], strategy: :one_for_one)
 
     %RoomServer{state | game: game}
+  end
+
+  @spec broadcast_reset_room(%RoomServer{}) :: atom()
+  defp broadcast_reset_room(%RoomServer{room_id: room_id}) do
+    ProgressionsWeb.Endpoint.broadcast("room:#{room_id}", "reset_room", %{})
   end
 end

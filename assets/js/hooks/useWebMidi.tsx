@@ -20,6 +20,10 @@ export function useWebMidi(): WebMidiTuple {
         return;
       }
     });
+
+    return () => {
+      WebMidi.disable();
+    };
   }, []);
 
   return [midiInputs];

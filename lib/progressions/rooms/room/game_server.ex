@@ -11,6 +11,7 @@ defmodule Progressions.Rooms.Room.GameServer do
     Pids,
     Rooms.Room.Game.ViewTimer,
     Rooms.Room.GameLogic,
+    Rooms.RoomServer,
     Types.GameRules,
     Utils
   }
@@ -84,6 +85,14 @@ defmodule Progressions.Rooms.Room.GameServer do
     GenServer.call(pid, {:advance_from_game_view, curr_view, view_counter})
   end
 
+  @spec drop_musician(pid(), id()) :: :ok
+  @doc """
+  Remove a musician from the game.
+  """
+  def drop_musician(pid, musician_id) do
+    GenServer.cast(pid, {:drop_musician, musician_id})
+  end
+
   @spec musician_ready_up(pid(), id()) :: :ok
   @doc """
   Ready up a musician in the game. All ready ups from active musicians required to progress
@@ -109,6 +118,13 @@ defmodule Progressions.Rooms.Room.GameServer do
   """
   def musician_vote(pid, musician_id, vote) do
     GenServer.call(pid, {:client_event, {:vote, {musician_id, vote}}})
+  end
+
+  @impl true
+  def handle_cast({:drop_musician, musician_id}, %GameServer{} = state) do
+    instruction = GameLogic.remove_musician(state, musician_id)
+
+    {:noreply, exec_instruction(instruction)}
   end
 
   @impl true
@@ -169,6 +185,8 @@ defmodule Progressions.Rooms.Room.GameServer do
 
   @spec exec_instruction(instruction_map()) :: %GameServer{}
   defp exec_instruction(%{sync_clients?: sync_clients?, view_change?: view_change?, state: state}) do
+    check_game_empty(state)
+
     state =
       if sync_clients? do
         broadcast_gamestate(state)
@@ -215,6 +233,16 @@ defmodule Progressions.Rooms.Room.GameServer do
     end
   end
 
+  @spec check_game_empty(%GameServer{}) :: %GameServer{} | :ok
+  def check_game_empty(%GameServer{players: players} = state) do
+    # reset room if not enough players to play
+    if MapSet.size(players) <= 1 do
+      back_to_room_lobby(state)
+    else
+      state
+    end
+  end
+
   @spec broadcast_start_game(%GameServer{}) :: %GameServer{}
   defp broadcast_start_game(%GameServer{room_id: room_id} = state) do
     ProgressionsWeb.Endpoint.broadcast("room:#{room_id}", "start_game", %{
@@ -233,6 +261,13 @@ defmodule Progressions.Rooms.Room.GameServer do
     state
   end
 
+  @spec increment_view_counter(%GameServer{}) :: %GameServer{}
   defp increment_view_counter(%GameServer{view_counter: view_counter} = state),
     do: %GameServer{state | view_counter: view_counter + 1}
+
+  @spec back_to_room_lobby(%GameServer{}) :: :ok
+  def back_to_room_lobby(%GameServer{room_id: room_id}) do
+    room_server = Pids.fetch!({:room_server, room_id})
+    RoomServer.reset_room(room_server)
+  end
 end

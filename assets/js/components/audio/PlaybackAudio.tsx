@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import * as Tone from "tone";
 
-import { Loop } from "../../types";
+import { Loop, Color } from "../../types";
 import { loopToEvents } from "../../utils";
 import { SimpleButton } from "../common";
 import {
@@ -10,17 +10,20 @@ import {
 } from "../../constants";
 import { useGameContext } from "../../hooks";
 import { scheduleSampleLoop } from "../../helpers";
+import { RecordingVisual } from "./";
 
 interface PlaybackAudioProps {
   recording: Loop;
   musicianId: string;
   playSample: Function;
+  color: Color;
 }
 
 const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
   recording,
   musicianId,
   playSample,
+  color,
 }) => {
   const {
     gameRules: { timestepSize, soloTimeLimit },
@@ -51,19 +54,22 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
   };
 
   return (
-    <SimpleButton
-      label={`Playback recording for MusicianId ${musicianId}`}
-      callback={() =>
-        playbackMusician(
-          recording,
-          timestepSize,
-          soloTimeLimit,
-          playNote,
-          playSample
-        )
-      }
-      disabled={false}
-    />
+    <div>
+      <RecordingVisual recording={recording} color={color} />
+      <SimpleButton
+        label={`Playback recording for MusicianId ${musicianId}`}
+        callback={() =>
+          playbackMusician(
+            recording,
+            timestepSize,
+            soloTimeLimit,
+            playNote,
+            playSample
+          )
+        }
+        disabled={false}
+      />
+    </div>
   );
 };
 export { PlaybackAudio };

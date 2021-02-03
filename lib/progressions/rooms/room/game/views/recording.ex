@@ -17,8 +17,9 @@ defmodule Progressions.Rooms.Room.Game.Views.Recording do
         }
   @type record_payload() :: {id(), any}
 
-  # TODO should be an actual Loop type or something else to denote an empty recording?
-  @empty_recording %{}
+  @empty_recording %{
+    timestep_slices: []
+  }
 
   @spec advance_view(%GameServer{}) :: %GameServer{}
   def advance_view(

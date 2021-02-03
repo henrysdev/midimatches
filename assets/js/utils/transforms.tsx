@@ -1,6 +1,14 @@
 import { GAME_VIEW } from "../constants";
-import { Loop, Note, LocalNoteEvent, Microseconds, Seconds } from "../types";
+import {
+  Loop,
+  Note,
+  LocalNoteEvent,
+  Microseconds,
+  Seconds,
+  Color,
+} from "../types";
 import _ from "lodash";
+import randomColor from "randomcolor";
 
 const isArray = function (a: Array<any>): boolean {
   return Array.isArray(a);
@@ -120,4 +128,8 @@ export function loopToEvents(
     },
     []
   );
+}
+
+export function genRandomColors(count: number): Array<Color> {
+  return randomColor({ count, luminosity: "bright" });
 }

@@ -17,6 +17,8 @@ defmodule ProgressionsWeb.RoomChannel do
     Types.TimestepSlice
   }
 
+  require Logger
+
   @loop_schema %Loop{
     length: nil,
     start_timestep: nil,
@@ -35,7 +37,7 @@ defmodule ProgressionsWeb.RoomChannel do
     ]
   }
 
-  intercept ["start_game", "view_update"]
+  intercept ["start_game", "view_update", "reset_room"]
 
   def handle_out("view_update", msg, socket) do
     push(socket, "view_update", msg)
@@ -48,14 +50,33 @@ defmodule ProgressionsWeb.RoomChannel do
     {:noreply, socket |> assign(game_server: game_server)}
   end
 
+  def handle_out("reset_room", msg, %Phoenix.Socket{} = socket) do
+    push(socket, "reset_room", msg)
+    {:noreply, socket}
+  end
+
   def join("room:" <> room_id, _params, socket) do
     if Rooms.room_exists?(room_id) do
+      send(self(), {:init_conn, room_id})
+
       {:ok,
        socket
        |> assign(room_id: room_id)}
     else
       {:error, "room #{room_id} does not exist"}
     end
+  end
+
+  def handle_info({:init_conn, room_id}, socket) do
+    game_in_progress? =
+      Pids.fetch!({:room_server, room_id})
+      |> RoomServer.game_in_progress?()
+
+    push(socket, "init_conn", %{
+      game_in_progress: game_in_progress?
+    })
+
+    {:noreply, socket}
   end
 
   def handle_in(
@@ -90,8 +111,6 @@ defmodule ProgressionsWeb.RoomChannel do
     {:noreply, socket}
   end
 
-  def handle_in("musician_leave_room", _params, socket), do: {:noreply, socket}
-
   def handle_in(
         "musician_ready_up",
         _params,
@@ -121,6 +140,11 @@ defmodule ProgressionsWeb.RoomChannel do
       ) do
     GameServer.musician_vote(game_server, musician_id, vote)
 
+    {:noreply, socket}
+  end
+
+  def handle_in(event, params, socket) do
+    Logger.warn("Unexpected websocket event of type #{event} with params #{inspect(params)}")
     {:noreply, socket}
   end
 end

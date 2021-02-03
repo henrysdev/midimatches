@@ -9,16 +9,14 @@
 
 /* left_sidebar */
 .left_sidebar {
+  width: 220px;
+  padding-right: 8px;
   display: flex;
   flex-direction: column;
-}
-.game_layout .left_sidebar {
-  flex-grow: 1;
 }
 
 /* game_content */
 .game_content_container {
-  border-left: 1px solid #e5e5e5;
   padding: 8px;
 }
 .game_layout .game_content_container {

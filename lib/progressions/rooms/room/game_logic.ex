@@ -37,6 +37,34 @@ defmodule Progressions.Rooms.Room.GameLogic do
     }
   end
 
+  @spec remove_musician(%GameServer{}, id()) :: instruction_map()
+  def remove_musician(%GameServer{} = state, musician_id) do
+    updated_players =
+      state.players
+      |> MapSet.to_list()
+      |> Enum.reject(&(&1.musician_id == musician_id))
+      |> MapSet.new()
+
+    # filter out votes for player who left
+    updated_votes =
+      state.votes
+      |> Map.to_list()
+      |> Enum.reject(fn {_k, v} -> v == musician_id end)
+      |> Map.new()
+
+    %GameServer{
+      state
+      | musicians: MapSet.delete(state.musicians, musician_id),
+        players: updated_players,
+        contestants: Enum.reject(state.contestants, &(&1 == musician_id)),
+        ready_ups: MapSet.delete(state.ready_ups, musician_id),
+        recordings: Map.delete(state.recordings, musician_id),
+        votes: updated_votes,
+        scores: Map.delete(state.scores, musician_id)
+    }
+    |> as_instruction(sync?: true, view_change?: false)
+  end
+
   @spec ready_up(%GameServer{}, id()) :: instruction_map()
   defdelegate ready_up(state, musician_id), to: Views.GameStart, as: :ready_up
 

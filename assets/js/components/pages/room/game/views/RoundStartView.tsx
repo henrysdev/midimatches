@@ -20,7 +20,7 @@ const RoundStartView: React.FC<RoundStartViewProps> = ({
   } = useGameContext();
   return (
     <div>
-      <Title title="Round _" />
+      <Title title="Starting Round " />
       <DynamicContent>
         <Timer
           descriptionText={"Faceoff starting in "}
