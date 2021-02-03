@@ -71,12 +71,12 @@ defmodule Progressions.Rooms.RoomServer do
     GenServer.call(pid, :get_players)
   end
 
-  @spec reset_game(pid()) :: :ok
+  @spec reset_room(pid()) :: :ok
   @doc """
   Reset the current game by stopping and restarting
   """
-  def reset_game(pid) do
-    GenServer.call(pid, :reset_game)
+  def reset_room(pid) do
+    GenServer.call(pid, :reset_room)
   end
 
   @impl true
@@ -134,19 +134,19 @@ defmodule Progressions.Rooms.RoomServer do
 
   @impl true
   def handle_call(
-        :reset_game,
+        :reset_room,
         _from,
-        %RoomServer{game: game, room_id: room_id, game_config: game_config} = state
+        %RoomServer{game: game, room_id: room_id, game_config: game_config}
       ) do
     Game.stop_game(game)
 
-    # reset all room state besides id and config
+    # reset all state besides id and config
     state = %RoomServer{
       room_id: room_id,
       game_config: game_config,
     }
 
-    broadcast_reset_game(state)
+    broadcast_reset_room(state)
 
     {:reply, state, state}
   end
@@ -161,8 +161,8 @@ defmodule Progressions.Rooms.RoomServer do
     %RoomServer{state | game: game}
   end
 
-  @spec broadcast_reset_game(%RoomServer{}) :: atom()
-  defp broadcast_reset_game(%RoomServer{room_id: room_id} = state) do
-    ProgressionsWeb.Endpoint.broadcast("room:#{room_id}", "reset_game", %{})
+  @spec broadcast_reset_room(%RoomServer{}) :: atom()
+  defp broadcast_reset_room(%RoomServer{room_id: room_id}) do
+    ProgressionsWeb.Endpoint.broadcast("room:#{room_id}", "reset_room", %{})
   end
 end

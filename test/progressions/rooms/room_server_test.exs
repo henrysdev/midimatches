@@ -93,7 +93,7 @@ defmodule Progressions.RoomServerTest do
     assert !is_nil(state.game)
   end
 
-  test "reset current game" do
+  test "reset room" do
     room_id = "1"
 
     players = [
@@ -124,7 +124,7 @@ defmodule Progressions.RoomServerTest do
     assert Process.alive?(game_server) == true
     assert Process.alive?(game_supervisor) == true
 
-    RoomServer.reset_game(room_server)
+    RoomServer.reset_room(room_server)
 
     assert Process.alive?(game_pid) == false
     assert Process.alive?(game_server) == false

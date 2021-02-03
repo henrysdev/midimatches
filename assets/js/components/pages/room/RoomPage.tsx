@@ -11,7 +11,7 @@ import {
 import { Game } from "./game/Game";
 import { PregameLobby } from "./pregame/PregameLobby";
 import { PlayerContext } from "../../../contexts";
-import { START_GAME_EVENT, RESET_GAME_EVENT } from "../../../constants";
+import { START_GAME_EVENT, RESET_ROOM_EVENT } from "../../../constants";
 
 const RoomPage: React.FC = () => {
   const [gameChannel, setGameChannel] = useState<Channel>();
@@ -50,7 +50,7 @@ const RoomPage: React.FC = () => {
       setReadyToStartGame(true);
     });
 
-    channel.on(RESET_GAME_EVENT, (_body) => {
+    channel.on(RESET_ROOM_EVENT, (_body) => {
       resetRoom();
     });
 

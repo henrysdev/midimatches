@@ -35,7 +35,7 @@ defmodule ProgressionsWeb.RoomChannel do
     ]
   }
 
-  intercept ["start_game", "view_update", "reset_game"]
+  intercept ["start_game", "view_update", "reset_room"]
 
   def handle_out("view_update", msg, socket) do
     push(socket, "view_update", msg)
@@ -48,8 +48,8 @@ defmodule ProgressionsWeb.RoomChannel do
     {:noreply, socket |> assign(game_server: game_server)}
   end
 
-  def handle_out("reset_game", msg, %Phoenix.Socket{} = socket) do
-    push(socket, "reset_game", msg)
+  def handle_out("reset_room", msg, %Phoenix.Socket{} = socket) do
+    push(socket, "reset_room", msg)
     {:noreply, socket}
   end
 

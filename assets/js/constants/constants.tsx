@@ -17,7 +17,7 @@ export enum GAME_VIEW {
 
 export const VIEW_UPDATE_EVENT = "view_update";
 export const START_GAME_EVENT = "start_game";
-export const RESET_GAME_EVENT = "reset_game";
+export const RESET_ROOM_EVENT = "reset_room";
 
 export const SUBMIT_ENTER_ROOM = "musician_enter_room";
 export const SUBMIT_LEAVE_ROOM = "musician_leave_room";
