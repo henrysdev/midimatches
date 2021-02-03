@@ -2,8 +2,8 @@
 .game_layout {
   display: flex;
   flex-direction: row;
-  max-height: 1200px;
-  max-width: 1200px;
+  max-height: 2000px;
+  max-width: 2000px;
   padding: 8px;
 }
 
@@ -45,9 +45,9 @@
   padding: 8px;
   background-color: #ffff;
 }
-.left_sidebar .scoreboard {
+/* .left_sidebar .scoreboard {
   flex-grow: 2;
-}
+} */
 
 /* settings_box */
 .settings_box {

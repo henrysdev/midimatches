@@ -13,19 +13,32 @@ const Keyboard: React.FC<KeyboardProps> = ({
   stopNote,
 }) => {
   return (
-    <div>
-      <ControlledPiano
-        noteRange={{
-          first: MidiNumbers.fromNote("c3"),
-          last: MidiNumbers.fromNote("c5"),
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: "8px",
+      }}
+    >
+      <div
+        style={{
+          display: "inline-block",
         }}
-        activeNotes={activeMidiList}
-        playNote={(midiNumber: number) => playNote(midiNumber)}
-        stopNote={(midiNumber: number) => stopNote(midiNumber)}
-        onPlayNoteInput={() => {}}
-        onStopNoteInput={() => {}}
-        width={800}
-      />
+      >
+        <ControlledPiano
+          noteRange={{
+            first: MidiNumbers.fromNote("c3"),
+            last: MidiNumbers.fromNote("c5"),
+          }}
+          activeNotes={activeMidiList}
+          playNote={(midiNumber: number) => playNote(midiNumber)}
+          stopNote={(midiNumber: number) => stopNote(midiNumber)}
+          onPlayNoteInput={() => {}}
+          onStopNoteInput={() => {}}
+          width={400}
+        />
+      </div>
     </div>
   );
 };

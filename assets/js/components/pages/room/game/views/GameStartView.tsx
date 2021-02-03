@@ -52,7 +52,7 @@ const GameStartView: React.FC<GameStartViewProps> = ({
             is ready
           </div>
         ) : (
-          <div>
+          <div className="uk" style={{ margin: "auto", maxWidth: "400px" }}>
             <MidiConfiguration setMidiInputs={setMidiInputs} />
             <FullWidthButton
               label="Ready Up"

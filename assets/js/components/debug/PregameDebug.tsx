@@ -4,14 +4,31 @@ import { GameLayout } from "../pages/room/game";
 import { GameContext, ToneAudioContext, PlayerContext } from "../../contexts";
 import { Instructions, Title, DynamicContent } from "../common";
 import { Keyboard } from "../audio";
-import { GameStartView, PlaybackVotingView } from "../pages/room/game/views";
+import { GameStartView, RecordingView } from "../pages/room/game/views";
 import { Loop } from "../../types";
 import { useWebMidi } from "../../hooks";
 
-const mockTone = {
+interface FakeTone {
+  Master: any;
+  PolySynth: any;
+  toDestination: any;
+}
+const mockTone: FakeTone = {
   Master: {
     mute: false,
   },
+  PolySynth: (param: any): FakeTone => {
+    return {
+      Master: {
+        mute: false,
+      },
+      PolySynth: (param: any): FakeTone => {
+        return {} as FakeTone;
+      },
+      toDestination: () => {},
+    };
+  },
+  toDestination: () => {},
 };
 
 const mockedPlayers = [
@@ -121,9 +138,15 @@ const PregameDebug: React.FC = () => {
                 pushMessageToChannel={() => {}}
                 playSample={() => {}}
               /> */}
-              <GameStartView
+              {/* <GameStartView
                 pushMessageToChannel={() => {}}
                 setMidiInputs={() => {}}
+              /> */}
+              <RecordingView
+                isContestant={true}
+                pushMessageToChannel={() => {}}
+                playSample={() => {}}
+                stopSample={() => {}}
               />
             </GameLayout>
             {/* <GameLayout>

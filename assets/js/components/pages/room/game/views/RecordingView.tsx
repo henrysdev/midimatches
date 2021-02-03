@@ -30,7 +30,7 @@ const RecordingView: React.FC<RecordingViewProps> = ({
     }
   };
 
-  const [isSamplePlaying, setIsSamplePlaying] = useState<boolean>(false);
+  const [isSamplePlaying, setIsSamplePlaying] = useState<boolean>(true);
   const [isRecording, setIsRecording] = useState<boolean>(false);
 
   const playSampleWithEffect = () => {
@@ -41,21 +41,36 @@ const RecordingView: React.FC<RecordingViewProps> = ({
   return isContestant ? (
     <div>
       <Title title="Time to Play!" />
-      <DynamicContent>
+      <DynamicContent style={isRecording ? { backgroundColor: "#ffd9db" } : {}}>
         <div style={{ height: "20px" }}>
           {isRecording ? (
-            <Timer
-              key={`record-timer-${isRecording}`}
-              descriptionText={"Recording ends in "}
-              duration={secToMs(DEFAULT_RECORDING_LENGTH)}
-            />
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <i
+                style={{ verticalAlign: "middle", color: "red" }}
+                className="material-icons"
+              >
+                radio_button_checked
+              </i>
+              <Timer
+                key={`record-timer-${isRecording}`}
+                descriptionText={"Recording ends in "}
+                duration={secToMs(DEFAULT_RECORDING_LENGTH)}
+                style={{ color: "red" }}
+              />
+            </div>
           ) : (
             <></>
           )}
           {isSamplePlaying && !isRecording ? (
             <Timer
               key={`sample-timer-${isSamplePlaying}`}
-              descriptionText={"Recording starts in "}
+              descriptionText={"Warm up! Recording starts in "}
               duration={secToMs(DEFAULT_SAMPLE_LENGTH)}
             />
           ) : (
@@ -71,7 +86,7 @@ const RecordingView: React.FC<RecordingViewProps> = ({
         />
       </DynamicContent>
       <Instructions
-        description={`warm up on the sample before recording begins`}
+        description={`Listen to the sample and warm up before recording begins.`}
       />
     </div>
   ) : (
