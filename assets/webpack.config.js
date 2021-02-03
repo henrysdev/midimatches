@@ -18,7 +18,6 @@ module.exports = (env, options) => {
     },
     entry: {
       app: "./js/app.tsx",
-      clockWorker: "./js/audioplayer/clockWorker.js",
     },
     output: {
       filename: "[name].js",

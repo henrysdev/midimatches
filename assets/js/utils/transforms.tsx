@@ -15,20 +15,22 @@ const isArray = function (a: Array<any>): boolean {
 };
 
 const isObject = function (o: Object): boolean {
-  return o === Object(o) && !isArray(o) && typeof o !== "function";
+  return o === Object(o) && !isArray(o as any) && typeof o !== "function";
 };
 
-const keysToCamel = function (o: Object): Object {
+const keysToCamel = function (o: any): Object {
   if (isObject(o)) {
-    const n = {} as Object;
+    const n = {} as any;
 
-    Object.keys(o).forEach((k) => {
-      n[toCamel(k)] = keysToCamel(o[k]);
+    Object.keys(o).forEach((k: string) => {
+      const fieldKey = toCamel(k);
+      const fieldVal = keysToCamel(o[k]);
+      n[fieldKey] = fieldVal;
     });
 
     return n;
   } else if (isArray(o)) {
-    return o.map((i) => {
+    return o.map((i: any) => {
       return keysToCamel(i);
     });
   }
