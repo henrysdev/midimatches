@@ -15,7 +15,13 @@ const GameSettings: React.FC<GameSettingsProps> = ({}) => {
   };
 
   return (
-    <div className="settings_box">
+    <div
+      style={{
+        height: "200px",
+        padding: "8px",
+        flexGrow: 1,
+      }}
+    >
       <ul className="uk-iconnav uk-iconnav-vertical">
         <li>
           <i style={{ verticalAlign: "middle" }} className="material-icons">
