@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Channel } from "phoenix";
 
-import { GAME_VIEW, VIEW_UPDATE_EVENT } from "../constants";
-import { GameContextType, ViewUpdatePayload } from "../types";
+import { GAME_VIEW, GAME_UPDATE_EVENT } from "../constants";
+import { GameContextType, GameUpdatePayload } from "../types";
 import { gameViewAtomToEnum, unmarshalBody } from "../utils";
 
 type GameServerStateTuple = [
@@ -19,9 +19,8 @@ export function useGameServerState(
   const [gameContext, setGameContext] = useState(initGameState);
 
   useEffect(() => {
-    gameChannel.on(VIEW_UPDATE_EVENT, (body) => {
-      console.log("VIEW UPDATE EVENT");
-      const { gameState } = unmarshalBody(body) as ViewUpdatePayload;
+    gameChannel.on(GAME_UPDATE_EVENT, (body) => {
+      const { gameState } = unmarshalBody(body) as GameUpdatePayload;
       const gameView = gameViewAtomToEnum(gameState.gameView);
       setGameContext(gameState);
       setCurrentView(gameView);

@@ -50,7 +50,7 @@ defmodule Progressions.RoomServerTest do
     RoomServer.add_player(room_server, m2)
     RoomServer.add_player(room_server, m3)
     RoomServer.add_player(room_server, m3)
-    RoomServer.drop_player(room_server, m1)
+    RoomServer.drop_player(room_server, m1.musician_id)
 
     players =
       room_server

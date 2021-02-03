@@ -39,17 +39,21 @@ export interface LocalNoteEvent {
 
 export type SamplePlayer = Tone.Player;
 
-export interface ViewUpdatePayload {
-  gameState: GameContextType;
+export interface LobbyUpdatePayload {
+  numPlayersJoined: number;
+  numPlayersToStart: number;
+  gameInProgress: boolean;
 }
 
-export interface InitConnPayload {
-  gameInProgress: boolean;
+export interface GameUpdatePayload {
+  gameState: GameContextType;
 }
 
 export interface PlayerJoinPayload {
   player: Player;
 }
+
+export type StartGamePayload = GameUpdatePayload;
 
 interface PlayerScore {
   playerScore: number;

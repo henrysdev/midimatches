@@ -6,16 +6,16 @@ import {
   PlayerJoinPayload,
   Player,
   GameContextType,
-  ViewUpdatePayload,
-  InitConnPayload,
+  StartGamePayload,
+  LobbyUpdatePayload,
 } from "../../../types";
 import { Game } from "./game/Game";
 import { PregameLobby } from "./pregame/PregameLobby";
 import { PlayerContext } from "../../../contexts";
 import {
   START_GAME_EVENT,
+  LOBBY_UPDATE_EVENT,
   RESET_ROOM_EVENT,
-  INIT_CONN_EVENT,
   SUBMIT_LEAVE_ROOM,
 } from "../../../constants";
 
@@ -24,6 +24,10 @@ const RoomPage: React.FC = () => {
   const [gameInProgress, setGameInProgress] = useState<boolean>(false);
   const [currPlayer, setCurrPlayer] = useState<Player>();
   const [initGameState, setInitGameState] = useState<GameContextType>();
+  const [lobbyState, setLobbyState] = useState<any>({
+    numPlayersJoined: 0,
+    numPlayersToStart: 0,
+  });
 
   const resetRoom = () => {
     setGameInProgress(false);
@@ -52,15 +56,20 @@ const RoomPage: React.FC = () => {
         console.log("Unable to join", resp);
       });
 
-    // room status
-    channel.on(INIT_CONN_EVENT, (body) => {
-      const { gameInProgress } = unmarshalBody(body) as InitConnPayload;
+    // lobby update
+    channel.on(LOBBY_UPDATE_EVENT, (body) => {
+      const {
+        numPlayersJoined,
+        numPlayersToStart,
+        gameInProgress,
+      } = unmarshalBody(body) as LobbyUpdatePayload;
       setGameInProgress(gameInProgress);
+      setLobbyState({ numPlayersJoined, numPlayersToStart });
     });
 
     // start game
     channel.on(START_GAME_EVENT, (body) => {
-      const { gameState } = unmarshalBody(body) as ViewUpdatePayload;
+      const { gameState } = unmarshalBody(body) as StartGamePayload;
       setInitGameState(gameState);
       setGameInProgress(true);
     });
@@ -99,6 +108,8 @@ const RoomPage: React.FC = () => {
     <PregameLobby
       pushMessageToChannel={playerJoin}
       gameInProgress={gameInProgress}
+      numPlayersJoined={lobbyState.numPlayersJoined}
+      numPlayersToStart={lobbyState.numPlayersToStart}
     />
   );
 };

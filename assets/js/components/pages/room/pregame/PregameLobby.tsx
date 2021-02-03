@@ -7,11 +7,15 @@ import { PregameDebug } from "../../../debug";
 interface PregameLobbyProps {
   pushMessageToChannel: Function;
   gameInProgress: boolean;
+  numPlayersJoined: number;
+  numPlayersToStart: number;
 }
 
 const PregameLobby: React.FC<PregameLobbyProps> = ({
   pushMessageToChannel,
   gameInProgress,
+  numPlayersJoined,
+  numPlayersToStart,
 }) => {
   const [alias, setAlias] = useState<string>();
 
@@ -72,10 +76,9 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
               )}
             </form>
           )}
-          <div>
-            TODO list of players who have joined that shows how many spots left
-            in game
-          </div>
+          <div>{`${numPlayersJoined}/${numPlayersToStart} Joined. Need ${
+            numPlayersToStart - numPlayersJoined
+          } more players to start game`}</div>
         </div>
       )}
       {/* <PregameDebug /> */}

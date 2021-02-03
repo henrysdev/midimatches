@@ -41,8 +41,7 @@ defmodule ProgressionsWeb.RoomChannelTest do
 
     expected_num_musicians =
       players_in_room
-      |> MapSet.to_list()
-      |> length()
+      |> MapSet.size()
 
     assert expected_num_musicians == 2
   end
