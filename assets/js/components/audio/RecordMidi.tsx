@@ -24,6 +24,7 @@ import {
 interface RecordMidiProps {
   submitRecording: Function;
   playSample: Function;
+  stopSample: Function;
   setIsRecording: Function;
 }
 
@@ -39,6 +40,7 @@ export interface RecordMidiState {
 const RecordMidi: React.FC<RecordMidiProps> = ({
   submitRecording,
   playSample,
+  stopSample,
   setIsRecording,
 }) => {
   const { Tone, midiInputs } = useToneAudioContext();
@@ -74,6 +76,8 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
         activeNotes,
         synth,
       } = recordMidiStateRef.current as RecordMidiState;
+
+      stopSample();
 
       // releases any active notes on component dismount to prevent orphaned sustains
       // TODO record the notes that are still being played when this happens

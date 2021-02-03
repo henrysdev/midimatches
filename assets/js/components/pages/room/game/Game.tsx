@@ -45,10 +45,6 @@ const Game: React.FC<GameProps> = ({ gameChannel, initGameState }) => {
     Tone.context.lookAhead = 0.01;
   }, []);
 
-  useMemo(() => {
-    console.log("CURRENT_VIEW: ", currentView);
-  }, [currentView]);
-
   useEffect(() => {
     switch (currentView) {
       case GAME_VIEW.GAME_START:
@@ -100,6 +96,7 @@ const Game: React.FC<GameProps> = ({ gameChannel, initGameState }) => {
                     }
                     pushMessageToChannel={pushMessage}
                     playSample={playSample}
+                    stopSample={stopSample}
                   />
                 );
 

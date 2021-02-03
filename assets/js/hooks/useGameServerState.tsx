@@ -20,6 +20,7 @@ export function useGameServerState(
 
   useEffect(() => {
     gameChannel.on(VIEW_UPDATE_EVENT, (body) => {
+      console.log("VIEW UPDATE EVENT");
       const { gameState } = unmarshalBody(body) as ViewUpdatePayload;
       const gameView = gameViewAtomToEnum(gameState.gameView);
       setGameContext(gameState);

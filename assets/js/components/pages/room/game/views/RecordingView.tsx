@@ -13,12 +13,14 @@ interface RecordingViewProps {
   isContestant: boolean;
   pushMessageToChannel: Function;
   playSample: Function;
+  stopSample: Function;
 }
 
 const RecordingView: React.FC<RecordingViewProps> = ({
   isContestant,
   pushMessageToChannel,
   playSample,
+  stopSample,
 }) => {
   const submitRecording = (recording: any) => {
     if (!!recording) {
@@ -64,6 +66,7 @@ const RecordingView: React.FC<RecordingViewProps> = ({
         <RecordMidi
           submitRecording={submitRecording}
           playSample={playSampleWithEffect}
+          stopSample={stopSample}
           setIsRecording={setIsRecording}
         />
       </DynamicContent>

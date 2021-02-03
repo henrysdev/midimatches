@@ -11,10 +11,6 @@ interface PregameLobbyProps {
 const PregameLobby: React.FC<PregameLobbyProps> = ({
   pushMessageToChannel,
 }) => {
-  window.addEventListener("beforeunload", () =>
-    pushMessageToChannel(SUBMIT_LEAVE_ROOM, {})
-  );
-
   const [alias, setAlias] = useState<string>();
 
   const [hasJoined, setHasJoined] = useState<boolean>(false);

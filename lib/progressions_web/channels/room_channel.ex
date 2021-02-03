@@ -17,6 +17,8 @@ defmodule ProgressionsWeb.RoomChannel do
     Types.TimestepSlice
   }
 
+  require Logger
+
   @loop_schema %Loop{
     length: nil,
     start_timestep: nil,
@@ -95,8 +97,6 @@ defmodule ProgressionsWeb.RoomChannel do
     {:noreply, socket}
   end
 
-  def handle_in("musician_leave_room", _params, socket), do: {:noreply, socket}
-
   def handle_in(
         "musician_ready_up",
         _params,
@@ -126,6 +126,11 @@ defmodule ProgressionsWeb.RoomChannel do
       ) do
     GameServer.musician_vote(game_server, musician_id, vote)
 
+    {:noreply, socket}
+  end
+
+  def handle_in(event, params, socket) do
+    Logger.warn("Unexpected websocket event of type #{event} with params #{inspect(params)}")
     {:noreply, socket}
   end
 end

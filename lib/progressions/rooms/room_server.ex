@@ -12,6 +12,7 @@ defmodule Progressions.Rooms.RoomServer do
   alias Progressions.{
     Pids,
     Rooms.Room.Game,
+    Rooms.Room.GameServer,
     Types.GameRules,
     Types.Player
   }
@@ -22,8 +23,8 @@ defmodule Progressions.Rooms.RoomServer do
   typedstruct do
     field(:room_id, id(), enforce: true)
     field(:players, MapSet.t(Player), default: MapSet.new())
-    field(:game_config, %GameRules{})
-    field(:game, pid)
+    field(:game_config, %GameRules{}, default: %GameRules{})
+    field(:game, pid, default: nil)
   end
 
   def start_link(args) do
@@ -60,7 +61,7 @@ defmodule Progressions.Rooms.RoomServer do
   Drop a player from a room
   """
   def drop_player(pid, player) do
-    GenServer.call(pid, {:drop_player, player})
+    GenServer.cast(pid, {:drop_player, player})
   end
 
   @spec get_players(pid()) :: MapSet.t(Player)
@@ -77,6 +78,23 @@ defmodule Progressions.Rooms.RoomServer do
   """
   def reset_room(pid) do
     GenServer.call(pid, :reset_room)
+  end
+
+  @impl true
+  def handle_cast(
+        {:drop_player, player_id},
+        # _from,
+        %RoomServer{players: players, game: game, room_id: room_id} = state
+      ) do
+    state = %RoomServer{state | players: MapSet.delete(players, player_id)}
+
+    if is_nil(game) do
+      {:noreply, state}
+    else
+      game_server = Pids.fetch!({:game_server, room_id})
+      GameServer.drop_musician(game_server, player_id)
+      {:noreply, state}
+    end
   end
 
   @impl true
@@ -112,22 +130,6 @@ defmodule Progressions.Rooms.RoomServer do
   end
 
   @impl true
-  def handle_call(
-        {:drop_player, player_id},
-        _from,
-        %RoomServer{players: players, room_id: _room_id, game: game} = state
-      ) do
-    state = %RoomServer{state | players: MapSet.delete(players, player_id)}
-
-    if is_nil(game) do
-      # TODO comm with game_server: player has dropped, replace with bot
-      {:reply, state, state}
-    else
-      {:reply, state, state}
-    end
-  end
-
-  @impl true
   def handle_call(:get_players, _from, %RoomServer{players: players} = state) do
     {:reply, players, state}
   end
@@ -143,7 +145,7 @@ defmodule Progressions.Rooms.RoomServer do
     # reset all state besides id and config
     state = %RoomServer{
       room_id: room_id,
-      game_config: game_config,
+      game_config: game_config
     }
 
     broadcast_reset_room(state)
