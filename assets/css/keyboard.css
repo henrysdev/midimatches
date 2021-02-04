@@ -65,13 +65,13 @@
 
 .ReactPiano__Key--active.ReactPiano__Key--accidental {
   border: 1px solid #fff;
-  border-top: 1px solid #3ac8da;
+  border-top: 1px solid #ccdcff;
   /* Slight height reduction for "pushed-down" effect */
   height: 65%;
 }
 
 .ReactPiano__Key--active.ReactPiano__Key--natural {
-  border: 1px solid #3ac8da;
+  border: 1px solid #fff;
   /* Slight height reduction for "pushed-down" effect */
   height: 98%;
 }

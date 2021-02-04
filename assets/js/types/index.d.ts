@@ -83,6 +83,11 @@ export interface GameRules {
   viewTimeouts: ViewTimeouts;
 }
 
+export interface WinResult {
+  winners: Array<string>;
+  numPoints: number;
+}
+
 /* Context Types */
 export interface GameContextType {
   // static fields
@@ -96,10 +101,11 @@ export interface GameContextType {
   readyUps?: any;
   recordings?: Object;
   roundRecordingStartTime?: number;
-  winner?: any;
+  gameWinners?: WinResult;
   contestants?: string[];
   roundNum: number;
   scores: any;
+  roundWinners?: WinResult;
 }
 
 export interface ToneAudioContextType {

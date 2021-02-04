@@ -55,7 +55,10 @@ defmodule Progressions.UtilsTest do
         "3" => 1,
         "4" => 2
       },
-      winner: {"4", 2},
+      game_winners: %WinResult{
+        winners: ["4"],
+        num_points: 2
+      },
       round_winners: %WinResult{
         winners: ["3"],
         num_points: 1
@@ -71,9 +74,9 @@ defmodule Progressions.UtilsTest do
       players: players_list,
       num_votes_cast: 3,
       ready_ups: ["1", "2", "3"],
-      winner: %{
-        winner_id: "4",
-        num_votes: 2
+      game_winners: %WinResult{
+        winners: ["4"],
+        num_points: 2
       },
       recordings: server_state.recordings,
       round_recording_start_time: server_state.round_recording_start_time,

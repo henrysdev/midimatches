@@ -74,18 +74,6 @@ defmodule Progressions.Utils do
       server_state.ready_ups
       |> MapSet.to_list()
 
-    winner =
-      if is_nil(server_state.winner) do
-        server_state.winner
-      else
-        {winner, num_votes} = server_state.winner
-
-        %{
-          winner_id: winner,
-          num_votes: num_votes
-        }
-      end
-
     %ClientGameState{
       # static fields
       game_rules: server_state.game_rules,
@@ -98,7 +86,7 @@ defmodule Progressions.Utils do
       ready_ups: ready_ups_list,
       recordings: server_state.recordings,
       round_recording_start_time: server_state.round_recording_start_time,
-      winner: winner,
+      game_winners: server_state.game_winners,
       contestants: server_state.contestants,
       scores: server_state.scores,
       round_num: server_state.round_num,

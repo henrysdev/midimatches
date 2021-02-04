@@ -213,7 +213,8 @@ defmodule Progressions.GameLogicTest do
           {game_server_state, []},
           fn ep, {gss, state_scan} ->
             %{state: gss} = GameLogic.cast_vote(gss, ep)
-            {gss, [{gss.votes, gss.winner, gss.game_view} | state_scan]}
+
+            {gss, [{gss.votes, gss.game_winners, gss.game_view} | state_scan]}
           end
         )
 
@@ -278,7 +279,8 @@ defmodule Progressions.GameLogicTest do
           {game_server_state, []},
           fn ep, {gss, state_scan} ->
             %{state: gss} = GameLogic.cast_vote(gss, ep)
-            {gss, [{gss.votes, gss.winner, gss.game_view} | state_scan]}
+
+            {gss, [{gss.votes, gss.game_winners, gss.game_view} | state_scan]}
           end
         )
 

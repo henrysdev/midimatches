@@ -42,8 +42,7 @@ defmodule Progressions.PlaybackVotingTest do
     }
 
     %GameServer{
-      votes: votes,
-      winner: nil
+      votes: votes
     } = PlaybackVoting.advance_view(game_server_state)
 
     expected_contestants =

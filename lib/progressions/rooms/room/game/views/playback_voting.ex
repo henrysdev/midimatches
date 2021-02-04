@@ -129,7 +129,7 @@ defmodule Progressions.Rooms.Room.Game.Views.PlaybackVoting do
         end
       )
 
-    round_winners = Utils.votes_to_win_result(scores)
+    round_winners = Utils.votes_to_win_result(votes)
 
     %GameServer{state | scores: scores, round_winners: round_winners}
   end
