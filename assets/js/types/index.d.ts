@@ -37,6 +37,11 @@ export interface LocalNoteEvent {
   duration?: number;
 }
 
+export interface Playhead {
+  startTime: number;
+  endTime: number;
+}
+
 export type SamplePlayer = Tone.Player;
 
 export interface LobbyUpdatePayload {

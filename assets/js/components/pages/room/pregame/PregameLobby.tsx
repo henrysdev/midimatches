@@ -27,18 +27,16 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
 
   return (
     <div
-      style={
-        {
-          // maxWidth: "400px",
-          // margin: "auto",
-          // marginTop: "16px",
-          // padding: "24px",
-          // boxShadow: "0 5px 15px rgb(0 0 0 / 8%)",
-          // color: "#666",
-        }
-      }
+      style={{
+        maxWidth: "400px",
+        margin: "auto",
+        marginTop: "16px",
+        padding: "24px",
+        boxShadow: "0 5px 15px rgb(0 0 0 / 8%)",
+        color: "#666",
+      }}
     >
-      {/* <Title title="Pregame Lobby" />
+      <Title title="Pregame Lobby" />
       {gameInProgress ? (
         <div>
           Game is full. A new game will be starting in less than TODO minutes.
@@ -98,8 +96,8 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
             numPlayersToStart - numPlayersJoined
           } more players to start game`}</div>
         </div>
-      )} */}
-      <PregameDebug />
+      )}
+      {/* <PregameDebug /> */}
     </div>
   );
 };

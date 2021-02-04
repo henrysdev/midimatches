@@ -30,7 +30,7 @@ const RecordingView: React.FC<RecordingViewProps> = ({
     }
   };
 
-  const [isSamplePlaying, setIsSamplePlaying] = useState<boolean>(true);
+  const [isSamplePlaying, setIsSamplePlaying] = useState<boolean>(false);
   const [isRecording, setIsRecording] = useState<boolean>(false);
 
   const playSampleWithEffect = () => {

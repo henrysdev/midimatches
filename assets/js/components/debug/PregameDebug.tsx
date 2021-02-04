@@ -4,7 +4,11 @@ import { GameLayout } from "../pages/room/game";
 import { GameContext, ToneAudioContext, PlayerContext } from "../../contexts";
 import { Instructions, Title, DynamicContent } from "../common";
 import { Keyboard } from "../audio";
-import { GameStartView, RecordingView } from "../pages/room/game/views";
+import {
+  GameStartView,
+  RecordingView,
+  PlaybackVotingView,
+} from "../pages/room/game/views";
 import { Loop } from "../../types";
 import { useWebMidi } from "../../hooks";
 
@@ -134,20 +138,20 @@ const PregameDebug: React.FC = () => {
         <PlayerContext.Provider value={{ player: mockedPlayers[0] }}>
           <ToneAudioContext.Provider value={{ midiInputs, Tone: mockTone }}>
             <GameLayout>
-              {/* <PlaybackVotingView
+              <PlaybackVotingView
                 pushMessageToChannel={() => {}}
                 playSample={() => {}}
-              /> */}
+              />
               {/* <GameStartView
                 pushMessageToChannel={() => {}}
                 setMidiInputs={() => {}}
               /> */}
-              <RecordingView
+              {/* <RecordingView
                 isContestant={true}
                 pushMessageToChannel={() => {}}
                 playSample={() => {}}
                 stopSample={() => {}}
-              />
+              /> */}
             </GameLayout>
             {/* <GameLayout>
           <Title title="Starting Game" />
