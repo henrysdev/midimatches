@@ -19,6 +19,8 @@ interface PlaybackAudioProps {
   playSample: Function;
   color: Color;
   submitVote: Function;
+  setActivePlaybackTrack: Function;
+  isPlaying: boolean;
 }
 
 const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
@@ -27,6 +29,8 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
   playSample,
   color,
   submitVote,
+  setActivePlaybackTrack,
+  isPlaying,
 }) => {
   const {
     gameRules: { timestepSize, soloTimeLimit },
@@ -34,7 +38,7 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
 
   const [synth, setSynth] = useState<Tone.PolySynth>();
 
-  const [playhead, setPlayhead] = useState<Playhead | undefined>();
+  const [progress, setProgress] = useState<number>(0);
 
   // TODO inherit this from tone audio context...
   useEffect(() => {
@@ -74,11 +78,19 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
             timestepSize,
             soloTimeLimit,
             playNote,
-            playSample
+            playSample,
+            setProgress,
+            musicianId,
+            setActivePlaybackTrack
           )
         }
       >
-        <RecordingVisual recording={recording} color={color} />
+        <RecordingVisual
+          recording={recording}
+          color={color}
+          progress={progress}
+          isPlaying={isPlaying}
+        />
       </div>
       <div style={{ flex: "1" }}>
         <SimpleButton
@@ -98,7 +110,10 @@ function playbackMusician(
   timestepSize: number,
   _soloTimeLimit: number,
   playNote: Function,
-  playSample: Function
+  playSample: Function,
+  setProgress: Function,
+  musicianId: string,
+  setActivePlaybackTrack: Function
 ): void {
   const startTime = Tone.now();
   Tone.Transport.cancel(0);
@@ -107,7 +122,36 @@ function playbackMusician(
   const part = buildPart(recording, timestepSize, playNote);
 
   part.start();
+  startPlayheadProgress(
+    startTime,
+    setProgress,
+    setActivePlaybackTrack,
+    musicianId
+  );
   scheduleSampleLoop(0, playSample, DEFAULT_NUM_RECORDED_LOOPS, true);
+}
+
+function startPlayheadProgress(
+  startTime: number,
+  setProgress: Function,
+  setActivePlaybackTrack: Function,
+  musicianId: string
+): void {
+  setActivePlaybackTrack(musicianId);
+  Tone.Transport.scheduleRepeat(
+    (currTime) => {
+      console.log({
+        musicianId,
+        currTime,
+        startTime,
+      });
+      const progress = (currTime - startTime) / DEFAULT_RECORDING_LENGTH;
+      setProgress(progress);
+    },
+    0.05,
+    "+0",
+    DEFAULT_RECORDING_LENGTH
+  );
 }
 
 function buildPart(

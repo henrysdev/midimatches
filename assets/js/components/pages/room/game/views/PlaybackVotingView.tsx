@@ -36,7 +36,7 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
 
   const { player: currPlayer } = usePlayerContext();
 
-  const [musicianIdInPlayback, setMusicianIdInPlayback] = useState<string>();
+  const [activePlaybackTrack, setActivePlaybackTrack] = useState<string>();
 
   const randomColors: Array<Color> = useMemo(() => {
     const numColorsNeeded = Object.keys(recordings).length;
@@ -81,6 +81,8 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
                       playSample={playSample}
                       color={color}
                       submitVote={submitVote}
+                      setActivePlaybackTrack={setActivePlaybackTrack}
+                      isPlaying={activePlaybackTrack === musicianId}
                     />
                   </div>
                 );

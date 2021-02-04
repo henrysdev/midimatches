@@ -9,8 +9,6 @@
         "view_timeouts": {
           "game_start": 1000,
           "round_start": 1000,
-          "recording": 1000,
-          "playback_voting": 1000,
           "round_end": 1000,
           "game_end": 3000
         }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { Loop, TimestepSlice, Note, Color, Playhead } from "../../types";
+import { Loop, TimestepSlice, Note, Color } from "../../types";
 import { useGameContext } from "../../hooks";
 import { microsToMs, msToSec } from "../../utils";
 import { DEFAULT_RECORDING_LENGTH } from "../../constants";
@@ -7,6 +7,8 @@ import { DEFAULT_RECORDING_LENGTH } from "../../constants";
 interface RecordingVisualProps {
   recording: Loop;
   color: Color;
+  progress: number;
+  isPlaying: boolean;
 }
 
 const keyboardRange = 100;
@@ -14,6 +16,8 @@ const keyboardRange = 100;
 const RecordingVisual: React.FC<RecordingVisualProps> = ({
   recording,
   color,
+  progress,
+  isPlaying,
 }) => {
   const {
     gameRules: { timestepSize },
@@ -46,6 +50,7 @@ const RecordingVisual: React.FC<RecordingVisualProps> = ({
           color
         )
       )}
+      {isPlaying ? drawProgress(progress) : <></>}
     </div>
   );
 };
@@ -108,22 +113,18 @@ const drawNotePointByPercentages = (
         left: pixelStartX,
         bottom: pixelStartY,
       }}
-    ></div>
+    />
   );
 };
 
-const drawPlayhead = (
-  playhead: Playhead,
-  musicianIdInPlayback: string
-): JSX.Element => {
-  const duration = msToSec(playhead.endTime - playhead.startTime);
-  const currProgress = msToSec(Date.now() - playhead.startTime);
-  console.log("DRAW PLAYBACK CALLED: ", musicianIdInPlayback, playhead);
+const drawProgress = (progress: number) => {
   return (
     <div
+      className="playback_progress"
       style={{
         position: "absolute",
-        width: `${currProgress / duration}%`,
+        width: `${progress * 100}%`,
+        height: "100%",
         backgroundColor: "black",
         left: 0,
         bottom: 0,

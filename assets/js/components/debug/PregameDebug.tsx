@@ -132,6 +132,49 @@ const PregameDebug: React.FC = () => {
                 },
               ],
             },
+            fearz123: {
+              timestepSlices: [
+                {
+                  timestep: 4,
+                  notes: [
+                    {
+                      key: 54,
+                      duration: 14,
+                    },
+                    {
+                      key: 64,
+                      duration: 12,
+                    },
+                  ],
+                },
+                {
+                  timestep: 41,
+                  notes: [
+                    {
+                      key: 14,
+                      duration: 20,
+                    },
+                    {
+                      key: 4,
+                      duration: 14,
+                    },
+                  ],
+                },
+                {
+                  timestep: 200,
+                  notes: [
+                    {
+                      key: 88,
+                      duration: 4,
+                    },
+                    {
+                      key: 65,
+                      duration: 40,
+                    },
+                  ],
+                },
+              ],
+            },
           },
         }}
       >
