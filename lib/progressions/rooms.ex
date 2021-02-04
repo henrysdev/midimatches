@@ -74,7 +74,6 @@ defmodule Progressions.Rooms do
     room_configs
     |> Enum.each(fn cfg ->
       room_id = Utils.gen_uuid()
-      IO.inspect({:STARTING_NEW_ROOM, cfg.room_name, room_id})
       DynamicSupervisor.start_child(__MODULE__, {Room, [{room_id, cfg.room_name, cfg}]})
     end)
   end

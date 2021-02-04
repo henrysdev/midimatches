@@ -5,7 +5,9 @@ defmodule Progressions.Utils do
 
   alias Progressions.{
     Rooms.Room.GameServer,
+    Rooms.RoomServer,
     Types.ClientGameState,
+    Types.ClientRoomState,
     Types.WinResult
   }
 
@@ -50,7 +52,7 @@ defmodule Progressions.Utils do
   @doc """
   Generate a unique identifier
   """
-  def gen_uuid(), do: UUID.uuid4()
+  def gen_uuid, do: UUID.uuid4()
 
   @spec server_to_client_game_state(%GameServer{}) :: any
   @doc """
@@ -89,6 +91,19 @@ defmodule Progressions.Utils do
       scores: server_state.scores,
       round_num: server_state.round_num,
       round_winners: server_state.round_winners
+    }
+  end
+
+  @spec server_to_client_room_state(%RoomServer{}) :: any
+  @doc """
+  Transform room server state into update payload for clients
+  """
+  def server_to_client_room_state(%RoomServer{} = server_state) do
+    %ClientRoomState{
+      room_id: server_state.room_id,
+      room_name: server_state.room_name,
+      game_rules: server_state.game_config,
+      num_curr_players: MapSet.size(server_state.players)
     }
   end
 end

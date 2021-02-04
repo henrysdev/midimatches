@@ -1,7 +1,5 @@
 defmodule Progressions.Types.ClientGameState do
-  @moduledoc """
-  Configurable rules for a game
-  """
+  @moduledoc false
 
   alias Progressions.{
     Types.GameRules,
