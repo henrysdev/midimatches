@@ -46,13 +46,11 @@ defmodule Progressions.Utils do
     }
   end
 
-  @spec gen_random_string(number) :: binary()
+  @spec gen_uuid() :: String.t()
   @doc """
-  Generate a random string of the given length
+  Generate a unique identifier
   """
-  def gen_random_string(length) do
-    :crypto.strong_rand_bytes(length) |> Base.url_encode64() |> binary_part(0, length)
-  end
+  def gen_uuid(), do: UUID.uuid4()
 
   @spec server_to_client_game_state(%GameServer{}) :: any
   @doc """

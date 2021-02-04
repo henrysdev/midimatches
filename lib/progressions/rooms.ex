@@ -5,10 +5,10 @@ defmodule Progressions.Rooms do
   use DynamicSupervisor
 
   alias Progressions.{
-    Persistence,
     Pids,
     Rooms.Room,
-    Types.Configs.RoomConfig
+    Types.Configs.RoomConfig,
+    Utils
   }
 
   @type id() :: String.t()
@@ -73,7 +73,8 @@ defmodule Progressions.Rooms do
   def configure_rooms(room_configs) do
     room_configs
     |> Enum.each(fn cfg ->
-      room_id = Persistence.gen_serial_id()
+      room_id = Utils.gen_uuid()
+      IO.inspect({:STARTING_NEW_ROOM, cfg.room_name, room_id})
       DynamicSupervisor.start_child(__MODULE__, {Room, [{room_id, cfg.room_name, cfg}]})
     end)
   end

@@ -56,7 +56,8 @@ defmodule Progressions.MixProject do
       {:logger_file_backend, "~> 0.0.11"},
       {:poison, "~> 3.1"},
       {:excoveralls, "~> 0.10", only: :test},
-      {:gen_state_machine, "~> 3.0"}
+      {:gen_state_machine, "~> 3.0"},
+      {:uuid, "~> 1.1"}
     ]
   end
 
