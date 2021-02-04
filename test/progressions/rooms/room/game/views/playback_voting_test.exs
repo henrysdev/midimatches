@@ -33,6 +33,7 @@ defmodule Progressions.PlaybackVotingTest do
 
     game_server_state = %GameServer{
       room_id: "1",
+      game_id: "abc",
       players: players,
       musicians: musicians,
       game_view: :playback_voting,
@@ -41,8 +42,7 @@ defmodule Progressions.PlaybackVotingTest do
     }
 
     %GameServer{
-      votes: votes,
-      winner: nil
+      votes: votes
     } = PlaybackVoting.advance_view(game_server_state)
 
     expected_contestants =
@@ -79,6 +79,7 @@ defmodule Progressions.PlaybackVotingTest do
 
     game_server_state = %GameServer{
       room_id: "1",
+      game_id: "abc",
       players: players,
       musicians: musicians,
       game_view: :playback_voting,

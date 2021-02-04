@@ -5,28 +5,60 @@ defmodule Progressions.Utils do
 
   alias Progressions.{
     Rooms.Room.GameServer,
-    Types.ClientGameState
+    Types.ClientGameState,
+    Types.WinResult
   }
 
-  def calc_deadline(_curr_timestep, _loop_start_timestep, loop_length) when loop_length <= 0 do
-    {:error, "loop length must be greater than zero"}
-  end
+  @type id() :: String.t()
+  @type votes_map() :: %{required(id) => id}
+  @type scores_map() :: %{required(id) => number}
 
-  def calc_deadline(curr_timestep, loop_start_timestep, loop_length) do
-    loop_rem = rem(curr_timestep - loop_start_timestep, loop_length)
-
-    case loop_rem do
-      _ when curr_timestep < loop_start_timestep -> loop_start_timestep
-      0 -> curr_timestep + loop_length
-      loop_rem -> curr_timestep + loop_length - loop_rem
-    end
-  end
-
-  @spec new_server_to_client_game_state(%GameServer{}) :: any
+  @spec votes_to_win_result(votes_map()) :: %WinResult{}
   @doc """
-  transform game server state into update payload for clients
+  Transform a votes map into win result struct
   """
-  def new_server_to_client_game_state(%GameServer{} = server_state) do
+  def votes_to_win_result(%{} = votes) do
+    votes
+    |> Map.values()
+    |> Enum.frequencies()
+    |> build_win_result()
+  end
+
+  @spec scores_to_win_result(scores_map()) :: %WinResult{}
+  @doc """
+  Transform a scores map into win result struct
+  """
+  def scores_to_win_result(%{} = scores) do
+    scores
+    |> Map.to_list()
+    |> build_win_result()
+  end
+
+  defp build_win_result(freq_list) do
+    {_id, max_votes} = Enum.max_by(freq_list, fn {_id, freq} -> freq end)
+
+    %WinResult{
+      winners:
+        freq_list
+        |> Stream.filter(fn {_id, freq} -> freq == max_votes end)
+        |> Enum.map(fn {id, _freq} -> id end),
+      num_points: max_votes
+    }
+  end
+
+  @spec gen_random_string(number) :: binary()
+  @doc """
+  Generate a random string of the given length
+  """
+  def gen_random_string(length) do
+    :crypto.strong_rand_bytes(length) |> Base.url_encode64() |> binary_part(0, length)
+  end
+
+  @spec server_to_client_game_state(%GameServer{}) :: any
+  @doc """
+  Transform game server state into update payload for clients
+  """
+  def server_to_client_game_state(%GameServer{} = server_state) do
     # votes are secret - should not expose actual votes to clients, only progress on
     # voting as a whole
     num_votes_cast =
@@ -42,18 +74,6 @@ defmodule Progressions.Utils do
       server_state.ready_ups
       |> MapSet.to_list()
 
-    winner =
-      if is_nil(server_state.winner) do
-        server_state.winner
-      else
-        {winner, num_votes} = server_state.winner
-
-        %{
-          winner_id: winner,
-          num_votes: num_votes
-        }
-      end
-
     %ClientGameState{
       # static fields
       game_rules: server_state.game_rules,
@@ -66,10 +86,11 @@ defmodule Progressions.Utils do
       ready_ups: ready_ups_list,
       recordings: server_state.recordings,
       round_recording_start_time: server_state.round_recording_start_time,
-      winner: winner,
+      game_winners: server_state.game_winners,
       contestants: server_state.contestants,
       scores: server_state.scores,
-      round_num: server_state.round_num
+      round_num: server_state.round_num,
+      round_winners: server_state.round_winners
     }
   end
 end

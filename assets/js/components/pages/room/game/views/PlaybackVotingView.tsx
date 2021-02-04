@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 
 import { SUBMIT_VOTE_EVENT } from "../../../../../constants";
 import { useGameContext, usePlayerContext } from "../../../../../hooks";
@@ -19,9 +19,8 @@ interface PlaybackVotingViewProps {
 }
 
 const desc = `
-Listen through all other players recordings and vote on your favorite. The 
-recordings have been anonymized and will be played in a random order. Once 
-you have heard all the recordings, you will be able to cast your vote.
+Listen through the other recordings and vote for your favorite. 
+Click on a recording to play it.
 `;
 
 const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
@@ -37,20 +36,23 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
 
   const { player: currPlayer } = usePlayerContext();
 
+  const [musicianIdInPlayback, setMusicianIdInPlayback] = useState<string>();
+
   const randomColors: Array<Color> = useMemo(() => {
     const numColorsNeeded = Object.keys(recordings).length;
     return genRandomColors(numColorsNeeded);
   }, [Object.keys(recordings).length]);
 
-  // useEffect(() => {
-  //   if (!!recordings) {
-  //     // TODO automatically schedule all to fully playback
-  //   }
-  // }, [Object.keys(recordings).length]);
+  const submitVote = (musicianId: string): void => {
+    pushMessageToChannel(SUBMIT_VOTE_EVENT, {
+      vote: musicianId,
+    });
+  };
 
   return (
     <div>
       <Title title="Playback Voting" />
+      <Instructions description={desc} />
       <DynamicContent>
         {!!playbackVotingTimeout ? (
           <Timer
@@ -78,19 +80,8 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
                       musicianId={musicianId}
                       playSample={playSample}
                       color={color}
+                      submitVote={submitVote}
                     />
-                    <div>
-                      <SimpleButton
-                        key={`vote-${musicianId}`}
-                        label={`Vote for ${musicianId}`}
-                        callback={() => {
-                          pushMessageToChannel(SUBMIT_VOTE_EVENT, {
-                            vote: musicianId,
-                          });
-                        }}
-                        disabled={false}
-                      />
-                    </div>
                   </div>
                 );
               }
@@ -99,7 +90,6 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
           <div>No recordings available</div>
         )}
       </DynamicContent>
-      <Instructions description={desc} />
     </div>
   );
 };

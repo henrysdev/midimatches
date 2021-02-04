@@ -8,6 +8,8 @@ defmodule Progressions.Persistence do
 
   @type id() :: String.t()
 
+  @first_serial 1000
+
   @spec start_link(any) :: :ignore | {:error, any} | {:ok, pid}
   def start_link(args) do
     GenServer.start_link(__MODULE__, args, name: __MODULE__)
@@ -16,7 +18,7 @@ defmodule Progressions.Persistence do
   @impl true
   @spec init([]) :: {:ok, integer()}
   def init([]) do
-    {:ok, 1000}
+    {:ok, @first_serial}
   end
 
   @spec gen_serial_id() :: id()

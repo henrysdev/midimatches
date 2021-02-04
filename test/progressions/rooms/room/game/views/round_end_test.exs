@@ -4,7 +4,8 @@ defmodule Progressions.RoundEndTest do
   alias Progressions.{
     Rooms.Room.Game.Views.RoundEnd,
     Rooms.Room.GameServer,
-    Types.Player
+    Types.Player,
+    Types.WinResult
   }
 
   test "advance view to next round (aka round_start)" do
@@ -49,12 +50,13 @@ defmodule Progressions.RoundEndTest do
 
     game_server_state = %GameServer{
       room_id: "1",
+      game_id: "abc",
       players: players,
       musicians: musicians,
       game_view: :round_end,
       contestants: contestants,
       recordings: %{},
-      winner: "2"
+      game_winners: %WinResult{winners: ["2"], num_points: 2}
     }
 
     actual_game_state = RoundEnd.advance_view(game_server_state)
@@ -67,10 +69,11 @@ defmodule Progressions.RoundEndTest do
       ready_ups: MapSet.new(),
       recordings: %{},
       room_id: "1",
+      game_id: "abc",
       round_recording_start_time: 0,
       view_counter: 0,
       votes: %{},
-      winner: nil,
+      game_winners: nil,
       round_num: 2
     }
 
@@ -105,13 +108,14 @@ defmodule Progressions.RoundEndTest do
 
     game_server_state = %GameServer{
       room_id: "1",
+      game_id: "abc",
       players: players,
       musicians: musicians,
       game_view: :round_end,
       contestants: contestants,
       recordings: %{},
       scores: scores,
-      winner: nil,
+      game_winners: nil,
       round_num: 3
     }
 
@@ -120,7 +124,7 @@ defmodule Progressions.RoundEndTest do
     expected_game_state = %GameServer{
       game_server_state
       | game_view: :game_end,
-        winner: {"2", 4}
+        game_winners: %WinResult{winners: ["2"], num_points: 4}
     }
 
     assert actual_game_state == expected_game_state

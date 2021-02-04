@@ -1,127 +1,131 @@
 defmodule Progressions.UtilsTest do
   use ExUnit.Case
 
-  alias Progressions.Utils
+  alias Progressions.{
+    Rooms.Room.GameServer,
+    Types.ClientGameState,
+    Types.Player,
+    Types.WinResult,
+    Utils
+  }
 
-  describe "calc_deadline" do
-    test "for a loop that has started" do
-      loop_start_timestep = 2
-      loop_length = 4
+  test "transforms server state to client state" do
+    players_list = [
+      %Player{
+        musician_id: "1",
+        player_alias: "foo"
+      },
+      %Player{
+        musician_id: "2",
+        player_alias: "zoo"
+      },
+      %Player{
+        musician_id: "3",
+        player_alias: "fee"
+      },
+      %Player{
+        musician_id: "4",
+        player_alias: "fum"
+      }
+    ]
 
-      deadlines =
-        1..16
-        |> Enum.map(&Utils.calc_deadline(&1, loop_start_timestep, loop_length))
-        |> Enum.with_index()
+    players = MapSet.new(players_list)
 
-      assert deadlines == [
-               {2, 0},
-               {6, 1},
-               {6, 2},
-               {6, 3},
-               {6, 4},
-               {10, 5},
-               {10, 6},
-               {10, 7},
-               {10, 8},
-               {14, 9},
-               {14, 10},
-               {14, 11},
-               {14, 12},
-               {18, 13},
-               {18, 14},
-               {18, 15}
-             ]
+    contestants = ["1", "2", "3", "4"]
+    musicians = MapSet.new(contestants)
+
+    server_state = %GameServer{
+      room_id: "1",
+      game_id: "abc",
+      players: players,
+      musicians: musicians,
+      game_view: :playback_voting,
+      contestants: contestants,
+      round_num: 3,
+      game_rules: %{rounds_to_win: 3},
+      votes: %{
+        "1" => "4",
+        "2" => "3",
+        "3" => "4"
+      },
+      ready_ups: MapSet.new(["1", "2", "3"]),
+      scores: %{
+        "1" => 0,
+        "2" => 0,
+        "3" => 1,
+        "4" => 2
+      },
+      game_winners: %WinResult{
+        winners: ["4"],
+        num_points: 2
+      },
+      round_winners: %WinResult{
+        winners: ["3"],
+        num_points: 1
+      }
+    }
+
+    actual_client_state = Utils.server_to_client_game_state(server_state)
+
+    expected_client_state = %ClientGameState{
+      game_rules: server_state.game_rules,
+      room_id: server_state.room_id,
+      game_view: server_state.game_view,
+      players: players_list,
+      num_votes_cast: 3,
+      ready_ups: ["1", "2", "3"],
+      game_winners: %WinResult{
+        winners: ["4"],
+        num_points: 2
+      },
+      recordings: server_state.recordings,
+      round_recording_start_time: server_state.round_recording_start_time,
+      round_num: server_state.round_num,
+      contestants: server_state.contestants,
+      scores: server_state.scores,
+      round_winners: server_state.round_winners
+    }
+
+    assert actual_client_state == expected_client_state
+  end
+
+  describe "maps to win results" do
+    test "works for votes" do
+      votes = %{
+        "a" => "c",
+        "c" => "b",
+        "b" => "c",
+        "d" => "b",
+        "e" => "d"
+      }
+
+      actual_win_result = Utils.votes_to_win_result(votes)
+
+      expected_win_result = %WinResult{
+        winners: ["b", "c"],
+        num_points: 2
+      }
+
+      assert actual_win_result == expected_win_result
     end
 
-    test "for a loop that starts in future" do
-      loop_start_timestep = 6
-      loop_length = 5
+    test "works for scores" do
+      scores = %{
+        "a" => 0,
+        "c" => 4,
+        "b" => 2,
+        "d" => 2,
+        "e" => 4
+      }
 
-      deadlines =
-        0..20
-        |> Enum.map(&Utils.calc_deadline(&1, loop_start_timestep, loop_length))
-        |> Enum.with_index()
+      actual_win_result = Utils.scores_to_win_result(scores)
 
-      assert deadlines == [
-               {6, 0},
-               {6, 1},
-               {6, 2},
-               {6, 3},
-               {6, 4},
-               {6, 5},
-               {11, 6},
-               {11, 7},
-               {11, 8},
-               {11, 9},
-               {11, 10},
-               {16, 11},
-               {16, 12},
-               {16, 13},
-               {16, 14},
-               {16, 15},
-               {21, 16},
-               {21, 17},
-               {21, 18},
-               {21, 19},
-               {21, 20}
-             ]
-    end
+      expected_win_result = %WinResult{
+        winners: ["c", "e"],
+        num_points: 4
+      }
 
-    test "for loop with loop length 1" do
-      loop_start_timestep = 4
-      loop_length = 1
-
-      deadlines =
-        0..10
-        |> Enum.map(&Utils.calc_deadline(&1, loop_start_timestep, loop_length))
-        |> Enum.with_index()
-
-      assert deadlines == [
-               {4, 0},
-               {4, 1},
-               {4, 2},
-               {4, 3},
-               {5, 4},
-               {6, 5},
-               {7, 6},
-               {8, 7},
-               {9, 8},
-               {10, 9},
-               {11, 10}
-             ]
-    end
-
-    test "for loop that starts at 0" do
-      loop_start_timestep = 0
-      loop_length = 1
-
-      deadlines =
-        0..10
-        |> Enum.map(&Utils.calc_deadline(&1, loop_start_timestep, loop_length))
-        |> Enum.with_index()
-
-      assert deadlines == [
-               {1, 0},
-               {2, 1},
-               {3, 2},
-               {4, 3},
-               {5, 4},
-               {6, 5},
-               {7, 6},
-               {8, 7},
-               {9, 8},
-               {10, 9},
-               {11, 10}
-             ]
-    end
-
-    test "for loop with loop length 0 returns error" do
-      loop_start_timestep = 0
-      loop_length = 0
-
-      result = Utils.calc_deadline(42, loop_start_timestep, loop_length)
-
-      assert result == {:error, "loop length must be greater than zero"}
+      assert actual_win_result == expected_win_result
     end
   end
 end

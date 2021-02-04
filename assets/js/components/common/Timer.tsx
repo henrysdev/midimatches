@@ -6,9 +6,10 @@ interface TimerProps {
   duration: Milliseconds;
   descriptionText?: string;
   timesUpText?: string;
+  style?: Object;
 }
 const Timer: React.FC<TimerProps> = memo(
-  ({ duration, descriptionText, timesUpText }) => {
+  ({ duration, descriptionText, timesUpText, style }) => {
     // Renderer callback with condition
     const renderer = ({
       minutes,
@@ -36,7 +37,7 @@ const Timer: React.FC<TimerProps> = memo(
     return (
       <div
         className="uk-text-center"
-        style={{ fontSize: "16px", fontWeight: "bold" }}
+        style={{ ...style, fontSize: "16px", fontWeight: "bold" }}
       >
         <Countdown date={Date.now() + duration} renderer={renderer} />
       </div>

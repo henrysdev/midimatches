@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from "react";
-import { Loop, TimestepSlice, Note, Color } from "../../types";
+import React, { useEffect, useState, useMemo } from "react";
+import { Loop, TimestepSlice, Note, Color, Playhead } from "../../types";
 import { useGameContext } from "../../hooks";
 import { microsToMs, msToSec } from "../../utils";
 import { DEFAULT_RECORDING_LENGTH } from "../../constants";
@@ -9,8 +9,6 @@ interface RecordingVisualProps {
   color: Color;
 }
 
-const containerWidth = 400;
-const containerHeight = 40;
 const keyboardRange = 100;
 
 const RecordingVisual: React.FC<RecordingVisualProps> = ({
@@ -21,28 +19,32 @@ const RecordingVisual: React.FC<RecordingVisualProps> = ({
     gameRules: { timestepSize },
   } = useGameContext();
 
-  const { pixelsPerTimestep, pixelsPerKey } = useMemo(
-    () =>
-      calcPixelUnits(
-        containerWidth,
-        containerHeight,
-        keyboardRange,
-        timestepSize
-      ),
-    [containerWidth, containerHeight, timestepSize, keyboardRange]
+  const { percentagePerTimestep, percentagePerKey } = useMemo(
+    () => calcPercentageUnits(keyboardRange, timestepSize),
+    [timestepSize, keyboardRange]
+  );
+
+  const recordedNotes = useMemo(
+    () => flattenTimestepSlices(recording.timestepSlices),
+    [recording.timestepSlices.length]
   );
 
   return (
     <div
       style={{
         position: "relative",
-        width: containerWidth,
-        height: containerHeight,
+        width: "100%",
+        height: "50px",
         border: "1px solid black",
       }}
     >
-      {flattenTimestepSlices(recording.timestepSlices).map((notePoint) =>
-        drawNotePoint(notePoint, pixelsPerTimestep, pixelsPerKey, color)
+      {recordedNotes.map((notePoint) =>
+        drawNotePointByPercentages(
+          notePoint,
+          percentagePerTimestep,
+          percentagePerKey,
+          color
+        )
       )}
     </div>
   );
@@ -72,30 +74,28 @@ const flattenTimestepSlices = (
   }, []);
 };
 
-const calcPixelUnits = (
-  containerWidth: number,
-  containerHeight: number,
+const calcPercentageUnits = (
   keyboardRange: number,
   timestepSize: number
-): { pixelsPerTimestep: number; pixelsPerKey: number } => {
+): { percentagePerTimestep: number; percentagePerKey: number } => {
   const timestepSizeInSeconds = msToSec(microsToMs(timestepSize));
   const numTotalTimesteps = Math.floor(
     DEFAULT_RECORDING_LENGTH / timestepSizeInSeconds
   );
-  const pixelsPerTimestep = containerWidth / numTotalTimesteps;
-  const pixelsPerKey = containerHeight / keyboardRange;
-  return { pixelsPerTimestep, pixelsPerKey };
+  const percentagePerTimestep = 100 / numTotalTimesteps;
+  const percentagePerKey = 100 / keyboardRange;
+  return { percentagePerTimestep, percentagePerKey };
 };
 
-const drawNotePoint = (
+const drawNotePointByPercentages = (
   notePoint: NotePoint,
-  pixelsPerTimestep: number,
-  pixelsPerKey: number,
+  percentagePerTimestep: number,
+  percentagePerKey: number,
   color: string
 ): JSX.Element => {
-  const pixelStartX = notePoint.timestep * pixelsPerTimestep;
-  const pixelStartY = notePoint.key * pixelsPerKey;
-  const pixelDuration = notePoint.duration * pixelsPerTimestep;
+  const pixelStartX = `${notePoint.timestep * percentagePerTimestep}%`;
+  const pixelStartY = `${notePoint.key * percentagePerKey}%`;
+  const pixelDuration = `${notePoint.duration * percentagePerTimestep}%`;
 
   return (
     <div
@@ -103,10 +103,30 @@ const drawNotePoint = (
       style={{
         position: "absolute",
         width: pixelDuration,
-        height: pixelsPerKey,
+        height: percentagePerKey,
         backgroundColor: color,
         left: pixelStartX,
         bottom: pixelStartY,
+      }}
+    ></div>
+  );
+};
+
+const drawPlayhead = (
+  playhead: Playhead,
+  musicianIdInPlayback: string
+): JSX.Element => {
+  const duration = msToSec(playhead.endTime - playhead.startTime);
+  const currProgress = msToSec(Date.now() - playhead.startTime);
+  console.log("DRAW PLAYBACK CALLED: ", musicianIdInPlayback, playhead);
+  return (
+    <div
+      style={{
+        position: "absolute",
+        width: `${currProgress / duration}%`,
+        backgroundColor: "black",
+        left: 0,
+        bottom: 0,
       }}
     ></div>
   );

@@ -33,6 +33,7 @@ defmodule Progressions.GameStartTest do
 
     game_server_state = %GameServer{
       room_id: "1",
+      game_id: "abc",
       players: players,
       musicians: musicians,
       game_view: :game_start,

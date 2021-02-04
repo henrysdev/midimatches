@@ -33,6 +33,7 @@ defmodule Progressions.RecordingTest do
 
     game_server_state = %GameServer{
       room_id: "1",
+      game_id: "abc",
       players: players,
       musicians: musicians,
       game_view: :recording,

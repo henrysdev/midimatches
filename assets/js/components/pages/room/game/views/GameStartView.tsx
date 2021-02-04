@@ -34,7 +34,12 @@ const GameStartView: React.FC<GameStartViewProps> = ({
 
   return (
     <div>
-      <Title title="MIDI Setup" />
+      <Title title="Starting Game" />
+      <Instructions
+        description={
+          "Confirm your MIDI input(s). A QWERTY piano will also be available."
+        }
+      />
       {!!gameStartTimeout ? (
         <Timer
           key={gameStartTimeout}
@@ -44,7 +49,6 @@ const GameStartView: React.FC<GameStartViewProps> = ({
       ) : (
         <></>
       )}
-
       <DynamicContent>
         {isReady ? (
           <div>
@@ -52,7 +56,7 @@ const GameStartView: React.FC<GameStartViewProps> = ({
             is ready
           </div>
         ) : (
-          <div>
+          <div className="uk" style={{ margin: "auto", maxWidth: "400px" }}>
             <MidiConfiguration setMidiInputs={setMidiInputs} />
             <FullWidthButton
               label="Ready Up"
@@ -65,7 +69,7 @@ const GameStartView: React.FC<GameStartViewProps> = ({
           </div>
         )}
       </DynamicContent>
-      <Instructions description={metaInstructions}>
+      {/* <Instructions description={metaInstructions}>
         <p>
           To test or configure the connection to your MIDI input device, click
           the "Configure MIDI" button.
@@ -77,7 +81,7 @@ const GameStartView: React.FC<GameStartViewProps> = ({
             ready'd up.{" "}
           </strong>
         </p>
-      </Instructions>
+      </Instructions> */}
     </div>
   );
 };

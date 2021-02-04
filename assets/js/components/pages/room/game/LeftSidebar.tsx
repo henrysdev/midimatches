@@ -10,7 +10,15 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({}) => {
   const { players, readyUps, roundNum, scores } = useGameContext();
   const { player: currPlayer } = usePlayerContext();
   return (
-    <div className="left_sidebar">
+    <div
+      className="left_sidebar"
+      style={{
+        width: "220px",
+        paddingRight: "8px",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       <Scoreboard
         players={
           !!players

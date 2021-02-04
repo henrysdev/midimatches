@@ -21,13 +21,13 @@ const RoundStartView: React.FC<RoundStartViewProps> = ({
   return (
     <div>
       <Title title="Starting Round " />
+      <Instructions description={desc} />
       <DynamicContent>
         <Timer
           descriptionText={"Faceoff starting in "}
           duration={roundStartTimeout}
         />
       </DynamicContent>
-      <Instructions description={desc} />
     </div>
   );
 };

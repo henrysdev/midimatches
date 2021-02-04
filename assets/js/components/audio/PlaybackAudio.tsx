@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import * as Tone from "tone";
 
-import { Loop, Color } from "../../types";
+import { Loop, Color, Playhead } from "../../types";
 import { loopToEvents } from "../../utils";
 import { SimpleButton } from "../common";
 import {
   DEFAULT_SYNTH_CONFIG,
   DEFAULT_NUM_RECORDED_LOOPS,
+  DEFAULT_RECORDING_LENGTH,
 } from "../../constants";
 import { useGameContext } from "../../hooks";
 import { scheduleSampleLoop } from "../../helpers";
@@ -17,6 +18,7 @@ interface PlaybackAudioProps {
   musicianId: string;
   playSample: Function;
   color: Color;
+  submitVote: Function;
 }
 
 const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
@@ -24,6 +26,7 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
   musicianId,
   playSample,
   color,
+  submitVote,
 }) => {
   const {
     gameRules: { timestepSize, soloTimeLimit },
@@ -31,8 +34,10 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
 
   const [synth, setSynth] = useState<Tone.PolySynth>();
 
+  const [playhead, setPlayhead] = useState<Playhead | undefined>();
+
+  // TODO inherit this from tone audio context...
   useEffect(() => {
-    // TODO break out into instrument class
     const newSynth = new Tone.PolySynth(DEFAULT_SYNTH_CONFIG).toDestination();
     setSynth(newSynth);
   }, []);
@@ -54,11 +59,16 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
   };
 
   return (
-    <div>
-      <RecordingVisual recording={recording} color={color} />
-      <SimpleButton
-        label={`Playback recording for MusicianId ${musicianId}`}
-        callback={() =>
+    <div
+      style={{
+        display: "flex",
+      }}
+    >
+      <div
+        style={{
+          flex: "5",
+        }}
+        onClick={() =>
           playbackMusician(
             recording,
             timestepSize,
@@ -67,8 +77,17 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
             playSample
           )
         }
-        disabled={false}
-      />
+      >
+        <RecordingVisual recording={recording} color={color} />
+      </div>
+      <div style={{ flex: "1" }}>
+        <SimpleButton
+          key={`vote-${musicianId}`}
+          label={"Vote"}
+          callback={() => submitVote(musicianId)}
+          disabled={false}
+        />
+      </div>
     </div>
   );
 };

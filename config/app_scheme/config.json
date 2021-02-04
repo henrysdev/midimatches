@@ -21,7 +21,14 @@
         "timestep_size": 50,
         "quantization_threshold": 0.5,
         "rounds_to_win": 3,
-        "game_size_num_players": 3
+        "game_size_num_players": 3,
+        "view_timeouts": {
+          "game_start": 60000,
+          "round_start": 3000,
+          "recording": 120000,
+          "round_end": 10000,
+          "game_end": 3000
+        }
       }
     }
   ]

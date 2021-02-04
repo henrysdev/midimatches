@@ -16,6 +16,7 @@ defmodule Progressions.GameServerTest do
 
   test "sets up new game server" do
     room_id = "1"
+    game_id = "abc"
 
     players =
       MapSet.new([
@@ -40,7 +41,7 @@ defmodule Progressions.GameServerTest do
     musicians = MapSet.new(["1", "2", "3", "4"])
     game_rules = %GameRules{}
 
-    {:ok, game_server} = GameServer.start_link([{room_id, players, game_rules}])
+    {:ok, game_server} = GameServer.start_link([{room_id, game_id, players, game_rules}])
 
     contestants =
       :sys.get_state(game_server).contestants
@@ -56,6 +57,7 @@ defmodule Progressions.GameServerTest do
 
   test "get current game view" do
     room_id = "1"
+    game_id = "abc"
 
     players =
       MapSet.new([
@@ -79,7 +81,7 @@ defmodule Progressions.GameServerTest do
 
     game_rules = %GameRules{}
 
-    {:ok, game_server} = GameServer.start_link([{room_id, players, game_rules}])
+    {:ok, game_server} = GameServer.start_link([{room_id, game_id, players, game_rules}])
     game_view = GameServer.get_current_view(game_server)
 
     assert game_view == :game_start
@@ -88,6 +90,7 @@ defmodule Progressions.GameServerTest do
   describe "advance from game view" do
     test "when game view is consistent with actual game view" do
       room_id = "1"
+      game_id = "abc"
 
       players =
         MapSet.new([
@@ -111,13 +114,14 @@ defmodule Progressions.GameServerTest do
 
       game_rules = %GameRules{}
 
-      {:ok, game_server} = GameServer.start_link([{room_id, players, game_rules}])
+      {:ok, game_server} = GameServer.start_link([{room_id, game_id, players, game_rules}])
 
       assert :ok == GameServer.advance_from_game_view(game_server, :game_start, 0)
     end
 
     test "when game view is inconsistent with actual game view" do
       room_id = "1"
+      game_id = "abc"
 
       players =
         MapSet.new([
@@ -141,7 +145,7 @@ defmodule Progressions.GameServerTest do
 
       game_rules = %GameRules{}
 
-      {:ok, game_server} = GameServer.start_link([{room_id, players, game_rules}])
+      {:ok, game_server} = GameServer.start_link([{room_id, game_id, players, game_rules}])
 
       assert :error == GameServer.advance_from_game_view(game_server, :recording, 0)
     end
@@ -149,6 +153,7 @@ defmodule Progressions.GameServerTest do
     # TODO fix test... is flakey
     test "triggered by view timer timeouts for game_start view" do
       room_id = "1"
+      game_id = "abc"
 
       players =
         MapSet.new([
@@ -176,7 +181,7 @@ defmodule Progressions.GameServerTest do
         }
       }
 
-      {:ok, game_server} = GameServer.start_link([{room_id, players, game_rules}])
+      {:ok, game_server} = GameServer.start_link([{room_id, game_id, players, game_rules}])
       {:ok, _view_timer} = ViewTimer.start_link([{room_id}])
 
       assert GameServer.get_current_view(game_server) == :game_start

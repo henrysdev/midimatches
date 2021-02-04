@@ -39,6 +39,7 @@ defmodule Progressions.GameLogicTest do
 
       game_server_state = %GameServer{
         room_id: "1",
+        game_id: "abc",
         players: players,
         musicians: musicians
       }
@@ -90,6 +91,7 @@ defmodule Progressions.GameLogicTest do
 
       game_server_state = %GameServer{
         room_id: "1",
+        game_id: "abc",
         players: players,
         musicians: musicians
       }
@@ -143,6 +145,7 @@ defmodule Progressions.GameLogicTest do
 
       game_server_state = %GameServer{
         room_id: "1",
+        game_id: "abc",
         players: players,
         musicians: musicians,
         game_view: :recording,
@@ -197,6 +200,7 @@ defmodule Progressions.GameLogicTest do
 
       game_server_state = %GameServer{
         room_id: "1",
+        game_id: "abc",
         players: players,
         musicians: musicians,
         game_view: :playback_voting,
@@ -209,7 +213,8 @@ defmodule Progressions.GameLogicTest do
           {game_server_state, []},
           fn ep, {gss, state_scan} ->
             %{state: gss} = GameLogic.cast_vote(gss, ep)
-            {gss, [{gss.votes, gss.winner, gss.game_view} | state_scan]}
+
+            {gss, [{gss.votes, gss.game_winners, gss.game_view} | state_scan]}
           end
         )
 
@@ -259,6 +264,7 @@ defmodule Progressions.GameLogicTest do
 
       game_server_state = %GameServer{
         room_id: "1",
+        game_id: "abc",
         players: players,
         musicians: musicians,
         game_view: :playback_voting,
@@ -273,7 +279,8 @@ defmodule Progressions.GameLogicTest do
           {game_server_state, []},
           fn ep, {gss, state_scan} ->
             %{state: gss} = GameLogic.cast_vote(gss, ep)
-            {gss, [{gss.votes, gss.winner, gss.game_view} | state_scan]}
+
+            {gss, [{gss.votes, gss.game_winners, gss.game_view} | state_scan]}
           end
         )
 
@@ -317,6 +324,7 @@ defmodule Progressions.GameLogicTest do
 
     game_server_state = %GameServer{
       room_id: "1",
+      game_id: "abc",
       players: players,
       musicians: musicians,
       game_view: :playback_voting,
@@ -329,6 +337,7 @@ defmodule Progressions.GameLogicTest do
 
     expected_state = %GameServer{
       room_id: "1",
+      game_id: "abc",
       players:
         MapSet.new([
           %Player{

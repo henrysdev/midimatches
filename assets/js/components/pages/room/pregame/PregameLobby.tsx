@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import { SUBMIT_ENTER_ROOM, SUBMIT_LEAVE_ROOM } from "../../../../constants";
-import { SimpleButton, Title } from "../../../common";
+import { FullWidthButton, Title } from "../../../common";
 import { PregameDebug } from "../../../debug";
 
 interface PregameLobbyProps {
@@ -26,7 +26,16 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
   };
 
   return (
-    <div>
+    <div
+      style={{
+        maxWidth: "400px",
+        margin: "auto",
+        marginTop: "16px",
+        padding: "24px",
+        boxShadow: "0 5px 15px rgb(0 0 0 / 8%)",
+        color: "#666",
+      }}
+    >
       <Title title="Pregame Lobby" />
       {gameInProgress ? (
         <div>
@@ -37,28 +46,33 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
       ) : (
         <div>
           <div>
-            {hasJoined
-              ? `Joined successfully as ${alias}. Waiting for other players...`
-              : "Game has not started yet. Enter an alias then join!"}
+            {hasJoined ? (
+              <p>
+                Joined successfully as <strong>{alias}</strong>. Waiting for
+                more players...
+              </p>
+            ) : (
+              <p style={{ marginBottom: "8px" }}>
+                Game has not started yet. Enter an alias then join!
+              </p>
+            )}
           </div>
-          <br />
           {hasJoined ? (
             <></>
           ) : (
-            <form>
+            <form style={{ margin: 0 }}>
               <fieldset className="uk-fieldset">
-                <div className="uk-margin">
-                  <input
-                    className="uk-input"
-                    type="text"
-                    placeholder="Enter an alias..."
-                    maxLength={20}
-                    onChange={handleChange}
-                  />
-                </div>
+                <input
+                  style={{ marginBottom: "8px" }}
+                  className="uk-input"
+                  type="text"
+                  placeholder="Enter an alias..."
+                  maxLength={20}
+                  onChange={handleChange}
+                />
               </fieldset>
-              <SimpleButton
-                label="Join Room"
+              <FullWidthButton
+                label="Join"
                 callback={() => {
                   pushMessageToChannel(SUBMIT_ENTER_ROOM, {
                     player_alias: alias,
@@ -76,7 +90,9 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
               )}
             </form>
           )}
-          <div>{`${numPlayersJoined}/${numPlayersToStart} Joined. Need ${
+          <div
+            style={{ marginTop: "16px" }}
+          >{`${numPlayersJoined}/${numPlayersToStart} Players. Need ${
             numPlayersToStart - numPlayersJoined
           } more players to start game`}</div>
         </div>

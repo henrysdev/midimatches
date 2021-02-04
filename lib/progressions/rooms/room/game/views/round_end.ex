@@ -3,7 +3,10 @@ defmodule Progressions.Rooms.Room.Game.Views.RoundEnd do
   Game logic specific to the round_end game view
   """
 
-  alias Progressions.Rooms.Room.GameServer
+  alias Progressions.{
+    Rooms.Room.GameServer,
+    Utils
+  }
 
   @type id() :: String.t()
 
@@ -12,20 +15,20 @@ defmodule Progressions.Rooms.Room.Game.Views.RoundEnd do
         %GameServer{
           game_view: :round_end,
           round_num: round_num,
-          game_rules: %{rounds_to_win: rounds_to_win},
-          scores: scores
+          game_rules: %{rounds_to_win: rounds_to_win}
         } = state
       ) do
     if round_num < rounds_to_win do
       reset_round(state)
     else
-      %GameServer{state | game_view: :game_end, winner: get_winner(scores)}
+      game_over(state)
     end
   end
 
   @spec reset_round(%GameServer{}) :: %GameServer{}
   def reset_round(%GameServer{
         room_id: room_id,
+        game_id: game_id,
         game_rules: game_rules,
         players: players,
         musicians: musicians,
@@ -37,6 +40,7 @@ defmodule Progressions.Rooms.Room.Game.Views.RoundEnd do
     %GameServer{
       game_view: :round_start,
       room_id: room_id,
+      game_id: game_id,
       game_rules: game_rules,
       players: players,
       musicians: musicians,
@@ -47,8 +51,9 @@ defmodule Progressions.Rooms.Room.Game.Views.RoundEnd do
     }
   end
 
-  @spec get_winner(%{required(id()) => integer()}) :: id()
-  defp get_winner(scores) do
-    Enum.max_by(scores, fn {_id, num_points} -> num_points end)
+  @spec game_over(%GameServer{}) :: %GameServer{}
+  def game_over(%GameServer{scores: scores} = state) do
+    game_winners = Utils.scores_to_win_result(scores)
+    %GameServer{state | game_view: :game_end, game_winners: game_winners}
   end
 end

@@ -7,9 +7,28 @@ interface GameLayoutProps {
 }
 const GameLayout: React.FC<GameLayoutProps> = ({ children }) => {
   return (
-    <div className="game_layout uk-background-muted">
+    <div
+      className="uk-background-muted"
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        maxHeight: "2000px",
+        maxWidth: "2000px",
+        padding: "8px",
+        margin: "auto",
+        marginTop: "16px",
+        boxShadow: "0 5px 15px rgb(0 0 0 / 8%)",
+        color: "#666",
+      }}
+    >
       <LeftSidebar />
-      <div className="game_content_container uk-background-default">
+      <div
+        className="uk-background-default"
+        style={{
+          padding: "8px",
+          flexGrow: 6,
+        }}
+      >
         {children}
       </div>
     </div>
