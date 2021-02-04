@@ -126,6 +126,7 @@ const drawProgress = (progress: number) => {
         width: `${progress * 100}%`,
         height: "100%",
         backgroundColor: "black",
+        opacity: 0.5,
         left: 0,
         bottom: 0,
       }}

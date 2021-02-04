@@ -63,7 +63,7 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
           <></>
         )}
         {!!recordings ? (
-          shuffleArray(Object.entries(recordings))
+          Object.entries(recordings)
             .filter(
               ([musicianId, _recording]) => musicianId !== currPlayer.musicianId
             )
