@@ -5,8 +5,46 @@ defmodule Progressions.Utils do
 
   alias Progressions.{
     Rooms.Room.GameServer,
-    Types.ClientGameState
+    Types.ClientGameState,
+    Types.WinResult
   }
+
+  @type id() :: String.t()
+  @type votes_map() :: %{required(id) => id}
+  @type scores_map() :: %{required(id) => number}
+
+  @spec votes_to_win_result(votes_map()) :: %WinResult{}
+  @doc """
+  Transform a votes map into win result struct
+  """
+  def votes_to_win_result(%{} = votes) do
+    votes
+    |> Map.values()
+    |> Enum.frequencies()
+    |> build_win_result()
+  end
+
+  @spec scores_to_win_result(scores_map()) :: %WinResult{}
+  @doc """
+  Transform a scores map into win result struct
+  """
+  def scores_to_win_result(%{} = scores) do
+    scores
+    |> Map.to_list()
+    |> build_win_result()
+  end
+
+  defp build_win_result(freq_list) do
+    {_id, max_votes} = Enum.max_by(freq_list, fn {_id, freq} -> freq end)
+
+    %WinResult{
+      winners:
+        freq_list
+        |> Stream.filter(fn {_id, freq} -> freq == max_votes end)
+        |> Enum.map(fn {id, _freq} -> id end),
+      num_points: max_votes
+    }
+  end
 
   @spec gen_random_string(number) :: binary()
   @doc """
@@ -63,7 +101,8 @@ defmodule Progressions.Utils do
       winner: winner,
       contestants: server_state.contestants,
       scores: server_state.scores,
-      round_num: server_state.round_num
+      round_num: server_state.round_num,
+      round_winners: server_state.round_winners
     }
   end
 end

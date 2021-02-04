@@ -13,6 +13,7 @@ defmodule Progressions.Rooms.Room.GameServer do
     Rooms.Room.GameLogic,
     Rooms.RoomServer,
     Types.GameRules,
+    Types.WinResult,
     Utils
   }
 
@@ -44,6 +45,7 @@ defmodule Progressions.Rooms.Room.GameServer do
     field(:votes, %{required(id()) => id()}, default: %{})
     field(:view_counter, integer(), default: 0)
     field(:round_num, integer(), default: 1)
+    field(:round_winners, %WinResult{}, default: nil)
     field(:scores, %{required(id()) => integer()}, default: %{})
   end
 

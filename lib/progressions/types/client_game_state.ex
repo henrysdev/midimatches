@@ -5,7 +5,8 @@ defmodule Progressions.Types.ClientGameState do
 
   alias Progressions.{
     Types.GameRules,
-    Types.Player
+    Types.Player,
+    Types.WinResult
   }
 
   use TypedStruct
@@ -33,5 +34,6 @@ defmodule Progressions.Types.ClientGameState do
     field(:contestants, list(id))
     field(:round_num, integer())
     field(:scores, any)
+    field(:round_winners, %WinResult{})
   end
 end

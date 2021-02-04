@@ -3,9 +3,10 @@ defmodule Progressions.Rooms.Room.Game.Views.PlaybackVoting do
   Game logic specific to the playback_voting game view
   """
 
-  alias Progressions.Rooms.Room.{
-    GameLogic,
-    GameServer
+  alias Progressions.{
+    Rooms.Room.GameLogic,
+    Rooms.Room.GameServer,
+    Utils
   }
 
   @type id() :: String.t()
@@ -128,6 +129,8 @@ defmodule Progressions.Rooms.Room.Game.Views.PlaybackVoting do
         end
       )
 
-    %GameServer{state | scores: scores}
+    round_winners = Utils.votes_to_win_result(scores)
+
+    %GameServer{state | scores: scores, round_winners: round_winners}
   end
 end
