@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 
-import { SUBMIT_ENTER_ROOM, SUBMIT_LEAVE_ROOM } from "../../../../constants";
+import {
+  SUBMIT_ENTER_ROOM,
+  SUBMIT_LEAVE_ROOM,
+  MIN_PLAYER_ALIAS_LENGTH,
+  MAX_PLAYER_ALIAS_LENGTH,
+} from "../../../../constants";
 import { FullWidthButton, Title } from "../../../common";
 import { PregameDebug } from "../../../debug";
 
@@ -67,7 +72,7 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
                   className="uk-input"
                   type="text"
                   placeholder="Enter an alias..."
-                  maxLength={20}
+                  maxLength={MAX_PLAYER_ALIAS_LENGTH}
                   onChange={handleChange}
                 />
               </fieldset>
@@ -79,9 +84,9 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
                   });
                   setHasJoined(true);
                 }}
-                disabled={!alias || alias.length < 3}
+                disabled={!alias || alias.length < MIN_PLAYER_ALIAS_LENGTH}
               />
-              {!!alias && alias.length < 3 ? (
+              {!!alias && alias.length < MIN_PLAYER_ALIAS_LENGTH ? (
                 <i style={{ marginLeft: 10, color: "red" }}>
                   Alias must be at least 3 characters long
                 </i>

@@ -28,6 +28,9 @@ export const SUBMIT_VOTE_EVENT = "musician_vote";
 
 export const SAMPLE_URLS = ["/sounds/ragga_sample.mp3"];
 
+export const MIN_PLAYER_ALIAS_LENGTH = 3;
+export const MAX_PLAYER_ALIAS_LENGTH = 14;
+
 export const DEFAULT_SAMPLE_PLAY_BUFFER_LENGTH = 2;
 export const DEFAULT_SAMPLE_LENGTH = 10.6667;
 export const DEFAULT_NUM_RECORDED_LOOPS = 1;
