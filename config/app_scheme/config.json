@@ -1,6 +1,7 @@
 {
   "rooms": [
     {
+      "room_name": "halal",
       "server": {
         "timestep_size": 50,
         "quantization_threshold": 0.5,
@@ -15,6 +16,7 @@
       }
     },
     {
+      "room_name": "the curio shop",
       "server": {
         "timestep_size": 50,
         "quantization_threshold": 0.5,

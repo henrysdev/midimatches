@@ -17,7 +17,7 @@ defmodule ProgressionsWeb.RoomChannelTest do
     TestHelpers.teardown_rooms()
     on_exit(fn -> TestHelpers.teardown_rooms() end)
 
-    Rooms.add_room("1")
+    Rooms.add_room("1", "foo")
 
     {:ok, _, socket} =
       UserSocket

@@ -14,8 +14,10 @@ defmodule Progressions.RoomsTest do
 
   test "sets up entire supervision tree" do
     room_ids = ["1", "asdf", "3"]
+    room_names = ["name1", "name2", "name3"]
+    room_tuples = Enum.zip(room_ids, room_names)
 
-    Enum.each(room_ids, &Rooms.add_room(&1))
+    Enum.each(room_tuples, fn {id, name} -> Rooms.add_room(id, name) end)
 
     Enum.each(room_ids, fn id ->
       assert Rooms.room_exists?(id) == true
@@ -26,10 +28,12 @@ defmodule Progressions.RoomsTest do
 
   test "prevents duplicate room ids" do
     room_ids = ["1", "asdf", "1"]
+    room_names = ["name1", "name2", "name1"]
+    room_tuples = Enum.zip(room_ids, room_names)
 
     [err_result | _rest] =
-      room_ids
-      |> Enum.map(&Rooms.add_room(&1))
+      room_tuples
+      |> Enum.map(fn {id, name} -> Rooms.add_room(id, name) end)
       |> Enum.reverse()
 
     :sys.get_state(Rooms)
@@ -40,8 +44,10 @@ defmodule Progressions.RoomsTest do
 
   test "adding and dropping children from tree removes from children and registry" do
     room_ids = ["1", "2", "3"]
+    room_names = ["name1", "name2", "name3"]
+    room_tuples = Enum.zip(room_ids, room_names)
 
-    Enum.each(room_ids, &Rooms.add_room(&1))
+    Enum.each(room_tuples, fn {id, name} -> Rooms.add_room(id, name) end)
 
     :sys.get_state(Rooms)
     :sys.get_state(ProcessRegistry)

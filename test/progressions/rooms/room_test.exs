@@ -14,8 +14,9 @@ defmodule Progressions.RoomTest do
 
   test "sets up supervision tree" do
     room_id = "1"
+    room_name = "yuzu"
 
-    {:ok, sup} = start_supervised({Room, [{room_id}]})
+    {:ok, sup} = start_supervised({Room, [{room_id, room_name}]})
 
     started_children = Supervisor.which_children(sup) |> Enum.reverse()
 

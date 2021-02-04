@@ -31,15 +31,15 @@ defmodule Progressions.Rooms do
     Pids.fetch({:room, room_id}) != nil
   end
 
-  @spec add_room(id()) :: {atom(), pid() | String.t()}
+  @spec add_room(id(), String.t()) :: {atom(), pid() | String.t()}
   @doc """
   Start a room under supervision.
   """
-  def add_room(room_id) do
+  def add_room(room_id, room_name) do
     if room_exists?(room_id) do
       {:error, "room already exists for room_id #{room_id}"}
     else
-      DynamicSupervisor.start_child(__MODULE__, {Room, [{room_id}]})
+      DynamicSupervisor.start_child(__MODULE__, {Room, [{room_id, room_name}]})
     end
   end
 
@@ -74,7 +74,7 @@ defmodule Progressions.Rooms do
     room_configs
     |> Enum.each(fn cfg ->
       room_id = Persistence.gen_serial_id()
-      DynamicSupervisor.start_child(__MODULE__, {Room, [{room_id, cfg}]})
+      DynamicSupervisor.start_child(__MODULE__, {Room, [{room_id, cfg.room_name, cfg}]})
     end)
   end
 end

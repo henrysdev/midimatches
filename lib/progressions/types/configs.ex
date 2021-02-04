@@ -14,6 +14,7 @@ defmodule Progressions.Types.Configs do
   @config_schema %ProgressionsConfig{
     rooms: [
       %RoomConfig{
+        room_name: nil,
         server: %GameRules{
           timestep_size: nil,
           quantization_threshold: nil,
