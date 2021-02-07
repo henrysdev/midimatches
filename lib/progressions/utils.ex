@@ -74,6 +74,16 @@ defmodule Progressions.Utils do
       server_state.ready_ups
       |> MapSet.to_list()
 
+    recordings_list =
+      server_state.recordings
+      |> Map.to_list()
+      |> Enum.map(&Tuple.to_list(&1))
+
+    scores_list =
+      server_state.scores
+      |> Map.to_list()
+      |> Enum.map(&Tuple.to_list(&1))
+
     %ClientGameState{
       # static fields
       game_rules: server_state.game_rules,
@@ -84,11 +94,11 @@ defmodule Progressions.Utils do
       players: players_list,
       num_votes_cast: num_votes_cast,
       ready_ups: ready_ups_list,
-      recordings: server_state.recordings,
+      recordings: recordings_list,
       round_recording_start_time: server_state.round_recording_start_time,
       game_winners: server_state.game_winners,
       contestants: server_state.contestants,
-      scores: server_state.scores,
+      scores: scores_list,
       round_num: server_state.round_num,
       round_winners: server_state.round_winners
     }

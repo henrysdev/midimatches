@@ -88,6 +88,9 @@ export interface WinResult {
   numPoints: number;
 }
 
+type RecordingTuple = [string, any];
+type ScoreTuple = [string, number];
+
 /* Context Types */
 export interface GameContextType {
   // static fields
@@ -99,12 +102,12 @@ export interface GameContextType {
   players?: Player[];
   numVotesCast?: number;
   readyUps?: any;
-  recordings?: Object;
+  recordings?: RecordingTuple[];
   roundRecordingStartTime?: number;
   gameWinners?: WinResult;
   contestants?: string[];
   roundNum: number;
-  scores: any;
+  scores: ScoreTuple[];
   roundWinners?: WinResult;
 }
 

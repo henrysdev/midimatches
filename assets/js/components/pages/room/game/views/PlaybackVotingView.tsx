@@ -11,7 +11,7 @@ import {
   Title,
 } from "../../../../common";
 import { shuffleArray, genRandomColors } from "../../../../../utils";
-import { Color } from "../../../../../types";
+import { Color, Loop, RecordingTuple } from "../../../../../types";
 
 interface PlaybackVotingViewProps {
   pushMessageToChannel: Function;
@@ -28,7 +28,7 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
   playSample,
 }) => {
   const {
-    recordings = {},
+    recordings = [],
     gameRules: {
       viewTimeouts: { playbackVoting: playbackVotingTimeout },
     },
@@ -63,15 +63,18 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
           <></>
         )}
         {!!recordings ? (
-          Object.entries(recordings)
+          recordings
             .filter(
               ([musicianId, _recording]) => musicianId !== currPlayer.musicianId
             )
-            .map((entry, idx): [[string, any], string] => {
-              return [entry, randomColors[idx]];
+            .map((recordingTuple: RecordingTuple, idx: number): [
+              RecordingTuple,
+              Color
+            ] => {
+              return [recordingTuple, randomColors[idx]];
             })
             .map(
-              ([[musicianId, recording], color]: [[string, any], string]) => {
+              ([[musicianId, recording], color]: [RecordingTuple, Color]) => {
                 return (
                   <div key={`playback-${musicianId}`}>
                     <PlaybackAudio
