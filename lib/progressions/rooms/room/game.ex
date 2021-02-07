@@ -27,7 +27,7 @@ defmodule Progressions.Rooms.Room.Game do
     Pids.register({:game_supervisor, room_id}, self())
 
     # assign game a unique id
-    game_id = Utils.gen_random_string(16)
+    game_id = Utils.gen_uuid()
 
     children = [
       {ViewTimer, [{room_id}]},

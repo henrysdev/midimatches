@@ -22,6 +22,7 @@ defmodule Progressions.Types.ConfigsTest do
       {
         "rooms": [
           {
+            "room_name": "demo1",
             "server": {
               "timestep_size": 50000,
               "quantization_threshold": 0.4,
@@ -43,6 +44,7 @@ defmodule Progressions.Types.ConfigsTest do
       expected = %ProgressionsConfig{
         rooms: [
           %RoomConfig{
+            room_name: "demo1",
             server: %GameRules{
               timestep_size: 50_000,
               quantization_threshold: 0.4,

@@ -4,7 +4,6 @@ defmodule Progressions.TestHelpers do
   """
 
   alias Progressions.{
-    Persistence,
     Rooms,
     Rooms.Room.GameServer,
     Rooms.RoomServer,
@@ -16,7 +15,6 @@ defmodule Progressions.TestHelpers do
 
     Enum.each(pids, &DynamicSupervisor.terminate_child(Rooms, &1))
 
-    reset_persistence()
     unregister_keys(pids)
   end
 
@@ -65,10 +63,6 @@ defmodule Progressions.TestHelpers do
   defp room_pids do
     Rooms.list_rooms()
     |> Enum.map(fn {_, pid, _, _} -> pid end)
-  end
-
-  defp reset_persistence do
-    Process.exit(Process.whereis(Persistence), :normal)
   end
 
   defp unregister_keys(pids) do

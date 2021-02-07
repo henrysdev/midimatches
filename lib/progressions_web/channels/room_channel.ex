@@ -6,7 +6,6 @@ defmodule ProgressionsWeb.RoomChannel do
   use Phoenix.Channel
 
   alias Progressions.{
-    Persistence,
     Pids,
     Rooms,
     Rooms.Room.GameServer,
@@ -14,7 +13,8 @@ defmodule ProgressionsWeb.RoomChannel do
     Types.Loop,
     Types.Note,
     Types.Player,
-    Types.TimestepSlice
+    Types.TimestepSlice,
+    Utils
   }
 
   require Logger
@@ -86,7 +86,7 @@ defmodule ProgressionsWeb.RoomChannel do
       ) do
     room_server = Pids.fetch!({:room_server, room_id})
 
-    musician_id = Persistence.gen_serial_id()
+    musician_id = Utils.gen_uuid()
 
     player = %Player{
       musician_id: musician_id,
@@ -118,7 +118,7 @@ defmodule ProgressionsWeb.RoomChannel do
       ) do
     GameServer.musician_ready_up(game_server, musician_id)
 
-    {:noreply, socket}
+    {:reply, {:ok, %{}}, socket}
   end
 
   def handle_in(
@@ -130,7 +130,7 @@ defmodule ProgressionsWeb.RoomChannel do
 
     GameServer.musician_recording(game_server, musician_id, recording)
 
-    {:noreply, socket}
+    {:reply, {:ok, %{}}, socket}
   end
 
   def handle_in(
@@ -140,7 +140,7 @@ defmodule ProgressionsWeb.RoomChannel do
       ) do
     GameServer.musician_vote(game_server, musician_id, vote)
 
-    {:noreply, socket}
+    {:reply, {:ok, %{}}, socket}
   end
 
   def handle_in(event, params, socket) do

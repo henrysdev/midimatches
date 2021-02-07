@@ -19,6 +19,8 @@ interface PlaybackAudioProps {
   playSample: Function;
   color: Color;
   submitVote: Function;
+  setActivePlaybackTrack: Function;
+  isPlaying: boolean;
 }
 
 const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
@@ -27,6 +29,8 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
   playSample,
   color,
   submitVote,
+  setActivePlaybackTrack,
+  isPlaying,
 }) => {
   const {
     gameRules: { timestepSize, soloTimeLimit },
@@ -34,7 +38,7 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
 
   const [synth, setSynth] = useState<Tone.PolySynth>();
 
-  const [playhead, setPlayhead] = useState<Playhead | undefined>();
+  const [progress, setProgress] = useState<number>(0);
 
   // TODO inherit this from tone audio context...
   useEffect(() => {
@@ -58,6 +62,33 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
     }
   };
 
+  const playbackMusician = (timestepSize: number, playNote: Function): void => {
+    const startTime = Tone.now();
+    Tone.Transport.cancel(0);
+    Tone.Transport.start(startTime);
+
+    const part = buildPart(recording, timestepSize, playNote);
+
+    part.start();
+    startPlayheadProgress(startTime);
+    scheduleSampleLoop(0, playSample, DEFAULT_NUM_RECORDED_LOOPS, true);
+  };
+
+  const startPlayheadProgress = (startTime: number): void => {
+    setActivePlaybackTrack(musicianId);
+    setProgress(0);
+
+    Tone.Transport.scheduleRepeat(
+      (currTime) => {
+        const progress = (currTime - startTime) / DEFAULT_RECORDING_LENGTH;
+        setProgress(progress);
+      },
+      0.05,
+      "+0",
+      DEFAULT_RECORDING_LENGTH
+    );
+  };
+
   return (
     <div
       style={{
@@ -68,17 +99,21 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
         style={{
           flex: "5",
         }}
-        onClick={() =>
-          playbackMusician(
-            recording,
-            timestepSize,
-            soloTimeLimit,
-            playNote,
-            playSample
-          )
-        }
       >
-        <RecordingVisual recording={recording} color={color} />
+        <RecordingVisual
+          recording={recording}
+          color={color}
+          progress={progress}
+          isPlaying={isPlaying}
+        />
+      </div>
+      <div style={{ flex: "1" }}>
+        <SimpleButton
+          key={`play-track-${musicianId}`}
+          label={"Play"}
+          callback={() => playbackMusician(timestepSize, playNote)}
+          disabled={false}
+        />
       </div>
       <div style={{ flex: "1" }}>
         <SimpleButton
@@ -92,23 +127,6 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
   );
 };
 export { PlaybackAudio };
-
-function playbackMusician(
-  recording: Loop,
-  timestepSize: number,
-  _soloTimeLimit: number,
-  playNote: Function,
-  playSample: Function
-): void {
-  const startTime = Tone.now();
-  Tone.Transport.cancel(0);
-  Tone.Transport.start(startTime);
-
-  const part = buildPart(recording, timestepSize, playNote);
-
-  part.start();
-  scheduleSampleLoop(0, playSample, DEFAULT_NUM_RECORDED_LOOPS, true);
-}
 
 function buildPart(
   recording: Loop,

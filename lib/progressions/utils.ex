@@ -5,7 +5,9 @@ defmodule Progressions.Utils do
 
   alias Progressions.{
     Rooms.Room.GameServer,
+    Rooms.RoomServer,
     Types.ClientGameState,
+    Types.ClientRoomState,
     Types.WinResult
   }
 
@@ -46,13 +48,11 @@ defmodule Progressions.Utils do
     }
   end
 
-  @spec gen_random_string(number) :: binary()
+  @spec gen_uuid() :: String.t()
   @doc """
-  Generate a random string of the given length
+  Generate a unique identifier
   """
-  def gen_random_string(length) do
-    :crypto.strong_rand_bytes(length) |> Base.url_encode64() |> binary_part(0, length)
-  end
+  def gen_uuid, do: UUID.uuid4()
 
   @spec server_to_client_game_state(%GameServer{}) :: any
   @doc """
@@ -74,6 +74,16 @@ defmodule Progressions.Utils do
       server_state.ready_ups
       |> MapSet.to_list()
 
+    recordings_list =
+      server_state.recordings
+      |> Map.to_list()
+      |> Enum.map(&Tuple.to_list(&1))
+
+    scores_list =
+      server_state.scores
+      |> Map.to_list()
+      |> Enum.map(&Tuple.to_list(&1))
+
     %ClientGameState{
       # static fields
       game_rules: server_state.game_rules,
@@ -84,13 +94,26 @@ defmodule Progressions.Utils do
       players: players_list,
       num_votes_cast: num_votes_cast,
       ready_ups: ready_ups_list,
-      recordings: server_state.recordings,
+      recordings: recordings_list,
       round_recording_start_time: server_state.round_recording_start_time,
       game_winners: server_state.game_winners,
       contestants: server_state.contestants,
-      scores: server_state.scores,
+      scores: scores_list,
       round_num: server_state.round_num,
       round_winners: server_state.round_winners
+    }
+  end
+
+  @spec server_to_client_room_state(%RoomServer{}) :: any
+  @doc """
+  Transform room server state into update payload for clients
+  """
+  def server_to_client_room_state(%RoomServer{} = server_state) do
+    %ClientRoomState{
+      room_id: server_state.room_id,
+      room_name: server_state.room_name,
+      game_rules: server_state.game_config,
+      num_curr_players: MapSet.size(server_state.players)
     }
   end
 end

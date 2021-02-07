@@ -1,7 +1,5 @@
 defmodule Progressions.Types.ClientGameState do
-  @moduledoc """
-  Configurable rules for a game
-  """
+  @moduledoc false
 
   alias Progressions.{
     Types.GameRules,
@@ -27,12 +25,12 @@ defmodule Progressions.Types.ClientGameState do
     field(:musicians, list(id))
     field(:num_votes_cast, integer())
     field(:ready_ups, list(id))
-    field(:recordings, any)
+    field(:recordings, list(list))
     field(:round_recording_start_time, integer())
     field(:game_winners, %WinResult{})
     field(:contestants, list(id))
     field(:round_num, integer())
-    field(:scores, any)
+    field(:scores, list(list))
     field(:round_winners, %WinResult{})
   end
 end

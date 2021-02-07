@@ -83,13 +83,56 @@ const PregameDebug: React.FC = () => {
             },
             timestepSize: 10_000,
           },
-          scores: {
-            fearz123: 0,
-            xb4z: 2,
-          },
+          scores: [
+            ["fearz123", 0],
+            ["xb4z", 2],
+          ],
           readyUps: [],
           recordings: {
             xb4z: {
+              timestepSlices: [
+                {
+                  timestep: 4,
+                  notes: [
+                    {
+                      key: 54,
+                      duration: 14,
+                    },
+                    {
+                      key: 64,
+                      duration: 12,
+                    },
+                  ],
+                },
+                {
+                  timestep: 41,
+                  notes: [
+                    {
+                      key: 14,
+                      duration: 20,
+                    },
+                    {
+                      key: 4,
+                      duration: 14,
+                    },
+                  ],
+                },
+                {
+                  timestep: 200,
+                  notes: [
+                    {
+                      key: 88,
+                      duration: 4,
+                    },
+                    {
+                      key: 65,
+                      duration: 40,
+                    },
+                  ],
+                },
+              ],
+            },
+            fearz123: {
               timestepSlices: [
                 {
                   timestep: 4,
@@ -137,35 +180,23 @@ const PregameDebug: React.FC = () => {
       >
         <PlayerContext.Provider value={{ player: mockedPlayers[0] }}>
           <ToneAudioContext.Provider value={{ midiInputs, Tone: mockTone }}>
-            <GameLayout>
+            {/* <GameLayout>
               <PlaybackVotingView
                 pushMessageToChannel={() => {}}
                 playSample={() => {}}
               />
-              {/* <GameStartView
-                pushMessageToChannel={() => {}}
-                setMidiInputs={() => {}}
-              /> */}
-              {/* <RecordingView
-                isContestant={true}
-                pushMessageToChannel={() => {}}
-                playSample={() => {}}
-                stopSample={() => {}}
-              /> */}
-            </GameLayout>
-            {/* <GameLayout>
-          <Title title="Starting Game" />
-          <DynamicContent>
-            <div>
-              <Keyboard
-                activeMidiList={[]}
-                playNote={() => {}}
-                stopNote={() => {}}
-              />
-            </div>
-          </DynamicContent>
-          <Instructions title="asdf" description={desc}></Instructions>
-        </GameLayout> */}
+            </GameLayout> */}
+            <DynamicContent>
+              <div>
+                <Keyboard
+                  activeMidiList={[50]}
+                  playNote={(noteNumber: number) => {
+                    console.log("note number ", noteNumber);
+                  }}
+                  stopNote={() => {}}
+                />
+              </div>
+            </DynamicContent>
           </ToneAudioContext.Provider>
         </PlayerContext.Provider>
       </GameContext.Provider>

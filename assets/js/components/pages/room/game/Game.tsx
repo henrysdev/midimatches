@@ -2,7 +2,11 @@ import { Channel } from "phoenix";
 import React, { useEffect, useState, useMemo } from "react";
 
 import * as Tone from "tone";
-import { GAME_VIEW, SAMPLE_URLS } from "../../../../constants";
+import {
+  GAME_VIEW,
+  SAMPLE_URLS,
+  DEFAULT_SYNTH_CONFIG,
+} from "../../../../constants";
 import { GameContext, ToneAudioContext } from "../../../../contexts";
 import {
   GameEndView,
@@ -34,6 +38,7 @@ const Game: React.FC<GameProps> = ({ gameChannel, initGameState }) => {
   const [midiInputs, setMidiInputs] = useState<Array<Input>>([]);
   const [loadSample, playSample, stopSample] = useSamplePlayer(Tone);
   const { player: currPlayer } = usePlayerContext();
+  const [synth, setSynth] = useState<any>();
 
   const resetTone = () => {
     stopSample();
@@ -43,6 +48,8 @@ const Game: React.FC<GameProps> = ({ gameChannel, initGameState }) => {
 
   useEffect(() => {
     Tone.context.lookAhead = 0.01;
+    const newSynth = new Tone.PolySynth(DEFAULT_SYNTH_CONFIG).toDestination();
+    setSynth(newSynth);
   }, []);
 
   useEffect(() => {
@@ -69,7 +76,7 @@ const Game: React.FC<GameProps> = ({ gameChannel, initGameState }) => {
 
   return (
     <GameContext.Provider value={gameContext} key={currentView}>
-      <ToneAudioContext.Provider value={{ Tone, midiInputs }}>
+      <ToneAudioContext.Provider value={{ Tone, midiInputs, synth }}>
         <GameLayout>
           {(() => {
             switch (currentView) {

@@ -62,6 +62,9 @@ defmodule Progressions.UtilsTest do
       round_winners: %WinResult{
         winners: ["3"],
         num_points: 1
+      },
+      recordings: %{
+        "1" => %{}
       }
     }
 
@@ -78,11 +81,11 @@ defmodule Progressions.UtilsTest do
         winners: ["4"],
         num_points: 2
       },
-      recordings: server_state.recordings,
+      recordings: [["1", %{}]],
       round_recording_start_time: server_state.round_recording_start_time,
       round_num: server_state.round_num,
       contestants: server_state.contestants,
-      scores: server_state.scores,
+      scores: [["1", 0], ["2", 0], ["3", 1], ["4", 2]],
       round_winners: server_state.round_winners
     }
 

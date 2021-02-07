@@ -16,18 +16,21 @@ defmodule Progressions.RoomServerTest do
 
   test "sets up room server" do
     room_id = "1"
+    room_name = "foobar"
 
-    {:ok, room_server} = start_supervised({RoomServer, [{room_id}]})
+    {:ok, room_server} = start_supervised({RoomServer, [{room_id, room_name}]})
 
     assert :sys.get_state(room_server) == %RoomServer{
              players: MapSet.new(),
              game_config: %GameRules{},
+             room_name: room_name,
              room_id: room_id
            }
   end
 
   test "add and drop players" do
     room_id = "1"
+    room_name = "foobar"
 
     [m1, m2, m3] = [
       %Player{
@@ -44,7 +47,7 @@ defmodule Progressions.RoomServerTest do
       }
     ]
 
-    {:ok, room_server} = start_supervised({RoomServer, [{room_id}]})
+    {:ok, room_server} = start_supervised({RoomServer, [{room_id, room_name}]})
 
     RoomServer.add_player(room_server, m1)
     RoomServer.add_player(room_server, m2)
@@ -67,6 +70,7 @@ defmodule Progressions.RoomServerTest do
 
   test "starts game when enough players have joined" do
     room_id = "1"
+    room_name = "foobar"
 
     players = [
       %Player{
@@ -88,13 +92,14 @@ defmodule Progressions.RoomServerTest do
     ]
 
     assert is_nil(Pids.fetch({:game_supervisor, room_id}))
-    room_server = start_room_with_game(room_id, players)
+    room_server = start_room_with_game(room_id, room_name, players)
     state = :sys.get_state(room_server)
     assert !is_nil(state.game)
   end
 
   test "reset room" do
     room_id = "1"
+    room_name = "foobar"
 
     players = [
       %Player{
@@ -115,7 +120,7 @@ defmodule Progressions.RoomServerTest do
       }
     ]
 
-    room_server = start_room_with_game(room_id, players)
+    room_server = start_room_with_game(room_id, room_name, players)
     game_pid = :sys.get_state(room_server).game
     game_server = Pids.fetch!({:game_server, room_id})
     game_supervisor = Pids.fetch!({:game_supervisor, room_id})
@@ -132,13 +137,13 @@ defmodule Progressions.RoomServerTest do
   end
 
   @type id() :: String.t()
-  @spec start_room_with_game(id(), list(%Player{})) :: pid()
-  defp start_room_with_game(room_id, players) do
+  @spec start_room_with_game(id(), String.t(), list(%Player{})) :: pid()
+  defp start_room_with_game(room_id, room_name, players) do
     game_config = %GameRules{
       game_size_num_players: length(players)
     }
 
-    {:ok, room_server} = start_supervised({RoomServer, [{room_id, game_config}]})
+    {:ok, room_server} = start_supervised({RoomServer, [{room_id, room_name, game_config}]})
 
     Enum.each(players, fn player -> RoomServer.add_player(room_server, player) end)
     room_server

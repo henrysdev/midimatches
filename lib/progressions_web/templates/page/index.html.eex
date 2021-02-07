@@ -1,1 +1,7 @@
 <div id="react-app"></div>
+<body>
+  <%= for room_row <- rooms_list() do %>
+    <%= room_row %>
+  <% end %>
+  </table>
+</body>

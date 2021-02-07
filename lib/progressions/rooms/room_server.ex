@@ -22,6 +22,7 @@ defmodule Progressions.Rooms.RoomServer do
 
   typedstruct do
     field(:room_id, id(), enforce: true)
+    field(:room_name, String.t(), enforce: true)
     field(:players, MapSet.t(Player), default: MapSet.new())
     field(:game_config, %GameRules{}, default: %GameRules{})
     field(:game, pid, default: nil)
@@ -33,10 +34,10 @@ defmodule Progressions.Rooms.RoomServer do
 
   @impl true
   def init(args) do
-    {room_id, game_config} =
+    {room_id, room_name, game_config} =
       case args do
-        [{room_id}] -> {room_id, %GameRules{}}
-        [{room_id, game_config}] -> {room_id, game_config}
+        [{room_id, room_name}] -> {room_id, room_name, %GameRules{}}
+        [{room_id, room_name, game_config}] -> {room_id, room_name, game_config}
       end
 
     Pids.register({:room_server, room_id}, self())
@@ -44,6 +45,7 @@ defmodule Progressions.Rooms.RoomServer do
     {:ok,
      %RoomServer{
        room_id: room_id,
+       room_name: room_name,
        game_config: game_config
      }}
   end
@@ -156,13 +158,14 @@ defmodule Progressions.Rooms.RoomServer do
   def handle_call(
         :reset_room,
         _from,
-        %RoomServer{game: game, room_id: room_id, game_config: game_config}
+        %RoomServer{game: game, room_id: room_id, room_name: room_name, game_config: game_config}
       ) do
     Game.stop_game(game)
 
     # reset all state besides id and config
     state = %RoomServer{
       room_id: room_id,
+      room_name: room_name,
       game_config: game_config
     }
 
