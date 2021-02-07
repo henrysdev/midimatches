@@ -5,11 +5,10 @@ import { Loop, Color, Playhead } from "../../types";
 import { loopToEvents } from "../../utils";
 import { SimpleButton } from "../common";
 import {
-  DEFAULT_SYNTH_CONFIG,
   DEFAULT_NUM_RECORDED_LOOPS,
   DEFAULT_RECORDING_LENGTH,
 } from "../../constants";
-import { useGameContext } from "../../hooks";
+import { useGameContext, useToneAudioContext } from "../../hooks";
 import { scheduleSampleLoop } from "../../helpers";
 import { RecordingVisual } from "./";
 
@@ -36,14 +35,13 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
     gameRules: { timestepSize, soloTimeLimit },
   } = useGameContext();
 
-  const [synth, setSynth] = useState<Tone.PolySynth>();
-
   const [progress, setProgress] = useState<number>(0);
+  const { synth } = useToneAudioContext();
 
-  // TODO inherit this from tone audio context...
   useEffect(() => {
-    const newSynth = new Tone.PolySynth(DEFAULT_SYNTH_CONFIG).toDestination();
-    setSynth(newSynth);
+    return () => {
+      Tone.Transport.cancel(0);
+    };
   }, []);
 
   const playNote = (
