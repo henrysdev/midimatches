@@ -118,7 +118,7 @@ defmodule ProgressionsWeb.RoomChannel do
       ) do
     GameServer.musician_ready_up(game_server, musician_id)
 
-    {:noreply, socket}
+    {:reply, {:ok, %{}}, socket}
   end
 
   def handle_in(
@@ -130,7 +130,7 @@ defmodule ProgressionsWeb.RoomChannel do
 
     GameServer.musician_recording(game_server, musician_id, recording)
 
-    {:noreply, socket}
+    {:reply, {:ok, %{}}, socket}
   end
 
   def handle_in(
@@ -140,7 +140,7 @@ defmodule ProgressionsWeb.RoomChannel do
       ) do
     GameServer.musician_vote(game_server, musician_id, vote)
 
-    {:noreply, socket}
+    {:reply, {:ok, %{}}, socket}
   end
 
   def handle_in(event, params, socket) do

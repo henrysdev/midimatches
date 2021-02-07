@@ -61,8 +61,20 @@ const GameStartView: React.FC<GameStartViewProps> = ({
             <FullWidthButton
               label="Ready Up"
               callback={() => {
-                pushMessageToChannel(SUBMIT_READY_UP_EVENT, {});
-                setIsReady(true);
+                const sentMessage = pushMessageToChannel(
+                  SUBMIT_READY_UP_EVENT,
+                  {}
+                );
+                if (!!sentMessage) {
+                  sentMessage
+                    .receive("ok", (_reply: any) => {
+                      console.log("ready up successful");
+                      setIsReady(true);
+                    })
+                    .receive("ready up error", (err: any) => {
+                      console.error(err);
+                    });
+                }
               }}
               disabled={false}
             />

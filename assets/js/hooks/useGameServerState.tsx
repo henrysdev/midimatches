@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Channel } from "phoenix";
+import { Channel, Push } from "phoenix";
 
 import { GAME_VIEW, GAME_UPDATE_EVENT } from "../constants";
 import { GameContextType, GameUpdatePayload } from "../types";
@@ -8,7 +8,7 @@ import { gameViewAtomToEnum, unmarshalBody } from "../utils";
 type GameServerStateTuple = [
   GAME_VIEW,
   GameContextType,
-  (event: string, payload: Object) => void
+  (event: string, payload: Object) => Push | undefined
 ];
 
 export function useGameServerState(
@@ -27,9 +27,12 @@ export function useGameServerState(
     });
   }, []);
 
-  const pushMessageToServer = (event: string, payload: Object) => {
+  const pushMessageToServer = (
+    event: string,
+    payload: Object
+  ): Push | undefined => {
     if (!!gameChannel) {
-      gameChannel.push(event, payload);
+      return gameChannel.push(event, payload);
     }
   };
 

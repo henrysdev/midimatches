@@ -91,7 +91,7 @@ const RoomPage: React.FC = () => {
     };
   }, []);
 
-  const playerJoin = (event: string, payload: Object) => {
+  const submitPlayerJoin = (event: string, payload: Object) => {
     if (!!gameChannel) {
       gameChannel.push(event, payload).receive("ok", (reply) => {
         const { player } = unmarshalBody(reply) as PlayerJoinPayload;
@@ -106,7 +106,7 @@ const RoomPage: React.FC = () => {
     </PlayerContext.Provider>
   ) : (
     <PregameLobby
-      pushMessageToChannel={playerJoin}
+      submitPlayerJoin={submitPlayerJoin}
       gameInProgress={gameInProgress}
       numPlayersJoined={lobbyState.numPlayersJoined}
       numPlayersToStart={lobbyState.numPlayersToStart}

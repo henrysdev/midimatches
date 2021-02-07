@@ -10,14 +10,14 @@ import { FullWidthButton, Title } from "../../../common";
 import { PregameDebug } from "../../../debug";
 
 interface PregameLobbyProps {
-  pushMessageToChannel: Function;
+  submitPlayerJoin: Function;
   gameInProgress: boolean;
   numPlayersJoined: number;
   numPlayersToStart: number;
 }
 
 const PregameLobby: React.FC<PregameLobbyProps> = ({
-  pushMessageToChannel,
+  submitPlayerJoin,
   gameInProgress,
   numPlayersJoined,
   numPlayersToStart,
@@ -79,7 +79,7 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
               <FullWidthButton
                 label="Join"
                 callback={() => {
-                  pushMessageToChannel(SUBMIT_ENTER_ROOM, {
+                  submitPlayerJoin(SUBMIT_ENTER_ROOM, {
                     player_alias: alias,
                   });
                   setHasJoined(true);

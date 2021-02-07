@@ -35,7 +35,7 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
   } = useGameContext();
 
   const { player: currPlayer } = usePlayerContext();
-
+  const [voteSubmitted, setVoteSubmiited] = useState<boolean>(false);
   const [activePlaybackTrack, setActivePlaybackTrack] = useState<string>();
 
   const randomColors: Array<Color> = useMemo(() => {
@@ -44,9 +44,19 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
   }, [Object.keys(recordings).length]);
 
   const submitVote = (musicianId: string): void => {
-    pushMessageToChannel(SUBMIT_VOTE_EVENT, {
+    const sentMessage = pushMessageToChannel(SUBMIT_VOTE_EVENT, {
       vote: musicianId,
     });
+    if (!!sentMessage) {
+      sentMessage
+        .receive("ok", (_reply: any) => {
+          console.log("vote submission successful");
+          setVoteSubmiited(true);
+        })
+        .receive("vote submission error", (err: any) => {
+          console.error(err);
+        });
+    }
   };
 
   return (
@@ -62,7 +72,9 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
         ) : (
           <></>
         )}
-        {!!recordings ? (
+        {voteSubmitted ? (
+          <div>Vote submitted successfully. Waiting on other players...</div>
+        ) : !!recordings ? (
           recordings
             .filter(
               ([musicianId, _recording]) => musicianId !== currPlayer.musicianId
