@@ -114,6 +114,7 @@ export interface GameContextType {
 export interface ToneAudioContextType {
   Tone: any;
   midiInputs: Input[];
+  synth: any;
 }
 
 export interface PlayerContextType {

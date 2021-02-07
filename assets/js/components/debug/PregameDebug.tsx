@@ -83,10 +83,10 @@ const PregameDebug: React.FC = () => {
             },
             timestepSize: 10_000,
           },
-          scores: {
-            fearz123: 0,
-            xb4z: 2,
-          },
+          scores: [
+            ["fearz123", 0],
+            ["xb4z", 2],
+          ],
           readyUps: [],
           recordings: {
             xb4z: {
@@ -180,35 +180,23 @@ const PregameDebug: React.FC = () => {
       >
         <PlayerContext.Provider value={{ player: mockedPlayers[0] }}>
           <ToneAudioContext.Provider value={{ midiInputs, Tone: mockTone }}>
-            <GameLayout>
+            {/* <GameLayout>
               <PlaybackVotingView
                 pushMessageToChannel={() => {}}
                 playSample={() => {}}
               />
-              {/* <GameStartView
-                pushMessageToChannel={() => {}}
-                setMidiInputs={() => {}}
-              /> */}
-              {/* <RecordingView
-                isContestant={true}
-                pushMessageToChannel={() => {}}
-                playSample={() => {}}
-                stopSample={() => {}}
-              /> */}
-            </GameLayout>
-            {/* <GameLayout>
-          <Title title="Starting Game" />
-          <DynamicContent>
-            <div>
-              <Keyboard
-                activeMidiList={[]}
-                playNote={() => {}}
-                stopNote={() => {}}
-              />
-            </div>
-          </DynamicContent>
-          <Instructions title="asdf" description={desc}></Instructions>
-        </GameLayout> */}
+            </GameLayout> */}
+            <DynamicContent>
+              <div>
+                <Keyboard
+                  activeMidiList={[50]}
+                  playNote={(noteNumber: number) => {
+                    console.log("note number ", noteNumber);
+                  }}
+                  stopNote={() => {}}
+                />
+              </div>
+            </DynamicContent>
           </ToneAudioContext.Provider>
         </PlayerContext.Provider>
       </GameContext.Provider>

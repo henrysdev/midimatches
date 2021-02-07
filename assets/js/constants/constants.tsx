@@ -48,7 +48,7 @@ export const DEFAULT_SYNTH_CONFIG = {
     attack: 0.03,
     decay: 0.4,
     sustain: 0.2,
-    release: 1.5,
+    release: 0.5,
   },
   volume: 3,
   portamento: 0.05,

@@ -1,5 +1,15 @@
 import React from "react";
-import { ControlledPiano, MidiNumbers } from "react-piano";
+import { Piano, MidiNumbers, KeyboardShortcuts } from "react-piano";
+
+const noteRange = {
+  first: MidiNumbers.fromNote("c3"),
+  last: MidiNumbers.fromNote("c5"),
+};
+const keyboardShortcuts = KeyboardShortcuts.create({
+  firstNote: noteRange.first,
+  lastNote: noteRange.last,
+  keyboardConfig: KeyboardShortcuts.HOME_ROW,
+});
 
 interface KeyboardProps {
   activeMidiList: number[];
@@ -26,16 +36,12 @@ const Keyboard: React.FC<KeyboardProps> = ({
           display: "inline-block",
         }}
       >
-        <ControlledPiano
-          noteRange={{
-            first: MidiNumbers.fromNote("c3"),
-            last: MidiNumbers.fromNote("c5"),
-          }}
+        <Piano
+          noteRange={noteRange}
+          keyboardShortcuts={keyboardShortcuts}
           activeNotes={activeMidiList}
           playNote={(midiNumber: number) => playNote(midiNumber)}
           stopNote={(midiNumber: number) => stopNote(midiNumber)}
-          onPlayNoteInput={() => {}}
-          onStopNoteInput={() => {}}
           width={400}
         />
       </div>

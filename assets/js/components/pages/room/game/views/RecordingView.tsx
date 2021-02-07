@@ -8,6 +8,7 @@ import {
 import { RecordMidi } from "../../../../audio";
 import { Timer, Instructions, Title, DynamicContent } from "../../../../common";
 import { secToMs } from "../../../../../utils";
+import { useGameContext } from "../../../../../hooks";
 
 interface RecordingViewProps {
   isContestant: boolean;
@@ -37,6 +38,8 @@ const RecordingView: React.FC<RecordingViewProps> = ({
     setIsSamplePlaying(true);
     playSample();
   };
+
+  const { gameRules, roundRecordingStartTime } = useGameContext();
 
   return isContestant ? (
     <div>
@@ -80,17 +83,22 @@ const RecordingView: React.FC<RecordingViewProps> = ({
             <></>
           )}
         </div>
-
-        <RecordMidi
-          submitRecording={submitRecording}
-          playSample={playSampleWithEffect}
-          stopSample={stopSample}
-          setIsRecording={setIsRecording}
-        />
+        {!!roundRecordingStartTime ? (
+          <RecordMidi
+            submitRecording={submitRecording}
+            playSample={playSampleWithEffect}
+            stopSample={stopSample}
+            setIsRecording={setIsRecording}
+            gameRules={gameRules}
+            roundRecordingStartTime={roundRecordingStartTime}
+          />
+        ) : (
+          <></>
+        )}
       </DynamicContent>
     </div>
   ) : (
-    <div>WAITING FOR CONTESTANTS TO FINISH RECORDING...</div>
+    <div>Waiting for other players to finish recording...</div>
   );
 };
 export { RecordingView };
