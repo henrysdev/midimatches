@@ -10,6 +10,9 @@ defmodule Progressions.Matchmaking do
   }
 
   @spec get_rooms_list() :: list(%ClientRoomState{})
+  @doc """
+  Returns a list of room states for currently active room servers
+  """
   def get_rooms_list do
     DynamicSupervisor.which_children(Rooms)
     |> Stream.map(fn {_, room_supervisor, _, _} -> room_supervisor end)

@@ -8,6 +8,8 @@ import {
   GameContextType,
   StartGamePayload,
   LobbyUpdatePayload,
+  ServerlistUpdatePayload,
+  RoomState,
 } from "../../../types";
 import { PlayerContext } from "../../../contexts";
 import {
@@ -15,10 +17,13 @@ import {
   LOBBY_UPDATE_EVENT,
   RESET_ROOM_EVENT,
   SUBMIT_LEAVE_ROOM,
+  SERVERLIST_UPDATE_EVENT,
 } from "../../../constants";
+import { Serverlist, HowToPlay } from ".";
 
 const LandingPage: React.FC = () => {
   const [landingPageChannel, setLandingPageChannel] = useState<Channel>();
+  const [roomStates, setRoomStates] = useState<Array<RoomState>>([]);
 
   useEffect(() => {
     // websocket channel init
@@ -27,9 +32,7 @@ const LandingPage: React.FC = () => {
       params: { token: windowRef.userToken },
     });
     socket.connect();
-    const path = window.location.pathname.split("/");
-    const roomId = path[path.length - 1];
-    const channel: Channel = socket.channel(`room:${roomId}`);
+    const channel: Channel = socket.channel(`landing_page:serverlist`);
 
     // join game
     channel
@@ -42,18 +45,30 @@ const LandingPage: React.FC = () => {
       });
 
     // server list update
-    // channel.on("SERVER_LIST_UPDATE_EVENT", (body) => {
-    //   const { roomsList } = unmarshalBody(body);
-    // });
-    // setLandingPageChannel(channel);
+    channel.on(SERVERLIST_UPDATE_EVENT, (body) => {
+      const { rooms } = unmarshalBody(body) as ServerlistUpdatePayload;
+      setRoomStates(rooms);
+    });
+    setLandingPageChannel(channel);
 
     return () => {
       channel.leave();
     };
   }, []);
   return (
-    <div>
-      <h1>Server List</h1>
+    <div
+      style={{
+        maxWidth: "100%",
+        margin: "auto",
+        marginTop: "16px",
+        padding: "24px",
+        boxShadow: "0 5px 15px rgb(0 0 0 / 8%)",
+        color: "#666",
+      }}
+    >
+      <h1 className="uk-text-center">Welcome to Progressions</h1>
+      <HowToPlay />
+      <Serverlist roomStates={roomStates} />
     </div>
   );
 };
