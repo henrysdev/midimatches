@@ -47,8 +47,9 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
       {gameInProgress ? (
         <div>
           <div>
-            Game is full. A new game will be starting in a few minutes. Feel
-            free to join another server or play keyboard in the meantime.
+            <strong>Game is full.</strong> A new game will be starting in a few
+            minutes. Feel free to <a href="/">find another server</a> or play
+            keyboard in the meantime.
           </div>
           <WarmUp />
         </div>
@@ -102,11 +103,11 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
               )}
             </form>
           )}
-          <div
-            style={{ marginTop: "16px" }}
-          >{`${numPlayersJoined}/${numPlayersToStart} Players. Need ${
-            numPlayersToStart - numPlayersJoined
-          } more players to start game`}</div>
+          <div style={{ marginTop: "16px" }}>
+            <strong>{`${numPlayersJoined}/${numPlayersToStart} Players. Need ${
+              numPlayersToStart - numPlayersJoined
+            } more players to start game`}</strong>
+          </div>
         </div>
       )}
       {/* <PregameDebug /> */}

@@ -42,6 +42,7 @@ const Serverlist: React.FC<ServerlistProps> = ({ roomStates }) => {
         <thead>
           <tr>
             <th>Name</th>
+            <th>Status</th>
             <th># Players</th>
             <th>Max Players</th>
             <th>Link</th>
@@ -60,6 +61,13 @@ const Serverlist: React.FC<ServerlistProps> = ({ roomStates }) => {
               return (
                 <tr key={room.roomId}>
                   <td>{room.roomName}</td>
+                  <td>
+                    {room.inGame ? (
+                      <div style={{ color: "red" }}>In Game</div>
+                    ) : (
+                      <div style={{ color: "green" }}>Pregame</div>
+                    )}
+                  </td>
                   <td>{room.numCurrPlayers}</td>
                   <td>{room.gameRules.gameSizeNumPlayers}</td>
                   <td>

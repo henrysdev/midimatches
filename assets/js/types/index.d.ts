@@ -97,6 +97,7 @@ export interface RoomState {
   numCurrPlayers: number;
   roomId: string;
   roomName: string;
+  inGame: boolean;
 }
 
 type RecordingTuple = [string, any];
