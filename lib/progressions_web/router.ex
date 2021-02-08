@@ -7,6 +7,8 @@ defmodule ProgressionsWeb.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :auth_user
+    plug :put_user_token
   end
 
   pipeline :api do
@@ -39,6 +41,20 @@ defmodule ProgressionsWeb.Router do
     scope "/" do
       pipe_through :browser
       live_dashboard "/dashboard", metrics: ProgressionsWeb.Telemetry
+    end
+  end
+
+  defp auth_user(conn, _) do
+    user_id = Progressions.Utils.gen_uuid()
+    conn |> assign(:current_user, %{id: user_id})
+  end
+
+  defp put_user_token(conn, _) do
+    if current_user = conn.assigns[:current_user] do
+      token = Phoenix.Token.sign(conn, "user socket", current_user.id)
+      assign(conn, :user_token, token)
+    else
+      conn
     end
   end
 end
