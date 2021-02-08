@@ -35,11 +35,7 @@ const GameStartView: React.FC<GameStartViewProps> = ({
   return (
     <div>
       <Title title="Starting Game" />
-      <Instructions
-        description={
-          "Confirm your MIDI input(s). A QWERTY piano will also be available."
-        }
-      />
+      <Instructions description={"Confirm your MIDI input(s)"} />
       {!!gameStartTimeout ? (
         <Timer
           key={gameStartTimeout}

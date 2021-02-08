@@ -58,6 +58,10 @@ export interface PlayerJoinPayload {
   player: Player;
 }
 
+export interface ServerlistUpdatePayload {
+  rooms: any[];
+}
+
 export type StartGamePayload = GameUpdatePayload;
 
 interface PlayerScore {
@@ -88,11 +92,19 @@ export interface WinResult {
   numPoints: number;
 }
 
+export interface RoomState {
+  gameRules: GameRules;
+  numCurrPlayers: number;
+  roomId: string;
+  roomName: string;
+  inGame: boolean;
+}
+
 type RecordingTuple = [string, any];
 type ScoreTuple = [string, number];
+type GameContextType = GameState;
 
-/* Context Types */
-export interface GameContextType {
+export interface GameState {
   // static fields
   gameRules: GameRules;
   roomId?: string;

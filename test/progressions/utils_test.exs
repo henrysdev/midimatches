@@ -3,7 +3,10 @@ defmodule Progressions.UtilsTest do
 
   alias Progressions.{
     Rooms.Room.GameServer,
+    Rooms.RoomServer,
     Types.ClientGameState,
+    Types.ClientRoomState,
+    Types.GameRules,
     Types.Player,
     Types.WinResult,
     Utils
@@ -130,5 +133,31 @@ defmodule Progressions.UtilsTest do
 
       assert actual_win_result == expected_win_result
     end
+  end
+
+  test "transforms server room state to client room state" do
+    game_config = %GameRules{
+      game_size_num_players: 5
+    }
+
+    server_room_state = %RoomServer{
+      room_id: "1",
+      room_name: "flight of the concords",
+      game_config: game_config,
+      game: self(),
+      players: MapSet.new(["22", "33", "44", "55"])
+    }
+
+    expected_client_room_state = %ClientRoomState{
+      room_id: "1",
+      room_name: "flight of the concords",
+      num_curr_players: 4,
+      game_rules: game_config,
+      in_game: true
+    }
+
+    actual_client_room_state = Utils.server_to_client_room_state(server_room_state)
+
+    assert actual_client_room_state == expected_client_room_state
   end
 end

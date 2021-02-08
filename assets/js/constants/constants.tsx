@@ -15,6 +15,8 @@ export enum GAME_VIEW {
   GAME_END,
 }
 
+export const SERVERLIST_UPDATE_EVENT = "serverlist_update";
+
 export const GAME_UPDATE_EVENT = "game_update";
 export const START_GAME_EVENT = "start_game";
 export const RESET_ROOM_EVENT = "reset_room";

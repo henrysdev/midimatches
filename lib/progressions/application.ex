@@ -5,7 +5,10 @@ defmodule Progressions.Application do
 
   use Application
 
-  alias Progressions.Types.Configs
+  alias Progressions.{
+    Matchmaking.ServerlistUpdater,
+    Types.Configs
+  }
 
   def start(_type, _args) do
     children = [
@@ -18,6 +21,7 @@ defmodule Progressions.Application do
       # Start a worker by calling: Progressions.Worker.start_link(arg)
       {DynamicSupervisor, strategy: :one_for_one, name: Progressions.Rooms},
       {Registry, keys: :unique, name: ProcessRegistry},
+      {ServerlistUpdater, []},
       {Task, fn -> configure() end}
     ]
 

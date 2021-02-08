@@ -13,5 +13,6 @@ defmodule Progressions.Types.ClientRoomState do
     field(:room_name, String.t(), enforce: true)
     field(:num_curr_players, number(), enforce: true)
     field(:game_rules, %GameRules{}, enforce: true)
+    field(:in_game, boolean(), enforce: true)
   end
 end

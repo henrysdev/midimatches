@@ -1,7 +1,7 @@
 {
   "rooms": [
     {
-      "room_name": "halal",
+      "room_name": "dev",
       "server": {
         "timestep_size": 50,
         "quantization_threshold": 0.5,
@@ -16,7 +16,7 @@
       }
     },
     {
-      "room_name": "the curio shop",
+      "room_name": "beta test group 1",
       "server": {
         "timestep_size": 50,
         "quantization_threshold": 0.5,
@@ -26,6 +26,24 @@
           "game_start": 60000,
           "round_start": 3000,
           "recording": 120000,
+          "playback_voting": 60000,
+          "round_end": 10000,
+          "game_end": 3000
+        }
+      }
+    },
+    {
+      "room_name": "beta test group 2",
+      "server": {
+        "timestep_size": 50,
+        "quantization_threshold": 0.5,
+        "rounds_to_win": 1,
+        "game_size_num_players": 2,
+        "view_timeouts": {
+          "game_start": 60000,
+          "round_start": 3000,
+          "recording": 120000,
+          "playback_voting": 60000,
           "round_end": 10000,
           "game_end": 3000
         }

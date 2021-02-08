@@ -113,7 +113,8 @@ defmodule Progressions.Utils do
       room_id: server_state.room_id,
       room_name: server_state.room_name,
       game_rules: server_state.game_config,
-      num_curr_players: MapSet.size(server_state.players)
+      num_curr_players: MapSet.size(server_state.players),
+      in_game: !is_nil(server_state.game)
     }
   end
 end
