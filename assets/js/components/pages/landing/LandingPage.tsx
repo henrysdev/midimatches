@@ -2,23 +2,8 @@ import { Channel, Socket } from "phoenix";
 import React, { useEffect, useState } from "react";
 
 import { unmarshalBody } from "../../../utils";
-import {
-  PlayerJoinPayload,
-  Player,
-  GameContextType,
-  StartGamePayload,
-  LobbyUpdatePayload,
-  ServerlistUpdatePayload,
-  RoomState,
-} from "../../../types";
-import { PlayerContext } from "../../../contexts";
-import {
-  START_GAME_EVENT,
-  LOBBY_UPDATE_EVENT,
-  RESET_ROOM_EVENT,
-  SUBMIT_LEAVE_ROOM,
-  SERVERLIST_UPDATE_EVENT,
-} from "../../../constants";
+import { ServerlistUpdatePayload, RoomState } from "../../../types";
+import { SERVERLIST_UPDATE_EVENT } from "../../../constants";
 import { Serverlist, HowToPlay } from ".";
 
 const LandingPage: React.FC = () => {
@@ -66,9 +51,11 @@ const LandingPage: React.FC = () => {
         color: "#666",
       }}
     >
-      <h1 className="uk-text-center">Welcome to Progressions</h1>
-      {/* <HowToPlay /> */}
-      <Serverlist roomStates={roomStates} />
+      <div>
+        <h1 className="uk-text-center">Welcome to Progressions</h1>
+        {/* <HowToPlay /> */}
+        <Serverlist roomStates={roomStates} />
+      </div>
     </div>
   );
 };

@@ -23,6 +23,7 @@
     "randomcolor": "^0.6.2",
     "react": "^17.0.1",
     "react-countdown": "^2.3.1",
+    "react-device-detect": "^1.15.0",
     "react-dom": "^17.0.1",
     "react-modal": "^3.12.1",
     "react-piano": "^3.1.3",

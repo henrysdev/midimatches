@@ -55,6 +55,7 @@ defmodule ProgressionsWeb do
     quote do
       use Phoenix.Channel
       import ProgressionsWeb.Gettext
+      alias ProgressionsWeb.PresenceTracker
     end
   end
 

@@ -3,7 +3,7 @@ defmodule ProgressionsWeb.RoomChannel do
   Exposes API for all websocket communication in rooms
   """
 
-  use Phoenix.Channel
+  use ProgressionsWeb, :channel
 
   alias Progressions.{
     Pids,
@@ -75,6 +75,8 @@ defmodule ProgressionsWeb.RoomChannel do
   def handle_info({:init_conn, room_id}, socket) do
     Pids.fetch!({:room_server, room_id})
     |> RoomServer.sync_lobby_state()
+
+    PresenceTracker.track_conn(self(), "room: " <> room_id)
 
     {:noreply, socket}
   end

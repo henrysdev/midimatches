@@ -10,6 +10,8 @@ defmodule Progressions.Application do
     Types.Configs
   }
 
+  alias ProgressionsWeb.PresenceTracker
+
   def start(_type, _args) do
     children = [
       # Start the Telemetry supervisor
@@ -22,7 +24,8 @@ defmodule Progressions.Application do
       {DynamicSupervisor, strategy: :one_for_one, name: Progressions.Rooms},
       {Registry, keys: :unique, name: ProcessRegistry},
       {ServerlistUpdater, []},
-      {Task, fn -> configure() end}
+      {Task, fn -> configure() end},
+      {PresenceTracker, [name: PresenceTracker, pubsub_server: Progressions.PubSub]}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
