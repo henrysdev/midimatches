@@ -19,8 +19,8 @@ interface PlaybackVotingViewProps {
 }
 
 const desc = `
-Listen through the other recordings and vote for your favorite. 
-Click on a recording to play it.
+Listen through all other recordings and then vote for your favorite. You 
+must listen through each recording at least once before casting your vote.
 `;
 
 const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
@@ -37,6 +37,21 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
   const { player: currPlayer } = usePlayerContext();
   const [voteSubmitted, setVoteSubmiited] = useState<boolean>(false);
   const [activePlaybackTrack, setActivePlaybackTrack] = useState<string>();
+  const [listenCompleteTracks, setListenCompleteTracks] = useState<Set<string>>(
+    new Set<string>()
+  );
+
+  const completeListening = (musicianId: string) => {
+    const updatedListenCompleteTracksSet = new Set([
+      ...listenCompleteTracks,
+      ...[musicianId],
+    ]);
+    console.log({
+      listenCompleteTracks,
+      updatedListenCompleteTracksSet,
+    });
+    setListenCompleteTracks(updatedListenCompleteTracksSet);
+  };
 
   const randomColors: Array<Color> = useMemo(() => {
     const numColorsNeeded = Object.keys(recordings).length;
@@ -98,6 +113,14 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
                       submitVote={submitVote}
                       setActivePlaybackTrack={setActivePlaybackTrack}
                       isPlaying={activePlaybackTrack === musicianId}
+                      listenComplete={listenCompleteTracks.has(musicianId)}
+                      canVote={
+                        listenCompleteTracks.size ===
+                        recordings.filter(([id, _recording]) => {
+                          return id !== currPlayer.musicianId;
+                        }).length
+                      }
+                      completeListening={completeListening}
                     />
                   </div>
                 );

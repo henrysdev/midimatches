@@ -1,7 +1,23 @@
 {
   "rooms": [
     {
-      "room_name": "dev",
+      "room_name": "dev 1",
+      "server": {
+        "timestep_size": 50,
+        "quantization_threshold": 0.5,
+        "rounds_to_win": 1,
+        "game_size_num_players": 3,
+        "view_timeouts": {
+          "game_start": 500,
+          "round_start": 500,
+          "recording": 500,
+          "round_end": 1000,
+          "game_end": 500
+        }
+      }
+    },
+    {
+      "room_name": "dev 2",
       "server": {
         "timestep_size": 50,
         "quantization_threshold": 0.5,

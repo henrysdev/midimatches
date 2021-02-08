@@ -6,3 +6,4 @@ export { Instructions } from "./Instructions";
 export { Title } from "./Title";
 export { DynamicContent } from "./DynamicContent";
 export { FullWidthButton } from "./FullWidthButton";
+export { Button } from "./Button";

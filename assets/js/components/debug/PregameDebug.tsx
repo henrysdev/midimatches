@@ -88,105 +88,111 @@ const PregameDebug: React.FC = () => {
             ["xb4z", 2],
           ],
           readyUps: [],
-          recordings: {
-            xb4z: {
-              timestepSlices: [
-                {
-                  timestep: 4,
-                  notes: [
-                    {
-                      key: 54,
-                      duration: 14,
-                    },
-                    {
-                      key: 64,
-                      duration: 12,
-                    },
-                  ],
-                },
-                {
-                  timestep: 41,
-                  notes: [
-                    {
-                      key: 14,
-                      duration: 20,
-                    },
-                    {
-                      key: 4,
-                      duration: 14,
-                    },
-                  ],
-                },
-                {
-                  timestep: 200,
-                  notes: [
-                    {
-                      key: 88,
-                      duration: 4,
-                    },
-                    {
-                      key: 65,
-                      duration: 40,
-                    },
-                  ],
-                },
-              ],
-            },
-            fearz123: {
-              timestepSlices: [
-                {
-                  timestep: 4,
-                  notes: [
-                    {
-                      key: 54,
-                      duration: 14,
-                    },
-                    {
-                      key: 64,
-                      duration: 12,
-                    },
-                  ],
-                },
-                {
-                  timestep: 41,
-                  notes: [
-                    {
-                      key: 14,
-                      duration: 20,
-                    },
-                    {
-                      key: 4,
-                      duration: 14,
-                    },
-                  ],
-                },
-                {
-                  timestep: 200,
-                  notes: [
-                    {
-                      key: 88,
-                      duration: 4,
-                    },
-                    {
-                      key: 65,
-                      duration: 40,
-                    },
-                  ],
-                },
-              ],
-            },
-          },
+          recordings: [
+            [
+              "xb4z",
+              {
+                timestepSlices: [
+                  {
+                    timestep: 4,
+                    notes: [
+                      {
+                        key: 54,
+                        duration: 14,
+                      },
+                      {
+                        key: 64,
+                        duration: 12,
+                      },
+                    ],
+                  },
+                  {
+                    timestep: 41,
+                    notes: [
+                      {
+                        key: 14,
+                        duration: 20,
+                      },
+                      {
+                        key: 4,
+                        duration: 14,
+                      },
+                    ],
+                  },
+                  {
+                    timestep: 200,
+                    notes: [
+                      {
+                        key: 88,
+                        duration: 4,
+                      },
+                      {
+                        key: 65,
+                        duration: 40,
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+            [
+              "fearz123",
+              {
+                timestepSlices: [
+                  {
+                    timestep: 4,
+                    notes: [
+                      {
+                        key: 54,
+                        duration: 14,
+                      },
+                      {
+                        key: 64,
+                        duration: 12,
+                      },
+                    ],
+                  },
+                  {
+                    timestep: 41,
+                    notes: [
+                      {
+                        key: 14,
+                        duration: 20,
+                      },
+                      {
+                        key: 4,
+                        duration: 14,
+                      },
+                    ],
+                  },
+                  {
+                    timestep: 200,
+                    notes: [
+                      {
+                        key: 88,
+                        duration: 4,
+                      },
+                      {
+                        key: 65,
+                        duration: 40,
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          ],
         }}
       >
         <PlayerContext.Provider value={{ player: mockedPlayers[0] }}>
           <ToneAudioContext.Provider value={{ midiInputs, Tone: mockTone }}>
-            {/* <GameLayout>
+            <GameLayout>
               <PlaybackVotingView
                 pushMessageToChannel={() => {}}
                 playSample={() => {}}
               />
-            </GameLayout> */}
-            <DynamicContent>
+            </GameLayout>
+            {/* <DynamicContent>
               <div>
                 <Keyboard
                   activeMidiList={[50]}
@@ -196,7 +202,7 @@ const PregameDebug: React.FC = () => {
                   stopNote={() => {}}
                 />
               </div>
-            </DynamicContent>
+            </DynamicContent> */}
           </ToneAudioContext.Provider>
         </PlayerContext.Provider>
       </GameContext.Provider>
