@@ -7,7 +7,9 @@ import {
   MAX_PLAYER_ALIAS_LENGTH,
 } from "../../../../constants";
 import { FullWidthButton, Title } from "../../../common";
+import { RecordMidi } from "../../../audio";
 import { PregameDebug } from "../../../debug";
+import { WarmUp } from ".";
 
 interface PregameLobbyProps {
   submitPlayerJoin: Function;
@@ -44,18 +46,23 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
       <Title title="Pregame Lobby" />
       {gameInProgress ? (
         <div>
-          Game is full. A new game will be starting in less than TODO minutes.
-          In the meantime, feel free to join another server from the serverlist
-          TODO.
+          <div>
+            Game is full. A new game will be starting in a few minutes. Feel
+            free to join another server or play keyboard in the meantime.
+          </div>
+          <WarmUp />
         </div>
       ) : (
         <div>
           <div>
             {hasJoined ? (
-              <p>
-                Joined successfully as <strong>{alias}</strong>. Waiting for
-                more players...
-              </p>
+              <div>
+                <p>
+                  Joined successfully as <strong>{alias}</strong>. Warm up your
+                  fingers a bit! Waiting for more players...
+                </p>
+                <WarmUp />
+              </div>
             ) : (
               <p style={{ marginBottom: "8px" }}>
                 Game has not started yet. Enter an alias then join!

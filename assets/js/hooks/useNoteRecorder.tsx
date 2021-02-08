@@ -15,7 +15,7 @@ interface NoteRecorderProps {
   setIsRecording: Function;
   roundRecordingStartTime: number;
   gameRules: GameRules;
-  castToNoteEvent: (arg0: any, arg1: number) => MIDINoteEvent;
+  shouldRecord: boolean;
 }
 
 interface InternalState {
@@ -43,7 +43,7 @@ export function useNoteRecorder({
   setIsRecording,
   roundRecordingStartTime,
   gameRules,
-  castToNoteEvent,
+  shouldRecord,
 }: NoteRecorderProps): NoteRecorder {
   const { Tone } = useToneAudioContext();
 
@@ -63,6 +63,7 @@ export function useNoteRecorder({
       activeNotes: new Map(),
       recordedTimesteps: new Map(),
       gameRules,
+      isRecording: false,
     });
   }, []);
 
@@ -137,54 +138,6 @@ export function useNoteRecorder({
 
   // NOTE closured function - must use ref to manipulate state
   const handleNoteOff = (midiEvent: any) => {
-    // const {
-    //   activeNotes,
-    //   recordedTimesteps = new Map(),
-    //   isRecording,
-    // } = internalStateRef.current as InternalState;
-    // let stateUpdate = {};
-    // const currTimestep = getCurrentTimestep(
-    //   internalStateRef.current as InternalState
-    // );
-    // const noteOffEvent = webMidiEventToMidiNoteEvent(midiEvent, currTimestep);
-    // const activeNotesCopy = _.cloneDeep(activeNotes);
-    // if (activeNotesCopy.has(noteOffEvent.value)) {
-    //   const noteOnEvent = activeNotesCopy.get(noteOffEvent.value);
-    //   const {
-    //     value: key,
-    //     receivedTimestep: startTimestep,
-    //     velocity,
-    //   } = noteOnEvent as MIDINoteEvent;
-
-    //   // update recorded timestep slice with new note
-    //   if (isRecording) {
-    //     const newNote: Note = {
-    //       instrument: "",
-    //       key: key,
-    //       duration: Math.max(
-    //         1,
-    //         Math.abs(startTimestep - noteOffEvent.receivedTimestep)
-    //       ),
-    //       velocity,
-    //     };
-    //     const updatedNotes = recordedTimesteps.has(startTimestep)
-    //       ? [newNote].concat(recordedTimesteps.get(startTimestep).notes)
-    //       : [newNote];
-    //     const updatedTimestepSlice = {
-    //       timestep: startTimestep,
-    //       notes: updatedNotes,
-    //     };
-    //     stateUpdate = {
-    //       recordedTimesteps: recordedTimesteps.set(
-    //         startTimestep,
-    //         updatedTimestepSlice
-    //       ),
-    //     };
-    //   }
-
-    //   activeNotesCopy.delete(noteOffEvent.value);
-    //   setInternalState({ ...stateUpdate, activeNotes: activeNotesCopy });
-    // }
     const {
       activeNotes,
       recordedTimesteps = new Map(),
@@ -211,7 +164,7 @@ export function useNoteRecorder({
     : [];
 
   useEffect(() => {
-    if (!!roundRecordingStartTime) {
+    if (!!roundRecordingStartTime && shouldRecord) {
       scheduleRecordingDeadlines(
         roundRecordingStartTime,
         playSample,
@@ -232,7 +185,7 @@ export function useNoteRecorder({
     } else {
       handleNoteOn({
         note: { number: noteNumber },
-        rawVelocity: 80,
+        rawVelocity: 100,
         receivedTimestep: Date.now(),
       });
       return { noteNumber, noteVelocity: 0.3 };

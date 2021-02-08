@@ -13,6 +13,7 @@ interface RecordMidiProps {
   setIsRecording: Function;
   roundRecordingStartTime: number;
   gameRules: GameRules;
+  shouldRecord: boolean;
 }
 
 const RecordMidi: React.FC<RecordMidiProps> = ({
@@ -22,8 +23,9 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
   setIsRecording,
   roundRecordingStartTime,
   gameRules,
+  shouldRecord,
 }) => {
-  const { Tone, midiInputs, synth } = useToneAudioContext();
+  const { midiInputs, synth } = useToneAudioContext();
 
   const {
     activeMidiList,
@@ -37,7 +39,7 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
     setIsRecording,
     roundRecordingStartTime,
     gameRules,
-    castToNoteEvent: webMidiEventToMidiNoteEvent,
+    shouldRecord,
   });
 
   // init on load
@@ -94,15 +96,4 @@ function noteNumberToNoteName(midiNoteId: number): string {
   const offset = (midiNoteId % 12) * 2;
   const note = "C C#D D#E F F#G G#A A#B ".substring(offset, offset + 2).trim();
   return `${note}${octave}`;
-}
-
-function webMidiEventToMidiNoteEvent(
-  webMidiEvent: any,
-  receivedTimestep: number
-): MIDINoteEvent {
-  return {
-    value: webMidiEvent.note.number,
-    velocity: webMidiEvent.rawVelocity,
-    receivedTimestep: receivedTimestep,
-  } as MIDINoteEvent;
 }
