@@ -18,9 +18,10 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
   useEffect(() => {
     const playersData = players
       .map((player) => {
-        const [_, playerScore] = scores.find(
+        const foundTuple = scores.find(
           ([musicianId, _score]) => musicianId === player.musicianId
         );
+        const [_, playerScore] = !!foundTuple ? foundTuple : [0, 0];
         return {
           ...player,
           playerScore,
