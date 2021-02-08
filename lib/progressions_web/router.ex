@@ -13,6 +13,7 @@ defmodule ProgressionsWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug :fetch_session
   end
 
   scope "/", ProgressionsWeb do
@@ -21,6 +22,12 @@ defmodule ProgressionsWeb.Router do
     get "/", PageController, :index
     get "/room/:room_id", PageController, :room
     get "/room/debug_create/:room_id", PageController, :debug_create_room
+  end
+
+  scope "/user/", ProgressionsWeb do
+    pipe_through :browser
+
+    post "/user/register", UserController, :register
   end
 
   # Other scopes may use custom stacks.
