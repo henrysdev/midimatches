@@ -47,9 +47,9 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
       {gameInProgress ? (
         <div>
           <div>
-            <strong>Game is full.</strong> A new game will be starting in a few
-            minutes. Feel free to <a href="/">find another server</a> or play
-            keyboard in the meantime.
+            <strong>Game in progress.</strong> A new game will be starting in a
+            few minutes. Feel free to <a href="/">find another server</a> or
+            play keyboard in the meantime.
           </div>
           <WarmUp />
         </div>
