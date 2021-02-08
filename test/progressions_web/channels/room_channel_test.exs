@@ -1,5 +1,5 @@
 defmodule ProgressionsWeb.RoomChannelTest do
-  use ProgressionsWeb.ChannelCase, async: true
+  use ProgressionsWeb.ChannelCase
 
   alias ProgressionsWeb.{
     RoomChannel,
