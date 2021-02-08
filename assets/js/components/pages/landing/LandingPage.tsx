@@ -67,7 +67,7 @@ const LandingPage: React.FC = () => {
       }}
     >
       <h1 className="uk-text-center">Welcome to Progressions</h1>
-      <HowToPlay />
+      {/* <HowToPlay /> */}
       <Serverlist roomStates={roomStates} />
     </div>
   );
