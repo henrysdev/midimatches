@@ -83,15 +83,13 @@ defmodule ProgressionsWeb.RoomChannel do
 
   def handle_in(
         "musician_enter_room",
-        %{"player_alias" => player_alias},
+        %{"player_alias" => player_alias, "player_id" => player_id},
         %Phoenix.Socket{assigns: %{room_id: room_id}} = socket
       ) do
     room_server = Pids.fetch!({:room_server, room_id})
 
-    musician_id = Utils.gen_uuid()
-
     player = %Player{
-      musician_id: musician_id,
+      musician_id: player_id,
       player_alias: player_alias
     }
 
@@ -100,7 +98,7 @@ defmodule ProgressionsWeb.RoomChannel do
     {:reply, {:ok, %{player: player}},
      socket
      |> assign(room_server: room_server)
-     |> assign(musician_id: musician_id)}
+     |> assign(musician_id: player_id)}
   end
 
   def handle_in(

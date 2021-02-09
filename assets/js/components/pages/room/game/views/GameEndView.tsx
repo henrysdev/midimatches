@@ -38,7 +38,7 @@ const GameEndView: React.FC<GameEndViewProps> = () => {
               </div>
               {winningPlayers.map((player) => {
                 return (
-                  <div key={`winner-${player.playerAlias}`}>
+                  <div key={`winner-${player.musicianId}`}>
                     {player.playerAlias} with {gameWinners.numPoints} points
                   </div>
                 );

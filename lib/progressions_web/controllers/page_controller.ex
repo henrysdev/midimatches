@@ -10,14 +10,19 @@ defmodule ProgressionsWeb.PageController do
 
   @spec room(Plug.Conn.t(), map) :: Plug.Conn.t()
   def room(%Plug.Conn{} = conn, %{"room_id" => room_id}) do
+    current_user = get_session(conn, :user)
+
     cond do
-      is_nil(get_session(conn, :user)) ->
+      is_nil(current_user) ->
         redirect(conn,
           to: Routes.page_path(conn, :register_player, destination: "/room/#{room_id}")
         )
 
       Rooms.room_exists?(room_id) ->
-        render(conn, "room.html")
+        render(conn, "room.html",
+          user_id: current_user.user_id,
+          user_alias: current_user.user_alias
+        )
 
       true ->
         render(conn, "missing_room.html")

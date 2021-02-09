@@ -52,7 +52,7 @@ const RegisterPlayerPage: React.FC = () => {
           color: "#666",
         }}
       >
-        <Title title="Choose an Alias" />
+        <Title title="Choose an Alias to Continue" />
         <form style={{ margin: 0 }}>
           <fieldset className="uk-fieldset">
             <input
@@ -65,7 +65,7 @@ const RegisterPlayerPage: React.FC = () => {
             />
           </fieldset>
           <FullWidthButton
-            label="Continue to game"
+            label="Continue"
             callback={() => {
               if (!!alias) {
                 submitRegisterPlayer(alias);

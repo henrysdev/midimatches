@@ -1,1 +1,3 @@
+<script>window.currentUserId = "<%= @user_id %>";</script>
+<script>window.currentUserAlias = "<%= @user_alias %>";</script>
 <div id="react-app"></div>
