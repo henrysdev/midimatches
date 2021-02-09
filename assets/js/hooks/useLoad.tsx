@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { unmarshalBody } from "../utils";
 
 export function useLoad(defaultdata = {}) {
   const [loadStatus, setLoadStatus] = useState({
@@ -34,12 +35,14 @@ export function useLoad(defaultdata = {}) {
     setLoading();
 
     try {
-      const data = await loader(...rest);
+      const response = await loader(...rest);
+      const data = await response.json();
+      const formattedData = unmarshalBody(data);
 
-      if (!data) {
+      if (!formattedData) {
         setFailed();
       } else {
-        setDone(data);
+        setDone(formattedData);
       }
     } catch (e) {
       setFailed();
@@ -48,9 +51,6 @@ export function useLoad(defaultdata = {}) {
 
   async function fetchPostData(loader: any, ...rest: any): Promise<void> {
     setLoading();
-
-    console.log("loader: ", loader);
-    console.log("rest: ", ...rest);
 
     try {
       const data = await loader(...rest);

@@ -19,6 +19,7 @@ import {
   SUBMIT_LEAVE_ROOM,
   SUBMIT_ENTER_ROOM,
 } from "../../../constants";
+import { HeaderNav } from "../../common";
 
 const RoomPage: React.FC = () => {
   const [gameChannel, setGameChannel] = useState<Channel>();
@@ -116,17 +117,21 @@ const RoomPage: React.FC = () => {
     // }
   };
 
-  return gameInProgress && !!gameChannel && !!currPlayer && !!initGameState ? (
-    <PlayerContext.Provider value={{ player: currPlayer }}>
-      <Game gameChannel={gameChannel} initGameState={initGameState} />
-    </PlayerContext.Provider>
-  ) : (
-    <PregameLobby
-      submitPlayerJoin={submitPlayerJoin}
-      gameInProgress={gameInProgress}
-      numPlayersJoined={lobbyState.numPlayersJoined}
-      numPlayersToStart={lobbyState.numPlayersToStart}
-    />
+  return (
+    <div>
+      {gameInProgress && !!gameChannel && !!currPlayer && !!initGameState ? (
+        <PlayerContext.Provider value={{ player: currPlayer }}>
+          <Game gameChannel={gameChannel} initGameState={initGameState} />
+        </PlayerContext.Provider>
+      ) : (
+        <PregameLobby
+          submitPlayerJoin={submitPlayerJoin}
+          gameInProgress={gameInProgress}
+          numPlayersJoined={lobbyState.numPlayersJoined}
+          numPlayersToStart={lobbyState.numPlayersToStart}
+        />
+      )}
+    </div>
   );
 };
 export { RoomPage };

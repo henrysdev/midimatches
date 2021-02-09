@@ -8,7 +8,7 @@ import {
   MAX_PLAYER_ALIAS_LENGTH,
   MIN_PLAYER_ALIAS_LENGTH,
 } from "../../../constants";
-import { FullWidthButton, Title } from "../../common";
+import { FullWidthButton, Title, HeaderNav } from "../../common";
 
 const RegisterPlayerPage: React.FC = () => {
   const [alias, setAlias] = useState<string>();

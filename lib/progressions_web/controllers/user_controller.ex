@@ -28,7 +28,6 @@ defmodule ProgressionsWeb.UserController do
 
     # ** DEBUG ** clear session for debug purposes. Remove for prod use
     conn
-    |> clear_session()
     |> json(%{
       user: curr_user
     })

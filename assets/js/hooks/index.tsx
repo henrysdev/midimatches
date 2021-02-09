@@ -3,4 +3,5 @@ export { useGameServerState } from "./useGameServerState";
 export { useWebMidi } from "./useWebMidi";
 export { useNoteRecorder } from "./useNoteRecorder";
 export { useLoad } from "./useLoad";
+export { useCurrentUser } from "./useCurrentUser";
 export * from "./context";

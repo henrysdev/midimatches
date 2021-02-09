@@ -17,8 +17,5 @@ defmodule ProgressionsWeb.UserControllerTest do
     assert json_response(conn, 200) == %{
              "user" => %{"user_id" => "b4rt", "user_alias" => "chumbawumba"}
            }
-
-    # clears session (DEBUG remove)
-    assert get_session(conn, :user) == nil
   end
 end

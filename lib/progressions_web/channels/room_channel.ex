@@ -13,8 +13,7 @@ defmodule ProgressionsWeb.RoomChannel do
     Types.Loop,
     Types.Note,
     Types.Player,
-    Types.TimestepSlice,
-    Utils
+    Types.TimestepSlice
   }
 
   require Logger
