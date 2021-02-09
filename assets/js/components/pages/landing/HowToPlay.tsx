@@ -36,6 +36,7 @@ const HowToPlay: React.FC = () => {
         <dt>
           <strong>Welcome!</strong>
         </dt>
+        <br />
         <dd>
           <p>
             Progressions is a multiplayer improvisational keyboard game that
@@ -46,6 +47,7 @@ const HowToPlay: React.FC = () => {
         <dt>
           <strong>MIDI First</strong>
         </dt>
+        <br />
         <dd>
           <p>
             Progressions is intended to be played with a MIDI keyboard. For the
@@ -57,6 +59,7 @@ const HowToPlay: React.FC = () => {
         <dt>
           <strong>How Do I Play?</strong>
         </dt>
+        <br />
         <dd>
           <p>
             Each game consists of multiple rounds of recording and voting. The

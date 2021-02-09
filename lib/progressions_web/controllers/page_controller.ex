@@ -10,7 +10,17 @@ defmodule ProgressionsWeb.PageController do
 
   @spec serverlist(Plug.Conn.t(), any) :: Plug.Conn.t()
   def serverlist(conn, _params) do
-    render(conn, "serverlist.html")
+    current_user = get_session(conn, :user)
+
+    cond do
+      is_nil(current_user) ->
+        redirect(conn,
+          to: Routes.page_path(conn, :register_player, destination: "/servers")
+        )
+
+      true ->
+        render(conn, "serverlist.html")
+    end
   end
 
   @spec room(Plug.Conn.t(), map) :: Plug.Conn.t()

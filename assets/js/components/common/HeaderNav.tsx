@@ -28,7 +28,14 @@ const HeaderNav: React.FC<HeaderNavProps> = ({ playerAlias }) => (
       }}
     >
       {!!playerAlias ? (
-        <p style={{ float: "right" }}>
+        <p
+          style={{
+            float: "right",
+            padding: "4px",
+            backgroundColor: "#ccdcff",
+            borderRadius: "3px",
+          }}
+        >
           playing as <strong>{playerAlias}</strong>
         </p>
       ) : (

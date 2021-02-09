@@ -8,7 +8,7 @@ defmodule Progressions.Matchmaking.ServerlistUpdater do
 
   use GenServer
 
-  @default_update_cadence 1_000
+  @default_update_cadence 5_000
 
   def start_link(args) do
     GenServer.start_link(ServerlistUpdater, args)

@@ -1,37 +1,29 @@
-import { Channel, Socket } from "phoenix";
-import React, { useEffect, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 
-import { unmarshalBody } from "../../../utils";
-import {
-  PlayerJoinPayload,
-  Player,
-  GameContextType,
-  StartGamePayload,
-  LobbyUpdatePayload,
-  ServerlistUpdatePayload,
-  RoomState,
-} from "../../../types";
-import { PlayerContext } from "../../../contexts";
-import {
-  START_GAME_EVENT,
-  LOBBY_UPDATE_EVENT,
-  RESET_ROOM_EVENT,
-  SUBMIT_LEAVE_ROOM,
-  SERVERLIST_UPDATE_EVENT,
-} from "../../../constants";
-import { Title } from "../../common";
+import { RoomState } from "../../../types";
 
 interface ServerlistProps {
   roomStates: RoomState[];
+  timeSinceRefresh: number;
 }
 
-const Serverlist: React.FC<ServerlistProps> = ({ roomStates }) => {
+const Serverlist: React.FC<ServerlistProps> = ({
+  roomStates,
+  timeSinceRefresh,
+}) => {
+  const numPlayersOnline = useMemo(() => {
+    return roomStates.reduce((acc: number, room: RoomState) => {
+      return acc + room.numCurrPlayers;
+    }, 0);
+  }, [timeSinceRefresh]);
+
   return (
     <div style={{ padding: "8px" }}>
+      <h1 className="uk-text-center">Game Room</h1>
       <p>
-        You can find games to join in the <a href="/servers">server list</a>.
         Look for games that have the "Pregame" status to get into a lobby
-        without having to wait for the current game to end.
+        without having to wait for the current game to end. Games are sorted
+        with the most eligible games to join at the top.
       </p>
       <table
         className="uk-table uk-table-divider uk-background-muted"
@@ -49,7 +41,8 @@ const Serverlist: React.FC<ServerlistProps> = ({ roomStates }) => {
             <th>Status</th>
             <th># Players</th>
             <th>Max Players</th>
-            <th>Link</th>
+            <th>Join</th>
+            {/* <th>Link</th> */}
           </tr>
         </thead>
         <tbody>
@@ -75,13 +68,45 @@ const Serverlist: React.FC<ServerlistProps> = ({ roomStates }) => {
                   <td>{room.numCurrPlayers}</td>
                   <td>{room.gameRules.gameSizeNumPlayers}</td>
                   <td>
-                    <a href={`/room/${room.roomId}`}>Join</a>
+                    <button
+                      style={{ width: "100%", cursor: "pointer" }}
+                      onClick={() =>
+                        (window.location.href = `/room/${room.roomId}`)
+                      }
+                    >
+                      JOIN
+                    </button>
+                  </td>
+                  <td>
+                    {/* <div>
+                      <i
+                        style={{
+                          verticalAlign: "middle",
+                          color: "gray",
+                          cursor: "pointer",
+                        }}
+                        onClick={copyToClipboard}
+                        className="material-icons"
+                      >
+                        content_copy
+                      </i>
+                    </div> */}
+
+                    {/* <a href={`/room/${room.roomId}`}>Join</a> */}
                   </td>
                 </tr>
               );
             })}
         </tbody>
       </table>
+      <div style={{ paddingTop: "8px", paddingBottom: "8px" }}>
+        <div style={{ float: "left" }}>
+          <p>{numPlayersOnline} players online</p>
+        </div>
+        <div style={{ float: "right" }}>
+          <p>last updated {timeSinceRefresh}ms ago.</p>
+        </div>
+      </div>
     </div>
   );
 };

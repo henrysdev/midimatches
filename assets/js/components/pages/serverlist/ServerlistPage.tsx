@@ -1,5 +1,5 @@
 import { Channel, Socket } from "phoenix";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 import { unmarshalBody } from "../../../utils";
 import { ServerlistUpdatePayload, RoomState } from "../../../types";
@@ -8,8 +8,14 @@ import { Serverlist } from ".";
 import { EditUser, Button } from "../../common";
 
 const ServerlistPage: React.FC = () => {
-  const [landingPageChannel, setServerlistPageChannel] = useState<Channel>();
   const [roomStates, setRoomStates] = useState<Array<RoomState>>([]);
+  const [timeSinceRefresh, setTimeSinceRefresh] = useState<number>(0);
+  const [lastRefresh, _setLastRefresh] = useState<number>(0);
+  const lastRefreshRef = useRef({});
+  const setLastRefresh = (data: any) => {
+    lastRefreshRef.current = data;
+    _setLastRefresh(data);
+  };
 
   useEffect(() => {
     // websocket channel init
@@ -34,13 +40,21 @@ const ServerlistPage: React.FC = () => {
     channel.on(SERVERLIST_UPDATE_EVENT, (body) => {
       const { rooms } = unmarshalBody(body) as ServerlistUpdatePayload;
       setRoomStates(rooms);
+      setLastRefresh(Date.now());
     });
-    setServerlistPageChannel(channel);
+
+    const refreshInterval = setInterval(() => {
+      const now = Date.now();
+      const last = lastRefreshRef.current as number;
+      setTimeSinceRefresh(now - last);
+    }, 1000);
 
     return () => {
+      clearInterval(refreshInterval);
       channel.leave();
     };
   }, []);
+
   return (
     <div
       style={{
@@ -53,7 +67,10 @@ const ServerlistPage: React.FC = () => {
       }}
     >
       <div>
-        <Serverlist roomStates={roomStates} />
+        <Serverlist
+          roomStates={roomStates}
+          timeSinceRefresh={timeSinceRefresh}
+        />
       </div>
     </div>
   );

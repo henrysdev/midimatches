@@ -18,12 +18,13 @@ const LandingPage: React.FC = () => {
       <div>
         <h1 className="uk-text-center">Progressions</h1>
         <HowToPlay />
-        <Button
-          label="Lets Play!"
-          callback={() => {
-            window.location.href = "/servers";
-          }}
-        />
+        <button
+          style={{ width: "100%", marginTop: "16px" }}
+          className="uk-button uk-button-primary"
+          onClick={() => (window.location.href = "/servers")}
+        >
+          READY TO PLAY!
+        </button>
       </div>
     </div>
   );
