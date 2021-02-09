@@ -22,12 +22,14 @@ defmodule ProgressionsWeb.Router do
     get "/", PageController, :index
     get "/room/:room_id", PageController, :room
     get "/room/debug_create/:room_id", PageController, :debug_create_room
+    get "/register", PageController, :register_player
   end
 
-  scope "/user/", ProgressionsWeb do
-    pipe_through :browser
+  scope "/api", ProgressionsWeb do
+    pipe_through :api
 
     post "/user/register", UserController, :register
+    get "/user/self", UserController, :self
   end
 
   # Other scopes may use custom stacks.
