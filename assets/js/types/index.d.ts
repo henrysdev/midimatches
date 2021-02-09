@@ -24,6 +24,11 @@ export interface Player {
   playerAlias: string;
 }
 
+export interface User {
+  userAlias: string;
+  userId: string;
+}
+
 export interface MIDINoteEvent {
   value: number;
   velocity: number;
@@ -126,6 +131,10 @@ export interface ToneAudioContextType {
 
 export interface PlayerContextType {
   player: Player;
+}
+
+export interface CurrentUserContextType {
+  user: User;
 }
 
 type Seconds = number;

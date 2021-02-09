@@ -9,34 +9,41 @@ import {
 } from "./components/pages/index";
 import { isMobile } from "react-device-detect";
 import { useCurrentUser } from "./hooks";
+import { CurrentUserContext } from "./contexts";
 
 const PageRouter: React.FC = () => {
-  const { data: currUserData, loading, loaded, loadError } = useCurrentUser();
+  const { data: currUserData, loading, loaded } = useCurrentUser();
 
-  return (
+  return loaded ? (
     <div>
-      <HeaderNav
-        playerAlias={
-          !!currUserData && !!currUserData.user
-            ? currUserData.user.userAlias
-            : undefined
-        }
-      />
-      {isMobile ? (
-        <div>
-          <strong>Note: </strong>Progressions is not currently supported on
-          mobile.
-        </div>
-      ) : (
-        <BrowserRouter>
-          <Switch>
-            <Route exact path="/" component={LandingPage} />
-            <Route path="/room" component={RoomPage} />
-            <Route path="/register" component={RegisterPlayerPage} />
-          </Switch>
-        </BrowserRouter>
-      )}
+      <CurrentUserContext.Provider value={{ user: currUserData.user }}>
+        <HeaderNav
+          playerAlias={
+            !!currUserData && !!currUserData.user
+              ? currUserData.user.userAlias
+              : undefined
+          }
+        />
+        {isMobile ? (
+          <div>
+            <strong>Note: </strong>Progressions is not currently supported on
+            mobile.
+          </div>
+        ) : (
+          <BrowserRouter>
+            <Switch>
+              <Route exact path="/" component={LandingPage} />
+              <Route path="/room" component={RoomPage} />
+              <Route path="/register" component={RegisterPlayerPage} />
+            </Switch>
+          </BrowserRouter>
+        )}
+      </CurrentUserContext.Provider>
     </div>
+  ) : loading ? (
+    <div>LOADING</div>
+  ) : (
+    <></>
   );
 };
 

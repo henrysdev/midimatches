@@ -16,16 +16,24 @@ const HeaderNav: React.FC<HeaderNavProps> = ({ playerAlias }) => (
         flex: "1",
       }}
     >
-      <h5 style={{ fontFamily: "Audiowide, cursive" }}>Progressions</h5>
+      <a href="/">
+        <h5 style={{ fontFamily: "Audiowide, cursive", cursor: "pointer" }}>
+          Progressions
+        </h5>
+      </a>
     </div>
     <div
       style={{
         flex: "1",
       }}
     >
-      <p style={{ float: "right" }}>
-        playing as <strong>{!!playerAlias ? playerAlias : "anonymous"}</strong>
-      </p>
+      {!!playerAlias ? (
+        <p style={{ float: "right" }}>
+          playing as <strong>{playerAlias}</strong>
+        </p>
+      ) : (
+        <></>
+      )}
     </div>
   </div>
 );

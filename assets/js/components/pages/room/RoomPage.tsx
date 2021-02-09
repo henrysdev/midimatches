@@ -19,7 +19,7 @@ import {
   SUBMIT_LEAVE_ROOM,
   SUBMIT_ENTER_ROOM,
 } from "../../../constants";
-import { HeaderNav } from "../../common";
+import { useCurrentUserContext } from "../../../hooks";
 
 const RoomPage: React.FC = () => {
   const [gameChannel, setGameChannel] = useState<Channel>();
@@ -30,6 +30,9 @@ const RoomPage: React.FC = () => {
     numPlayersJoined: 0,
     numPlayersToStart: 0,
   });
+  const {
+    user: { userAlias: currentUserAlias, userId: currentUserId },
+  } = useCurrentUserContext();
 
   const resetRoom = () => {
     setGameInProgress(false);
@@ -40,10 +43,11 @@ const RoomPage: React.FC = () => {
   useEffect(() => {
     // websocket channel init
     const windowRef = window as any;
-    const { currentUserId, currentUserAlias, userToken } = windowRef;
+    const { userToken } = windowRef;
     const socket = new Socket("/socket", {
       params: { token: userToken },
     });
+    console.log("currentUserId ", currentUserId);
     setCurrPlayer({
       musicianId: currentUserId,
       playerAlias: currentUserAlias,

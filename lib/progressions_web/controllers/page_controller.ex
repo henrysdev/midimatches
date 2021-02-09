@@ -19,10 +19,7 @@ defmodule ProgressionsWeb.PageController do
         )
 
       Rooms.room_exists?(room_id) ->
-        render(conn, "room.html",
-          user_id: current_user.user_id,
-          user_alias: current_user.user_alias
-        )
+        render(conn, "room.html")
 
       true ->
         render(conn, "missing_room.html")

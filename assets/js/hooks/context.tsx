@@ -1,11 +1,17 @@
 import { useContext } from "react";
 
-import { GameContext, ToneAudioContext, PlayerContext } from "../contexts";
+import {
+  GameContext,
+  ToneAudioContext,
+  PlayerContext,
+  CurrentUserContext,
+} from "../contexts";
 
 import {
   GameContextType,
   ToneAudioContextType,
   PlayerContextType,
+  CurrentUserContextType,
 } from "../types";
 
 export function useGameContext() {
@@ -18,4 +24,8 @@ export function useToneAudioContext() {
 
 export function usePlayerContext() {
   return useContext(PlayerContext) as PlayerContextType;
+}
+
+export function useCurrentUserContext() {
+  return useContext(CurrentUserContext) as CurrentUserContextType;
 }
