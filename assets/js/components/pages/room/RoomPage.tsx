@@ -35,6 +35,7 @@ const RoomPage: React.FC = () => {
   } = useCurrentUserContext();
 
   const resetRoom = () => {
+    window.location.href = "/servers";
     setGameInProgress(false);
     setCurrPlayer(undefined);
     setInitGameState(undefined);
