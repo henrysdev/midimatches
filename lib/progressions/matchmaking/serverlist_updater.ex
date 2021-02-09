@@ -32,7 +32,7 @@ defmodule Progressions.Matchmaking.ServerlistUpdater do
   def broadcast_serverlist_update do
     room_states = Matchmaking.get_rooms_list()
 
-    ProgressionsWeb.Endpoint.broadcast("landing_page:serverlist", "serverlist_update", %{
+    ProgressionsWeb.Endpoint.broadcast("servers:serverlist", "serverlist_update", %{
       rooms: room_states
     })
   end

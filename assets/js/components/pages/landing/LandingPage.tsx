@@ -1,45 +1,9 @@
-import { Channel, Socket } from "phoenix";
-import React, { useEffect, useState } from "react";
+import React from "react";
 
-import { unmarshalBody } from "../../../utils";
-import { ServerlistUpdatePayload, RoomState } from "../../../types";
-import { SERVERLIST_UPDATE_EVENT } from "../../../constants";
-import { Serverlist, HowToPlay } from ".";
+import { HowToPlay } from ".";
+import { Button } from "../../common";
 
 const LandingPage: React.FC = () => {
-  const [landingPageChannel, setLandingPageChannel] = useState<Channel>();
-  const [roomStates, setRoomStates] = useState<Array<RoomState>>([]);
-
-  useEffect(() => {
-    // websocket channel init
-    const windowRef = window as any;
-    const socket = new Socket("/socket", {
-      params: { token: windowRef.userToken },
-    });
-    socket.connect();
-    const channel: Channel = socket.channel(`landing_page:serverlist`);
-
-    // join game
-    channel
-      .join()
-      .receive("ok", (resp) => {
-        console.log("Joined successfully", resp);
-      })
-      .receive("error", (resp) => {
-        console.log("Unable to join", resp);
-      });
-
-    // server list update
-    channel.on(SERVERLIST_UPDATE_EVENT, (body) => {
-      const { rooms } = unmarshalBody(body) as ServerlistUpdatePayload;
-      setRoomStates(rooms);
-    });
-    setLandingPageChannel(channel);
-
-    return () => {
-      channel.leave();
-    };
-  }, []);
   return (
     <div
       style={{
@@ -52,9 +16,14 @@ const LandingPage: React.FC = () => {
       }}
     >
       <div>
-        <h1 className="uk-text-center">Welcome to Progressions</h1>
-        {/* <HowToPlay /> */}
-        <Serverlist roomStates={roomStates} />
+        <h1 className="uk-text-center">Progressions</h1>
+        <HowToPlay />
+        <Button
+          label="Lets Play!"
+          callback={() => {
+            window.location.href = "/servers";
+          }}
+        />
       </div>
     </div>
   );

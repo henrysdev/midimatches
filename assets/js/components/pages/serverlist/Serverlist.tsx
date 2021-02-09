@@ -27,8 +27,12 @@ interface ServerlistProps {
 
 const Serverlist: React.FC<ServerlistProps> = ({ roomStates }) => {
   return (
-    <div style={{ paddingBottom: "8px" }}>
-      <Title title={"Join a game room"} />
+    <div style={{ padding: "8px" }}>
+      <p>
+        You can find games to join in the <a href="/servers">server list</a>.
+        Look for games that have the "Pregame" status to get into a lobby
+        without having to wait for the current game to end.
+      </p>
       <table
         className="uk-table uk-table-divider uk-background-muted"
         style={{

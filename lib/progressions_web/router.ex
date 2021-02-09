@@ -20,6 +20,7 @@ defmodule ProgressionsWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    get "/servers", PageController, :serverlist
     get "/room/:room_id", PageController, :room
     get "/room/debug_create/:room_id", PageController, :debug_create_room
     get "/register", PageController, :register_player
@@ -28,14 +29,10 @@ defmodule ProgressionsWeb.Router do
   scope "/api", ProgressionsWeb do
     pipe_through :api
 
-    post "/user/register", UserController, :register
+    put "/user/edit", UserController, :edit
     get "/user/self", UserController, :self
+    get "/user/reset", UserController, :reset
   end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", ProgressionsWeb do
-  #   pipe_through :api
-  # end
 
   # Enables LiveDashboard only for development
   #

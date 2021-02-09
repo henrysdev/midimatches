@@ -17,11 +17,11 @@ const defaultStyle = {
 interface ButtonProps {
   label: string;
   callback: Function;
-  disabled: boolean;
+  disabled?: boolean;
   style?: Object;
 }
 const Button: React.FC<ButtonProps> = ({
-  disabled,
+  disabled = false,
   label,
   callback,
   style,

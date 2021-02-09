@@ -1,8 +1,8 @@
 defmodule ProgressionsWeb.UserControllerTest do
   use ProgressionsWeb.ConnCase, async: true
 
-  test "POST /api/user/register", %{conn: conn} do
-    conn = post(conn, Routes.user_path(conn, :register), %{"user_alias" => "chumbawumba"})
+  test "PUT /api/user/edit", %{conn: conn} do
+    conn = put(conn, Routes.user_path(conn, :edit), %{"user_alias" => "chumbawumba"})
 
     assert json_response(conn, 200) == %{}
     assert %{user_id: _, user_alias: "chumbawumba"} = get_session(conn, :user)
@@ -17,5 +17,15 @@ defmodule ProgressionsWeb.UserControllerTest do
     assert json_response(conn, 200) == %{
              "user" => %{"user_id" => "b4rt", "user_alias" => "chumbawumba"}
            }
+  end
+
+  test "GET /api/user/reset", %{conn: conn} do
+    conn =
+      session_conn()
+      |> put_session(:user, %{user_id: "b4rt", user_alias: "chumbawumba"})
+      |> get(Routes.user_path(conn, :reset))
+
+    assert json_response(conn, 200) == %{}
+    assert get_session(conn, :user) == nil
   end
 end

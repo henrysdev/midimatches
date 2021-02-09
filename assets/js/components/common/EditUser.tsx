@@ -1,29 +1,23 @@
 import { Channel, Socket } from "phoenix";
 import React, { useEffect, useState } from "react";
 
-import { unmarshalBody } from "../../../utils";
-import { ServerlistUpdatePayload, RoomState } from "../../../types";
+import { unmarshalBody } from "../../utils";
+import { ServerlistUpdatePayload, RoomState } from "../../types";
 import {
   SERVERLIST_UPDATE_EVENT,
   MAX_PLAYER_ALIAS_LENGTH,
   MIN_PLAYER_ALIAS_LENGTH,
-} from "../../../constants";
-import { FullWidthButton, Title } from "../../common";
+} from "../../constants";
+import { FullWidthButton, Title } from ".";
 
-const RegisterPlayerPage: React.FC = () => {
+const EditUser: React.FC = () => {
   const [alias, setAlias] = useState<string>();
-  const [urlDestination, setUrlDestination] = useState<string>("/");
-
-  useEffect(() => {
-    const windowRef = window as any;
-    setUrlDestination(windowRef.urlDestination);
-  }, []);
 
   const handleChange = (e: any) => {
     setAlias(e.target.value.trim());
   };
 
-  const submitRegisterPlayer = (playerAlias: string) => {
+  const submitEditUser = (playerAlias: string) => {
     // POST request using fetch inside useEffect React hook
     const requestOptions = {
       method: "PUT",
@@ -32,11 +26,7 @@ const RegisterPlayerPage: React.FC = () => {
         user_alias: playerAlias,
       }),
     };
-    fetch("/api/user/edit", requestOptions)
-      .then((response) => response.json())
-      .then((_data) => {
-        window.location.href = urlDestination;
-      });
+    fetch("/api/user/edit", requestOptions).then((response) => response.json());
   };
 
   return (
@@ -67,7 +57,7 @@ const RegisterPlayerPage: React.FC = () => {
             label="Continue"
             callback={() => {
               if (!!alias) {
-                submitRegisterPlayer(alias);
+                submitEditUser(alias);
               }
             }}
             disabled={!alias || alias.length < MIN_PLAYER_ALIAS_LENGTH}
@@ -84,4 +74,4 @@ const RegisterPlayerPage: React.FC = () => {
     </div>
   );
 };
-export { RegisterPlayerPage };
+export { EditUser };

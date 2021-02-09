@@ -3,7 +3,7 @@ defmodule ProgressionsWeb.UserSocket do
 
   ## Channels
   channel "room:*", ProgressionsWeb.RoomChannel
-  channel "landing_page:*", ProgressionsWeb.LandingPageChannel
+  channel "servers:*", ProgressionsWeb.ServerlistChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After

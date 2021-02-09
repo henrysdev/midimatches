@@ -6,6 +6,7 @@ import {
   LandingPage,
   RoomPage,
   RegisterPlayerPage,
+  ServerlistPage,
 } from "./components/pages/index";
 import { isMobile } from "react-device-detect";
 import { useCurrentUser } from "./hooks";
@@ -33,6 +34,7 @@ const PageRouter: React.FC = () => {
           <BrowserRouter>
             <Switch>
               <Route exact path="/" component={LandingPage} />
+              <Route exact path="/servers" component={ServerlistPage} />
               <Route path="/room" component={RoomPage} />
               <Route path="/register" component={RegisterPlayerPage} />
             </Switch>

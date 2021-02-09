@@ -8,6 +8,11 @@ defmodule ProgressionsWeb.PageController do
     render(conn, "index.html")
   end
 
+  @spec serverlist(Plug.Conn.t(), any) :: Plug.Conn.t()
+  def serverlist(conn, _params) do
+    render(conn, "serverlist.html")
+  end
+
   @spec room(Plug.Conn.t(), map) :: Plug.Conn.t()
   def room(%Plug.Conn{} = conn, %{"room_id" => room_id}) do
     current_user = get_session(conn, :user)
