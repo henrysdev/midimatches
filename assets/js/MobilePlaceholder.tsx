@@ -1,9 +1,8 @@
 import React from "react";
 
-import { HowToPlay } from ".";
-import { Button } from "../../common";
+import { HowToPlay } from "./components/pages/landing";
 
-const LandingPage: React.FC = () => {
+const MobilePlaceholder: React.FC = () => {
   return (
     <div
       style={{
@@ -17,16 +16,13 @@ const LandingPage: React.FC = () => {
     >
       <div>
         <h1 className="uk-text-center">Progressions</h1>
+        <div>
+          <strong>Note: </strong>Progressions is not currently supported on
+          mobile.
+        </div>
         <HowToPlay />
-        <button
-          style={{ width: "100%", marginTop: "16px" }}
-          className="uk-button uk-button-primary"
-          onClick={() => (window.location.href = "/servers")}
-        >
-          READY TO PLAY!
-        </button>
       </div>
     </div>
   );
 };
-export { LandingPage };
+export { MobilePlaceholder };

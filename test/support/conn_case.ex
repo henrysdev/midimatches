@@ -28,6 +28,10 @@ defmodule ProgressionsWeb.ConnCase do
 
       # The default endpoint for testing
       @endpoint ProgressionsWeb.Endpoint
+
+      def session_conn do
+        build_conn() |> Plug.Test.init_test_session(%{})
+      end
     end
   end
 

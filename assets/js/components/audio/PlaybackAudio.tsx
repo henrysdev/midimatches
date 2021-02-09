@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useMemo } from "react";
 import * as Tone from "tone";
 
-import { Loop, Color, Playhead } from "../../types";
+import { Loop, Color } from "../../types";
 import { loopToEvents } from "../../utils";
-import { SimpleButton } from "../common";
+import { Button } from "../common";
 import {
   DEFAULT_NUM_RECORDED_LOOPS,
   DEFAULT_RECORDING_LENGTH,
@@ -20,6 +20,9 @@ interface PlaybackAudioProps {
   submitVote: Function;
   setActivePlaybackTrack: Function;
   isPlaying: boolean;
+  listenComplete: boolean;
+  completeListening: Function;
+  canVote: boolean;
 }
 
 const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
@@ -30,13 +33,17 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
   submitVote,
   setActivePlaybackTrack,
   isPlaying,
+  listenComplete,
+  completeListening,
+  canVote,
 }) => {
   const {
-    gameRules: { timestepSize, soloTimeLimit },
+    gameRules: { timestepSize },
   } = useGameContext();
 
   const [progress, setProgress] = useState<number>(0);
   const { synth } = useToneAudioContext();
+  const [hovering, setHovering] = useState<boolean>(false);
 
   useEffect(() => {
     return () => {
@@ -79,7 +86,12 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
     Tone.Transport.scheduleRepeat(
       (currTime) => {
         const progress = (currTime - startTime) / DEFAULT_RECORDING_LENGTH;
-        setProgress(progress);
+        if (progress >= 0.99) {
+          completeListening(musicianId);
+          setProgress(0);
+        } else {
+          setProgress(progress);
+        }
       },
       0.05,
       "+0",
@@ -88,39 +100,100 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-      }}
-    >
+    <div style={{ display: "flex" }}>
       <div
         style={{
           flex: "5",
+          padding: "8px",
+          margin: "auto",
+          marginTop: "4px",
+          border: "1px solid #666",
+          boxShadow: "0 5px 5px rgb(0 0 0 / 8%)",
+          color: "#666",
+          cursor: "pointer",
+          backgroundColor: hovering ? "#f8f8f8" : "white",
         }}
+        onMouseEnter={() => setHovering(true)}
+        onMouseLeave={() => setHovering(false)}
+        onClick={() => playbackMusician(timestepSize, playNote)}
       >
-        <RecordingVisual
-          recording={recording}
-          color={color}
-          progress={progress}
-          isPlaying={isPlaying}
-        />
+        <div
+          style={{
+            display: "flex",
+          }}
+        >
+          <div
+            style={{
+              width: "32px",
+            }}
+          >
+            {isPlaying ? (
+              listenComplete ? (
+                <i
+                  style={{ verticalAlign: "middle", color: "green" }}
+                  className="material-icons"
+                >
+                  hearing
+                </i>
+              ) : (
+                <i
+                  style={{ verticalAlign: "middle", color: "blue" }}
+                  className="material-icons"
+                >
+                  hearing
+                </i>
+              )
+            ) : listenComplete ? (
+              <i
+                style={{ verticalAlign: "middle", color: "green" }}
+                className="material-icons"
+              >
+                hearing
+              </i>
+            ) : (
+              <i
+                style={{ verticalAlign: "middle", color: "red" }}
+                className="material-icons"
+              >
+                hearing_disabled
+              </i>
+            )}
+          </div>
+          <div
+            style={{
+              flex: "5",
+            }}
+          >
+            <RecordingVisual
+              recording={recording}
+              color={color}
+              progress={progress}
+              isPlaying={isPlaying}
+            />
+          </div>
+        </div>
       </div>
-      <div style={{ flex: "1" }}>
-        <SimpleButton
-          key={`play-track-${musicianId}`}
-          label={"Play"}
-          callback={() => playbackMusician(timestepSize, playNote)}
-          disabled={false}
-        />
-      </div>
-      <div style={{ flex: "1" }}>
-        <SimpleButton
-          key={`vote-${musicianId}`}
-          label={"Vote"}
-          callback={() => submitVote(musicianId)}
-          disabled={false}
-        />
-      </div>
+
+      {canVote ? (
+        <div
+          style={{
+            flex: "1",
+            padding: "8px",
+            margin: "auto",
+            marginTop: "4px",
+            height: "100%",
+            width: "100%",
+          }}
+        >
+          <Button
+            label="Vote"
+            callback={() => submitVote(musicianId)}
+            disabled={false}
+          />
+        </div>
+      ) : (
+        <></>
+      )}
     </div>
   );
 };

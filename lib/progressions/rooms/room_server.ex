@@ -162,7 +162,6 @@ defmodule Progressions.Rooms.RoomServer do
       ) do
     Game.stop_game(game)
 
-    # reset all state besides id and config
     state = %RoomServer{
       room_id: room_id,
       room_name: room_name,

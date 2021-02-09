@@ -65,12 +65,10 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
                 <WarmUp />
               </div>
             ) : (
-              <p style={{ marginBottom: "8px" }}>
-                Game has not started yet. Enter an alias then join!
-              </p>
+              <p style={{ marginBottom: "8px" }}>Game has not started yet.</p>
             )}
           </div>
-          {hasJoined ? (
+          {/* {hasJoined ? (
             <></>
           ) : (
             <form style={{ margin: 0 }}>
@@ -102,7 +100,7 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
                 <></>
               )}
             </form>
-          )}
+          )} */}
           <div style={{ marginTop: "16px" }}>
             <strong>{`${numPlayersJoined}/${numPlayersToStart} Players. Need ${
               numPlayersToStart - numPlayersJoined

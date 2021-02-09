@@ -1,8 +1,8 @@
-defmodule ProgressionsWeb.LandingPageChannelTest do
+defmodule ProgressionsWeb.ServerlistChannelTest do
   use ProgressionsWeb.ChannelCase, async: true
 
   alias ProgressionsWeb.{
-    LandingPageChannel,
+    ServerlistChannel,
     UserSocket
   }
 
@@ -15,15 +15,15 @@ defmodule ProgressionsWeb.LandingPageChannelTest do
     {:ok, _, socket} =
       UserSocket
       |> socket()
-      |> subscribe_and_join(LandingPageChannel, "landing_page:serverlist")
+      |> subscribe_and_join(ServerlistChannel, "landing_page:serverlist")
 
     %{socket: socket}
   end
 
-  # test "client joins landing page successfully", %{socket: socket} do
+  # test "client joins serverlist successfully", %{socket: socket} do
   #   {:ok, _, _} =
   #     socket
-  #     |> subscribe_and_join(LandingPageChannel, "landing_page:serverlist")
+  #     |> subscribe_and_join(ServerlistChannel, "servers:serverlist")
 
   #   assert_push("serverlist_update", %{
   #     rooms: [

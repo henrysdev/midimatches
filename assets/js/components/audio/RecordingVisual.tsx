@@ -38,7 +38,8 @@ const RecordingVisual: React.FC<RecordingVisualProps> = ({
       style={{
         position: "relative",
         width: "100%",
-        height: "50px",
+        minHeight: "50px",
+        height: "100%",
         border: "1px solid black",
       }}
     >

@@ -1,6 +1,6 @@
-defmodule ProgressionsWeb.LandingPageChannel do
+defmodule ProgressionsWeb.ServerlistChannel do
   @moduledoc """
-  Exposes API for all websocket communication on landing page
+  Exposes API for all websocket communication on servers page
   """
   alias Progressions.Matchmaking
   use ProgressionsWeb, :channel
@@ -9,13 +9,12 @@ defmodule ProgressionsWeb.LandingPageChannel do
 
   intercept ["serverlist_update"]
 
-  @spec handle_out(<<_::136>>, map, Phoenix.Socket.t()) :: {:noreply, Phoenix.Socket.t()}
   def handle_out("serverlist_update", msg, socket) do
     push(socket, "serverlist_update", msg)
     {:noreply, socket}
   end
 
-  def join("landing_page:serverlist", _params, socket) do
+  def join("servers:serverlist", _params, socket) do
     send(self(), {:init_serverlist})
     {:ok, socket}
   end

@@ -17,7 +17,9 @@ import {
   LOBBY_UPDATE_EVENT,
   RESET_ROOM_EVENT,
   SUBMIT_LEAVE_ROOM,
+  SUBMIT_ENTER_ROOM,
 } from "../../../constants";
+import { useCurrentUserContext } from "../../../hooks";
 
 const RoomPage: React.FC = () => {
   const [gameChannel, setGameChannel] = useState<Channel>();
@@ -28,8 +30,12 @@ const RoomPage: React.FC = () => {
     numPlayersJoined: 0,
     numPlayersToStart: 0,
   });
+  const {
+    user: { userAlias: currentUserAlias, userId: currentUserId },
+  } = useCurrentUserContext();
 
   const resetRoom = () => {
+    window.location.href = "/servers";
     setGameInProgress(false);
     setCurrPlayer(undefined);
     setInitGameState(undefined);
@@ -38,8 +44,14 @@ const RoomPage: React.FC = () => {
   useEffect(() => {
     // websocket channel init
     const windowRef = window as any;
+    const { userToken } = windowRef;
     const socket = new Socket("/socket", {
-      params: { token: windowRef.userToken },
+      params: { token: userToken },
+    });
+    console.log("currentUserId ", currentUserId);
+    setCurrPlayer({
+      musicianId: currentUserId,
+      playerAlias: currentUserAlias,
     });
     socket.connect();
     const path = window.location.pathname.split("/");
@@ -54,6 +66,16 @@ const RoomPage: React.FC = () => {
       })
       .receive("error", (resp) => {
         console.log("Unable to join", resp);
+      });
+
+    channel
+      .push(SUBMIT_ENTER_ROOM, {
+        player_alias: currentUserAlias,
+        player_id: currentUserId,
+      })
+      .receive("ok", (reply) => {
+        const { player } = unmarshalBody(reply) as PlayerJoinPayload;
+        setCurrPlayer(player);
       });
 
     // lobby update
@@ -92,25 +114,29 @@ const RoomPage: React.FC = () => {
   }, []);
 
   const submitPlayerJoin = (event: string, payload: Object) => {
-    if (!!gameChannel) {
-      gameChannel.push(event, payload).receive("ok", (reply) => {
-        const { player } = unmarshalBody(reply) as PlayerJoinPayload;
-        setCurrPlayer(player);
-      });
-    }
+    // if (!!gameChannel) {
+    //   gameChannel.push(event, payload).receive("ok", (reply) => {
+    //     const { player } = unmarshalBody(reply) as PlayerJoinPayload;
+    //     setCurrPlayer(player);
+    //   });
+    // }
   };
 
-  return gameInProgress && !!gameChannel && !!currPlayer && !!initGameState ? (
-    <PlayerContext.Provider value={{ player: currPlayer }}>
-      <Game gameChannel={gameChannel} initGameState={initGameState} />
-    </PlayerContext.Provider>
-  ) : (
-    <PregameLobby
-      submitPlayerJoin={submitPlayerJoin}
-      gameInProgress={gameInProgress}
-      numPlayersJoined={lobbyState.numPlayersJoined}
-      numPlayersToStart={lobbyState.numPlayersToStart}
-    />
+  return (
+    <div>
+      {gameInProgress && !!gameChannel && !!currPlayer && !!initGameState ? (
+        <PlayerContext.Provider value={{ player: currPlayer }}>
+          <Game gameChannel={gameChannel} initGameState={initGameState} />
+        </PlayerContext.Provider>
+      ) : (
+        <PregameLobby
+          submitPlayerJoin={submitPlayerJoin}
+          gameInProgress={gameInProgress}
+          numPlayersJoined={lobbyState.numPlayersJoined}
+          numPlayersToStart={lobbyState.numPlayersToStart}
+        />
+      )}
+    </div>
   );
 };
 export { RoomPage };

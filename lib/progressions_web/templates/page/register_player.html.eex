@@ -1,0 +1,2 @@
+<script>window.urlDestination = "<%= @destination %>";</script>
+<div id="react-app"></div>
