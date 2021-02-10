@@ -19,7 +19,7 @@ const WinResultText: React.FC<WinResultTextProps> = ({
     <div style={{ textAlign: "center" }}>
       {winningPlayers.length > 1 ? (
         <div>
-          {!!endOfGame && endOfGame ? (
+          {endOfGame ? (
             <MediumTitle title="Game Tie" />
           ) : (
             <MediumTitle title="Round Tie" />
@@ -33,7 +33,7 @@ const WinResultText: React.FC<WinResultTextProps> = ({
             );
           })}
         </div>
-      ) : !!endOfGame && endOfGame ? (
+      ) : endOfGame ? (
         <div>
           <MediumTitle title="Game Winner" />
           <div>{`${winningPlayers[0].playerAlias} wins game with ${winResult.numPoints} total votes`}</div>

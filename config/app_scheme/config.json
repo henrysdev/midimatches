@@ -1,23 +1,41 @@
 {
   "rooms": [
     {
-      "room_name": "dev 1",
+      "room_name": "beta test group large",
       "server": {
         "timestep_size": 50,
         "quantization_threshold": 0.5,
         "rounds_to_win": 1,
-        "game_size_num_players": 3,
+        "game_size_num_players": 4,
         "view_timeouts": {
-          "game_start": 500,
-          "round_start": 500,
-          "recording": 500,
-          "round_end": 1000,
-          "game_end": 500
+          "game_start": 60000,
+          "round_start": 3000,
+          "recording": 60000,
+          "playback_voting": 60000,
+          "round_end": 10000,
+          "game_end": 10000
         }
       }
     },
     {
-      "room_name": "dev 2",
+      "room_name": "beta test group small",
+      "server": {
+        "timestep_size": 50,
+        "quantization_threshold": 0.5,
+        "rounds_to_win": 1,
+        "game_size_num_players": 2,
+        "view_timeouts": {
+          "game_start": 60000,
+          "round_start": 3000,
+          "recording": 60000,
+          "playback_voting": 60000,
+          "round_end": 10000,
+          "game_end": 10000
+        }
+      }
+    },
+    {
+      "room_name": "[DEV] test game rotation",
       "server": {
         "timestep_size": 50,
         "quantization_threshold": 0.5,
@@ -25,44 +43,11 @@
         "game_size_num_players": 2,
         "view_timeouts": {
           "game_start": 1000,
-          "recording": 4000,
           "round_start": 1000,
+          "recording": 1000,
+          "playback_voting": 1000,
           "round_end": 1000,
-          "game_end": 3000
-        }
-      }
-    },
-    {
-      "room_name": "beta test group 1",
-      "server": {
-        "timestep_size": 50,
-        "quantization_threshold": 0.5,
-        "rounds_to_win": 3,
-        "game_size_num_players": 3,
-        "view_timeouts": {
-          "game_start": 60000,
-          "round_start": 3000,
-          "recording": 60000,
-          "playback_voting": 60000,
-          "round_end": 10000,
-          "game_end": 10000
-        }
-      }
-    },
-    {
-      "room_name": "beta test group 2",
-      "server": {
-        "timestep_size": 50,
-        "quantization_threshold": 0.5,
-        "rounds_to_win": 1,
-        "game_size_num_players": 2,
-        "view_timeouts": {
-          "game_start": 60000,
-          "round_start": 3000,
-          "recording": 60000,
-          "playback_voting": 60000,
-          "round_end": 10000,
-          "game_end": 10000
+          "game_end": 5000
         }
       }
     }

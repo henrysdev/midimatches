@@ -10,12 +10,14 @@ import { FullWidthButton, MediumLargeTitle } from "../../../common";
 import { RecordMidi } from "../../../audio";
 import { PregameDebug } from "../../../debug";
 import { WarmUp } from ".";
+import { User } from "../../../../types";
 
 interface PregameLobbyProps {
   submitPlayerJoin: Function;
   gameInProgress: boolean;
   numPlayersJoined: number;
   numPlayersToStart: number;
+  currentUser: User;
 }
 
 const PregameLobby: React.FC<PregameLobbyProps> = ({
@@ -23,14 +25,9 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
   gameInProgress,
   numPlayersJoined,
   numPlayersToStart,
+  currentUser,
 }) => {
-  const [alias, setAlias] = useState<string>();
-
   const [hasJoined, setHasJoined] = useState<boolean>(false);
-
-  const handleChange = (e: any) => {
-    setAlias(e.target.value.trim());
-  };
 
   return (
     <div>
@@ -60,8 +57,9 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
               {hasJoined ? (
                 <div>
                   <p>
-                    Joined successfully as <strong>{alias}</strong>. Warm up
-                    your fingers a bit! Waiting for more players...
+                    Joined successfully as{" "}
+                    <strong>{currentUser.userAlias}</strong>. Warm up your
+                    fingers a bit! Waiting for more players...
                   </p>
                   <WarmUp />
                 </div>
@@ -73,35 +71,25 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
               <></>
             ) : (
               <div>
-                {/* <form style={{ margin: 0 }}>
-                  <fieldset className="uk-fieldset">
-                    <input
-                      style={{ marginBottom: "8px" }}
-                      className="uk-input"
-                      type="text"
-                      placeholder="Enter an alias..."
-                      maxLength={MAX_PLAYER_ALIAS_LENGTH}
-                      onChange={handleChange}
-                    />
-                  </fieldset>
-                  <FullWidthButton
-                    label="Join"
-                    callback={() => {
-                      submitPlayerJoin(SUBMIT_ENTER_ROOM, {
-                        player_alias: alias,
-                      });
-                      setHasJoined(true);
-                    }}
-                    disabled={!alias || alias.length < MIN_PLAYER_ALIAS_LENGTH}
-                  />
-                  {!!alias && alias.length < MIN_PLAYER_ALIAS_LENGTH ? (
-                    <i style={{ marginLeft: 10, color: "red" }}>
-                      Alias must be at least 3 characters long
-                    </i>
-                  ) : (
-                    <></>
-                  )}
-                </form> */}
+                <FullWidthButton
+                  label="Join"
+                  callback={() => {
+                    const sentMessage = submitPlayerJoin(SUBMIT_ENTER_ROOM, {
+                      player_alias: currentUser.userAlias,
+                      player_id: currentUser.userId,
+                    });
+                    if (!!sentMessage) {
+                      sentMessage
+                        .receive("ok", (_reply: any) => {
+                          console.log("join game successful");
+                          setHasJoined(true);
+                        })
+                        .receive("error", (err: any) => {
+                          console.error("join game error: ", err);
+                        });
+                    }
+                  }}
+                />
               </div>
             )}
             <div style={{ marginTop: "16px" }}>

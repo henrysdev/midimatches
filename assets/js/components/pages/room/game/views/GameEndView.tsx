@@ -33,7 +33,7 @@ const GameEndView: React.FC<GameEndViewProps> = () => {
         <WinResultText
           winResult={gameWinners}
           winningPlayers={winningPlayers}
-          endOfGame={false}
+          endOfGame={true}
         />
       ) : (
         <></>

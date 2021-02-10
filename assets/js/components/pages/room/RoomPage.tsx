@@ -1,4 +1,4 @@
-import { Channel, Socket } from "phoenix";
+import { Channel, Socket, Push } from "phoenix";
 import React, { useEffect, useState } from "react";
 
 import { unmarshalBody } from "../../../utils";
@@ -17,7 +17,6 @@ import {
   LOBBY_UPDATE_EVENT,
   RESET_ROOM_EVENT,
   SUBMIT_LEAVE_ROOM,
-  SUBMIT_ENTER_ROOM,
 } from "../../../constants";
 import { useCurrentUserContext } from "../../../hooks";
 
@@ -30,14 +29,10 @@ const RoomPage: React.FC = () => {
     numPlayersJoined: 0,
     numPlayersToStart: 0,
   });
-  const {
-    user: { userAlias: currentUserAlias, userId: currentUserId },
-  } = useCurrentUserContext();
+  const { user: currentUser } = useCurrentUserContext();
 
   const resetRoom = () => {
-    window.location.href = "/servers";
     setGameInProgress(false);
-    setCurrPlayer(undefined);
     setInitGameState(undefined);
   };
 
@@ -48,10 +43,9 @@ const RoomPage: React.FC = () => {
     const socket = new Socket("/socket", {
       params: { token: userToken },
     });
-    console.log("currentUserId ", currentUserId);
     setCurrPlayer({
-      musicianId: currentUserId,
-      playerAlias: currentUserAlias,
+      musicianId: currentUser.userId,
+      playerAlias: currentUser.userAlias,
     });
     socket.connect();
     const path = window.location.pathname.split("/");
@@ -66,16 +60,6 @@ const RoomPage: React.FC = () => {
       })
       .receive("error", (resp) => {
         console.log("Unable to join", resp);
-      });
-
-    channel
-      .push(SUBMIT_ENTER_ROOM, {
-        player_alias: currentUserAlias,
-        player_id: currentUserId,
-      })
-      .receive("ok", (reply) => {
-        const { player } = unmarshalBody(reply) as PlayerJoinPayload;
-        setCurrPlayer(player);
       });
 
     // lobby update
@@ -113,13 +97,13 @@ const RoomPage: React.FC = () => {
     };
   }, []);
 
-  const submitPlayerJoin = (event: string, payload: Object) => {
-    // if (!!gameChannel) {
-    //   gameChannel.push(event, payload).receive("ok", (reply) => {
-    //     const { player } = unmarshalBody(reply) as PlayerJoinPayload;
-    //     setCurrPlayer(player);
-    //   });
-    // }
+  const pushMessageToServer = (
+    event: string,
+    payload: Object
+  ): Push | undefined => {
+    if (!!gameChannel) {
+      return gameChannel.push(event, payload);
+    }
   };
 
   return (
@@ -130,10 +114,11 @@ const RoomPage: React.FC = () => {
         </PlayerContext.Provider>
       ) : (
         <PregameLobby
-          submitPlayerJoin={submitPlayerJoin}
+          submitPlayerJoin={pushMessageToServer}
           gameInProgress={gameInProgress}
           numPlayersJoined={lobbyState.numPlayersJoined}
           numPlayersToStart={lobbyState.numPlayersToStart}
+          currentUser={currentUser}
         />
       )}
     </div>
