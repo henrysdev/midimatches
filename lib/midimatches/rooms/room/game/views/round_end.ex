@@ -5,10 +5,12 @@ defmodule Midimatches.Rooms.Room.Game.Views.RoundEnd do
 
   alias Midimatches.{
     Rooms.Room.GameServer,
-    Utils
+    Types.WinResult,
+    Utils,
   }
 
   @type id() :: String.t()
+  @type scores_map() :: %{required(id) => number}
 
   @spec advance_view(%GameServer{}) :: %GameServer{}
   def advance_view(
@@ -53,7 +55,17 @@ defmodule Midimatches.Rooms.Room.Game.Views.RoundEnd do
 
   @spec game_over(%GameServer{}) :: %GameServer{}
   def game_over(%GameServer{scores: scores} = state) do
-    game_winners = Utils.scores_to_win_result(scores)
+    game_winners = scores_to_win_result(scores)
     %GameServer{state | game_view: :game_end, game_winners: game_winners}
+  end
+
+  @spec scores_to_win_result(scores_map()) :: %WinResult{}
+  @doc """
+  Transform a scores map into win result struct
+  """
+  def scores_to_win_result(%{} = scores) do
+    scores
+    |> Map.to_list()
+    |> Utils.build_win_result()
   end
 end

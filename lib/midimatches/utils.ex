@@ -12,31 +12,10 @@ defmodule Midimatches.Utils do
   }
 
   @type id() :: String.t()
-  @type votes_map() :: %{required(id) => id}
-  @type scores_map() :: %{required(id) => number}
+  @type freq_pair() :: {id(), number()}
 
-  @spec votes_to_win_result(votes_map()) :: %WinResult{}
-  @doc """
-  Transform a votes map into win result struct
-  """
-  def votes_to_win_result(%{} = votes) do
-    votes
-    |> Map.values()
-    |> Enum.frequencies()
-    |> build_win_result()
-  end
-
-  @spec scores_to_win_result(scores_map()) :: %WinResult{}
-  @doc """
-  Transform a scores map into win result struct
-  """
-  def scores_to_win_result(%{} = scores) do
-    scores
-    |> Map.to_list()
-    |> build_win_result()
-  end
-
-  defp build_win_result(freq_list) do
+  @spec build_win_result(list(freq_pair)) :: %WinResult{}
+  def build_win_result(freq_list) do
     {_id, max_votes} = Enum.max_by(freq_list, fn {_id, freq} -> freq end)
 
     %WinResult{
