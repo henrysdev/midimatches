@@ -16,7 +16,7 @@ const LandingPage: React.FC = () => {
       }}
     >
       <div>
-        <h1 className="uk-text-center">Progressions</h1>
+        <h1 className="uk-text-center">Midi Matches</h1>
         <HowToPlay />
         <button
           style={{ width: "100%", marginTop: "16px" }}

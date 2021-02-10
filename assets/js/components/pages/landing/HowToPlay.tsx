@@ -39,7 +39,7 @@ const HowToPlay: React.FC = () => {
         <br />
         <dd>
           <p>
-            Progressions is a multiplayer improvisational keyboard game that
+            Midi Matches is a multiplayer improvisational keyboard game that
             aims to combine the joy of playing electronic keyboard with the
             thrill of friendly competition.
           </p>
@@ -50,7 +50,7 @@ const HowToPlay: React.FC = () => {
         <br />
         <dd>
           <p>
-            Progressions is intended to be played with a MIDI keyboard. For the
+            Midi Matches is intended to be played with a MIDI keyboard. For the
             best experience, you'll want to have a MIDI keyboard plugged into
             your computer. Alternatively, you can play with your computer
             keyboard or click on notes.

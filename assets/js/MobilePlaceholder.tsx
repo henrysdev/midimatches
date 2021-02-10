@@ -15,9 +15,9 @@ const MobilePlaceholder: React.FC = () => {
       }}
     >
       <div>
-        <h1 className="uk-text-center">Progressions</h1>
+        <h1 className="uk-text-center">Midi Matches</h1>
         <div>
-          <strong>Note: </strong>Progressions is not currently supported on
+          <strong>Note: </strong>Midi Matches is not currently supported on
           mobile.
         </div>
         <HowToPlay />

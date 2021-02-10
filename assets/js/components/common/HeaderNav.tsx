@@ -18,7 +18,7 @@ const HeaderNav: React.FC<HeaderNavProps> = ({ playerAlias }) => (
     >
       <a href="/">
         <h5 style={{ fontFamily: "Audiowide, cursive", cursor: "pointer" }}>
-          Progressions
+          Midi Matches
         </h5>
       </a>
     </div>
