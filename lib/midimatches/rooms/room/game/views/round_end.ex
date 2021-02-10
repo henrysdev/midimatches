@@ -6,7 +6,7 @@ defmodule Midimatches.Rooms.Room.Game.Views.RoundEnd do
   alias Midimatches.{
     Rooms.Room.GameServer,
     Types.WinResult,
-    Utils,
+    Utils
   }
 
   @type id() :: String.t()

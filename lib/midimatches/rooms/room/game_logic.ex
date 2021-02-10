@@ -46,11 +46,12 @@ defmodule Midimatches.Rooms.Room.GameLogic do
       |> Enum.reject(&(&1.musician_id == musician_id))
       |> MapSet.new()
 
-    # filter out votes for player who left
+    # filter out vote cast by the leaving player's. Votes for the leaving player will be treated
+    # as equal to abstaining.
     updated_votes =
       state.votes
       |> Map.to_list()
-      |> Enum.reject(fn {_k, v} -> v == musician_id end)
+      |> Enum.reject(fn {voter, _candidate} -> voter == musician_id end)
       |> Map.new()
 
     %GameServer{

@@ -24,7 +24,7 @@ const RoundEndView: React.FC<RoundEndViewProps> = () => {
   const [winningPlayers, setWinningPlayers] = useState<Player[]>();
 
   useEffect(() => {
-    if (!!roundWinners && !!players) {
+    if (!!roundWinners && roundWinners.winners.length && !!players) {
       const winnerIdsSet = new Set(roundWinners.winners);
       const newWinningPlayers = players.filter((player) =>
         winnerIdsSet.has(player.musicianId)

@@ -17,7 +17,7 @@ const GameEndView: React.FC<GameEndViewProps> = () => {
   const [winningPlayers, setWinningPlayers] = useState<Player[]>();
 
   useEffect(() => {
-    if (!!gameWinners && !!players) {
+    if (!!gameWinners && gameWinners.winners.length > 0 && !!players) {
       const winnerIdsSet = new Set(gameWinners.winners);
       const newWinningPlayers = players.filter((player) =>
         winnerIdsSet.has(player.musicianId)

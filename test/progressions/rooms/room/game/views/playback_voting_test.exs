@@ -104,11 +104,18 @@ defmodule Midimatches.PlaybackVotingTest do
       "e" => "d"
     }
 
-    actual_win_result = PlaybackVoting.votes_to_win_result(votes)
+    current_players =
+      MapSet.new([
+        "a",
+        "d",
+        "e"
+      ])
+
+    actual_win_result = PlaybackVoting.votes_to_win_result(votes, current_players)
 
     expected_win_result = %WinResult{
-      winners: ["b", "c"],
-      num_points: 2
+      winners: ["d"],
+      num_points: 1
     }
 
     assert actual_win_result == expected_win_result
