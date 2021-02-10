@@ -43,7 +43,7 @@ defmodule Midimatches.Application do
 
   @spec configure :: :ok
   def configure do
-    :midimatches
+    :progressions
     |> Application.fetch_env!(:rooms_config)
     |> Configs.parse_config()
     |> (& &1.rooms).()
