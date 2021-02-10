@@ -57,7 +57,9 @@ defmodule Progressions.MixProject do
       {:poison, "~> 3.1"},
       {:excoveralls, "~> 0.10", only: :test},
       {:gen_state_machine, "~> 3.0"},
-      {:uuid, "~> 1.1"}
+      {:uuid, "~> 1.1"},
+      {:ex_aws, "~> 2.0"},
+      {:ex_aws_s3, "~> 2.0"}
     ]
   end
 
