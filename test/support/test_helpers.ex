@@ -1,9 +1,9 @@
-defmodule Progressions.TestHelpers do
+defmodule Midimatches.TestHelpers do
   @moduledoc """
   This module provides convenience methods for writing unit tests for this project
   """
 
-  alias Progressions.{
+  alias Midimatches.{
     Rooms,
     Rooms.Room.GameServer,
     Rooms.RoomServer,

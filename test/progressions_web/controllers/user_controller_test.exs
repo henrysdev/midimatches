@@ -1,5 +1,5 @@
-defmodule ProgressionsWeb.UserControllerTest do
-  use ProgressionsWeb.ConnCase, async: true
+defmodule MidimatchesWeb.UserControllerTest do
+  use MidimatchesWeb.ConnCase, async: true
 
   test "PUT /api/user/edit", %{conn: conn} do
     conn = put(conn, Routes.user_path(conn, :edit), %{"user_alias" => "chumbawumba"})

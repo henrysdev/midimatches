@@ -1,5 +1,5 @@
-defmodule ProgressionsWeb.PageControllerTest do
-  use ProgressionsWeb.ConnCase
+defmodule MidimatchesWeb.PageControllerTest do
+  use MidimatchesWeb.ConnCase
 
   test "GET /", %{conn: conn} do
     conn = get(conn, "/")

@@ -1,9 +1,9 @@
-defmodule Progressions.Types.ConfigsTest do
+defmodule Midimatches.Types.ConfigsTest do
   use ExUnit.Case
 
-  alias Progressions.Types.{
+  alias Midimatches.Types.{
     Configs,
-    Configs.ProgressionsConfig,
+    Configs.MidimatchesConfig,
     Configs.RoomConfig,
     GameRules,
     GameRules.ViewTimeouts
@@ -41,7 +41,7 @@ defmodule Progressions.Types.ConfigsTest do
       }
       """
 
-      expected = %ProgressionsConfig{
+      expected = %MidimatchesConfig{
         rooms: [
           %RoomConfig{
             room_name: "demo1",

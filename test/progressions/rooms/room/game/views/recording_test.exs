@@ -1,7 +1,7 @@
-defmodule Progressions.RecordingTest do
+defmodule Midimatches.RecordingTest do
   use ExUnit.Case
 
-  alias Progressions.{
+  alias Midimatches.{
     Rooms.Room.Game.Views.Recording,
     Rooms.Room.GameServer,
     Types.Player

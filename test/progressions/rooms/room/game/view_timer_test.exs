@@ -1,7 +1,7 @@
-defmodule Progressions.ViewTimerTest do
+defmodule Midimatches.ViewTimerTest do
   use ExUnit.Case
 
-  alias Progressions.{
+  alias Midimatches.{
     Rooms.Room.Game.ViewTimer,
     Rooms.Room.GameServer,
     Types.GameRules,

@@ -1,12 +1,12 @@
-defmodule ProgressionsWeb.ServerlistChannelTest do
-  use ProgressionsWeb.ChannelCase, async: true
+defmodule MidimatchesWeb.ServerlistChannelTest do
+  use MidimatchesWeb.ChannelCase, async: true
 
-  alias ProgressionsWeb.{
+  alias MidimatchesWeb.{
     ServerlistChannel,
     UserSocket
   }
 
-  alias Progressions.TestHelpers
+  alias Midimatches.TestHelpers
 
   setup do
     TestHelpers.teardown_rooms()
@@ -27,14 +27,14 @@ defmodule ProgressionsWeb.ServerlistChannelTest do
 
   #   assert_push("serverlist_update", %{
   #     rooms: [
-  #       %Progressions.Types.ClientRoomState{
-  #         game_rules: %Progressions.Types.GameRules{
+  #       %Midimatches.Types.ClientRoomState{
+  #         game_rules: %Midimatches.Types.GameRules{
   #           game_size_num_players: 4,
   #           quantization_threshold: 0.5,
   #           rounds_to_win: 3,
   #           solo_time_limit: 30,
   #           timestep_size: 50,
-  #           view_timeouts: %Progressions.Types.GameRules.ViewTimeouts{
+  #           view_timeouts: %Midimatches.Types.GameRules.ViewTimeouts{
   #             game_end: 5000,
   #             game_start: 20000,
   #             playback_voting: 90000,

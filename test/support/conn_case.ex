@@ -1,4 +1,4 @@
-defmodule ProgressionsWeb.ConnCase do
+defmodule MidimatchesWeb.ConnCase do
   @moduledoc """
   This module defines the test case to be used by
   tests that require setting up a connection.
@@ -11,7 +11,7 @@ defmodule ProgressionsWeb.ConnCase do
   we enable the SQL sandbox, so changes done to the database
   are reverted at the end of every test. If you are using
   PostgreSQL, you can even run database tests asynchronously
-  by setting `use ProgressionsWeb.ConnCase, async: true`, although
+  by setting `use MidimatchesWeb.ConnCase, async: true`, although
   this option is not recommended for other databases.
   """
 
@@ -22,12 +22,12 @@ defmodule ProgressionsWeb.ConnCase do
       # Import conveniences for testing with connections
       import Plug.Conn
       import Phoenix.ConnTest
-      import ProgressionsWeb.ConnCase
+      import MidimatchesWeb.ConnCase
 
-      alias ProgressionsWeb.Router.Helpers, as: Routes
+      alias MidimatchesWeb.Router.Helpers, as: Routes
 
       # The default endpoint for testing
-      @endpoint ProgressionsWeb.Endpoint
+      @endpoint MidimatchesWeb.Endpoint
 
       def session_conn do
         build_conn() |> Plug.Test.init_test_session(%{})

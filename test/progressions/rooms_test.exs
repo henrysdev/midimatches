@@ -1,7 +1,7 @@
-defmodule Progressions.RoomsTest do
+defmodule Midimatches.RoomsTest do
   use ExUnit.Case
 
-  alias Progressions.{
+  alias Midimatches.{
     Pids,
     Rooms,
     TestHelpers
