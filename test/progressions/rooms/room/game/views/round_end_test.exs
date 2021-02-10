@@ -129,4 +129,23 @@ defmodule Midimatches.RoundEndTest do
 
     assert actual_game_state == expected_game_state
   end
+
+  test "scores to win result" do
+    scores = %{
+      "a" => 0,
+      "c" => 4,
+      "b" => 2,
+      "d" => 2,
+      "e" => 4
+    }
+
+    actual_win_result = RoundEnd.scores_to_win_result(scores)
+
+    expected_win_result = %WinResult{
+      winners: ["c", "e"],
+      num_points: 4
+    }
+
+    assert actual_win_result == expected_win_result
+  end
 end

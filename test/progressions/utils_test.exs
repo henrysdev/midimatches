@@ -95,46 +95,6 @@ defmodule Midimatches.UtilsTest do
     assert actual_client_state == expected_client_state
   end
 
-  describe "maps to win results" do
-    test "works for votes" do
-      votes = %{
-        "a" => "c",
-        "c" => "b",
-        "b" => "c",
-        "d" => "b",
-        "e" => "d"
-      }
-
-      actual_win_result = Utils.votes_to_win_result(votes)
-
-      expected_win_result = %WinResult{
-        winners: ["b", "c"],
-        num_points: 2
-      }
-
-      assert actual_win_result == expected_win_result
-    end
-
-    test "works for scores" do
-      scores = %{
-        "a" => 0,
-        "c" => 4,
-        "b" => 2,
-        "d" => 2,
-        "e" => 4
-      }
-
-      actual_win_result = Utils.scores_to_win_result(scores)
-
-      expected_win_result = %WinResult{
-        winners: ["c", "e"],
-        num_points: 4
-      }
-
-      assert actual_win_result == expected_win_result
-    end
-  end
-
   test "transforms server room state to client room state" do
     game_config = %GameRules{
       game_size_num_players: 5

@@ -8,7 +8,7 @@ import {
   Timer,
   Instructions,
   DynamicContent,
-  Title,
+  MediumLargeTitle,
 } from "../../../../common";
 import { shuffleArray, genRandomColors } from "../../../../../utils";
 import { Color, Loop, RecordingTuple } from "../../../../../types";
@@ -19,8 +19,10 @@ interface PlaybackVotingViewProps {
 }
 
 const desc = `
-Listen through all other recordings and then vote for your favorite. You 
-must listen through each recording at least once before casting your vote.
+Listen through all other players' recordings and vote for your favorite. You 
+must listen through each recording at least once before you are able to vote. 
+If voting time expires before you have cast a vote, your vote will be automatically 
+cast for a random player.
 `;
 
 const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
@@ -76,7 +78,7 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
 
   return (
     <div>
-      <Title title="Playback Voting" />
+      <MediumLargeTitle title="Playback Voting" />
       <Instructions description={desc} />
       <DynamicContent>
         {!!playbackVotingTimeout ? (

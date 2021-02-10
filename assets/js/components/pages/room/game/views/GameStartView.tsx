@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   FullWidthButton,
   Instructions,
-  Title,
+  MediumLargeTitle,
   DynamicContent,
   Timer,
 } from "../../../../common/index";
@@ -34,7 +34,7 @@ const GameStartView: React.FC<GameStartViewProps> = ({
 
   return (
     <div>
-      <Title title="Starting Game" />
+      <MediumLargeTitle title="Starting Game" />
       <Instructions description={"Confirm your MIDI input(s)"} />
       {!!gameStartTimeout ? (
         <Timer

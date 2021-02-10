@@ -6,6 +6,7 @@ defmodule Midimatches.Rooms.Room.Game.Views.PlaybackVoting do
   alias Midimatches.{
     Rooms.Room.GameLogic,
     Rooms.Room.GameServer,
+    Types.WinResult,
     Utils
   }
 
@@ -16,6 +17,7 @@ defmodule Midimatches.Rooms.Room.Game.Views.PlaybackVoting do
           view_change?: boolean(),
           state: %GameServer{}
         }
+  @type votes_map() :: %{required(id) => id}
   @type ballot() :: {id(), id()}
 
   @spec advance_view(%GameServer{}) :: %GameServer{}
@@ -129,8 +131,20 @@ defmodule Midimatches.Rooms.Room.Game.Views.PlaybackVoting do
         end
       )
 
-    round_winners = Utils.votes_to_win_result(votes)
+    round_winners = votes_to_win_result(votes)
 
     %GameServer{state | scores: scores, round_winners: round_winners}
+  end
+
+  @spec votes_to_win_result(votes_map()) :: %WinResult{}
+  @doc """
+  Transform a votes map into win result struct
+  """
+  def votes_to_win_result(votes) do
+    votes
+    |> Map.values()
+    |> Enum.frequencies()
+    |> Map.to_list()
+    |> Utils.build_win_result()
   end
 end

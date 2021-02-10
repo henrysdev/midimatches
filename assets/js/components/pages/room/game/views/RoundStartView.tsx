@@ -1,5 +1,10 @@
 import React from "react";
-import { Timer, Instructions, Title, DynamicContent } from "../../../../common";
+import {
+  Timer,
+  Instructions,
+  MediumLargeTitle,
+  DynamicContent,
+} from "../../../../common";
 import { useGameContext } from "../../../../../hooks";
 
 interface RoundStartViewProps {
@@ -20,7 +25,7 @@ const RoundStartView: React.FC<RoundStartViewProps> = ({
   } = useGameContext();
   return (
     <div>
-      <Title title="Starting Round " />
+      <MediumLargeTitle title="Starting Round " />
       <Instructions description={desc} />
       <DynamicContent>
         <Timer

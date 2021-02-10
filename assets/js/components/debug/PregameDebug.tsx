@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 
 import { GameLayout } from "../pages/room/game";
 import { GameContext, ToneAudioContext, PlayerContext } from "../../contexts";
-import { Instructions, Title, DynamicContent } from "../common";
 import { Keyboard } from "../audio";
 import {
   GameStartView,
   RecordingView,
   PlaybackVotingView,
+  RoundEndView,
 } from "../pages/room/game/views";
 import { Loop } from "../../types";
 import { useWebMidi } from "../../hooks";
@@ -88,6 +88,11 @@ const PregameDebug: React.FC = () => {
             ["xb4z", 2],
           ],
           readyUps: [],
+          roundWinners: {
+            winners: ["1199"],
+            numPoints: 2,
+          },
+          roundNum: 2,
           recordings: [
             [
               "xb4z",
@@ -187,10 +192,7 @@ const PregameDebug: React.FC = () => {
         <PlayerContext.Provider value={{ player: mockedPlayers[0] }}>
           <ToneAudioContext.Provider value={{ midiInputs, Tone: mockTone }}>
             <GameLayout>
-              <PlaybackVotingView
-                pushMessageToChannel={() => {}}
-                playSample={() => {}}
-              />
+              <RoundEndView />
             </GameLayout>
             {/* <DynamicContent>
               <div>

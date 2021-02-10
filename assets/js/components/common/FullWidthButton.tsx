@@ -3,10 +3,10 @@ import React from "react";
 interface FullWidthButtonProps {
   label: string;
   callback: Function;
-  disabled: boolean;
+  disabled?: boolean;
 }
 const FullWidthButton: React.FC<FullWidthButtonProps> = ({
-  disabled,
+  disabled = false,
   label,
   callback,
 }) => {

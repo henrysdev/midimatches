@@ -4,7 +4,8 @@ defmodule Midimatches.PlaybackVotingTest do
   alias Midimatches.{
     Rooms.Room.Game.Views.PlaybackVoting,
     Rooms.Room.GameServer,
-    Types.Player
+    Types.Player,
+    Types.WinResult
   }
 
   test "advance view through entirely simulated votes" do
@@ -92,5 +93,24 @@ defmodule Midimatches.PlaybackVotingTest do
     expected_scores = %{"1" => 4, "2" => 2, "3" => 1, "4" => 1}
 
     assert actual_scores == expected_scores
+  end
+
+  test "votes to win result" do
+    votes = %{
+      "a" => "c",
+      "c" => "b",
+      "b" => "c",
+      "d" => "b",
+      "e" => "d"
+    }
+
+    actual_win_result = PlaybackVoting.votes_to_win_result(votes)
+
+    expected_win_result = %WinResult{
+      winners: ["b", "c"],
+      num_points: 2
+    }
+
+    assert actual_win_result == expected_win_result
   end
 end
