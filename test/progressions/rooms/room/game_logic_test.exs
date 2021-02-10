@@ -1,7 +1,7 @@
-defmodule Progressions.GameLogicTest do
+defmodule Midimatches.GameLogicTest do
   use ExUnit.Case
 
-  alias Progressions.{
+  alias Midimatches.{
     Rooms.Room.GameLogic,
     Rooms.Room.GameServer,
     TestHelpers,

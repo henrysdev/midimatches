@@ -1,12 +1,12 @@
-defmodule ProgressionsWeb.RoomChannelTest do
-  use ProgressionsWeb.ChannelCase
+defmodule MidimatchesWeb.RoomChannelTest do
+  use MidimatchesWeb.ChannelCase
 
-  alias ProgressionsWeb.{
+  alias MidimatchesWeb.{
     RoomChannel,
     UserSocket
   }
 
-  alias Progressions.{
+  alias Midimatches.{
     Pids,
     Rooms,
     Rooms.RoomServer,

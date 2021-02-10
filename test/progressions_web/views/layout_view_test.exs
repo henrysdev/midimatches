@@ -1,5 +1,5 @@
-defmodule ProgressionsWeb.LayoutViewTest do
-  use ProgressionsWeb.ConnCase, async: true
+defmodule MidimatchesWeb.LayoutViewTest do
+  use MidimatchesWeb.ConnCase, async: true
 
   # When testing helpers, you may want to import Phoenix.HTML and
   # use functions such as safe_to_string() to convert the helper

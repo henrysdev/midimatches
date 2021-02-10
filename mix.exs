@@ -1,9 +1,9 @@
-defmodule Progressions.MixProject do
+defmodule Midimatches.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :progressions,
+      app: :midimatches,
       version: "0.1.0",
       elixir: "~> 1.11.3",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -26,7 +26,7 @@ defmodule Progressions.MixProject do
   # Type `mix help compile.app` for more information.
   def application do
     [
-      mod: {Progressions.Application, []},
+      mod: {Midimatches.Application, []},
       extra_applications: [:logger, :runtime_tools, :logger_file_backend, :gen_state_machine]
     ]
   end

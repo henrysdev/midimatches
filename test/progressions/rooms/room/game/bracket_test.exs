@@ -1,7 +1,7 @@
-defmodule Progressions.BracketTest do
+defmodule Midimatches.BracketTest do
   use ExUnit.Case
 
-  alias Progressions.Rooms.Room.Game.Bracket
+  alias Midimatches.Rooms.Room.Game.Bracket
 
   test "build new bracket" do
     musicians =

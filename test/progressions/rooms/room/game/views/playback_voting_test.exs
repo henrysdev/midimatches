@@ -1,7 +1,7 @@
-defmodule Progressions.PlaybackVotingTest do
+defmodule Midimatches.PlaybackVotingTest do
   use ExUnit.Case
 
-  alias Progressions.{
+  alias Midimatches.{
     Rooms.Room.Game.Views.PlaybackVoting,
     Rooms.Room.GameServer,
     Types.Player

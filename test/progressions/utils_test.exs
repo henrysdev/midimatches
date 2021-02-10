@@ -1,7 +1,7 @@
-defmodule Progressions.UtilsTest do
+defmodule Midimatches.UtilsTest do
   use ExUnit.Case
 
-  alias Progressions.{
+  alias Midimatches.{
     Rooms.Room.GameServer,
     Rooms.RoomServer,
     Types.ClientGameState,

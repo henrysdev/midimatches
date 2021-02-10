@@ -1,3 +1,3 @@
-defmodule ProgressionsWeb.PageViewTest do
-  use ProgressionsWeb.ConnCase, async: true
+defmodule MidimatchesWeb.PageViewTest do
+  use MidimatchesWeb.ConnCase, async: true
 end

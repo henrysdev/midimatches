@@ -1,7 +1,7 @@
-defmodule Progressions.RoundEndTest do
+defmodule Midimatches.RoundEndTest do
   use ExUnit.Case
 
-  alias Progressions.{
+  alias Midimatches.{
     Rooms.Room.Game.Views.RoundEnd,
     Rooms.Room.GameServer,
     Types.Player,

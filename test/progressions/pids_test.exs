@@ -1,7 +1,7 @@
-defmodule Progressions.PidsTest do
+defmodule Midimatches.PidsTest do
   use ExUnit.Case
 
-  alias Progressions.Pids
+  alias Midimatches.Pids
 
   test "registers and returns supported pids" do
     room_ids = ["41231", "52323", "6123412"]
