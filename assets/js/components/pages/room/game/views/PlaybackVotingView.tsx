@@ -19,8 +19,10 @@ interface PlaybackVotingViewProps {
 }
 
 const desc = `
-Listen through all other recordings and then vote for your favorite. You 
-must listen through each recording at least once before casting your vote.
+Listen through all other players' recordings and vote for your favorite. You 
+must listen through each recording at least once before you are able to vote. 
+If voting time expires before you have cast a vote, your vote will be automatically 
+cast for a random player.
 `;
 
 const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
