@@ -4,3 +4,4 @@ export { PlayerRow } from "./PlayerRow";
 export { Scoreboard } from "./Scoreboard";
 export { LeftSidebar } from "./LeftSidebar";
 export { GameSettings } from "./GameSettings";
+export { WinResultText } from "./WinResultText";

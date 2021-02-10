@@ -8,7 +8,7 @@ import {
   MAX_PLAYER_ALIAS_LENGTH,
   MIN_PLAYER_ALIAS_LENGTH,
 } from "../../../constants";
-import { FullWidthButton, Title } from "../../common";
+import { FullWidthButton, MediumLargeTitle } from "../../common";
 
 const RegisterPlayerPage: React.FC = () => {
   const [alias, setAlias] = useState<string>();
@@ -51,7 +51,7 @@ const RegisterPlayerPage: React.FC = () => {
           color: "#666",
         }}
       >
-        <Title title="Choose an Alias to Continue" />
+        <MediumLargeTitle title="Choose an Alias to Continue" />
         <form style={{ margin: 0 }}>
           <fieldset className="uk-fieldset">
             <input

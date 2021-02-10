@@ -8,7 +8,7 @@ import {
   Timer,
   Instructions,
   DynamicContent,
-  Title,
+  MediumLargeTitle,
 } from "../../../../common";
 import { shuffleArray, genRandomColors } from "../../../../../utils";
 import { Color, Loop, RecordingTuple } from "../../../../../types";
@@ -76,7 +76,7 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
 
   return (
     <div>
-      <Title title="Playback Voting" />
+      <MediumLargeTitle title="Playback Voting" />
       <Instructions description={desc} />
       <DynamicContent>
         {!!playbackVotingTimeout ? (

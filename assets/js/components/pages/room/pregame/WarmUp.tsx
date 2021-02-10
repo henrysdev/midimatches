@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 
 import { DEFAULT_SYNTH_CONFIG } from "../../../../constants";
-import { FullWidthButton, Title } from "../../../common";
 import { RecordMidi } from "../../../audio";
 import { PregameDebug } from "../../../debug";
 import { ToneAudioContext } from "../../../../contexts";

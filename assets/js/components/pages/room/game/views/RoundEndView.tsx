@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Timer, Instructions, Title, DynamicContent } from "../../../../common";
+import {
+  Timer,
+  Instructions,
+  MediumLargeTitle,
+  DynamicContent,
+} from "../../../../common";
 import { useGameContext } from "../../../../../hooks";
 import { WinResult, Player } from "../../../../../types";
+import { WinResultText } from "../";
 
 interface RoundEndViewProps {}
 
@@ -30,34 +36,19 @@ const RoundEndView: React.FC<RoundEndViewProps> = () => {
   return (
     <div>
       <div>
-        <Title title={`End of Round ${roundNum}`} />
-        <div>
-          {!!winningPlayers && !!roundWinners ? (
-            winningPlayers.length > 1 ? (
-              <div>
-                <div>
-                  <strong>Round Tie</strong>
-                </div>
-                {winningPlayers.map((player) => {
-                  return (
-                    <div key={`winner-${player.musicianId}`}>
-                      {player.playerAlias} with {roundWinners.numPoints} votes
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <div>
-                <div>
-                  <strong>Round Winner</strong>
-                </div>
-                <div>{`${winningPlayers[0].playerAlias} wins round ${roundNum} with ${roundWinners.numPoints} votes`}</div>
-              </div>
-            )
-          ) : (
-            <></>
-          )}
-        </div>
+        <MediumLargeTitle title={`End of Round ${roundNum}`} />
+
+        {!!winningPlayers && !!roundWinners ? (
+          <WinResultText
+            winResult={roundWinners}
+            winningPlayers={winningPlayers}
+            roundNum={roundNum}
+            endOfGame={false}
+          />
+        ) : (
+          <></>
+        )}
+
         <DynamicContent>
           <Timer
             descriptionText={"Next round starting in "}

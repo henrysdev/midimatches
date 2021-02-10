@@ -6,7 +6,7 @@ import {
   MIN_PLAYER_ALIAS_LENGTH,
   MAX_PLAYER_ALIAS_LENGTH,
 } from "../../../../constants";
-import { FullWidthButton, Title } from "../../../common";
+import { FullWidthButton, MediumLargeTitle } from "../../../common";
 import { RecordMidi } from "../../../audio";
 import { PregameDebug } from "../../../debug";
 import { WarmUp } from ".";
@@ -33,81 +33,85 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
   };
 
   return (
-    <div
-      style={{
-        maxWidth: "400px",
-        margin: "auto",
-        marginTop: "16px",
-        padding: "24px",
-        boxShadow: "0 5px 15px rgb(0 0 0 / 8%)",
-        color: "#666",
-      }}
-    >
-      <Title title="Pregame Lobby" />
-      {gameInProgress ? (
-        <div>
+    <div>
+      <div
+        style={{
+          maxWidth: "400px",
+          margin: "auto",
+          marginTop: "16px",
+          padding: "24px",
+          boxShadow: "0 5px 15px rgb(0 0 0 / 8%)",
+          color: "#666",
+        }}
+      >
+        <MediumLargeTitle title="Pregame Lobby" />
+        {gameInProgress ? (
           <div>
-            <strong>Game in progress.</strong> A new game will be starting in a
-            few minutes. Feel free to <a href="/">find another server</a> or
-            play keyboard in the meantime.
+            <div>
+              <strong>Game in progress.</strong> A new game will be starting in
+              a few minutes. Feel free to <a href="/">find another server</a> or
+              play keyboard in the meantime.
+            </div>
+            <WarmUp />
           </div>
-          <WarmUp />
-        </div>
-      ) : (
-        <div>
+        ) : (
           <div>
-            {hasJoined ? (
-              <div>
-                <p>
-                  Joined successfully as <strong>{alias}</strong>. Warm up your
-                  fingers a bit! Waiting for more players...
-                </p>
-                <WarmUp />
-              </div>
-            ) : (
-              <p style={{ marginBottom: "8px" }}>Game has not started yet.</p>
-            )}
-          </div>
-          {/* {hasJoined ? (
-            <></>
-          ) : (
-            <form style={{ margin: 0 }}>
-              <fieldset className="uk-fieldset">
-                <input
-                  style={{ marginBottom: "8px" }}
-                  className="uk-input"
-                  type="text"
-                  placeholder="Enter an alias..."
-                  maxLength={MAX_PLAYER_ALIAS_LENGTH}
-                  onChange={handleChange}
-                />
-              </fieldset>
-              <FullWidthButton
-                label="Join"
-                callback={() => {
-                  submitPlayerJoin(SUBMIT_ENTER_ROOM, {
-                    player_alias: alias,
-                  });
-                  setHasJoined(true);
-                }}
-                disabled={!alias || alias.length < MIN_PLAYER_ALIAS_LENGTH}
-              />
-              {!!alias && alias.length < MIN_PLAYER_ALIAS_LENGTH ? (
-                <i style={{ marginLeft: 10, color: "red" }}>
-                  Alias must be at least 3 characters long
-                </i>
+            <div>
+              {hasJoined ? (
+                <div>
+                  <p>
+                    Joined successfully as <strong>{alias}</strong>. Warm up
+                    your fingers a bit! Waiting for more players...
+                  </p>
+                  <WarmUp />
+                </div>
               ) : (
-                <></>
+                <p style={{ marginBottom: "8px" }}>Game has not started yet.</p>
               )}
-            </form>
-          )} */}
-          <div style={{ marginTop: "16px" }}>
-            <strong>{`${numPlayersJoined}/${numPlayersToStart} Players. Need ${
-              numPlayersToStart - numPlayersJoined
-            } more players to start game`}</strong>
+            </div>
+            {hasJoined ? (
+              <></>
+            ) : (
+              <div>
+                {/* <form style={{ margin: 0 }}>
+                  <fieldset className="uk-fieldset">
+                    <input
+                      style={{ marginBottom: "8px" }}
+                      className="uk-input"
+                      type="text"
+                      placeholder="Enter an alias..."
+                      maxLength={MAX_PLAYER_ALIAS_LENGTH}
+                      onChange={handleChange}
+                    />
+                  </fieldset>
+                  <FullWidthButton
+                    label="Join"
+                    callback={() => {
+                      submitPlayerJoin(SUBMIT_ENTER_ROOM, {
+                        player_alias: alias,
+                      });
+                      setHasJoined(true);
+                    }}
+                    disabled={!alias || alias.length < MIN_PLAYER_ALIAS_LENGTH}
+                  />
+                  {!!alias && alias.length < MIN_PLAYER_ALIAS_LENGTH ? (
+                    <i style={{ marginLeft: 10, color: "red" }}>
+                      Alias must be at least 3 characters long
+                    </i>
+                  ) : (
+                    <></>
+                  )}
+                </form> */}
+              </div>
+            )}
+            <div style={{ marginTop: "16px" }}>
+              <strong>{`${numPlayersJoined}/${numPlayersToStart} Players. Need ${
+                numPlayersToStart - numPlayersJoined
+              } more players to start game`}</strong>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
       {/* <PregameDebug /> */}
     </div>
   );

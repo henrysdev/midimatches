@@ -1,7 +1,6 @@
 import React from "react";
 
 import { HowToPlay } from ".";
-import { Button } from "../../common";
 
 const LandingPage: React.FC = () => {
   return (

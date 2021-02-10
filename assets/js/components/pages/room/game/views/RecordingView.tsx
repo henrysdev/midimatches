@@ -6,7 +6,12 @@ import {
   DEFAULT_RECORDING_LENGTH,
 } from "../../../../../constants";
 import { RecordMidi } from "../../../../audio";
-import { Timer, Instructions, Title, DynamicContent } from "../../../../common";
+import {
+  Timer,
+  Instructions,
+  MediumLargeTitle,
+  DynamicContent,
+} from "../../../../common";
 import { secToMs } from "../../../../../utils";
 import { useGameContext } from "../../../../../hooks";
 
@@ -43,7 +48,7 @@ const RecordingView: React.FC<RecordingViewProps> = ({
 
   return isContestant ? (
     <div>
-      <Title title="Time to Play!" />
+      <MediumLargeTitle title="Time to Play!" />
       <Instructions
         description={`Listen to the sample and warm up before recording begins.`}
       />
