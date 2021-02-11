@@ -6,6 +6,7 @@ defmodule Midimatches.Rooms.Room.GameLogic do
   alias Midimatches.{
     Rooms.Room.Game.Views,
     Rooms.Room.GameServer,
+    S3Client,
     Types.GameRules,
     Types.Player
   }
@@ -26,6 +27,8 @@ defmodule Midimatches.Rooms.Room.GameLogic do
       |> MapSet.to_list()
       |> Enum.map(& &1.musician_id)
 
+    sample_beats = S3Client.random_sample_beats(game_rules.rounds_to_win)
+
     %GameServer{
       room_id: room_id,
       game_id: game_id,
@@ -34,6 +37,7 @@ defmodule Midimatches.Rooms.Room.GameLogic do
       musicians: MapSet.new(musicians_list),
       game_view: :game_start,
       contestants: musicians_list,
+      sample_beats: sample_beats,
       scores: musicians_list |> Enum.map(&{&1, 0}) |> Map.new()
     }
   end
@@ -46,11 +50,12 @@ defmodule Midimatches.Rooms.Room.GameLogic do
       |> Enum.reject(&(&1.musician_id == musician_id))
       |> MapSet.new()
 
-    # filter out votes for player who left
+    # filter out vote cast by the leaving player's. Votes for the leaving player will be treated
+    # as equal to abstaining.
     updated_votes =
       state.votes
       |> Map.to_list()
-      |> Enum.reject(fn {_k, v} -> v == musician_id end)
+      |> Enum.reject(fn {voter, _candidate} -> voter == musician_id end)
       |> Map.new()
 
     %GameServer{

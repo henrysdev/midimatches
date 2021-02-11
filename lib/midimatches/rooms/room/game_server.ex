@@ -30,12 +30,14 @@ defmodule Midimatches.Rooms.Room.GameServer do
         }
 
   typedstruct do
-    field(:game_rules, %GameRules{}, default: %GameRules{})
+    # enforced (must be provided explicitly)
     field(:musicians, MapSet.t(id()), enforce: true)
     field(:players, MapSet.t(Player), enforce: true)
     field(:room_id, id(), enforce: true)
     field(:game_id, id(), enforce: true)
+    field(:sample_beats, list(String.t()), enforce: true)
 
+    field(:game_rules, %GameRules{}, default: %GameRules{})
     field(:game_view, game_view(), default: :game_start)
     field(:contestants, list(id), default: [])
     field(:game_winners, %WinResult{}, default: nil)

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { MediumTitle } from "../../../common";
 import { WinResult, Player } from "../../../../types";
 
@@ -15,9 +15,15 @@ const WinResultText: React.FC<WinResultTextProps> = ({
   endOfGame,
   roundNum = 0,
 }) => {
+  const winners = useMemo(() => {
+    return winningPlayers.length > 0
+      ? winningPlayers
+      : [{ playerAlias: "missing player", musicianId: "-1" }];
+  }, [roundNum]);
+
   return (
     <div style={{ textAlign: "center" }}>
-      {winningPlayers.length > 1 ? (
+      {winners.length > 1 ? (
         <div>
           {endOfGame ? (
             <MediumTitle title="Game Tie" />
@@ -25,7 +31,7 @@ const WinResultText: React.FC<WinResultTextProps> = ({
             <MediumTitle title="Round Tie" />
           )}
 
-          {winningPlayers.map((player) => {
+          {winners.map((player) => {
             return (
               <div key={`winner-${player.musicianId}`}>
                 {player.playerAlias} with {winResult.numPoints} votes
@@ -36,12 +42,12 @@ const WinResultText: React.FC<WinResultTextProps> = ({
       ) : endOfGame ? (
         <div>
           <MediumTitle title="Game Winner" />
-          <div>{`${winningPlayers[0].playerAlias} wins game with ${winResult.numPoints} total votes`}</div>
+          <div>{`${winners[0].playerAlias} wins game with ${winResult.numPoints} total votes`}</div>
         </div>
       ) : (
         <div>
           <MediumTitle title="Round Winner" />
-          <div>{`${winningPlayers[0].playerAlias} wins round ${roundNum} with ${winResult.numPoints} votes`}</div>
+          <div>{`${winners[0].playerAlias} wins round ${roundNum} with ${winResult.numPoints} votes`}</div>
         </div>
       )}
     </div>

@@ -15,8 +15,15 @@ const WarmUp: React.FC<WarmUpProps> = ({}) => {
   const [synth, setSynth] = useState<any>();
 
   useEffect(() => {
-    Tone.context.lookAhead = 0.01;
+    Tone.context.lookAhead = 0;
     const newSynth = new Tone.PolySynth(DEFAULT_SYNTH_CONFIG).toDestination();
+    // const newSynth = new Tone.Sampler({
+    //   urls: {
+    //     C4: "funk_daddy_c4.mp3",
+    //     C5: "funk_daddy_c5.mp3",
+    //   },
+    //   baseUrl: "https://progressions-game.s3.amazonaws.com/synths/funk_daddy/",
+    // }).toDestination();
     setSynth(newSynth);
   }, []);
 

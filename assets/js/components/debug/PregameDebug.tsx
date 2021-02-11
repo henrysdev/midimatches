@@ -11,6 +11,8 @@ import {
 } from "../pages/room/game/views";
 import { Loop } from "../../types";
 import { useWebMidi } from "../../hooks";
+import { DynamicContent } from "../common";
+import Tone from "tone";
 
 interface FakeTone {
   Master: any;
@@ -190,11 +192,15 @@ const PregameDebug: React.FC = () => {
         }}
       >
         <PlayerContext.Provider value={{ player: mockedPlayers[0] }}>
-          <ToneAudioContext.Provider value={{ midiInputs, Tone: mockTone }}>
-            <GameLayout>
-              <RoundEndView />
-            </GameLayout>
-            {/* <DynamicContent>
+          <ToneAudioContext.Provider value={{ midiInputs, Tone: Tone }}>
+            {/* <GameLayout>
+              <PlaybackVotingView
+                pushMessageToChannel={() => {}}
+                playSample={() => {}}
+                stopSample={() => {}}
+              />
+            </GameLayout> */}
+            <DynamicContent>
               <div>
                 <Keyboard
                   activeMidiList={[50]}
@@ -204,7 +210,7 @@ const PregameDebug: React.FC = () => {
                   stopNote={() => {}}
                 />
               </div>
-            </DynamicContent> */}
+            </DynamicContent>
           </ToneAudioContext.Provider>
         </PlayerContext.Provider>
       </GameContext.Provider>

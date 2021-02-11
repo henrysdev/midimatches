@@ -2,11 +2,7 @@ import { Channel } from "phoenix";
 import React, { useEffect, useState, useMemo } from "react";
 
 import * as Tone from "tone";
-import {
-  GAME_VIEW,
-  SAMPLE_URLS,
-  DEFAULT_SYNTH_CONFIG,
-} from "../../../../constants";
+import { GAME_VIEW, DEFAULT_SYNTH_CONFIG } from "../../../../constants";
 import { GameContext, ToneAudioContext } from "../../../../contexts";
 import {
   GameEndView,
@@ -40,6 +36,10 @@ const Game: React.FC<GameProps> = ({ gameChannel, initGameState }) => {
   const { player: currPlayer } = usePlayerContext();
   const [synth, setSynth] = useState<any>();
 
+  const currSampleBeat = useMemo(() => {
+    return gameContext.sampleBeats[gameContext.roundNum - 1];
+  }, [gameContext.roundNum]);
+
   const resetTone = () => {
     stopSample();
     Tone.Transport.cancel(0);
@@ -47,8 +47,15 @@ const Game: React.FC<GameProps> = ({ gameChannel, initGameState }) => {
   };
 
   useEffect(() => {
-    Tone.context.lookAhead = 0.01;
+    Tone.context.lookAhead = 0;
     const newSynth = new Tone.PolySynth(DEFAULT_SYNTH_CONFIG).toDestination();
+    // const newSynth = new Tone.Sampler({
+    //   urls: {
+    //     C4: "funk_daddy_c4.mp3",
+    //     C5: "funk_daddy_c5.mp3",
+    //   },
+    //   baseUrl: "https://progressions-game.s3.amazonaws.com/synths/funk_daddy/",
+    // }).toDestination();
     setSynth(newSynth);
   }, []);
 
@@ -57,8 +64,7 @@ const Game: React.FC<GameProps> = ({ gameChannel, initGameState }) => {
       case GAME_VIEW.GAME_START:
         break;
       case GAME_VIEW.ROUND_START:
-        // TODO random choice [?]
-        loadSample(SAMPLE_URLS[0]);
+        loadSample(currSampleBeat);
         break;
       case GAME_VIEW.RECORDING:
         break;
@@ -112,6 +118,7 @@ const Game: React.FC<GameProps> = ({ gameChannel, initGameState }) => {
                   <PlaybackVotingView
                     pushMessageToChannel={pushMessage}
                     playSample={playSample}
+                    stopSample={stopSample}
                   />
                 );
 

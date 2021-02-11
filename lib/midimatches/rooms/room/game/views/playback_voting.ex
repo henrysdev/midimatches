@@ -37,7 +37,7 @@ defmodule Midimatches.Rooms.Room.Game.Views.PlaybackVoting do
 
     missing_voters =
       judges
-      |> Stream.reject(&(votes |> Map.keys() |> Enum.member?(&1)))
+      |> Enum.reject(&(votes |> Map.keys() |> Enum.member?(&1)))
 
     state =
       Enum.reduce(missing_voters, state, fn voter_id, acc_state ->
@@ -121,7 +121,7 @@ defmodule Midimatches.Rooms.Room.Game.Views.PlaybackVoting do
   defp last_vote(%GameServer{} = state), do: update_scores(state)
 
   @spec update_scores(%GameServer{}) :: %GameServer{}
-  def update_scores(%GameServer{votes: votes, scores: scores} = state) do
+  def update_scores(%GameServer{votes: votes, scores: scores, musicians: musicians} = state) do
     scores =
       Enum.reduce(
         votes,
@@ -131,18 +131,22 @@ defmodule Midimatches.Rooms.Room.Game.Views.PlaybackVoting do
         end
       )
 
-    round_winners = votes_to_win_result(votes)
+    round_winners =
+      votes
+      |> votes_to_win_result(musicians)
 
     %GameServer{state | scores: scores, round_winners: round_winners}
   end
 
-  @spec votes_to_win_result(votes_map()) :: %WinResult{}
+  @spec votes_to_win_result(votes_map(), MapSet.t(id)) :: %WinResult{}
   @doc """
-  Transform a votes map into win result struct
+  Transform a votes map into win result struct. Filters out votes for players that are no
+  longer in the game.
   """
-  def votes_to_win_result(votes) do
+  def votes_to_win_result(votes, current_players) do
     votes
     |> Map.values()
+    |> Enum.filter(&MapSet.member?(current_players, &1))
     |> Enum.frequencies()
     |> Map.to_list()
     |> Utils.build_win_result()

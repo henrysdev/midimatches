@@ -68,7 +68,8 @@ defmodule Midimatches.UtilsTest do
       },
       recordings: %{
         "1" => %{}
-      }
+      },
+      sample_beats: ["track_1", "track2", "track3"]
     }
 
     actual_client_state = Utils.server_to_client_game_state(server_state)
@@ -89,7 +90,8 @@ defmodule Midimatches.UtilsTest do
       round_num: server_state.round_num,
       contestants: server_state.contestants,
       scores: [["1", 0], ["2", 0], ["3", 1], ["4", 2]],
-      round_winners: server_state.round_winners
+      round_winners: server_state.round_winners,
+      sample_beats: ["track_1", "track2", "track3"]
     }
 
     assert actual_client_state == expected_client_state

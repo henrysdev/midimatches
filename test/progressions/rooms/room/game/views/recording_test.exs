@@ -38,7 +38,8 @@ defmodule Midimatches.RecordingTest do
       musicians: musicians,
       game_view: :recording,
       contestants: contestants,
-      recordings: %{}
+      recordings: %{},
+      sample_beats: []
     }
 
     %GameServer{

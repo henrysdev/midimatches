@@ -6,7 +6,7 @@ defmodule Midimatches.Rooms.Room.Game.Views.RoundEnd do
   alias Midimatches.{
     Rooms.Room.GameServer,
     Types.WinResult,
-    Utils,
+    Utils
   }
 
   @type id() :: String.t()
@@ -37,6 +37,7 @@ defmodule Midimatches.Rooms.Room.Game.Views.RoundEnd do
         contestants: contestants,
         view_counter: view_counter,
         scores: scores,
+        sample_beats: sample_beats,
         round_num: round_num
       }) do
     %GameServer{
@@ -49,6 +50,7 @@ defmodule Midimatches.Rooms.Room.Game.Views.RoundEnd do
       view_counter: view_counter,
       contestants: contestants,
       scores: scores,
+      sample_beats: sample_beats,
       round_num: round_num + 1
     }
   end

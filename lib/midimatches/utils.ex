@@ -79,7 +79,8 @@ defmodule Midimatches.Utils do
       contestants: server_state.contestants,
       scores: scores_list,
       round_num: server_state.round_num,
-      round_winners: server_state.round_winners
+      round_winners: server_state.round_winners,
+      sample_beats: server_state.sample_beats
     }
   end
 
