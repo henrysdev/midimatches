@@ -182,7 +182,7 @@ defmodule Midimatches.Rooms.Room.GameServer do
           GameLogic.cast_vote(state, event_payload)
 
         _ ->
-          %{sync_clients?: false, state: state}
+          %{sync_clients?: false, view_change?: false, state: state}
       end
 
     {:reply, :ok, exec_instruction(instruction)}
