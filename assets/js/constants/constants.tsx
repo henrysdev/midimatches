@@ -32,7 +32,7 @@ export const SUBMIT_RECORDING_EVENT = "musician_recording";
 export const SUBMIT_VOTE_EVENT = "musician_vote";
 
 export const MIN_PLAYER_ALIAS_LENGTH = 3;
-export const MAX_PLAYER_ALIAS_LENGTH = 14;
+export const MAX_PLAYER_ALIAS_LENGTH = 10;
 
 export const DEFAULT_SAMPLE_PLAY_BUFFER_LENGTH = 2;
 export const DEFAULT_SAMPLE_LENGTH = 10.6667;
@@ -53,6 +53,6 @@ export const DEFAULT_SYNTH_CONFIG = {
     sustain: 0.2,
     release: 0.5,
   },
-  volume: 3,
+  volume: -3,
   portamento: 0.05,
 } as Tone.SynthOptions;

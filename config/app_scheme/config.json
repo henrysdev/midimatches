@@ -1,7 +1,75 @@
 {
   "rooms": [
     {
-      "room_name": "beta test group large",
+      "room_name": "ROOM A",
+      "server": {
+        "timestep_size": 50,
+        "quantization_threshold": 0.5,
+        "rounds_to_win": 3,
+        "game_size_num_players": 5,
+        "view_timeouts": {
+          "game_start": 60000,
+          "round_start": 3000,
+          "recording": 45000,
+          "playback_voting": 90000,
+          "round_end": 10000,
+          "game_end": 10000
+        }
+      }
+    },
+    {
+      "room_name": "ROOM B",
+      "server": {
+        "timestep_size": 50,
+        "quantization_threshold": 0.5,
+        "rounds_to_win": 3,
+        "game_size_num_players": 5,
+        "view_timeouts": {
+          "game_start": 60000,
+          "round_start": 3000,
+          "recording": 45000,
+          "playback_voting": 90000,
+          "round_end": 10000,
+          "game_end": 10000
+        }
+      }
+    },
+    {
+      "room_name": "ROOM C",
+      "server": {
+        "timestep_size": 50,
+        "quantization_threshold": 0.5,
+        "rounds_to_win": 3,
+        "game_size_num_players": 4,
+        "view_timeouts": {
+          "game_start": 60000,
+          "round_start": 3000,
+          "recording": 45000,
+          "playback_voting": 90000,
+          "round_end": 10000,
+          "game_end": 10000
+        }
+      }
+    },
+    {
+      "room_name": "ROOM D",
+      "server": {
+        "timestep_size": 50,
+        "quantization_threshold": 0.5,
+        "rounds_to_win": 3,
+        "game_size_num_players": 4,
+        "view_timeouts": {
+          "game_start": 60000,
+          "round_start": 3000,
+          "recording": 45000,
+          "playback_voting": 90000,
+          "round_end": 10000,
+          "game_end": 10000
+        }
+      }
+    },
+    {
+      "room_name": "ROOM E",
       "server": {
         "timestep_size": 50,
         "quantization_threshold": 0.5,
@@ -10,7 +78,7 @@
         "view_timeouts": {
           "game_start": 60000,
           "round_start": 3000,
-          "recording": 60000,
+          "recording": 45000,
           "playback_voting": 60000,
           "round_end": 10000,
           "game_end": 10000
@@ -18,7 +86,24 @@
       }
     },
     {
-      "room_name": "beta test group small",
+      "room_name": "ROOM F",
+      "server": {
+        "timestep_size": 50,
+        "quantization_threshold": 0.5,
+        "rounds_to_win": 3,
+        "game_size_num_players": 3,
+        "view_timeouts": {
+          "game_start": 60000,
+          "round_start": 3000,
+          "recording": 45000,
+          "playback_voting": 60000,
+          "round_end": 10000,
+          "game_end": 10000
+        }
+      }
+    },
+    {
+      "room_name": "ROOM G",
       "server": {
         "timestep_size": 50,
         "quantization_threshold": 0.5,
@@ -27,7 +112,7 @@
         "view_timeouts": {
           "game_start": 60000,
           "round_start": 3000,
-          "recording": 60000,
+          "recording": 45000,
           "playback_voting": 60000,
           "round_end": 10000,
           "game_end": 10000
@@ -35,19 +120,36 @@
       }
     },
     {
-      "room_name": "[DEV] test game rotation",
+      "room_name": "ROOM H",
       "server": {
         "timestep_size": 50,
         "quantization_threshold": 0.5,
-        "rounds_to_win": 1,
+        "rounds_to_win": 3,
         "game_size_num_players": 2,
         "view_timeouts": {
-          "game_start": 1000,
-          "round_start": 1000,
-          "recording": 1000,
-          "playback_voting": 1000,
-          "round_end": 1000,
-          "game_end": 5000
+          "game_start": 60000,
+          "round_start": 3000,
+          "recording": 45000,
+          "playback_voting": 60000,
+          "round_end": 10000,
+          "game_end": 10000
+        }
+      }
+    },
+    {
+      "room_name": "ROOM I",
+      "server": {
+        "timestep_size": 50,
+        "quantization_threshold": 0.5,
+        "rounds_to_win": 3,
+        "game_size_num_players": 2,
+        "view_timeouts": {
+          "game_start": 60000,
+          "round_start": 3000,
+          "recording": 45000,
+          "playback_voting": 60000,
+          "round_end": 10000,
+          "game_end": 10000
         }
       }
     }

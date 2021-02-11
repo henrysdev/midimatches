@@ -19,11 +19,11 @@ const Serverlist: React.FC<ServerlistProps> = ({
 
   return (
     <div style={{ padding: "8px" }}>
-      <h1 className="uk-text-center">Game Room</h1>
+      <h1 className="uk-text-center">Room List</h1>
       <p>
-        Look for games that have the "Pregame" status to get into a lobby
-        without having to wait for the current game to end. Games are sorted
-        with the most eligible games to join at the top.
+        Look for rooms that have the "Pregame" status to get into a lobby
+        without having to wait for the current game to end. Rooms with the most
+        players in them will appear closer to the top.
       </p>
       <table
         className="uk-table uk-table-divider uk-background-muted"
@@ -40,7 +40,7 @@ const Serverlist: React.FC<ServerlistProps> = ({
             <th>Name</th>
             <th>Status</th>
             <th># Players</th>
-            <th>Max Players</th>
+            <th>Required Players</th>
             <th>Join</th>
             {/* <th>Link</th> */}
           </tr>
@@ -48,11 +48,7 @@ const Serverlist: React.FC<ServerlistProps> = ({
         <tbody>
           {roomStates
             .sort((a, b) => {
-              return (
-                a.gameRules.gameSizeNumPlayers -
-                a.numCurrPlayers -
-                (b.gameRules.gameSizeNumPlayers - b.numCurrPlayers)
-              );
+              return b.numCurrPlayers - a.numCurrPlayers;
             })
             .map((room) => {
               return (
