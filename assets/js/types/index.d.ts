@@ -88,7 +88,7 @@ export interface GameRules {
 }
 
 export interface WinResult {
-  winners: Array<string>;
+  winners: string[];
   numPoints: number;
 }
 
@@ -108,6 +108,7 @@ export interface GameState {
   // static fields
   gameRules: GameRules;
   roomId?: string;
+  sampleBeats: string[];
 
   // dynamic fields
   gameView: string;

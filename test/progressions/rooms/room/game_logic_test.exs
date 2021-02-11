@@ -41,7 +41,8 @@ defmodule Midimatches.GameLogicTest do
         room_id: "1",
         game_id: "abc",
         players: players,
-        musicians: musicians
+        musicians: musicians,
+        sample_beats: []
       }
 
       {_bracket, actual_state_scan} =
@@ -93,7 +94,8 @@ defmodule Midimatches.GameLogicTest do
         room_id: "1",
         game_id: "abc",
         players: players,
-        musicians: musicians
+        musicians: musicians,
+        sample_beats: []
       }
 
       {_bracket, actual_state_scan} =
@@ -149,7 +151,8 @@ defmodule Midimatches.GameLogicTest do
         players: players,
         musicians: musicians,
         game_view: :recording,
-        contestants: ["1", "2"]
+        contestants: ["1", "2"],
+        sample_beats: []
       }
 
       {_bracket, actual_state_scan} =
@@ -204,7 +207,8 @@ defmodule Midimatches.GameLogicTest do
         players: players,
         musicians: musicians,
         game_view: :playback_voting,
-        contestants: ["1", "2", "3", "4"]
+        contestants: ["1", "2", "3", "4"],
+        sample_beats: []
       }
 
       {_bracket, actual_state_scan} =
@@ -270,7 +274,8 @@ defmodule Midimatches.GameLogicTest do
         game_view: :playback_voting,
         contestants: contestants,
         round_num: 3,
-        game_rules: %{rounds_to_win: 3}
+        game_rules: %{rounds_to_win: 3},
+        sample_beats: []
       }
 
       {_bracket, actual_state_scan} =
@@ -330,7 +335,8 @@ defmodule Midimatches.GameLogicTest do
       game_view: :playback_voting,
       contestants: contestants,
       round_num: 3,
-      game_rules: %{rounds_to_win: 3}
+      game_rules: %{rounds_to_win: 3},
+      sample_beats: []
     }
 
     %{state: actual_state} = GameLogic.remove_musician(game_server_state, "1")
@@ -357,7 +363,8 @@ defmodule Midimatches.GameLogicTest do
       game_view: :playback_voting,
       contestants: ["2", "3", "4"],
       round_num: 3,
-      game_rules: %{rounds_to_win: 3}
+      game_rules: %{rounds_to_win: 3},
+      sample_beats: []
     }
 
     assert actual_state == expected_state

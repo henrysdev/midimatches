@@ -15,6 +15,8 @@ export enum GAME_VIEW {
   GAME_END,
 }
 
+export const S3_BUCKET_URL = "https://progressions-game.s3.amazonaws.com";
+
 export const SERVERLIST_UPDATE_EVENT = "serverlist_update";
 
 export const GAME_UPDATE_EVENT = "game_update";
@@ -28,8 +30,6 @@ export const SUBMIT_LEAVE_ROOM = "musician_leave_room";
 export const SUBMIT_READY_UP_EVENT = "musician_ready_up";
 export const SUBMIT_RECORDING_EVENT = "musician_recording";
 export const SUBMIT_VOTE_EVENT = "musician_vote";
-
-export const SAMPLE_URLS = ["/sounds/ragga_sample.mp3"];
 
 export const MIN_PLAYER_ALIAS_LENGTH = 3;
 export const MAX_PLAYER_ALIAS_LENGTH = 14;

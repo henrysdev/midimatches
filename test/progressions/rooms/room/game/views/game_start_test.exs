@@ -38,7 +38,8 @@ defmodule Midimatches.GameStartTest do
       musicians: musicians,
       game_view: :game_start,
       contestants: contestants,
-      ready_ups: MapSet.new()
+      ready_ups: MapSet.new(),
+      sample_beats: []
     }
 
     %GameServer{

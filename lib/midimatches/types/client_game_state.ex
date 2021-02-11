@@ -32,5 +32,6 @@ defmodule Midimatches.Types.ClientGameState do
     field(:round_num, integer())
     field(:scores, list(list))
     field(:round_winners, %WinResult{})
+    field(:sample_beats, list(String.t()))
   end
 end

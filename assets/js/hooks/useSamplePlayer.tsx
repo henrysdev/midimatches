@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { S3_BUCKET_URL } from "../constants";
 
 type SamplePlayerTuple = [(url: string) => void, () => void, () => void];
 
@@ -11,9 +12,9 @@ export function useSamplePlayer(Tone: any): SamplePlayerTuple {
     setSamplePlayer(newSamplePlayer);
   }, []);
 
-  const loadSample = (url: string) => {
+  const loadSample = (sampleBeatFilename: string) => {
     if (!!samplePlayer) {
-      samplePlayer.load(url);
+      samplePlayer.load(`${S3_BUCKET_URL}/sample-beats/${sampleBeatFilename}`);
     }
   };
 

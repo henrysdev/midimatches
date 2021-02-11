@@ -58,8 +58,10 @@ defmodule Midimatches.MixProject do
       {:excoveralls, "~> 0.10", only: :test},
       {:gen_state_machine, "~> 3.0"},
       {:uuid, "~> 1.1"},
-      {:ex_aws, "~> 2.0"},
-      {:ex_aws_s3, "~> 2.0"}
+      {:ex_aws, "~> 2.1"},
+      {:ex_aws_s3, "~> 2.0"},
+      {:hackney, "~> 1.15"},
+      {:sweet_xml, "~> 0.6"}
     ]
   end
 

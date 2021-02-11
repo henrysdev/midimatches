@@ -56,7 +56,8 @@ defmodule Midimatches.RoundEndTest do
       game_view: :round_end,
       contestants: contestants,
       recordings: %{},
-      game_winners: %WinResult{winners: ["2"], num_points: 2}
+      game_winners: %WinResult{winners: ["2"], num_points: 2},
+      sample_beats: []
     }
 
     actual_game_state = RoundEnd.advance_view(game_server_state)
@@ -74,7 +75,8 @@ defmodule Midimatches.RoundEndTest do
       view_counter: 0,
       votes: %{},
       game_winners: nil,
-      round_num: 2
+      round_num: 2,
+      sample_beats: []
     }
 
     assert actual_game_state == expected_game_state
@@ -116,7 +118,8 @@ defmodule Midimatches.RoundEndTest do
       recordings: %{},
       scores: scores,
       game_winners: nil,
-      round_num: 3
+      round_num: 3,
+      sample_beats: []
     }
 
     actual_game_state = RoundEnd.advance_view(game_server_state)

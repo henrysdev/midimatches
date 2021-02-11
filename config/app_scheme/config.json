@@ -5,7 +5,7 @@
       "server": {
         "timestep_size": 50,
         "quantization_threshold": 0.5,
-        "rounds_to_win": 1,
+        "rounds_to_win": 3,
         "game_size_num_players": 3,
         "view_timeouts": {
           "game_start": 60000,
@@ -22,7 +22,7 @@
       "server": {
         "timestep_size": 50,
         "quantization_threshold": 0.5,
-        "rounds_to_win": 1,
+        "rounds_to_win": 3,
         "game_size_num_players": 2,
         "view_timeouts": {
           "game_start": 60000,

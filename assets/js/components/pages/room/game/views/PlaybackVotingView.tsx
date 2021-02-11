@@ -16,6 +16,7 @@ import { Color, Loop, RecordingTuple } from "../../../../../types";
 interface PlaybackVotingViewProps {
   pushMessageToChannel: Function;
   playSample: Function;
+  stopSample: Function;
 }
 
 const desc = `
@@ -28,6 +29,7 @@ cast for a random player.
 const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
   pushMessageToChannel,
   playSample,
+  stopSample,
 }) => {
   const {
     recordings = [],
@@ -111,6 +113,7 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
                       recording={recording}
                       musicianId={musicianId}
                       playSample={playSample}
+                      stopSample={stopSample}
                       color={color}
                       submitVote={submitVote}
                       setActivePlaybackTrack={setActivePlaybackTrack}

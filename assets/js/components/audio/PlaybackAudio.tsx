@@ -16,6 +16,7 @@ interface PlaybackAudioProps {
   recording: Loop;
   musicianId: string;
   playSample: Function;
+  stopSample: Function;
   color: Color;
   submitVote: Function;
   setActivePlaybackTrack: Function;
@@ -29,6 +30,7 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
   recording,
   musicianId,
   playSample,
+  stopSample,
   color,
   submitVote,
   setActivePlaybackTrack,
@@ -187,7 +189,10 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
         >
           <Button
             label="Vote"
-            callback={() => submitVote(musicianId)}
+            callback={() => {
+              submitVote(musicianId);
+              stopSample();
+            }}
             disabled={false}
           />
         </div>

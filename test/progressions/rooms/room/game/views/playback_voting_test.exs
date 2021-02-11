@@ -39,7 +39,8 @@ defmodule Midimatches.PlaybackVotingTest do
       musicians: musicians,
       game_view: :playback_voting,
       contestants: contestants,
-      votes: %{}
+      votes: %{},
+      sample_beats: []
     }
 
     %GameServer{
@@ -86,7 +87,8 @@ defmodule Midimatches.PlaybackVotingTest do
       game_view: :playback_voting,
       contestants: contestants,
       scores: %{"1" => 3, "2" => 0, "3" => 1, "4" => 0},
-      votes: %{"1" => "2", "2" => "4", "4" => "2", "3" => "1"}
+      votes: %{"1" => "2", "2" => "4", "4" => "2", "3" => "1"},
+      sample_beats: []
     }
 
     actual_scores = PlaybackVoting.update_scores(game_server_state).scores
