@@ -192,7 +192,11 @@ const PregameDebug: React.FC = () => {
         <PlayerContext.Provider value={{ player: mockedPlayers[0] }}>
           <ToneAudioContext.Provider value={{ midiInputs, Tone: mockTone }}>
             <GameLayout>
-              <RoundEndView />
+              <PlaybackVotingView
+                pushMessageToChannel={() => {}}
+                playSample={() => {}}
+                stopSample={() => {}}
+              />
             </GameLayout>
             {/* <DynamicContent>
               <div>

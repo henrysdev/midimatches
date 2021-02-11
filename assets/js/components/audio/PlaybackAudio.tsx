@@ -102,103 +102,105 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
   };
 
   return (
-    <div style={{ display: "flex" }}>
-      <div
-        style={{
-          flex: "5",
-          padding: "8px",
-          margin: "auto",
-          marginTop: "4px",
-          border: "1px solid #666",
-          boxShadow: "0 5px 5px rgb(0 0 0 / 8%)",
-          color: "#666",
-          cursor: "pointer",
-          backgroundColor: hovering ? "#f8f8f8" : "white",
-        }}
-        onMouseEnter={() => setHovering(true)}
-        onMouseLeave={() => setHovering(false)}
-        onClick={() => playbackMusician(timestepSize, playNote)}
-      >
+    <div style={{ padding: "8px" }}>
+      (anonymous player)
+      <div style={{ display: "flex" }}>
         <div
           style={{
-            display: "flex",
+            flex: "5",
+            padding: "8px",
+            margin: "auto",
+            marginTop: "4px",
+            border: "1px solid #666",
+            boxShadow: "0 5px 5px rgb(0 0 0 / 8%)",
+            color: "#666",
+            cursor: "pointer",
+            backgroundColor: hovering ? "#f8f8f8" : "white",
           }}
+          onMouseEnter={() => setHovering(true)}
+          onMouseLeave={() => setHovering(false)}
+          onClick={() => playbackMusician(timestepSize, playNote)}
         >
           <div
             style={{
-              width: "32px",
+              display: "flex",
             }}
           >
-            {isPlaying ? (
-              listenComplete ? (
+            <div
+              style={{
+                width: "32px",
+              }}
+            >
+              {isPlaying ? (
+                listenComplete ? (
+                  <i
+                    style={{ verticalAlign: "middle", color: "green" }}
+                    className="material-icons"
+                  >
+                    done
+                  </i>
+                ) : (
+                  <i
+                    style={{ verticalAlign: "middle", color: "blue" }}
+                    className="material-icons"
+                  >
+                    hearing
+                  </i>
+                )
+              ) : listenComplete ? (
                 <i
                   style={{ verticalAlign: "middle", color: "green" }}
                   className="material-icons"
                 >
-                  hearing
+                  done
                 </i>
               ) : (
                 <i
-                  style={{ verticalAlign: "middle", color: "blue" }}
+                  style={{ verticalAlign: "middle", color: "red" }}
                   className="material-icons"
                 >
-                  hearing
+                  hearing_disabled
                 </i>
-              )
-            ) : listenComplete ? (
-              <i
-                style={{ verticalAlign: "middle", color: "green" }}
-                className="material-icons"
-              >
-                hearing
-              </i>
-            ) : (
-              <i
-                style={{ verticalAlign: "middle", color: "red" }}
-                className="material-icons"
-              >
-                hearing_disabled
-              </i>
-            )}
+              )}
+            </div>
+            <div
+              style={{
+                flex: "5",
+              }}
+            >
+              <RecordingVisual
+                recording={recording}
+                color={color}
+                progress={progress}
+                isPlaying={isPlaying}
+              />
+            </div>
           </div>
+        </div>
+
+        {canVote ? (
           <div
             style={{
-              flex: "5",
+              flex: "1",
+              padding: "8px",
+              margin: "auto",
+              marginTop: "4px",
+              height: "100%",
+              width: "100%",
             }}
           >
-            <RecordingVisual
-              recording={recording}
-              color={color}
-              progress={progress}
-              isPlaying={isPlaying}
+            <Button
+              label="Vote"
+              callback={() => {
+                submitVote(musicianId);
+                stopSample();
+              }}
             />
           </div>
-        </div>
+        ) : (
+          <></>
+        )}
       </div>
-
-      {canVote ? (
-        <div
-          style={{
-            flex: "1",
-            padding: "8px",
-            margin: "auto",
-            marginTop: "4px",
-            height: "100%",
-            width: "100%",
-          }}
-        >
-          <Button
-            label="Vote"
-            callback={() => {
-              submitVote(musicianId);
-              stopSample();
-            }}
-            disabled={false}
-          />
-        </div>
-      ) : (
-        <></>
-      )}
     </div>
   );
 };
