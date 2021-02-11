@@ -8,7 +8,7 @@ export function useSamplePlayer(Tone: any): SamplePlayerTuple {
 
   useEffect(() => {
     const newSamplePlayer = new Tone.Player().toDestination();
-    newSamplePlayer.volume.value = -6;
+    newSamplePlayer.volume.value = -3;
     setSamplePlayer(newSamplePlayer);
   }, []);
 
