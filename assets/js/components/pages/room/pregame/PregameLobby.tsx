@@ -18,6 +18,7 @@ interface PregameLobbyProps {
   numPlayersJoined: number;
   numPlayersToStart: number;
   currentUser: User;
+  roomName: string;
 }
 
 const PregameLobby: React.FC<PregameLobbyProps> = ({
@@ -26,6 +27,7 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
   numPlayersJoined,
   numPlayersToStart,
   currentUser,
+  roomName,
 }) => {
   const [hasJoined, setHasJoined] = useState<boolean>(false);
 
@@ -41,7 +43,7 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
           color: "#666",
         }}
       >
-        <MediumLargeTitle title="Pregame Lobby" />
+        <MediumLargeTitle title={`${roomName} - Pregame Lobby`} />
         {gameInProgress ? (
           <div>
             <div>

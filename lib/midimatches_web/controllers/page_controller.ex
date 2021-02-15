@@ -46,6 +46,6 @@ defmodule MidimatchesWeb.PageController do
   end
 
   def register_player(conn, _params) do
-    render(conn, "register_player.html", destination: "/")
+    render(conn, "register_player.html", destination: "/servers")
   end
 end

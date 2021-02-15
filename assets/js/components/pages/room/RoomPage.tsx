@@ -28,6 +28,7 @@ const RoomPage: React.FC = () => {
   const [lobbyState, setLobbyState] = useState<any>({
     numPlayersJoined: 0,
     numPlayersToStart: 0,
+    roomName: "",
   });
   const { user: currentUser } = useCurrentUserContext();
 
@@ -70,9 +71,10 @@ const RoomPage: React.FC = () => {
         numPlayersJoined,
         numPlayersToStart,
         gameInProgress,
+        roomName,
       } = unmarshalBody(body) as LobbyUpdatePayload;
       setGameInProgress(gameInProgress);
-      setLobbyState({ numPlayersJoined, numPlayersToStart });
+      setLobbyState({ numPlayersJoined, numPlayersToStart, roomName });
     });
 
     // start game
@@ -121,6 +123,7 @@ const RoomPage: React.FC = () => {
           numPlayersJoined={lobbyState.numPlayersJoined}
           numPlayersToStart={lobbyState.numPlayersToStart}
           currentUser={currentUser}
+          roomName={lobbyState.roomName}
         />
       )}
     </div>

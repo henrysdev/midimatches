@@ -47,6 +47,7 @@ export interface LobbyUpdatePayload {
   numPlayersJoined: number;
   numPlayersToStart: number;
   gameInProgress: boolean;
+  roomName: string;
 }
 
 export interface GameUpdatePayload {

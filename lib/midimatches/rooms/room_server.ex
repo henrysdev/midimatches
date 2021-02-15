@@ -203,6 +203,7 @@ defmodule Midimatches.Rooms.RoomServer do
   @spec broadcast_lobby_state(%RoomServer{}) :: atom()
   defp broadcast_lobby_state(%RoomServer{
          room_id: room_id,
+         room_name: room_name,
          game: game,
          players: players,
          game_config: %GameRules{
@@ -212,7 +213,8 @@ defmodule Midimatches.Rooms.RoomServer do
     MidimatchesWeb.Endpoint.broadcast("room:#{room_id}", "lobby_update", %{
       num_players_joined: MapSet.size(players),
       num_players_to_start: game_size_num_players,
-      game_in_progress: !is_nil(game)
+      game_in_progress: !is_nil(game),
+      room_name: room_name
     })
   end
 end
