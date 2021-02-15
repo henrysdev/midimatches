@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import {
-  SUBMIT_ENTER_ROOM,
+  SUBMIT_PREGAME_JOIN,
   SUBMIT_LEAVE_ROOM,
   MIN_PLAYER_ALIAS_LENGTH,
   MAX_PLAYER_ALIAS_LENGTH,
@@ -18,6 +18,7 @@ interface PregameLobbyProps {
   numPlayersJoined: number;
   numPlayersToStart: number;
   currentUser: User;
+  roomName: string;
 }
 
 const PregameLobby: React.FC<PregameLobbyProps> = ({
@@ -26,6 +27,7 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
   numPlayersJoined,
   numPlayersToStart,
   currentUser,
+  roomName,
 }) => {
   const [hasJoined, setHasJoined] = useState<boolean>(false);
 
@@ -41,7 +43,7 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
           color: "#666",
         }}
       >
-        <MediumLargeTitle title="Pregame Lobby" />
+        <MediumLargeTitle title={`${roomName} - Pregame Lobby`} />
         {gameInProgress ? (
           <div>
             <div>
@@ -74,7 +76,7 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
                 <FullWidthButton
                   label="Join"
                   callback={() => {
-                    const sentMessage = submitPlayerJoin(SUBMIT_ENTER_ROOM, {
+                    const sentMessage = submitPlayerJoin(SUBMIT_PREGAME_JOIN, {
                       player_alias: currentUser.userAlias,
                       player_id: currentUser.userId,
                     });

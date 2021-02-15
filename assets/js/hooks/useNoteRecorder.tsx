@@ -270,7 +270,6 @@ const recordNoteOff = (
     // update recorded timestep slice with new note
     if (isRecording) {
       const newNote: Note = {
-        instrument: "",
         key: key,
         duration: Math.max(
           1,

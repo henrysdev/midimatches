@@ -1,5 +1,5 @@
 import { Channel, Socket, Push } from "phoenix";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 
 import { unmarshalBody } from "../../../utils";
 import {
@@ -28,6 +28,7 @@ const RoomPage: React.FC = () => {
   const [lobbyState, setLobbyState] = useState<any>({
     numPlayersJoined: 0,
     numPlayersToStart: 0,
+    roomName: "",
   });
   const { user: currentUser } = useCurrentUserContext();
 
@@ -70,9 +71,10 @@ const RoomPage: React.FC = () => {
         numPlayersJoined,
         numPlayersToStart,
         gameInProgress,
+        roomName,
       } = unmarshalBody(body) as LobbyUpdatePayload;
       setGameInProgress(gameInProgress);
-      setLobbyState({ numPlayersJoined, numPlayersToStart });
+      setLobbyState({ numPlayersJoined, numPlayersToStart, roomName });
     });
 
     // start game
@@ -108,9 +110,20 @@ const RoomPage: React.FC = () => {
     }
   };
 
+  const playerIsPlaying = useMemo(() => {
+    if (gameInProgress && !!gameChannel && !!currPlayer && !!initGameState) {
+      return !!initGameState.players
+        ? initGameState.players
+            .map((player) => player.musicianId)
+            .includes(currPlayer.musicianId)
+        : false;
+    }
+    return false;
+  }, [gameInProgress, currPlayer, initGameState]);
+
   return (
     <div>
-      {gameInProgress && !!gameChannel && !!currPlayer && !!initGameState ? (
+      {playerIsPlaying && !!gameChannel && !!currPlayer && !!initGameState ? (
         <PlayerContext.Provider value={{ player: currPlayer }}>
           <Game gameChannel={gameChannel} initGameState={initGameState} />
         </PlayerContext.Provider>
@@ -121,6 +134,7 @@ const RoomPage: React.FC = () => {
           numPlayersJoined={lobbyState.numPlayersJoined}
           numPlayersToStart={lobbyState.numPlayersToStart}
           currentUser={currentUser}
+          roomName={lobbyState.roomName}
         />
       )}
     </div>

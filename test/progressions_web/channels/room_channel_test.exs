@@ -50,7 +50,7 @@ defmodule MidimatchesWeb.RoomChannelTest do
   end
 
   defp enter_room({:ok, params, socket}, player_id, player_alias \\ "foo") do
-    push(socket, "musician_enter_room", %{
+    push(socket, "musician_pregame_join", %{
       "player_alias" => player_alias,
       "player_id" => player_id
     })

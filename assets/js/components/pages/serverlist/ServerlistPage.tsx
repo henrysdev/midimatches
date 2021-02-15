@@ -47,7 +47,7 @@ const ServerlistPage: React.FC = () => {
       const now = Date.now();
       const last = lastRefreshRef.current as number;
       setTimeSinceRefresh(now - last);
-    }, 1000);
+    }, 500);
 
     return () => {
       clearInterval(refreshInterval);
