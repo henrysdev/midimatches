@@ -182,6 +182,12 @@ defmodule Midimatches.Rooms.Room.GameServer do
           GameLogic.cast_vote(state, event_payload)
 
         _ ->
+          Logger.warn(
+            "Unexpected client_event, " <>
+              "event_type=#{inspect(event_type)}, " <>
+              "event_payload=#{inspect(event_payload)}"
+          )
+
           %{sync_clients?: false, view_change?: false, state: state}
       end
 
