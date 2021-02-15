@@ -64,8 +64,6 @@ defmodule MidimatchesWeb.RoomChannel do
         %{"player_id" => player_id},
         socket
       ) do
-    IO.inspect({:CALLED_NEW_WAY})
-
     if Rooms.room_exists?(room_id) do
       send(self(), {:init_conn, room_id})
       room_server = Pids.fetch!({:room_server, room_id})
@@ -75,24 +73,6 @@ defmodule MidimatchesWeb.RoomChannel do
        |> assign(room_id: room_id)
        |> assign(room_server: room_server)
        |> assign(musician_id: player_id)}
-    else
-      {:error, "room #{room_id} does not exist"}
-    end
-  end
-
-  def join(
-        "room:" <> room_id,
-        _params,
-        socket
-      ) do
-    IO.inspect({:CALLED_OLD_WAY})
-
-    if Rooms.room_exists?(room_id) do
-      send(self(), {:init_conn, room_id})
-
-      {:ok,
-       socket
-       |> assign(room_id: room_id)}
     else
       {:error, "room #{room_id} does not exist"}
     end

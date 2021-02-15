@@ -20,7 +20,7 @@ defmodule MidimatchesWeb.RoomChannelTest do
     {:ok, _, socket} =
       UserSocket
       |> socket()
-      |> subscribe_and_join(RoomChannel, "room:1")
+      |> subscribe_and_join(RoomChannel, "room:1", %{"player_id" => "id2"})
       |> enter_room("id1")
 
     %{socket: socket}
@@ -46,7 +46,7 @@ defmodule MidimatchesWeb.RoomChannelTest do
   # end
 
   test "client gets error when non existent room joined", %{socket: socket} do
-    assert {:error, _} = RoomChannel.join("room:3", %{}, socket)
+    assert {:error, _} = RoomChannel.join("room:3", %{"player_id" => "id2"}, socket)
   end
 
   defp enter_room({:ok, params, socket}, player_id, player_alias \\ "foo") do
