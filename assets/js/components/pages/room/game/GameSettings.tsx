@@ -6,12 +6,12 @@ interface GameSettingsProps {}
 
 const GameSettings: React.FC<GameSettingsProps> = ({}) => {
   const { Tone } = useToneAudioContext();
-  const [isMuted, setIsMuted] = useState<boolean>(Tone.Master.mute);
+  const [soundIsOn, setSoundIsOn] = useState<boolean>(Tone.Master.mute);
 
   const toggleMute = () => {
-    const newIsMuted = !isMuted;
-    Tone.Master.mute = newIsMuted;
-    setIsMuted(newIsMuted);
+    const newIsSoundOn = !soundIsOn;
+    Tone.Master.mute = newIsSoundOn;
+    setSoundIsOn(newIsSoundOn);
   };
 
   return (
@@ -24,13 +24,19 @@ const GameSettings: React.FC<GameSettingsProps> = ({}) => {
       <h5 style={{ textAlign: "left", color: "#999" }}>Settings</h5>
       <ul style={{ listStyleType: "none", paddingLeft: 0 }}>
         <li style={{ padding: 0 }}>
-          <i style={{ verticalAlign: "middle" }} className="material-icons">
-            volume_off
-          </i>
+          {soundIsOn ? (
+            <i style={{ verticalAlign: "middle" }} className="material-icons">
+              volume_off
+            </i>
+          ) : (
+            <i style={{ verticalAlign: "middle" }} className="material-icons">
+              volume_up
+            </i>
+          )}
           <label className="switch">
             <input
               type="checkbox"
-              checked={isMuted}
+              checked={!soundIsOn}
               onChange={() => toggleMute()}
             />
             <span className="slider round"></span>

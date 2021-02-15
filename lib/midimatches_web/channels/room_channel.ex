@@ -59,7 +59,34 @@ defmodule MidimatchesWeb.RoomChannel do
     {:noreply, socket}
   end
 
-  def join("room:" <> room_id, _params, socket) do
+  def join(
+        "room:" <> room_id,
+        %{"player_id" => player_id},
+        socket
+      ) do
+    IO.inspect({:CALLED_NEW_WAY})
+
+    if Rooms.room_exists?(room_id) do
+      send(self(), {:init_conn, room_id})
+      room_server = Pids.fetch!({:room_server, room_id})
+
+      {:ok,
+       socket
+       |> assign(room_id: room_id)
+       |> assign(room_server: room_server)
+       |> assign(musician_id: player_id)}
+    else
+      {:error, "room #{room_id} does not exist"}
+    end
+  end
+
+  def join(
+        "room:" <> room_id,
+        _params,
+        socket
+      ) do
+    IO.inspect({:CALLED_OLD_WAY})
+
     if Rooms.room_exists?(room_id) do
       send(self(), {:init_conn, room_id})
 
@@ -143,7 +170,13 @@ defmodule MidimatchesWeb.RoomChannel do
   end
 
   def handle_in(event, params, socket) do
-    Logger.warn("Unexpected websocket event of type #{event} with params #{inspect(params)}")
+    Logger.warn(
+      "Unexpected websocket event. " <>
+        "type=#{event} " <>
+        "params=#{inspect(params)} " <>
+        "socket.assigns=#{inspect(socket.assigns)} "
+    )
+
     {:noreply, socket}
   end
 end

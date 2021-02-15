@@ -21,6 +21,7 @@ import {
 import { useCurrentUserContext } from "../../../hooks";
 
 const RoomPage: React.FC = () => {
+  console.log("RENDERING ROOM PAGE");
   const [gameChannel, setGameChannel] = useState<Channel>();
   const [gameInProgress, setGameInProgress] = useState<boolean>(false);
   const [currPlayer, setCurrPlayer] = useState<Player>();
@@ -50,7 +51,9 @@ const RoomPage: React.FC = () => {
     socket.connect();
     const path = window.location.pathname.split("/");
     const roomId = path[path.length - 1];
-    const channel: Channel = socket.channel(`room:${roomId}`);
+    const channel: Channel = socket.channel(`room:${roomId}`, {
+      player_id: currentUser.userId,
+    });
 
     // join game
     channel
