@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import {
-  SUBMIT_ENTER_ROOM,
+  SUBMIT_PREGAME_JOIN,
   SUBMIT_LEAVE_ROOM,
   MIN_PLAYER_ALIAS_LENGTH,
   MAX_PLAYER_ALIAS_LENGTH,
@@ -74,7 +74,7 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
                 <FullWidthButton
                   label="Join"
                   callback={() => {
-                    const sentMessage = submitPlayerJoin(SUBMIT_ENTER_ROOM, {
+                    const sentMessage = submitPlayerJoin(SUBMIT_PREGAME_JOIN, {
                       player_alias: currentUser.userAlias,
                       player_id: currentUser.userId,
                     });
