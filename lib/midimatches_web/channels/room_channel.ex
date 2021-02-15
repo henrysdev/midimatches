@@ -26,7 +26,6 @@ defmodule MidimatchesWeb.RoomChannel do
         notes: [
           %Note{
             duration: nil,
-            instrument: nil,
             key: nil,
             velocity: nil
           }

@@ -6,7 +6,6 @@ defmodule Midimatches.Types.Note do
 
   @derive Jason.Encoder
   typedstruct enforce: true do
-    field(:instrument, String.t())
     field(:key, integer())
     field(:duration, integer())
     field(:velocity, float())

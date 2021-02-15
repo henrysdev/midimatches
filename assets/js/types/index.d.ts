@@ -2,7 +2,6 @@ import * as Tone from "tone";
 import { Input } from "webmidi";
 
 export interface Note {
-  instrument: string;
   key: number;
   duration: number;
   velocity: number;
