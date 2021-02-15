@@ -41,7 +41,11 @@ defmodule Midimatches.Rooms.Room.Game.Views.PlaybackVoting do
 
     state =
       Enum.reduce(missing_voters, state, fn voter_id, acc_state ->
-        contestant_id = Enum.random(contestants)
+        contestant_id =
+          contestants
+          |> Stream.reject(&(&1 == voter_id))
+          |> Enum.random()
+
         ballot = {voter_id, contestant_id}
         simulate_vote(acc_state, ballot)
       end)

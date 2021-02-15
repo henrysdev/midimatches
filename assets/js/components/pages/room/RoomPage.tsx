@@ -21,7 +21,6 @@ import {
 import { useCurrentUserContext } from "../../../hooks";
 
 const RoomPage: React.FC = () => {
-  console.log("RENDERING ROOM PAGE");
   const [gameChannel, setGameChannel] = useState<Channel>();
   const [gameInProgress, setGameInProgress] = useState<boolean>(false);
   const [currPlayer, setCurrPlayer] = useState<Player>();
