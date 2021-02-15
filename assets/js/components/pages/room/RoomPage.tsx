@@ -1,5 +1,5 @@
 import { Channel, Socket, Push } from "phoenix";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 
 import { unmarshalBody } from "../../../utils";
 import {
@@ -110,9 +110,20 @@ const RoomPage: React.FC = () => {
     }
   };
 
+  const playerIsPlaying = useMemo(() => {
+    if (gameInProgress && !!gameChannel && !!currPlayer && !!initGameState) {
+      return !!initGameState.players
+        ? initGameState.players
+            .map((player) => player.musicianId)
+            .includes(currPlayer.musicianId)
+        : false;
+    }
+    return false;
+  }, [gameInProgress, currPlayer, initGameState]);
+
   return (
     <div>
-      {gameInProgress && !!gameChannel && !!currPlayer && !!initGameState ? (
+      {playerIsPlaying && !!gameChannel && !!currPlayer && !!initGameState ? (
         <PlayerContext.Provider value={{ player: currPlayer }}>
           <Game gameChannel={gameChannel} initGameState={initGameState} />
         </PlayerContext.Provider>
