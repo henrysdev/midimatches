@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 
 import { SUBMIT_VOTE_EVENT } from "../../../../../constants";
 import { useGameContext, usePlayerContext } from "../../../../../hooks";
@@ -32,7 +32,7 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
   stopSample,
 }) => {
   const {
-    recordings = [],
+    recordings: allRecordings,
     gameRules: {
       viewTimeouts: { playbackVoting: playbackVotingTimeout },
     },
@@ -44,16 +44,40 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
   const [listenCompleteTracks, setListenCompleteTracks] = useState<Set<string>>(
     new Set<string>()
   );
+  const [emptyRecordings, setEmptyRecordings] = useState<Set<string>>(
+    new Set<string>()
+  );
+
+  const recordings = useMemo(() => {
+    return !!allRecordings && !!currPlayer
+      ? allRecordings.filter(
+          ([musicianId, _recording]) => musicianId !== currPlayer.musicianId
+        )
+      : [];
+  }, [allRecordings, currPlayer]);
+
+  useEffect(() => {
+    const emptyMusicians = recordings
+      .filter(
+        ([_musicianId, recording]) => recording.timestepSlices.length === 0
+      )
+      .map(([musicianId, _recording]) => musicianId);
+    const emptyMusiciansSet = new Set(emptyMusicians);
+    setEmptyRecordings(emptyMusiciansSet);
+    setListenCompleteTracks(
+      new Set([...listenCompleteTracks, ...emptyMusicians])
+    );
+  }, []);
+
+  const canVote: boolean = useMemo(() => {
+    return listenCompleteTracks.size >= recordings.length;
+  }, [listenCompleteTracks.size]);
 
   const completeListening = (musicianId: string) => {
     const updatedListenCompleteTracksSet = new Set([
       ...listenCompleteTracks,
       ...[musicianId],
     ]);
-    console.log({
-      listenCompleteTracks,
-      updatedListenCompleteTracksSet,
-    });
     setListenCompleteTracks(updatedListenCompleteTracksSet);
   };
 
@@ -95,9 +119,6 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
           <div>Vote submitted successfully. Waiting on other players...</div>
         ) : !!recordings ? (
           recordings
-            .filter(
-              ([musicianId, _recording]) => musicianId !== currPlayer.musicianId
-            )
             .map((recordingTuple: RecordingTuple, idx: number): [
               RecordingTuple,
               Color
@@ -119,13 +140,9 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
                       setActivePlaybackTrack={setActivePlaybackTrack}
                       isPlaying={activePlaybackTrack === musicianId}
                       listenComplete={listenCompleteTracks.has(musicianId)}
-                      canVote={
-                        listenCompleteTracks.size ===
-                        recordings.filter(([id, _recording]) => {
-                          return id !== currPlayer.musicianId;
-                        }).length
-                      }
+                      canVote={canVote}
                       completeListening={completeListening}
+                      emptyRecording={emptyRecordings.has(musicianId)}
                     />
                   </div>
                 );

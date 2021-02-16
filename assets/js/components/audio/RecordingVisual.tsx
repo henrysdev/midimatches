@@ -9,6 +9,7 @@ interface RecordingVisualProps {
   color: Color;
   progress: number;
   isPlaying: boolean;
+  emptyRecording: boolean;
 }
 
 const keyboardRange = 100;
@@ -18,6 +19,7 @@ const RecordingVisual: React.FC<RecordingVisualProps> = ({
   color,
   progress,
   isPlaying,
+  emptyRecording,
 }) => {
   const {
     gameRules: { timestepSize },
@@ -33,7 +35,31 @@ const RecordingVisual: React.FC<RecordingVisualProps> = ({
     [recording.timestepSlices.length]
   );
 
-  return (
+  return emptyRecording ? (
+    <div
+      style={{
+        position: "relative",
+        width: "100%",
+        minHeight: "50px",
+        height: "100%",
+        border: "1px solid black",
+      }}
+      className="uk-background-muted"
+    >
+      <div
+        style={{
+          margin: "0",
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+      >
+        (Empty Recording)
+      </div>
+      {isPlaying ? drawProgress(progress) : <></>}
+    </div>
+  ) : (
     <div
       style={{
         position: "relative",
@@ -43,15 +69,17 @@ const RecordingVisual: React.FC<RecordingVisualProps> = ({
         border: "1px solid black",
       }}
     >
-      {recordedNotes.map((notePoint) =>
-        drawNotePointByPercentages(
-          notePoint,
-          percentagePerTimestep,
-          percentagePerKey,
-          color
-        )
-      )}
-      {isPlaying ? drawProgress(progress) : <></>}
+      <div>
+        {recordedNotes.map((notePoint) =>
+          drawNotePointByPercentages(
+            notePoint,
+            percentagePerTimestep,
+            percentagePerKey,
+            color
+          )
+        )}
+        {isPlaying ? drawProgress(progress) : <></>}
+      </div>
     </div>
   );
 };

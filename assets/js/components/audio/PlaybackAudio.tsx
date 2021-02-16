@@ -24,6 +24,7 @@ interface PlaybackAudioProps {
   listenComplete: boolean;
   completeListening: Function;
   canVote: boolean;
+  emptyRecording: boolean;
 }
 
 const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
@@ -38,6 +39,7 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
   listenComplete,
   completeListening,
   canVote,
+  emptyRecording,
 }) => {
   const {
     gameRules: { timestepSize },
@@ -103,7 +105,7 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
 
   return (
     <div style={{ padding: "8px" }}>
-      (anonymous player)
+      Anonymous
       <div style={{ display: "flex" }}>
         <div
           style={{
@@ -173,6 +175,7 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
                 color={color}
                 progress={progress}
                 isPlaying={isPlaying}
+                emptyRecording={emptyRecording}
               />
             </div>
           </div>
