@@ -18,7 +18,7 @@ defmodule Midimatches.TestHelpers do
     unregister_keys(pids)
   end
 
-  def add_musicians(game_server, players) do
+  def add_players(game_server, players) do
     Enum.each(players, fn player ->
       RoomServer.add_player(game_server, player)
     end)
@@ -26,17 +26,17 @@ defmodule Midimatches.TestHelpers do
     game_server
   end
 
-  def ready_up_musicians(game_server, musician_ids) do
-    Enum.each(musician_ids, fn m_id ->
-      GameServer.musician_ready_up(game_server, m_id)
+  def ready_up_players(game_server, player_ids) do
+    Enum.each(player_ids, fn m_id ->
+      GameServer.player_ready_up(game_server, m_id)
     end)
 
     game_server
   end
 
-  def record_musicians(game_server, musician_ids) do
-    Enum.each(musician_ids, fn m_id ->
-      GameServer.musician_recording(
+  def record_players(game_server, player_ids) do
+    Enum.each(player_ids, fn m_id ->
+      GameServer.player_recording(
         game_server,
         m_id,
         %Loop{
@@ -50,11 +50,11 @@ defmodule Midimatches.TestHelpers do
     game_server
   end
 
-  def vote_for_musicians(game_server, musician_votes) do
-    musician_votes
+  def vote_for_players(game_server, player_votes) do
+    player_votes
     |> Map.to_list()
     |> Enum.each(fn {m_id, m_vote} ->
-      GameServer.musician_vote(game_server, m_id, m_vote)
+      GameServer.player_vote(game_server, m_id, m_vote)
     end)
 
     game_server

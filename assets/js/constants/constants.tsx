@@ -25,11 +25,11 @@ export const RESET_ROOM_EVENT = "reset_room";
 export const LOBBY_UPDATE_EVENT = "lobby_update";
 
 export const SUBMIT_REGISTERED_JOIN = "user_enter_room";
-export const SUBMIT_PREGAME_JOIN = "musician_pregame_join";
-export const SUBMIT_LEAVE_ROOM = "musician_leave_room";
-export const SUBMIT_READY_UP_EVENT = "musician_ready_up";
-export const SUBMIT_RECORDING_EVENT = "musician_recording";
-export const SUBMIT_VOTE_EVENT = "musician_vote";
+export const SUBMIT_PREGAME_JOIN = "player_pregame_join";
+export const SUBMIT_LEAVE_ROOM = "player_leave_room";
+export const SUBMIT_READY_UP_EVENT = "player_ready_up";
+export const SUBMIT_RECORDING_EVENT = "player_recording";
+export const SUBMIT_VOTE_EVENT = "player_vote";
 
 export const MIN_PLAYER_ALIAS_LENGTH = 3;
 export const MAX_PLAYER_ALIAS_LENGTH = 10;

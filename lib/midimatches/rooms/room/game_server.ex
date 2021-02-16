@@ -31,7 +31,7 @@ defmodule Midimatches.Rooms.Room.GameServer do
 
   typedstruct do
     # enforced (must be provided explicitly)
-    field(:musicians, MapSet.t(id()), enforce: true)
+    field(:player_ids_set, MapSet.t(id()), enforce: true)
     field(:players, MapSet.t(Player), enforce: true)
     field(:room_id, id(), enforce: true)
     field(:game_id, id(), enforce: true)
@@ -90,44 +90,44 @@ defmodule Midimatches.Rooms.Room.GameServer do
     GenServer.call(pid, {:advance_from_game_view, curr_view, view_counter})
   end
 
-  @spec drop_musician(pid(), id()) :: :ok
+  @spec drop_player(pid(), id()) :: :ok
   @doc """
   Remove a musician from the game.
   """
-  def drop_musician(pid, musician_id) do
-    GenServer.cast(pid, {:drop_musician, musician_id})
+  def drop_player(pid, player_id) do
+    GenServer.cast(pid, {:drop_player, player_id})
   end
 
-  @spec musician_ready_up(pid(), id()) :: :ok
+  @spec player_ready_up(pid(), id()) :: :ok
   @doc """
-  Ready up a musician in the game. All ready ups from active musicians required to progress
+  Ready up a musician in the game. All ready ups from active players required to progress
   state from game start to recording
   """
-  def musician_ready_up(pid, musician_id) do
-    GenServer.call(pid, {:client_event, {:ready_up, musician_id}})
+  def player_ready_up(pid, player_id) do
+    GenServer.call(pid, {:client_event, {:ready_up, player_id}})
   end
 
-  @spec musician_recording(pid(), id(), any) :: :ok
+  @spec player_recording(pid(), id(), any) :: :ok
   @doc """
-  Collect a recording for a musician in the game. Recordings from all musicians required to progress
+  Collect a recording for a musician in the game. Recordings from all players required to progress
   state from recording to playback voting
   """
-  def musician_recording(pid, musician_id, recording) do
-    GenServer.call(pid, {:client_event, {:record, {musician_id, recording}}})
+  def player_recording(pid, player_id, recording) do
+    GenServer.call(pid, {:client_event, {:record, {player_id, recording}}})
   end
 
-  @spec musician_vote(pid(), id(), id()) :: :ok
+  @spec player_vote(pid(), id(), id()) :: :ok
   @doc """
-  Collect a vote for a musician recording. Votes from all musicians required to progress
+  Collect a vote for a musician recording. Votes from all players required to progress
   state from recording to recording
   """
-  def musician_vote(pid, musician_id, vote) do
-    GenServer.call(pid, {:client_event, {:vote, {musician_id, vote}}})
+  def player_vote(pid, player_id, vote) do
+    GenServer.call(pid, {:client_event, {:vote, {player_id, vote}}})
   end
 
   @impl true
-  def handle_cast({:drop_musician, musician_id}, %GameServer{} = state) do
-    instruction = GameLogic.remove_musician(state, musician_id)
+  def handle_cast({:drop_player, player_id}, %GameServer{} = state) do
+    instruction = GameLogic.remove_player(state, player_id)
 
     {:noreply, exec_instruction(instruction)}
   end

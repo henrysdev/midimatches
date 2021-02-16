@@ -18,36 +18,36 @@ defmodule Midimatches.GameLogicTest do
       players =
         MapSet.new([
           %Player{
-            musician_id: "1",
+            player_id: "1",
             player_alias: "foo"
           },
           %Player{
-            musician_id: "2",
+            player_id: "2",
             player_alias: "zoo"
           },
           %Player{
-            musician_id: "3",
+            player_id: "3",
             player_alias: "fee"
           },
           %Player{
-            musician_id: "4",
+            player_id: "4",
             player_alias: "fum"
           }
         ])
 
-      musicians = MapSet.new(["1", "2", "3", "4"])
+      player_ids_set = MapSet.new(["1", "2", "3", "4"])
 
       game_server_state = %GameServer{
         room_id: "1",
         game_id: "abc",
         players: players,
-        musicians: musicians,
+        player_ids_set: player_ids_set,
         sample_beats: []
       }
 
       {_bracket, actual_state_scan} =
         Enum.reduce(
-          musicians,
+          player_ids_set,
           {game_server_state, []},
           fn musician, {gss, state_scan} ->
             %{state: gss} = GameLogic.ready_up(gss, musician)
@@ -70,31 +70,31 @@ defmodule Midimatches.GameLogicTest do
       players =
         MapSet.new([
           %Player{
-            musician_id: "1",
+            player_id: "1",
             player_alias: "foo"
           },
           %Player{
-            musician_id: "2",
+            player_id: "2",
             player_alias: "zoo"
           },
           %Player{
-            musician_id: "3",
+            player_id: "3",
             player_alias: "fee"
           },
           %Player{
-            musician_id: "4",
+            player_id: "4",
             player_alias: "fum"
           }
         ])
 
-      musicians = MapSet.new(["1", "2", "3", "4"])
+      player_ids_set = MapSet.new(["1", "2", "3", "4"])
       duped_ready_ups = ["1", "1", "3", "1"]
 
       game_server_state = %GameServer{
         room_id: "1",
         game_id: "abc",
         players: players,
-        musicians: musicians,
+        player_ids_set: player_ids_set,
         sample_beats: []
       }
 
@@ -125,31 +125,31 @@ defmodule Midimatches.GameLogicTest do
       players =
         MapSet.new([
           %Player{
-            musician_id: "1",
+            player_id: "1",
             player_alias: "foo"
           },
           %Player{
-            musician_id: "2",
+            player_id: "2",
             player_alias: "zoo"
           },
           %Player{
-            musician_id: "3",
+            player_id: "3",
             player_alias: "fee"
           },
           %Player{
-            musician_id: "4",
+            player_id: "4",
             player_alias: "fum"
           }
         ])
 
-      musicians = MapSet.new(["1", "2", "3", "4"])
+      player_ids_set = MapSet.new(["1", "2", "3", "4"])
       event_payloads = [{"1", %{"a" => "foo"}}, {"2", %{"b" => "bar"}}]
 
       game_server_state = %GameServer{
         room_id: "1",
         game_id: "abc",
         players: players,
-        musicians: musicians,
+        player_ids_set: player_ids_set,
         game_view: :recording,
         contestants: ["1", "2"],
         sample_beats: []
@@ -180,32 +180,32 @@ defmodule Midimatches.GameLogicTest do
       players =
         MapSet.new([
           %Player{
-            musician_id: "1",
+            player_id: "1",
             player_alias: "foo"
           },
           %Player{
-            musician_id: "2",
+            player_id: "2",
             player_alias: "zoo"
           },
           %Player{
-            musician_id: "3",
+            player_id: "3",
             player_alias: "fee"
           },
           %Player{
-            musician_id: "4",
+            player_id: "4",
             player_alias: "fum"
           }
         ])
 
       contestants = ["1", "2", "3", "4"]
-      musicians = MapSet.new(contestants)
+      player_ids_set = MapSet.new(contestants)
       event_payloads = [{"3", "1"}, {"4", "1"}, {"2", "1"}, {"1", "4"}]
 
       game_server_state = %GameServer{
         room_id: "1",
         game_id: "abc",
         players: players,
-        musicians: musicians,
+        player_ids_set: player_ids_set,
         game_view: :playback_voting,
         contestants: ["1", "2", "3", "4"],
         sample_beats: []
@@ -236,25 +236,25 @@ defmodule Midimatches.GameLogicTest do
       players =
         MapSet.new([
           %Player{
-            musician_id: "1",
+            player_id: "1",
             player_alias: "foo"
           },
           %Player{
-            musician_id: "2",
+            player_id: "2",
             player_alias: "zoo"
           },
           %Player{
-            musician_id: "3",
+            player_id: "3",
             player_alias: "fee"
           },
           %Player{
-            musician_id: "4",
+            player_id: "4",
             player_alias: "fum"
           }
         ])
 
       contestants = ["1", "2", "3", "4"]
-      musicians = MapSet.new(contestants)
+      player_ids_set = MapSet.new(contestants)
 
       event_payloads = [
         {"3", "1"},
@@ -270,7 +270,7 @@ defmodule Midimatches.GameLogicTest do
         room_id: "1",
         game_id: "abc",
         players: players,
-        musicians: musicians,
+        player_ids_set: player_ids_set,
         game_view: :playback_voting,
         contestants: contestants,
         round_num: 3,
@@ -307,31 +307,31 @@ defmodule Midimatches.GameLogicTest do
     players =
       MapSet.new([
         %Player{
-          musician_id: "1",
+          player_id: "1",
           player_alias: "foo"
         },
         %Player{
-          musician_id: "2",
+          player_id: "2",
           player_alias: "zoo"
         },
         %Player{
-          musician_id: "3",
+          player_id: "3",
           player_alias: "fee"
         },
         %Player{
-          musician_id: "4",
+          player_id: "4",
           player_alias: "fum"
         }
       ])
 
     contestants = ["1", "2", "3", "4"]
-    musicians = MapSet.new(contestants)
+    player_ids_set = MapSet.new(contestants)
 
     game_server_state = %GameServer{
       room_id: "1",
       game_id: "abc",
       players: players,
-      musicians: musicians,
+      player_ids_set: player_ids_set,
       game_view: :playback_voting,
       contestants: contestants,
       round_num: 3,
@@ -339,7 +339,7 @@ defmodule Midimatches.GameLogicTest do
       sample_beats: []
     }
 
-    %{state: actual_state} = GameLogic.remove_musician(game_server_state, "1")
+    %{state: actual_state} = GameLogic.remove_player(game_server_state, "1")
 
     expected_state = %GameServer{
       room_id: "1",
@@ -347,19 +347,19 @@ defmodule Midimatches.GameLogicTest do
       players:
         MapSet.new([
           %Player{
-            musician_id: "2",
+            player_id: "2",
             player_alias: "zoo"
           },
           %Player{
-            musician_id: "3",
+            player_id: "3",
             player_alias: "fee"
           },
           %Player{
-            musician_id: "4",
+            player_id: "4",
             player_alias: "fum"
           }
         ]),
-      musicians: MapSet.new(["2", "3", "4"]),
+      player_ids_set: MapSet.new(["2", "3", "4"]),
       game_view: :playback_voting,
       contestants: ["2", "3", "4"],
       round_num: 3,

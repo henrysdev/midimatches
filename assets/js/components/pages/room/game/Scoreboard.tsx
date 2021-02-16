@@ -19,7 +19,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
     const playersData = players
       .map((player) => {
         const foundTuple = scores.find(
-          ([musicianId, _score]) => musicianId === player.musicianId
+          ([playerId, _score]) => playerId === player.playerId
         );
         const [_, playerScore] = !!foundTuple ? foundTuple : [0, 0];
         return {
@@ -55,8 +55,8 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
             {!!playersRowData && playersRowData.length > 0 ? (
               playersRowData.map((playerData, idx) => (
                 <PlayerRow
-                  key={`player-card-${playerData.musicianId}`}
-                  isCurrPlayer={playerData.musicianId === currPlayer.musicianId}
+                  key={`player-card-${playerData.playerId}`}
+                  isCurrPlayer={playerData.playerId === currPlayer.playerId}
                   player={playerData}
                   rank={idx + 1}
                 />

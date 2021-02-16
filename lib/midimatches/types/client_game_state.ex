@@ -22,7 +22,6 @@ defmodule Midimatches.Types.ClientGameState do
 
     field(:game_view, game_view())
     field(:players, list(Player.t()))
-    field(:musicians, list(id))
     field(:num_votes_cast, integer())
     field(:ready_ups, list(id))
     field(:recordings, list(list))

@@ -32,7 +32,7 @@ defmodule Midimatches.Matchmaking.ServerlistUpdater do
   def broadcast_serverlist_update do
     room_states = Matchmaking.get_rooms_list()
 
-    MidimatchesWeb.Endpoint.broadcast("servers:serverlist", "serverlist_update", %{
+    MidimatchesWeb.Endpoint.broadcast("matchmaking:serverlist", "serverlist_update", %{
       rooms: room_states
     })
   end

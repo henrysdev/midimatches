@@ -14,7 +14,7 @@ import { RecordingVisual } from "./";
 
 interface PlaybackAudioProps {
   recording: Loop;
-  musicianId: string;
+  playerId: string;
   playSample: Function;
   stopSample: Function;
   color: Color;
@@ -29,7 +29,7 @@ interface PlaybackAudioProps {
 
 const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
   recording,
-  musicianId,
+  playerId,
   playSample,
   stopSample,
   color,
@@ -84,14 +84,14 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
   };
 
   const startPlayheadProgress = (startTime: number): void => {
-    setActivePlaybackTrack(musicianId);
+    setActivePlaybackTrack(playerId);
     setProgress(0);
 
     Tone.Transport.scheduleRepeat(
       (currTime) => {
         const progress = (currTime - startTime) / DEFAULT_RECORDING_LENGTH;
         if (progress >= 0.99) {
-          completeListening(musicianId);
+          completeListening(playerId);
           setProgress(0);
         } else {
           setProgress(progress);
@@ -195,7 +195,7 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
             <Button
               label="Vote"
               callback={() => {
-                submitVote(musicianId);
+                submitVote(playerId);
                 stopSample();
               }}
             />

@@ -103,8 +103,8 @@ const Game: React.FC<GameProps> = ({ gameChannel, initGameState }) => {
                     isContestant={
                       !!gameContext.players
                         ? gameContext.players
-                            .map(({ musicianId }) => musicianId)
-                            .includes(currPlayer.musicianId)
+                            .map(({ playerId }) => playerId)
+                            .includes(currPlayer.playerId)
                         : false
                     }
                     pushMessageToChannel={pushMessage}

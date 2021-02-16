@@ -84,11 +84,11 @@ defmodule Midimatches.Rooms.Room.Game.Views.Recording do
   @spec recording_status(%GameServer{}, record_payload()) :: recording_status()
   defp recording_status(
          %GameServer{contestants: contestants, recordings: recordings},
-         {musician_id, _recording}
+         {player_id, _recording}
        ) do
     valid_recording? =
-      Enum.member?(contestants, musician_id) and
-        !Map.has_key?(recordings, musician_id)
+      Enum.member?(contestants, player_id) and
+        !Map.has_key?(recordings, player_id)
 
     last_recording? = length(contestants) - map_size(recordings) == 1
 
@@ -100,7 +100,7 @@ defmodule Midimatches.Rooms.Room.Game.Views.Recording do
   end
 
   @spec valid_recording(%GameServer{}, record_payload()) :: %GameServer{}
-  def valid_recording(%GameServer{recordings: recordings} = state, {musician_id, recording}) do
-    %GameServer{state | recordings: Map.put(recordings, musician_id, recording)}
+  def valid_recording(%GameServer{recordings: recordings} = state, {player_id, recording}) do
+    %GameServer{state | recordings: Map.put(recordings, player_id, recording)}
   end
 end

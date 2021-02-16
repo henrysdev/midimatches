@@ -21,19 +21,19 @@ defmodule Midimatches.GameServerTest do
     players =
       MapSet.new([
         %Player{
-          musician_id: "1",
+          player_id: "1",
           player_alias: "foo"
         },
         %Player{
-          musician_id: "2",
+          player_id: "2",
           player_alias: "zoo"
         },
         %Player{
-          musician_id: "3",
+          player_id: "3",
           player_alias: "fee"
         },
         %Player{
-          musician_id: "4",
+          player_id: "4",
           player_alias: "fum"
         }
       ])
@@ -62,19 +62,19 @@ defmodule Midimatches.GameServerTest do
     players =
       MapSet.new([
         %Player{
-          musician_id: "1",
+          player_id: "1",
           player_alias: "foo"
         },
         %Player{
-          musician_id: "2",
+          player_id: "2",
           player_alias: "zoo"
         },
         %Player{
-          musician_id: "3",
+          player_id: "3",
           player_alias: "fee"
         },
         %Player{
-          musician_id: "4",
+          player_id: "4",
           player_alias: "fum"
         }
       ])
@@ -95,19 +95,19 @@ defmodule Midimatches.GameServerTest do
       players =
         MapSet.new([
           %Player{
-            musician_id: "1",
+            player_id: "1",
             player_alias: "foo"
           },
           %Player{
-            musician_id: "2",
+            player_id: "2",
             player_alias: "zoo"
           },
           %Player{
-            musician_id: "3",
+            player_id: "3",
             player_alias: "fee"
           },
           %Player{
-            musician_id: "4",
+            player_id: "4",
             player_alias: "fum"
           }
         ])
@@ -126,19 +126,19 @@ defmodule Midimatches.GameServerTest do
       players =
         MapSet.new([
           %Player{
-            musician_id: "1",
+            player_id: "1",
             player_alias: "foo"
           },
           %Player{
-            musician_id: "2",
+            player_id: "2",
             player_alias: "zoo"
           },
           %Player{
-            musician_id: "3",
+            player_id: "3",
             player_alias: "fee"
           },
           %Player{
-            musician_id: "4",
+            player_id: "4",
             player_alias: "fum"
           }
         ])
@@ -158,19 +158,19 @@ defmodule Midimatches.GameServerTest do
       players =
         MapSet.new([
           %Player{
-            musician_id: "1",
+            player_id: "1",
             player_alias: "foo"
           },
           %Player{
-            musician_id: "2",
+            player_id: "2",
             player_alias: "zoo"
           },
           %Player{
-            musician_id: "3",
+            player_id: "3",
             player_alias: "fee"
           },
           %Player{
-            musician_id: "4",
+            player_id: "4",
             player_alias: "fum"
           }
         ])

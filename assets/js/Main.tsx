@@ -1,25 +1,27 @@
-import * as React from "react";
+import React from "react";
 
 import { HeaderNav } from "./components/common/index";
-import { isMobile } from "react-device-detect";
-import { useCurrentUser } from "./hooks";
-import { CurrentUserContext } from "./contexts";
+import { useCurrentUser, useSocket } from "./hooks";
+import { CurrentUserContext, SocketContext } from "./contexts";
 import PageRouter from "./PageRouter";
 
 const Main: React.FC = () => {
   const { data: currUserData, loading, loaded } = useCurrentUser();
+  const socket = useSocket();
 
   return loaded ? (
     <div>
       <CurrentUserContext.Provider value={{ user: currUserData.user }}>
-        <HeaderNav
-          playerAlias={
-            !!currUserData && !!currUserData.user
-              ? currUserData.user.userAlias
-              : undefined
-          }
-        />
-        <PageRouter />
+        <SocketContext.Provider value={{ socket: socket }}>
+          <HeaderNav
+            playerAlias={
+              !!currUserData && !!currUserData.user
+                ? currUserData.user.userAlias
+                : undefined
+            }
+          />
+          <PageRouter />
+        </SocketContext.Provider>
       </CurrentUserContext.Provider>
     </div>
   ) : loading ? (

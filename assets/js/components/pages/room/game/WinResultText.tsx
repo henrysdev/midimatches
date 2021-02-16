@@ -18,7 +18,7 @@ const WinResultText: React.FC<WinResultTextProps> = ({
   const winners = useMemo(() => {
     return winningPlayers.length > 0
       ? winningPlayers
-      : [{ playerAlias: "missing player", musicianId: "-1" }];
+      : [{ playerAlias: "missing player", playerId: "-1" }];
   }, [roundNum]);
 
   return (
@@ -33,7 +33,7 @@ const WinResultText: React.FC<WinResultTextProps> = ({
 
           {winners.map((player) => {
             return (
-              <div key={`winner-${player.musicianId}`}>
+              <div key={`winner-${player.playerId}`}>
                 {player.playerAlias} with {winResult.numPoints} votes
               </div>
             );

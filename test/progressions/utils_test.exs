@@ -15,33 +15,33 @@ defmodule Midimatches.UtilsTest do
   test "transforms server state to client state" do
     players_list = [
       %Player{
-        musician_id: "1",
-        player_alias: "foo"
-      },
-      %Player{
-        musician_id: "2",
-        player_alias: "zoo"
-      },
-      %Player{
-        musician_id: "3",
+        player_id: "3",
         player_alias: "fee"
       },
       %Player{
-        musician_id: "4",
+        player_id: "1",
+        player_alias: "foo"
+      },
+      %Player{
+        player_id: "4",
         player_alias: "fum"
+      },
+      %Player{
+        player_id: "2",
+        player_alias: "zoo"
       }
     ]
 
     players = MapSet.new(players_list)
 
     contestants = ["1", "2", "3", "4"]
-    musicians = MapSet.new(contestants)
+    player_ids_set = MapSet.new(contestants)
 
     server_state = %GameServer{
       room_id: "1",
       game_id: "abc",
       players: players,
-      musicians: musicians,
+      player_ids_set: player_ids_set,
       game_view: :playback_voting,
       contestants: contestants,
       round_num: 3,

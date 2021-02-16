@@ -34,15 +34,15 @@ defmodule Midimatches.RoomServerTest do
 
     [m1, m2, m3] = [
       %Player{
-        musician_id: "m1",
+        player_id: "m1",
         player_alias: "foo"
       },
       %Player{
-        musician_id: "m2",
+        player_id: "m2",
         player_alias: "zoo"
       },
       %Player{
-        musician_id: "m3",
+        player_id: "m3",
         player_alias: "fee"
       }
     ]
@@ -53,7 +53,7 @@ defmodule Midimatches.RoomServerTest do
     RoomServer.add_player(room_server, m2)
     RoomServer.add_player(room_server, m3)
     RoomServer.add_player(room_server, m3)
-    RoomServer.drop_player(room_server, m1.musician_id)
+    RoomServer.drop_player(room_server, m1.player_id)
 
     players =
       room_server
@@ -61,8 +61,8 @@ defmodule Midimatches.RoomServerTest do
       |> MapSet.to_list()
 
     expected_players = [
-      %Player{musician_id: "m2", player_alias: "zoo"},
-      %Player{musician_id: "m3", player_alias: "fee"}
+      %Player{player_id: "m3", player_alias: "fee"},
+      %Player{player_id: "m2", player_alias: "zoo"}
     ]
 
     assert players == expected_players
@@ -74,19 +74,19 @@ defmodule Midimatches.RoomServerTest do
 
     players = [
       %Player{
-        musician_id: "m1",
+        player_id: "m1",
         player_alias: "foo"
       },
       %Player{
-        musician_id: "m2",
+        player_id: "m2",
         player_alias: "zoo"
       },
       %Player{
-        musician_id: "m3",
+        player_id: "m3",
         player_alias: "fee"
       },
       %Player{
-        musician_id: "m4",
+        player_id: "m4",
         player_alias: "fum"
       }
     ]
@@ -103,19 +103,19 @@ defmodule Midimatches.RoomServerTest do
 
     players = [
       %Player{
-        musician_id: "m1",
+        player_id: "m1",
         player_alias: "foo"
       },
       %Player{
-        musician_id: "m2",
+        player_id: "m2",
         player_alias: "zoo"
       },
       %Player{
-        musician_id: "m3",
+        player_id: "m3",
         player_alias: "fee"
       },
       %Player{
-        musician_id: "m4",
+        player_id: "m4",
         player_alias: "fum"
       }
     ]

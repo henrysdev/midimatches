@@ -30,10 +30,10 @@ defmodule Midimatches.Rooms.Room.Game.Views.PlaybackVoting do
           game_view: :playback_voting,
           votes: votes,
           contestants: contestants,
-          musicians: musicians
+          player_ids_set: player_ids_set
         } = state
       ) do
-    judges = musicians |> MapSet.to_list()
+    judges = player_ids_set |> MapSet.to_list()
 
     missing_voters =
       judges
@@ -97,15 +97,15 @@ defmodule Midimatches.Rooms.Room.Game.Views.PlaybackVoting do
 
   @spec vote_status(%GameServer{}, ballot()) :: vote_status()
   defp vote_status(
-         %GameServer{musicians: musicians, contestants: contestants, votes: votes},
-         {musician_id, vote}
+         %GameServer{player_ids_set: player_ids_set, contestants: contestants, votes: votes},
+         {player_id, vote}
        ) do
-    judges = MapSet.to_list(musicians)
+    judges = MapSet.to_list(player_ids_set)
 
     valid_vote? =
-      Enum.member?(judges, musician_id) and
+      Enum.member?(judges, player_id) and
         Enum.member?(contestants, vote) and
-        !Map.has_key?(votes, musician_id)
+        !Map.has_key?(votes, player_id)
 
     last_vote? = length(judges) - map_size(votes) == 1
 
@@ -117,15 +117,17 @@ defmodule Midimatches.Rooms.Room.Game.Views.PlaybackVoting do
   end
 
   @spec valid_vote(%GameServer{}, ballot()) :: %GameServer{}
-  defp valid_vote(%GameServer{votes: votes} = state, {musician_id, vote}) do
-    %GameServer{state | votes: Map.put(votes, musician_id, vote)}
+  defp valid_vote(%GameServer{votes: votes} = state, {player_id, vote}) do
+    %GameServer{state | votes: Map.put(votes, player_id, vote)}
   end
 
   @spec last_vote(%GameServer{}) :: %GameServer{}
   defp last_vote(%GameServer{} = state), do: update_scores(state)
 
   @spec update_scores(%GameServer{}) :: %GameServer{}
-  def update_scores(%GameServer{votes: votes, scores: scores, musicians: musicians} = state) do
+  def update_scores(
+        %GameServer{votes: votes, scores: scores, player_ids_set: player_ids_set} = state
+      ) do
     scores =
       Enum.reduce(
         votes,
@@ -137,7 +139,7 @@ defmodule Midimatches.Rooms.Room.Game.Views.PlaybackVoting do
 
     round_winners =
       votes
-      |> votes_to_win_result(musicians)
+      |> votes_to_win_result(player_ids_set)
 
     %GameServer{state | scores: scores, round_winners: round_winners}
   end

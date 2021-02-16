@@ -18,7 +18,7 @@ import {
   RESET_ROOM_EVENT,
   SUBMIT_LEAVE_ROOM,
 } from "../../../constants";
-import { useCurrentUserContext } from "../../../hooks";
+import { useCurrentUserContext, useSocketContext } from "../../../hooks";
 
 const RoomPage: React.FC = () => {
   const [gameChannel, setGameChannel] = useState<Channel>();
@@ -31,6 +31,7 @@ const RoomPage: React.FC = () => {
     roomName: "",
   });
   const { user: currentUser } = useCurrentUserContext();
+  const { socket } = useSocketContext();
 
   const resetRoom = () => {
     setGameInProgress(false);
@@ -38,17 +39,10 @@ const RoomPage: React.FC = () => {
   };
 
   useEffect(() => {
-    // websocket channel init
-    const windowRef = window as any;
-    const { userToken } = windowRef;
-    const socket = new Socket("/socket", {
-      params: { token: userToken },
-    });
     setCurrPlayer({
-      musicianId: currentUser.userId,
+      playerId: currentUser.userId,
       playerAlias: currentUser.userAlias,
     });
-    socket.connect();
     const path = window.location.pathname.split("/");
     const roomId = path[path.length - 1];
     const channel: Channel = socket.channel(`room:${roomId}`, {
@@ -114,8 +108,8 @@ const RoomPage: React.FC = () => {
     if (gameInProgress && !!gameChannel && !!currPlayer && !!initGameState) {
       return !!initGameState.players
         ? initGameState.players
-            .map((player) => player.musicianId)
-            .includes(currPlayer.musicianId)
+            .map((player) => player.playerId)
+            .includes(currPlayer.playerId)
         : false;
     }
     return false;
