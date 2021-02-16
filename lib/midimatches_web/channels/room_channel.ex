@@ -71,7 +71,7 @@ defmodule MidimatchesWeb.RoomChannel do
        socket
        |> assign(room_id: room_id)
        |> assign(room_server: room_server)
-       |> assign(musician_id: player_id)}
+       |> assign(player_id: player_id)}
     else
       {:error, "room #{room_id} does not exist"}
     end
@@ -87,14 +87,14 @@ defmodule MidimatchesWeb.RoomChannel do
   end
 
   def handle_in(
-        "musician_pregame_join",
+        "player_pregame_join",
         %{"player_alias" => player_alias, "player_id" => player_id},
-        %Phoenix.Socket{assigns: %{room_id: room_id, musician_id: player_id}} = socket
+        %Phoenix.Socket{assigns: %{room_id: room_id, player_id: player_id}} = socket
       ) do
     room_server = Pids.fetch!({:room_server, room_id})
 
     player = %Player{
-      musician_id: player_id,
+      player_id: player_id,
       player_alias: player_alias
     }
 
@@ -103,47 +103,47 @@ defmodule MidimatchesWeb.RoomChannel do
     {:reply, {:ok, %{player: player}},
      socket
      |> assign(room_server: room_server)
-     |> assign(musician_id: player_id)}
+     |> assign(player_id: player_id)}
   end
 
   def handle_in(
-        "musician_leave_room",
+        "player_leave_room",
         _params,
-        %Phoenix.Socket{assigns: %{room_server: room_server, musician_id: musician_id}} = socket
+        %Phoenix.Socket{assigns: %{room_server: room_server, player_id: player_id}} = socket
       ) do
-    RoomServer.drop_player(room_server, musician_id)
+    RoomServer.drop_player(room_server, player_id)
 
     {:noreply, socket}
   end
 
   def handle_in(
-        "musician_ready_up",
+        "player_ready_up",
         _params,
-        %Phoenix.Socket{assigns: %{game_server: game_server, musician_id: musician_id}} = socket
+        %Phoenix.Socket{assigns: %{game_server: game_server, player_id: player_id}} = socket
       ) do
-    GameServer.musician_ready_up(game_server, musician_id)
+    GameServer.player_ready_up(game_server, player_id)
 
     {:reply, {:ok, %{}}, socket}
   end
 
   def handle_in(
-        "musician_recording",
+        "player_recording",
         %{"recording" => loop_json},
-        %Phoenix.Socket{assigns: %{game_server: game_server, musician_id: musician_id}} = socket
+        %Phoenix.Socket{assigns: %{game_server: game_server, player_id: player_id}} = socket
       ) do
     {:ok, recording} = Poison.decode(loop_json, as: @loop_schema)
 
-    GameServer.musician_recording(game_server, musician_id, recording)
+    GameServer.player_recording(game_server, player_id, recording)
 
     {:reply, {:ok, %{}}, socket}
   end
 
   def handle_in(
-        "musician_vote",
+        "player_vote",
         %{"vote" => vote},
-        %Phoenix.Socket{assigns: %{game_server: game_server, musician_id: musician_id}} = socket
+        %Phoenix.Socket{assigns: %{game_server: game_server, player_id: player_id}} = socket
       ) do
-    GameServer.musician_vote(game_server, musician_id, vote)
+    GameServer.player_vote(game_server, player_id, vote)
 
     {:reply, {:ok, %{}}, socket}
   end

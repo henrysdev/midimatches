@@ -51,17 +51,15 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
   const recordings = useMemo(() => {
     return !!allRecordings && !!currPlayer
       ? allRecordings.filter(
-          ([musicianId, _recording]) => musicianId !== currPlayer.musicianId
+          ([playerId, _recording]) => playerId !== currPlayer.playerId
         )
       : [];
   }, [allRecordings, currPlayer]);
 
   useEffect(() => {
     const emptyMusicians = recordings
-      .filter(
-        ([_musicianId, recording]) => recording.timestepSlices.length === 0
-      )
-      .map(([musicianId, _recording]) => musicianId);
+      .filter(([_playerId, recording]) => recording.timestepSlices.length === 0)
+      .map(([playerId, _recording]) => playerId);
     const emptyMusiciansSet = new Set(emptyMusicians);
     setEmptyRecordings(emptyMusiciansSet);
     setListenCompleteTracks(
@@ -73,10 +71,10 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
     return listenCompleteTracks.size >= recordings.length;
   }, [listenCompleteTracks.size]);
 
-  const completeListening = (musicianId: string) => {
+  const completeListening = (playerId: string) => {
     const updatedListenCompleteTracksSet = new Set([
       ...listenCompleteTracks,
-      ...[musicianId],
+      ...[playerId],
     ]);
     setListenCompleteTracks(updatedListenCompleteTracksSet);
   };
@@ -86,9 +84,9 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
     return genRandomColors(numColorsNeeded);
   }, [Object.keys(recordings).length]);
 
-  const submitVote = (musicianId: string): void => {
+  const submitVote = (playerId: string): void => {
     const sentMessage = pushMessageToChannel(SUBMIT_VOTE_EVENT, {
-      vote: musicianId,
+      vote: playerId,
     });
     if (!!sentMessage) {
       sentMessage
@@ -125,29 +123,27 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
             ] => {
               return [recordingTuple, randomColors[idx]];
             })
-            .map(
-              ([[musicianId, recording], color]: [RecordingTuple, Color]) => {
-                return (
-                  <div key={`playback-${musicianId}`}>
-                    <PlaybackAudio
-                      key={`player-${musicianId}`}
-                      recording={recording}
-                      musicianId={musicianId}
-                      playSample={playSample}
-                      stopSample={stopSample}
-                      color={color}
-                      submitVote={submitVote}
-                      setActivePlaybackTrack={setActivePlaybackTrack}
-                      isPlaying={activePlaybackTrack === musicianId}
-                      listenComplete={listenCompleteTracks.has(musicianId)}
-                      canVote={canVote}
-                      completeListening={completeListening}
-                      emptyRecording={emptyRecordings.has(musicianId)}
-                    />
-                  </div>
-                );
-              }
-            )
+            .map(([[playerId, recording], color]: [RecordingTuple, Color]) => {
+              return (
+                <div key={`playback-${playerId}`}>
+                  <PlaybackAudio
+                    key={`player-${playerId}`}
+                    recording={recording}
+                    playerId={playerId}
+                    playSample={playSample}
+                    stopSample={stopSample}
+                    color={color}
+                    submitVote={submitVote}
+                    setActivePlaybackTrack={setActivePlaybackTrack}
+                    isPlaying={activePlaybackTrack === playerId}
+                    listenComplete={listenCompleteTracks.has(playerId)}
+                    canVote={canVote}
+                    completeListening={completeListening}
+                    emptyRecording={emptyRecordings.has(playerId)}
+                  />
+                </div>
+              );
+            })
         ) : (
           <div>No recordings available</div>
         )}

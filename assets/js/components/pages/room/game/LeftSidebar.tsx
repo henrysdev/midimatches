@@ -24,7 +24,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({}) => {
           !!players
             ? roundNum === 1
               ? players
-                  .filter((player) => readyUps.includes(player.musicianId))
+                  .filter((player) => readyUps.includes(player.playerId))
                   .sort((a, b) => a.playerAlias.localeCompare(b.playerAlias))
               : players
             : ([] as Player[])

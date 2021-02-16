@@ -15,19 +15,19 @@ defmodule Midimatches.ViewTimerTest do
     players =
       MapSet.new([
         %Player{
-          musician_id: "m1",
+          player_id: "m1",
           player_alias: "foo"
         },
         %Player{
-          musician_id: "m2",
+          player_id: "m2",
           player_alias: "zoo"
         },
         %Player{
-          musician_id: "m3",
+          player_id: "m3",
           player_alias: "fee"
         },
         %Player{
-          musician_id: "m4",
+          player_id: "m4",
           player_alias: "fum"
         }
       ])

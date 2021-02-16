@@ -45,7 +45,7 @@ const RoomPage: React.FC = () => {
       params: { token: userToken },
     });
     setCurrPlayer({
-      musicianId: currentUser.userId,
+      playerId: currentUser.userId,
       playerAlias: currentUser.userAlias,
     });
     socket.connect();
@@ -114,8 +114,8 @@ const RoomPage: React.FC = () => {
     if (gameInProgress && !!gameChannel && !!currPlayer && !!initGameState) {
       return !!initGameState.players
         ? initGameState.players
-            .map((player) => player.musicianId)
-            .includes(currPlayer.musicianId)
+            .map((player) => player.playerId)
+            .includes(currPlayer.playerId)
         : false;
     }
     return false;

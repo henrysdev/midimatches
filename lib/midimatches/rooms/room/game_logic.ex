@@ -22,10 +22,10 @@ defmodule Midimatches.Rooms.Room.GameLogic do
 
   @spec start_game(%GameRules{}, MapSet.t(Player), id(), id()) :: %GameServer{}
   def start_game(game_rules, players, room_id, game_id) do
-    musicians_list =
+    player_ids_list =
       players
       |> MapSet.to_list()
-      |> Enum.map(& &1.musician_id)
+      |> Enum.map(& &1.player_id)
 
     sample_beats = S3Client.random_sample_beats(game_rules.rounds_to_win)
 
@@ -34,20 +34,20 @@ defmodule Midimatches.Rooms.Room.GameLogic do
       game_id: game_id,
       game_rules: game_rules,
       players: players,
-      musicians: MapSet.new(musicians_list),
+      player_ids_set: MapSet.new(player_ids_list),
       game_view: :game_start,
-      contestants: musicians_list,
+      contestants: player_ids_list,
       sample_beats: sample_beats,
-      scores: musicians_list |> Enum.map(&{&1, 0}) |> Map.new()
+      scores: player_ids_list |> Enum.map(&{&1, 0}) |> Map.new()
     }
   end
 
-  @spec remove_musician(%GameServer{}, id()) :: instruction_map()
-  def remove_musician(%GameServer{} = state, musician_id) do
+  @spec remove_player(%GameServer{}, id()) :: instruction_map()
+  def remove_player(%GameServer{} = state, player_id) do
     updated_players =
       state.players
       |> MapSet.to_list()
-      |> Enum.reject(&(&1.musician_id == musician_id))
+      |> Enum.reject(&(&1.player_id == player_id))
       |> MapSet.new()
 
     # filter out vote cast by the leaving player's. Votes for the leaving player will be treated
@@ -55,24 +55,24 @@ defmodule Midimatches.Rooms.Room.GameLogic do
     updated_votes =
       state.votes
       |> Map.to_list()
-      |> Enum.reject(fn {voter, _candidate} -> voter == musician_id end)
+      |> Enum.reject(fn {voter, _candidate} -> voter == player_id end)
       |> Map.new()
 
     %GameServer{
       state
-      | musicians: MapSet.delete(state.musicians, musician_id),
+      | player_ids_set: MapSet.delete(state.player_ids_set, player_id),
         players: updated_players,
-        contestants: Enum.reject(state.contestants, &(&1 == musician_id)),
-        ready_ups: MapSet.delete(state.ready_ups, musician_id),
-        recordings: Map.delete(state.recordings, musician_id),
+        contestants: Enum.reject(state.contestants, &(&1 == player_id)),
+        ready_ups: MapSet.delete(state.ready_ups, player_id),
+        recordings: Map.delete(state.recordings, player_id),
         votes: updated_votes,
-        scores: Map.delete(state.scores, musician_id)
+        scores: Map.delete(state.scores, player_id)
     }
     |> as_instruction(sync?: true, view_change?: false)
   end
 
   @spec ready_up(%GameServer{}, id()) :: instruction_map()
-  defdelegate ready_up(state, musician_id), to: Views.GameStart, as: :ready_up
+  defdelegate ready_up(state, player_id), to: Views.GameStart, as: :ready_up
 
   @spec add_recording(%GameServer{}, any) :: instruction_map()
   defdelegate add_recording(state, recording), to: Views.Recording, as: :add_recording

@@ -7,7 +7,7 @@ defmodule Midimatches.Types.Player do
 
   @derive Jason.Encoder
   typedstruct do
-    field(:musician_id, String.t(), enforce: true)
+    field(:player_id, String.t(), enforce: true)
     field(:player_alias, String.t(), enforce: true)
   end
 end

@@ -101,7 +101,7 @@ defmodule Midimatches.Rooms.RoomServer do
       | players:
           players
           |> MapSet.to_list()
-          |> Enum.reject(&(&1.musician_id == player_id))
+          |> Enum.reject(&(&1.player_id == player_id))
           |> MapSet.new()
     }
 
@@ -110,7 +110,7 @@ defmodule Midimatches.Rooms.RoomServer do
       {:noreply, state}
     else
       game_server = Pids.fetch!({:game_server, room_id})
-      GameServer.drop_musician(game_server, player_id)
+      GameServer.drop_player(game_server, player_id)
       {:noreply, state}
     end
   end

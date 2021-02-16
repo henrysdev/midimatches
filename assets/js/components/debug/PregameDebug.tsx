@@ -38,8 +38,8 @@ const mockTone: FakeTone = {
 };
 
 const mockedPlayers = [
-  { playerAlias: "xb4z", musicianId: "1199" },
-  { playerAlias: "fearz123", musicianId: "1111" },
+  { playerAlias: "xb4z", playerId: "1199" },
+  { playerAlias: "fearz123", playerId: "1111" },
 ];
 
 const mockedRecordings = {

@@ -20,7 +20,7 @@ const GameEndView: React.FC<GameEndViewProps> = () => {
     if (!!gameWinners && gameWinners.winners.length > 0 && !!players) {
       const winnerIdsSet = new Set(gameWinners.winners);
       const newWinningPlayers = players.filter((player) =>
-        winnerIdsSet.has(player.musicianId)
+        winnerIdsSet.has(player.playerId)
       );
       setWinningPlayers(newWinningPlayers);
     }

@@ -12,31 +12,31 @@ defmodule Midimatches.PlaybackVotingTest do
     players =
       MapSet.new([
         %Player{
-          musician_id: "1",
+          player_id: "1",
           player_alias: "foo"
         },
         %Player{
-          musician_id: "2",
+          player_id: "2",
           player_alias: "zoo"
         },
         %Player{
-          musician_id: "3",
+          player_id: "3",
           player_alias: "fee"
         },
         %Player{
-          musician_id: "4",
+          player_id: "4",
           player_alias: "fum"
         }
       ])
 
     contestants = ["1", "2", "3", "4"]
-    musicians = MapSet.new(contestants)
+    player_ids_set = MapSet.new(contestants)
 
     game_server_state = %GameServer{
       room_id: "1",
       game_id: "abc",
       players: players,
-      musicians: musicians,
+      player_ids_set: player_ids_set,
       game_view: :playback_voting,
       contestants: contestants,
       votes: %{},
@@ -59,31 +59,31 @@ defmodule Midimatches.PlaybackVotingTest do
     players =
       MapSet.new([
         %Player{
-          musician_id: "1",
+          player_id: "1",
           player_alias: "foo"
         },
         %Player{
-          musician_id: "2",
+          player_id: "2",
           player_alias: "zoo"
         },
         %Player{
-          musician_id: "3",
+          player_id: "3",
           player_alias: "fee"
         },
         %Player{
-          musician_id: "4",
+          player_id: "4",
           player_alias: "fum"
         }
       ])
 
     contestants = ["1", "2", "3", "4"]
-    musicians = MapSet.new(contestants)
+    player_ids_set = MapSet.new(contestants)
 
     game_server_state = %GameServer{
       room_id: "1",
       game_id: "abc",
       players: players,
-      musicians: musicians,
+      player_ids_set: player_ids_set,
       game_view: :playback_voting,
       contestants: contestants,
       scores: %{"1" => 3, "2" => 0, "3" => 1, "4" => 0},

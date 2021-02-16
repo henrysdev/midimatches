@@ -12,47 +12,47 @@ defmodule Midimatches.RoundEndTest do
     players =
       MapSet.new([
         %Player{
-          musician_id: "1",
+          player_id: "1",
           player_alias: "foo"
         },
         %Player{
-          musician_id: "2",
+          player_id: "2",
           player_alias: "zoo"
         },
         %Player{
-          musician_id: "3",
+          player_id: "3",
           player_alias: "fee"
         },
         %Player{
-          musician_id: "4",
+          player_id: "4",
           player_alias: "fum"
         },
         %Player{
-          musician_id: "5",
+          player_id: "5",
           player_alias: "fum"
         },
         %Player{
-          musician_id: "6",
+          player_id: "6",
           player_alias: "fum"
         },
         %Player{
-          musician_id: "7",
+          player_id: "7",
           player_alias: "fum"
         },
         %Player{
-          musician_id: "8",
+          player_id: "8",
           player_alias: "fum"
         }
       ])
 
     contestants = ["1", "2", "3", "4", "5", "6", "7", "8"]
-    musicians = MapSet.new(contestants)
+    player_ids_set = MapSet.new(contestants)
 
     game_server_state = %GameServer{
       room_id: "1",
       game_id: "abc",
       players: players,
-      musicians: musicians,
+      player_ids_set: player_ids_set,
       game_view: :round_end,
       contestants: contestants,
       recordings: %{},
@@ -66,7 +66,7 @@ defmodule Midimatches.RoundEndTest do
       contestants: ["1", "2", "3", "4", "5", "6", "7", "8"],
       game_view: :round_start,
       players: players,
-      musicians: MapSet.new(["1", "2", "3", "4", "5", "6", "7", "8"]),
+      player_ids_set: MapSet.new(["1", "2", "3", "4", "5", "6", "7", "8"]),
       ready_ups: MapSet.new(),
       recordings: %{},
       room_id: "1",
@@ -86,25 +86,25 @@ defmodule Midimatches.RoundEndTest do
     players =
       MapSet.new([
         %Player{
-          musician_id: "1",
+          player_id: "1",
           player_alias: "foo"
         },
         %Player{
-          musician_id: "2",
+          player_id: "2",
           player_alias: "zoo"
         },
         %Player{
-          musician_id: "3",
+          player_id: "3",
           player_alias: "fee"
         },
         %Player{
-          musician_id: "4",
+          player_id: "4",
           player_alias: "fum"
         }
       ])
 
     contestants = ["1", "2", "3", "4"]
-    musicians = MapSet.new(contestants)
+    player_ids_set = MapSet.new(contestants)
 
     scores = %{"1" => 0, "2" => 4, "3" => 2, "4" => 2}
 
@@ -112,7 +112,7 @@ defmodule Midimatches.RoundEndTest do
       room_id: "1",
       game_id: "abc",
       players: players,
-      musicians: musicians,
+      player_ids_set: player_ids_set,
       game_view: :round_end,
       contestants: contestants,
       recordings: %{},
