@@ -5,6 +5,7 @@ import {
   ToneAudioContext,
   PlayerContext,
   CurrentUserContext,
+  SocketContext,
 } from "../contexts";
 
 import {
@@ -12,6 +13,7 @@ import {
   ToneAudioContextType,
   PlayerContextType,
   CurrentUserContextType,
+  SocketContextType,
 } from "../types";
 
 export function useGameContext() {
@@ -28,4 +30,8 @@ export function usePlayerContext() {
 
 export function useCurrentUserContext() {
   return useContext(CurrentUserContext) as CurrentUserContextType;
+}
+
+export function useSocketContext() {
+  return useContext(SocketContext) as SocketContextType;
 }

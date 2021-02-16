@@ -5,6 +5,8 @@ import { unmarshalBody } from "../../../utils";
 import { ServerlistUpdatePayload, RoomState } from "../../../types";
 import { SERVERLIST_UPDATE_EVENT } from "../../../constants";
 import { Serverlist } from ".";
+import { useSocketContext } from "../../../hooks";
+
 import { EditUser, Button } from "../../common";
 
 const ServerlistPage: React.FC = () => {
@@ -16,16 +18,10 @@ const ServerlistPage: React.FC = () => {
     lastRefreshRef.current = data;
     _setLastRefresh(data);
   };
+  const { socket } = useSocketContext();
 
   useEffect(() => {
-    // websocket channel init
-    const windowRef = window as any;
-    const socket = new Socket("/socket", {
-      params: { token: windowRef.userToken },
-    });
-    socket.connect();
-    const channel: Channel = socket.channel("servers:serverlist");
-
+    const channel: Channel = socket.channel("matchmaking:serverlist");
     // join game
     channel
       .join()

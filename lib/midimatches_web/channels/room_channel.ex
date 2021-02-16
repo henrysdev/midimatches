@@ -37,26 +37,9 @@ defmodule MidimatchesWeb.RoomChannel do
 
   intercept ["lobby_update", "start_game", "game_update", "reset_room"]
 
-  def handle_out("lobby_update", msg, socket) do
-    push(socket, "lobby_update", msg)
-    {:noreply, socket}
-  end
-
-  def handle_out("game_update", msg, socket) do
-    push(socket, "game_update", msg)
-    {:noreply, socket}
-  end
-
-  def handle_out("start_game", msg, %Phoenix.Socket{assigns: %{room_id: room_id}} = socket) do
-    push(socket, "start_game", msg)
-    game_server = Pids.fetch!({:game_server, room_id})
-    {:noreply, socket |> assign(game_server: game_server)}
-  end
-
-  def handle_out("reset_room", msg, %Phoenix.Socket{} = socket) do
-    push(socket, "reset_room", msg)
-    {:noreply, socket}
-  end
+  #################################################################################################
+  ## Join Messages                                                                               ##
+  #################################################################################################
 
   def join(
         "room:" <> room_id,
@@ -85,6 +68,10 @@ defmodule MidimatchesWeb.RoomChannel do
 
     {:noreply, socket}
   end
+
+  #################################################################################################
+  ## Incoming Messages                                                                           ##
+  #################################################################################################
 
   def handle_in(
         "player_pregame_join",
@@ -156,6 +143,31 @@ defmodule MidimatchesWeb.RoomChannel do
         "socket.assigns=#{inspect(socket.assigns)} "
     )
 
+    {:noreply, socket}
+  end
+
+  #################################################################################################
+  ## Outgoing Messages                                                                           ##
+  #################################################################################################
+
+  def handle_out("lobby_update", msg, socket) do
+    push(socket, "lobby_update", msg)
+    {:noreply, socket}
+  end
+
+  def handle_out("game_update", msg, socket) do
+    push(socket, "game_update", msg)
+    {:noreply, socket}
+  end
+
+  def handle_out("start_game", msg, %Phoenix.Socket{assigns: %{room_id: room_id}} = socket) do
+    push(socket, "start_game", msg)
+    game_server = Pids.fetch!({:game_server, room_id})
+    {:noreply, socket |> assign(game_server: game_server)}
+  end
+
+  def handle_out("reset_room", msg, %Phoenix.Socket{} = socket) do
+    push(socket, "reset_room", msg)
     {:noreply, socket}
   end
 end

@@ -1,8 +1,8 @@
-defmodule MidimatchesWeb.ServerlistChannelTest do
+defmodule MidimatchesWeb.MatchmakingChannelTest do
   use MidimatchesWeb.ChannelCase, async: true
 
   alias MidimatchesWeb.{
-    ServerlistChannel,
+    MatchmakingChannel,
     UserSocket
   }
 
@@ -15,7 +15,7 @@ defmodule MidimatchesWeb.ServerlistChannelTest do
     {:ok, _, socket} =
       UserSocket
       |> socket()
-      |> subscribe_and_join(ServerlistChannel, "landing_page:serverlist")
+      |> subscribe_and_join(MatchmakingChannel, "landing_page:serverlist")
 
     %{socket: socket}
   end
@@ -23,7 +23,7 @@ defmodule MidimatchesWeb.ServerlistChannelTest do
   # test "client joins serverlist successfully", %{socket: socket} do
   #   {:ok, _, _} =
   #     socket
-  #     |> subscribe_and_join(ServerlistChannel, "servers:serverlist")
+  #     |> subscribe_and_join(MatchmakingChannel, "servers:serverlist")
 
   #   assert_push("serverlist_update", %{
   #     rooms: [

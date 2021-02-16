@@ -1,6 +1,10 @@
 import * as Tone from "tone";
 import { Input } from "webmidi";
+import { Socket } from "phoenix";
 
+///////////////////////////////////////////////////////////////////////////////
+// Audio                                                                     //
+///////////////////////////////////////////////////////////////////////////////
 export interface Note {
   key: number;
   duration: number;
@@ -18,16 +22,6 @@ export interface Loop {
   timestepSlices: TimestepSlice[];
 }
 
-export interface Player {
-  playerId: string;
-  playerAlias: string;
-}
-
-export interface User {
-  userAlias: string;
-  userId: string;
-}
-
 export interface MIDINoteEvent {
   value: number;
   velocity: number;
@@ -43,6 +37,9 @@ export interface LocalNoteEvent {
 
 export type SamplePlayer = Tone.Player;
 
+///////////////////////////////////////////////////////////////////////////////
+// Server Data                                                               //
+///////////////////////////////////////////////////////////////////////////////
 export interface LobbyUpdatePayload {
   numPlayersJoined: number;
   numPlayersToStart: number;
@@ -64,11 +61,30 @@ export interface ServerlistUpdatePayload {
 
 export type StartGamePayload = GameUpdatePayload;
 
-interface PlayerScore {
-  playerScore: number;
-  playerRank: number;
+export interface RoomState {
+  gameRules: GameRules;
+  numCurrPlayers: number;
+  roomId: string;
+  roomName: string;
+  inGame: boolean;
 }
-export type PlayerData = Player & PlayerScore;
+
+export interface GameState {
+  gameRules: GameRules;
+  roomId?: string;
+  sampleBeats: string[];
+  gameView: string;
+  players?: Player[];
+  numVotesCast?: number;
+  readyUps?: any;
+  recordings?: RecordingTuple[];
+  roundRecordingStartTime?: number;
+  gameWinners?: WinResult;
+  contestants?: string[];
+  roundNum: number;
+  scores: ScoreTuple[];
+  roundWinners?: WinResult;
+}
 
 export interface ViewTimeouts {
   gameStart?: Milliseconds;
@@ -92,38 +108,12 @@ export interface WinResult {
   numPoints: number;
 }
 
-export interface RoomState {
-  gameRules: GameRules;
-  numCurrPlayers: number;
-  roomId: string;
-  roomName: string;
-  inGame: boolean;
-}
-
 type RecordingTuple = [string, any];
 type ScoreTuple = [string, number];
-type GameContextType = GameState;
 
-export interface GameState {
-  // static fields
-  gameRules: GameRules;
-  roomId?: string;
-  sampleBeats: string[];
-
-  // dynamic fields
-  gameView: string;
-  players?: Player[];
-  numVotesCast?: number;
-  readyUps?: any;
-  recordings?: RecordingTuple[];
-  roundRecordingStartTime?: number;
-  gameWinners?: WinResult;
-  contestants?: string[];
-  roundNum: number;
-  scores: ScoreTuple[];
-  roundWinners?: WinResult;
-}
-
+///////////////////////////////////////////////////////////////////////////////
+// Contexts                                                                  //
+///////////////////////////////////////////////////////////////////////////////
 export interface ToneAudioContextType {
   Tone: any;
   midiInputs: Input[];
@@ -138,8 +128,36 @@ export interface CurrentUserContextType {
   user: User;
 }
 
+export interface SocketContextType {
+  socket: Socket;
+}
+
+type GameContextType = GameState;
+
+///////////////////////////////////////////////////////////////////////////////
+// Player Data                                                               //
+///////////////////////////////////////////////////////////////////////////////
+export interface Player {
+  playerId: string;
+  playerAlias: string;
+}
+
+export interface User {
+  userAlias: string;
+  userId: string;
+}
+
+interface PlayerScore {
+  playerScore: number;
+  playerRank: number;
+}
+
+export type PlayerData = Player & PlayerScore;
+
+///////////////////////////////////////////////////////////////////////////////
+// Units                                                                     //
+///////////////////////////////////////////////////////////////////////////////
+type Color = string;
 type Seconds = number;
 type Milliseconds = number;
 type Microseconds = number;
-
-type Color = string;
