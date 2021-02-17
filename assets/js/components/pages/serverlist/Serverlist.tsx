@@ -1,5 +1,6 @@
 import React, { useMemo, useRef, useState } from "react";
 
+import { MediumLargeTitle, ContentButton, ComputerButton } from "../../common";
 import { RoomState } from "../../../types";
 
 interface ServerlistProps {
@@ -17,85 +18,79 @@ const Serverlist: React.FC<ServerlistProps> = ({
     }, 0);
   }, [timeSinceRefresh]);
 
-  return (
-    <div style={{ padding: "8px" }}>
-      <h1 className="uk-text-center">Room List</h1>
-      <p>
-        Look for rooms that have the "Pregame" status to get into a lobby
-        without having to wait for the current game to end. Rooms with the most
-        players in them will appear closer to the top.
-      </p>
-      <table
-        className="uk-table uk-table-divider uk-background-muted"
-        style={{
-          marginTop: 0,
-          marginBottom: 0,
-          overflow: "scroll",
-          overflowY: "auto",
-          overflowX: "auto",
-        }}
-      >
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Status</th>
-            <th># Players</th>
-            <th>Required Players</th>
-            <th>Join</th>
-            {/* <th>Link</th> */}
-          </tr>
-        </thead>
-        <tbody>
-          {roomStates
-            .sort((a, b) => {
-              return b.numCurrPlayers - a.numCurrPlayers;
-            })
-            .map((room) => {
-              return (
-                <tr key={room.roomId}>
-                  <td>{room.roomName}</td>
-                  <td>
-                    {room.inGame ? (
-                      <div style={{ color: "red" }}>In Game</div>
-                    ) : (
-                      <div style={{ color: "green" }}>Pregame</div>
-                    )}
-                  </td>
-                  <td>{room.numCurrPlayers}</td>
-                  <td>{room.gameRules.gameSizeNumPlayers}</td>
-                  <td>
-                    <button
-                      style={{ width: "100%", cursor: "pointer" }}
-                      onClick={() =>
-                        (window.location.href = `/room/${room.roomId}`)
-                      }
-                    >
-                      JOIN
-                    </button>
-                  </td>
-                  <td>
-                    {/* <div>
-                      <i
-                        style={{
-                          verticalAlign: "middle",
-                          color: "gray",
-                          cursor: "pointer",
-                        }}
-                        onClick={copyToClipboard}
-                        className="material-icons"
-                      >
-                        content_copy
-                      </i>
-                    </div> */}
+  const [selectedRoom, setSelectedRoom] = useState<RoomState>();
 
-                    {/* <a href={`/room/${room.roomId}`}>Join</a> */}
-                  </td>
-                </tr>
-              );
-            })}
-        </tbody>
-      </table>
-      <div style={{ paddingTop: "8px", paddingBottom: "8px" }}>
+  return (
+    <div>
+      <MediumLargeTitle centered={false}>///ROOM LIST</MediumLargeTitle>
+      <div className="serverlist_flex_anchor">
+        <div className="serverlist_table_wrapper">
+          <table className="serverlist_table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Players</th>
+                <th># Rounds</th>
+              </tr>
+            </thead>
+            <tbody>
+              {roomStates
+                .sort((a, b) => {
+                  return b.numCurrPlayers - a.numCurrPlayers;
+                })
+                .map((room) => {
+                  return (
+                    <tr key={room.roomId} onClick={() => setSelectedRoom(room)}>
+                      <td>{room.roomName}</td>
+                      <td>
+                        {room.inGame ? (
+                          <div style={{ color: "red" }}>In Game</div>
+                        ) : (
+                          <div style={{ color: "#1aeb13" }}>Pregame</div>
+                        )}
+                      </td>
+                      <td>{`${room.numCurrPlayers} / ${room.gameRules.gameSizeNumPlayers}`}</td>
+                      <td>{room.gameRules.roundsToWin}</td>
+                    </tr>
+                  );
+                })}
+            </tbody>
+          </table>
+        </div>
+        {!!selectedRoom ? (
+          <div className="serverlist_details_pane_wrapper">
+            <div className="serverlist_details_pane">
+              <div className="server_details_content_wrapper">
+                <h5>{selectedRoom.roomName}</h5>
+                <div className="server_details_content_body">
+                  <ul>
+                    <div>
+                      <strong>Game Mode: </strong>
+                      Classic
+                    </div>
+                    <div>
+                      <strong>Player Requirements: </strong>
+                      None
+                    </div>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <ComputerButton
+              callback={() =>
+                (window.location.href = `/room/${selectedRoom.roomId}`)
+              }
+              fullwidth={true}
+            >
+              <h5>CONNECT</h5>
+            </ComputerButton>
+          </div>
+        ) : (
+          <></>
+        )}
+      </div>
+      <div style={{ paddingBottom: "16px" }}>
         <div style={{ float: "left" }}>
           <p>{numPlayersOnline} players online</p>
         </div>

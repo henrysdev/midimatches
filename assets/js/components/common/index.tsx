@@ -10,3 +10,6 @@ export { FullWidthButton } from "./FullWidthButton";
 export { Button } from "./Button";
 export { HeaderNav } from "./HeaderNav";
 export { EditUser } from "./EditUser";
+export { ComputerFrame } from "./ComputerFrame";
+export { ComputerButton } from "./ComputerButton";
+export { ContentButton } from "./ContentButton";

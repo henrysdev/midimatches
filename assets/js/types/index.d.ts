@@ -101,6 +101,7 @@ export interface GameRules {
   soloTimeLimit: number;
   quantizationThreshold: number;
   viewTimeouts: ViewTimeouts;
+  roundsToWin: number;
 }
 
 export interface WinResult {

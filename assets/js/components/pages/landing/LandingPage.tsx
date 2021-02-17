@@ -1,31 +1,20 @@
 import React from "react";
-
+import { ComputerFrame, ComputerButton, MediumLargeTitle } from "../../common";
 import { HowToPlay } from ".";
 
 const LandingPage: React.FC = () => {
   return (
-    <div
-      style={{
-        maxWidth: "100%",
-        margin: "auto",
-        marginTop: "16px",
-        padding: "24px",
-        boxShadow: "0 5px 15px rgb(0 0 0 / 8%)",
-        color: "#666",
-      }}
-    >
-      <div>
-        <h1 className="uk-text-center">Midi Matches</h1>
-        <HowToPlay />
-        <button
-          style={{ width: "100%", marginTop: "16px" }}
-          className="uk-button uk-button-primary"
-          onClick={() => (window.location.href = "/servers")}
-        >
-          READY TO PLAY!
-        </button>
+    <ComputerFrame>
+      <div className="landing_page_content">
+        <div>
+          <MediumLargeTitle centered={false}>///MIDI MATCHES</MediumLargeTitle>
+          <HowToPlay />
+          <ComputerButton callback={() => (window.location.href = "/servers")}>
+            <h5>LET'S PLAY!</h5>
+          </ComputerButton>
+        </div>
       </div>
-    </div>
+    </ComputerFrame>
   );
 };
 export { LandingPage };
