@@ -27,7 +27,7 @@ const WarmUp: React.FC<WarmUpProps> = ({}) => {
     setSynth(newSynth);
   }, []);
 
-  return midiInputs.length > 0 && !!synth ? (
+  return !!synth ? (
     <ToneAudioContext.Provider value={{ Tone, midiInputs, synth }}>
       <RecordMidi
         submitRecording={() => {}}

@@ -25,7 +25,7 @@ const Serverlist: React.FC<ServerlistProps> = ({
       <MediumLargeTitle centered={false}>///ROOM LIST</MediumLargeTitle>
       <div className="serverlist_flex_anchor">
         <div className="serverlist_table_wrapper inset_3d_border_shallow">
-          <table className="serverlist_table">
+          <table className="serverlist_table inline_screen">
             <thead>
               <tr>
                 <th>Name</th>
@@ -41,7 +41,15 @@ const Serverlist: React.FC<ServerlistProps> = ({
                 })
                 .map((room) => {
                   return (
-                    <tr key={room.roomId} onClick={() => setSelectedRoom(room)}>
+                    <tr
+                      key={room.roomId}
+                      onClick={() => setSelectedRoom(room)}
+                      className={
+                        !!selectedRoom && selectedRoom.roomId === room.roomId
+                          ? "selected_highlight_color"
+                          : ""
+                      }
+                    >
                       <td>{room.roomName}</td>
                       <td>
                         {room.inGame ? (
@@ -60,7 +68,7 @@ const Serverlist: React.FC<ServerlistProps> = ({
         </div>
         {!!selectedRoom ? (
           <div className="serverlist_details_pane_wrapper">
-            <div className="serverlist_details_pane inset_3d_border_shallow">
+            <div className="serverlist_details_pane inline_screen inset_3d_border_shallow">
               <div className="server_details_content_wrapper">
                 <h5>{selectedRoom.roomName}</h5>
                 <div className="server_details_content_body">

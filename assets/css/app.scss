@@ -27,9 +27,11 @@ h6 {
 }
 h1 {
   font-size: 2em;
+  color: #429888;
 }
 h2 {
   font-size: 1.5em;
+  color: #429888;
 }
 h3 {
   font-size: 1.17em;
@@ -67,4 +69,8 @@ tr:first-child {
 
 html {
   background-color: #999;
+}
+
+strong {
+  font-weight: bold;
 }

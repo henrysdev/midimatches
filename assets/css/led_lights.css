@@ -75,8 +75,8 @@
   height: 24px;
   background-color: #919191;
   border-radius: 50%;
-  /* box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #304701 0 -1px 9px,
-    #919191 0 2px 12px; */
+  box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #304701 0 -1px 9px,
+    #919191 0 2px 12px;
 }
 
 .bulb-off-green {
