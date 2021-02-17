@@ -3,7 +3,6 @@
   margin: 8px;
   border-radius: 10px;
   background-color: #ebdfce;
-  border: 2px solid #666;
 }
 
 .computer_frame .frame_bevel {
@@ -25,9 +24,6 @@
   margin-left: 25%;
   border-radius: 10px;
 }
-/* .banner_button:hover {
-  background-color: #c4b9ab;
-} */
 
 .content_button {
   padding: 8px;
@@ -47,7 +43,7 @@
   max-width: 100%;
   margin: auto;
   padding: 16px;
-  box-shadow: 0 5px 15px rgb(0 0 0 / 8%);
+  /* box-shadow: 0 5px 15px rgb(0 0 0 / 8%); */
   color: #666;
 }
 
@@ -66,19 +62,20 @@
 
 .serverlist_table_wrapper {
   flex: 16;
+  border-radius: 10px;
 }
 
 .serverlist_details_pane {
   box-shadow: inset 0 -3em 3em rgba(0, 0, 0, 0.1);
   background-color: #fff;
   padding: 8px;
-  /* border: 2px solid #666; */
   border-radius: 10px;
-  height: 70%;
+  height: calc(100% - 136px);
 }
 
 .serverlist_details_pane_wrapper {
   flex: 6;
+  margin-left: 16px;
 }
 
 .server_details_content_wrapper {
@@ -93,16 +90,16 @@
   font-style: bold;
 }
 
-.server_details_join_button {
-  position: absolute;
+.server_details_connect_button {
   bottom: 0;
-  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+  width: calc(100% - 36px);
 }
 
 .serverlist_table {
-  width: calc(100% - 16px);
+  width: 100%;
   box-shadow: inset 0 -3em 3em rgba(0, 0, 0, 0.1);
-  /* border: 2px solid #666; */
 }
 
 .centered_title {
@@ -120,11 +117,10 @@
   margin: auto;
   margin-top: 16px;
   padding: 16px;
-  box-shadow: inset 0 -3em 3em rgba(0, 0, 0, 0.1);
   color: #666;
   background-color: #fff;
   border-radius: 10px;
-  /* border: 2px solid #666; */
+  box-shadow: inset 0 -3em 3em rgba(0, 0, 0, 0.1);
 }
 
 .landing_page_info dt {
@@ -152,6 +148,34 @@
   padding: 16px;
   box-shadow: 0 5px 15px rgb(0 0 0 / 8%);
   color: #666;
+}
+
+.outset_3d_border_deep {
+  border-bottom: 16px solid #c2b6a4;
+  border-right: 16px solid #cdc2b3;
+  border-top: 16px solid #f0e7db;
+  border-left: 16px solid #e9dbc9;
+}
+
+.outset_3d_border_shallow {
+  border-bottom: 8px solid #c2b6a4;
+  border-right: 8px solid #cdc2b3;
+  border-top: 8px solid #f0e7db;
+  border-left: 8px solid #e9dbc9;
+}
+
+.inset_3d_border_deep {
+  border-top: 16px solid #c2b6a4;
+  border-left: 16px solid #cdc2b3;
+  border-bottom: 16px solid #f0e7db;
+  border-right: 16px solid #e9dbc9;
+}
+
+.inset_3d_border_shallow {
+  border-top: 12px solid #c2b6a4;
+  border-left: 12px solid #cdc2b3;
+  border-bottom: 12px solid #f0e7db;
+  border-right: 12px solid #e9dbc9;
 }
 
 /*

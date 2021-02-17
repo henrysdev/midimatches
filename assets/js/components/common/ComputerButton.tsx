@@ -1,29 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
+
+const defaultClasses = [
+  "banner_button",
+  "relative_anchor",
+  "outset_3d_border_shallow",
+];
 
 interface ComputerButtonProps {
   children?: any;
   callback: Function;
-  fullwidth?: boolean;
+  extraClasses?: string[];
 }
 const ComputerButton: React.FC<ComputerButtonProps> = ({
   children,
   callback,
-  fullwidth = false,
+  extraClasses = [],
 }) => {
   const [lightBulbAnimClass, setLightBulbAnimClass] = useState<string>(
     "led-green"
   );
+  const className = useMemo(() => {
+    return [...defaultClasses, ...extraClasses].join(" ");
+  }, [extraClasses]);
   return (
     <div
       onMouseEnter={() => setLightBulbAnimClass("led-green bulb-on-green")}
       onMouseLeave={() => setLightBulbAnimClass("led-green bulb-off-green")}
       onClick={() => callback()}
-      className="banner_button relative_anchor"
-      style={
-        fullwidth
-          ? { marginLeft: 0, marginRight: 0, width: "calc(100% - 16px)" }
-          : {}
-      }
+      className={className}
     >
       <div className="led-box" style={{ float: "left" }}>
         <div className={lightBulbAnimClass}></div>
