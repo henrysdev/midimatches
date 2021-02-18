@@ -44,7 +44,11 @@ const GameStartView: React.FC<GameStartViewProps> = ({
           />
         ) : (
           <div className="uk" style={{ margin: "auto", maxWidth: "400px" }}>
-            <Instructions description={"Confirm your MIDI input(s)"} />
+            <Instructions
+              description={
+                "Confirm your MIDI input(s). You will be able to play with your computer keyboard and mouse as well."
+              }
+            />
             <MidiConfiguration setMidiInputs={setMidiInputs} />
             <ContentButton
               callback={() => {
@@ -64,7 +68,7 @@ const GameStartView: React.FC<GameStartViewProps> = ({
                 }
               }}
             >
-              Ready Up
+              <h4 className="roboto_font">READY UP</h4>
             </ContentButton>
           </div>
         )}

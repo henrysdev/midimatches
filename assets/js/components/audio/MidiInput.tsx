@@ -20,15 +20,19 @@ const MidiInput: React.FC<MidiInputProps> = ({ input, toggleEnabled }) => {
       }}
     >
       {enabled ? (
-        <span
-          style={{ width: "20px", marginRight: "8px", color: "green" }}
-          uk-icon="icon: check; ratio: 1.4"
-        ></span>
+        <i
+          style={{ verticalAlign: "middle", color: "green" }}
+          className="material-icons"
+        >
+          usb
+        </i>
       ) : (
-        <span
-          style={{ width: "20px", marginRight: "8px", color: "red" }}
-          uk-icon="icon: ban; ratio: 1.2"
-        ></span>
+        <i
+          style={{ verticalAlign: "middle", color: "red" }}
+          className="material-icons"
+        >
+          usb_off
+        </i>
       )}
       {input.name}
     </div>

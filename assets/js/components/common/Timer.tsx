@@ -26,10 +26,11 @@ const Timer: React.FC<TimerProps> = memo(
         return <div>{timesUpText}</div>;
       } else {
         // Render a countdown
+        const timeLeft = seconds + minutes * 60;
         return (
-          <p>
+          <p style={timeLeft <= 5 ? { color: "red" } : {}}>
             {!!descriptionText ? <span>{descriptionText}</span> : <></>}{" "}
-            <span>{seconds + minutes * 60}</span>
+            <span>{timeLeft}</span>
           </p>
         );
       }

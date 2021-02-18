@@ -35,7 +35,7 @@ const RoundStartView: React.FC<RoundStartViewProps> = ({
       </DynamicContent>
       <TimerBox>
         <Timer
-          descriptionText={"Faceoff starting in "}
+          descriptionText={"Play starting in "}
           duration={roundStartTimeout}
         />
       </TimerBox>

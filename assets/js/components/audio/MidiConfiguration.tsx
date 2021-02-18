@@ -50,8 +50,8 @@ const MidiConfiguration: React.FC<MidiConfigurationProps> = ({
 
   return (
     <div>
-      {!!midiInputs ? (
-        <div className="btn-group">
+      {!!midiInputs && midiInputs.length > 0 ? (
+        <div className="midi_button_group">
           {midiInputs
             .sort((a, b) => a.name.localeCompare(b.name))
             .map((midiInput, idx) => (
@@ -63,7 +63,7 @@ const MidiConfiguration: React.FC<MidiConfigurationProps> = ({
             ))}
         </div>
       ) : (
-        <div>No MIDI Inputs found</div>
+        <p>No MIDI Inputs found.</p>
       )}
     </div>
   );

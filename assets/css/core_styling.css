@@ -26,16 +26,26 @@
 }
 
 .content_button {
+  /* background-color: #d8d8d8; */
+  margin-top: 8px;
   padding: 8px;
   cursor: pointer;
   min-height: 48px;
   max-height: 96px;
   border: 2px solid #666;
-  border-radius: 10px;
+  font-family: "Roboto", sans-serif;
+  background-image: linear-gradient(
+    to bottom right,
+    rgb(172, 172, 172),
+    rgb(232, 232, 232)
+  );
 }
 .content_button:hover {
-  background-color: #c7c7c7;
-  color: #1aeb13;
+  background-image: linear-gradient(
+    to bottom right,
+    rgb(142, 142, 142),
+    rgb(196, 196, 196)
+  );
 }
 
 .landing_page_content {
@@ -393,26 +403,26 @@ input:checked + .slider:before {
   border-radius: 10px;
 }
 
-.midi_button {
-  background-color: rgb(204, 220, 255);
-  color: black;
-  cursor: pointer;
-  display: block;
+.midi_button_group {
+  background-color: rgb(205, 205, 205);
   max-height: 200px;
   overflow: scroll;
   overflow-y: auto;
   overflow-x: auto;
+}
+
+.midi_button {
+  background-color: rgb(238, 238, 238);
+  color: black;
+  cursor: pointer;
+  display: block;
   padding: 4px;
-  border: 1px solid #666;
   font-family: "Roboto", sans-serif;
+  margin: 4px;
 }
 
 .midi_button:hover {
   background-color: gray;
-}
-
-.btn-group .midi_button:not(:last-child) {
-  border-bottom: none; /* Prevent double borders */
 }
 
 .button_disabled {
