@@ -11,6 +11,7 @@ import {
   Instructions,
   MediumLargeTitle,
   DynamicContent,
+  TimerBox,
 } from "../../../../common";
 import { secToMs } from "../../../../../utils";
 import { useGameContext } from "../../../../../hooks";
@@ -48,13 +49,38 @@ const RecordingView: React.FC<RecordingViewProps> = ({
 
   return isContestant ? (
     <div>
-      <MediumLargeTitle title="Time to Play!" />
-      <Instructions
-        description={`Listen to the sample and warm up before recording begins.`}
-      />
+      <MediumLargeTitle title="PLAY AND RECORD" />
       <DynamicContent style={isRecording ? { backgroundColor: "#ffd9db" } : {}}>
-        <div style={{ height: "20px" }}>
-          {isRecording ? (
+        {isSamplePlaying && !isRecording ? (
+          <Instructions description="Get ready to record!" />
+        ) : isRecording ? (
+          <Instructions description="Recording in progress... keep playing!" />
+        ) : (
+          <></>
+        )}
+        {!!roundRecordingStartTime ? (
+          <RecordMidi
+            submitRecording={submitRecording}
+            playSample={playSampleWithEffect}
+            stopSample={stopSample}
+            setIsRecording={setIsRecording}
+            gameRules={gameRules}
+            roundRecordingStartTime={roundRecordingStartTime}
+            shouldRecord={true}
+          />
+        ) : (
+          <></>
+        )}
+      </DynamicContent>
+      <TimerBox>
+        {isSamplePlaying && !isRecording ? (
+          <Timer
+            key={`sample-timer-${isSamplePlaying}`}
+            descriptionText={"Recording starts in "}
+            duration={secToMs(DEFAULT_SAMPLE_LENGTH)}
+          />
+        ) : isRecording ? (
+          <div>
             <div
               style={{
                 display: "flex",
@@ -75,33 +101,11 @@ const RecordingView: React.FC<RecordingViewProps> = ({
                 style={{ color: "red" }}
               />
             </div>
-          ) : (
-            <></>
-          )}
-          {isSamplePlaying && !isRecording ? (
-            <Timer
-              key={`sample-timer-${isSamplePlaying}`}
-              descriptionText={"Warm up! Recording starts in "}
-              duration={secToMs(DEFAULT_SAMPLE_LENGTH)}
-            />
-          ) : (
-            <></>
-          )}
-        </div>
-        {!!roundRecordingStartTime ? (
-          <RecordMidi
-            submitRecording={submitRecording}
-            playSample={playSampleWithEffect}
-            stopSample={stopSample}
-            setIsRecording={setIsRecording}
-            gameRules={gameRules}
-            roundRecordingStartTime={roundRecordingStartTime}
-            shouldRecord={true}
-          />
+          </div>
         ) : (
           <></>
         )}
-      </DynamicContent>
+      </TimerBox>
     </div>
   ) : (
     <div>Waiting for other players to finish recording...</div>

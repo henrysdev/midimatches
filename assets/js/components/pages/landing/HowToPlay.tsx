@@ -1,22 +1,12 @@
 import React from "react";
-import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 const HowToPlay: React.FC = () => {
   return (
-    <div
-      style={{
-        margin: "auto",
-        marginTop: "16px",
-        padding: "24px",
-        boxShadow: "0 5px 15px rgb(0 0 0 / 8%)",
-        color: "#666",
-      }}
-    >
-      <dl className="uk-description-list uk-description-list-divider">
+    <div className="landing_page_info inset_3d_border_shallow inline_screen">
+      <dl>
         <dt>
-          <strong>Welcome!</strong>
+          <h5>WELCOME!</h5>
         </dt>
-        <br />
         <dd>
           <p>
             Midi Matches is a multiplayer improvisational keyboard game that
@@ -24,10 +14,10 @@ const HowToPlay: React.FC = () => {
             thrill of friendly competition.
           </p>
         </dd>
-        <dt>
-          <strong>MIDI First</strong>
-        </dt>
         <br />
+        <dt>
+          <h5>MIDI FIRST</h5>
+        </dt>
         <dd>
           <p>
             Midi Matches is intended to be played with a MIDI keyboard. For the
@@ -36,10 +26,10 @@ const HowToPlay: React.FC = () => {
             keyboard or click on notes.
           </p>
         </dd>
-        <dt>
-          <strong>How Do I Play?</strong>
-        </dt>
         <br />
+        <dt>
+          <h5>HOW DO I PLAY?</h5>
+        </dt>
         <dd>
           <p>
             Each game consists of multiple rounds of recording and voting. The

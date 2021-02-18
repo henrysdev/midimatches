@@ -1,15 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 
+import { SUBMIT_PREGAME_JOIN } from "../../../../constants";
 import {
-  SUBMIT_PREGAME_JOIN,
-  SUBMIT_LEAVE_ROOM,
-  MIN_PLAYER_ALIAS_LENGTH,
-  MAX_PLAYER_ALIAS_LENGTH,
-} from "../../../../constants";
-import { FullWidthButton, MediumLargeTitle } from "../../../common";
-import { RecordMidi } from "../../../audio";
+  MediumLargeTitle,
+  MediumTitle,
+  ComputerFrame,
+  ComputerButton,
+} from "../../../common";
 import { PregameDebug } from "../../../debug";
-import { WarmUp } from ".";
+import { PregameCenterPane, WarmUp } from ".";
 import { User } from "../../../../types";
 
 interface PregameLobbyProps {
@@ -31,77 +30,93 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
 }) => {
   const [hasJoined, setHasJoined] = useState<boolean>(false);
 
+  const [copySuccess, setCopySuccess] = useState<boolean>(false);
+
   return (
     <div>
-      <div
-        style={{
-          maxWidth: "400px",
-          margin: "auto",
-          marginTop: "16px",
-          padding: "24px",
-          boxShadow: "0 5px 15px rgb(0 0 0 / 8%)",
-          color: "#666",
-        }}
-      >
-        <MediumLargeTitle title={`${roomName} - Pregame Lobby`} />
-        {gameInProgress ? (
-          <div>
-            <div>
-              <strong>Game in progress.</strong> A new game will be starting in
-              a few minutes. Feel free to <a href="/">find another server</a> or
-              play keyboard in the meantime.
-            </div>
-            <WarmUp />
-          </div>
-        ) : (
-          <div>
-            <div>
-              {hasJoined ? (
-                <div>
+      <ComputerFrame>
+        <div className="pregame_lobby_page_content">
+          <MediumLargeTitle centered={false}>///PREGAME LOBBY</MediumLargeTitle>
+          <MediumTitle centered={false}>{roomName}</MediumTitle>
+          {hasJoined || gameInProgress ? (
+            <div className="pregame_lobby_flex_anchor">
+              <div className="pregame_content_pane">
+                <div className="inline_screen inset_3d_border_shallow">
                   <p>
-                    Joined successfully as{" "}
-                    <strong>{currentUser.userAlias}</strong>. Warm up your
-                    fingers a bit! Waiting for more players...
+                    <strong>{`${numPlayersJoined}/${numPlayersToStart} Players. Need ${
+                      numPlayersToStart - numPlayersJoined
+                    } more players to start game`}</strong>
                   </p>
-                  <WarmUp />
                 </div>
-              ) : (
-                <p style={{ marginBottom: "8px" }}>Game has not started yet.</p>
-              )}
-            </div>
-            {hasJoined ? (
-              <></>
-            ) : (
-              <div>
-                <FullWidthButton
-                  label="Join"
+                <ComputerButton
                   callback={() => {
-                    const sentMessage = submitPlayerJoin(SUBMIT_PREGAME_JOIN, {
-                      player_alias: currentUser.userAlias,
-                      player_id: currentUser.userId,
-                    });
-                    if (!!sentMessage) {
-                      sentMessage
-                        .receive("ok", (_reply: any) => {
-                          console.log("join game successful");
-                          setHasJoined(true);
-                        })
-                        .receive("error", (err: any) => {
-                          console.error("join game error: ", err);
-                        });
-                    }
+                    navigator.clipboard.writeText(location.href);
+                    setCopySuccess(true);
                   }}
-                />
+                >
+                  <h5>
+                    COPY INVITE
+                    {copySuccess ? (
+                      <i
+                        style={{
+                          color: "green",
+                          verticalAlign: "middle",
+                          marginLeft: "4px",
+                          marginBottom: "4px",
+                        }}
+                        className="material-icons"
+                      >
+                        done
+                      </i>
+                    ) : (
+                      <i
+                        style={{
+                          color: "black",
+                          verticalAlign: "middle",
+                          marginLeft: "4px",
+                          marginBottom: "4px",
+                        }}
+                        className="material-icons"
+                      >
+                        content_copy
+                      </i>
+                    )}
+                  </h5>
+                </ComputerButton>
               </div>
-            )}
-            <div style={{ marginTop: "16px" }}>
-              <strong>{`${numPlayersJoined}/${numPlayersToStart} Players. Need ${
-                numPlayersToStart - numPlayersJoined
-              } more players to start game`}</strong>
+              <PregameCenterPane
+                gameInProgress={gameInProgress}
+                currentUser={currentUser}
+              />
             </div>
-          </div>
-        )}
-      </div>
+          ) : !hasJoined && !gameInProgress ? (
+            <div>
+              <ComputerButton
+                callback={() => {
+                  const sentMessage = submitPlayerJoin(SUBMIT_PREGAME_JOIN, {
+                    player_alias: currentUser.userAlias,
+                    player_id: currentUser.userId,
+                  });
+                  if (!!sentMessage) {
+                    sentMessage
+                      .receive("ok", (_reply: any) => {
+                        console.log("join game successful");
+                        setHasJoined(true);
+                      })
+                      .receive("error", (err: any) => {
+                        console.error("join game error: ", err);
+                      });
+                  }
+                }}
+              >
+                <h5>JOIN GAME</h5>
+              </ComputerButton>
+            </div>
+          ) : (
+            <></>
+          )}
+        </div>
+      </ComputerFrame>
       {/* <PregameDebug /> */}
     </div>
   );

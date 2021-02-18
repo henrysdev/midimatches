@@ -6,6 +6,7 @@ import { PlaybackAudio } from "../../../../audio";
 import {
   SimpleButton,
   Timer,
+  TimerBox,
   Instructions,
   DynamicContent,
   MediumLargeTitle,
@@ -20,10 +21,8 @@ interface PlaybackVotingViewProps {
 }
 
 const desc = `
-Listen through all other players' recordings and vote for your favorite. You 
-must listen through each recording at least once before you are able to vote. 
-If voting time expires before you have cast a vote, your vote will be automatically 
-cast for a random player.
+Listen through other players' recordings. Once all recordings have been heard you will be able to cast a vote for your favorite. 
+If voting time expires before you have voted, your vote will be cast randomly.
 `;
 
 const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
@@ -102,19 +101,13 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
 
   return (
     <div>
-      <MediumLargeTitle title="Playback Voting" />
-      <Instructions description={desc} />
+      <MediumLargeTitle>LISTEN AND VOTE</MediumLargeTitle>
       <DynamicContent>
-        {!!playbackVotingTimeout ? (
-          <Timer
-            descriptionText={"Voting ends in "}
-            duration={playbackVotingTimeout}
-          />
-        ) : (
-          <></>
-        )}
+        <Instructions description={desc} />
         {voteSubmitted ? (
-          <div>Vote submitted successfully. Waiting on other players...</div>
+          <p style={{ textAlign: "center" }}>
+            Vote submitted successfully. Waiting on other players...
+          </p>
         ) : !!recordings ? (
           recordings
             .map((recordingTuple: RecordingTuple, idx: number): [
@@ -148,6 +141,16 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
           <div>No recordings available</div>
         )}
       </DynamicContent>
+      <TimerBox>
+        {!!playbackVotingTimeout ? (
+          <Timer
+            descriptionText={"Voting ends in "}
+            duration={playbackVotingTimeout}
+          />
+        ) : (
+          <></>
+        )}
+      </TimerBox>
     </div>
   );
 };

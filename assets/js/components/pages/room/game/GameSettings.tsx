@@ -15,12 +15,7 @@ const GameSettings: React.FC<GameSettingsProps> = ({}) => {
   };
 
   return (
-    <div
-      style={{
-        minHeight: "200px",
-        flexGrow: 1,
-      }}
-    >
+    <div className="in_game_settings_pane inline_screen">
       <h5 style={{ textAlign: "left", color: "#999" }}>Settings</h5>
       <ul style={{ listStyleType: "none", paddingLeft: 0 }}>
         <li style={{ padding: 0 }}>

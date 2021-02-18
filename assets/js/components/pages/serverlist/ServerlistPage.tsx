@@ -6,8 +6,7 @@ import { ServerlistUpdatePayload, RoomState } from "../../../types";
 import { SERVERLIST_UPDATE_EVENT } from "../../../constants";
 import { Serverlist } from ".";
 import { useSocketContext } from "../../../hooks";
-
-import { EditUser, Button } from "../../common";
+import { ComputerFrame } from "../../common";
 
 const ServerlistPage: React.FC = () => {
   const [roomStates, setRoomStates] = useState<Array<RoomState>>([]);
@@ -52,23 +51,14 @@ const ServerlistPage: React.FC = () => {
   }, []);
 
   return (
-    <div
-      style={{
-        maxWidth: "100%",
-        margin: "auto",
-        marginTop: "16px",
-        padding: "24px",
-        boxShadow: "0 5px 15px rgb(0 0 0 / 8%)",
-        color: "#666",
-      }}
-    >
-      <div>
+    <ComputerFrame>
+      <div className="serverlist_page_content">
         <Serverlist
           roomStates={roomStates}
           timeSinceRefresh={timeSinceRefresh}
         />
       </div>
-    </div>
+    </ComputerFrame>
   );
 };
 export { ServerlistPage };

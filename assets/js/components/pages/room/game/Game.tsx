@@ -17,7 +17,7 @@ import {
   useSamplePlayer,
   usePlayerContext,
 } from "../../../../hooks";
-import { GameLayout } from "./GameLayout";
+import { GameLayout, InGameFrame } from ".";
 import { Input } from "webmidi";
 import { GameContextType } from "../../../../types";
 
@@ -83,7 +83,7 @@ const Game: React.FC<GameProps> = ({ gameChannel, initGameState }) => {
   return (
     <GameContext.Provider value={gameContext} key={currentView}>
       <ToneAudioContext.Provider value={{ Tone, midiInputs, synth }}>
-        <GameLayout>
+        <InGameFrame>
           {(() => {
             switch (currentView) {
               case GAME_VIEW.GAME_START:
@@ -95,7 +95,12 @@ const Game: React.FC<GameProps> = ({ gameChannel, initGameState }) => {
                 );
 
               case GAME_VIEW.ROUND_START:
-                return <RoundStartView pushMessageToChannel={pushMessage} />;
+                return (
+                  <RoundStartView
+                    pushMessageToChannel={pushMessage}
+                    roundNum={gameContext.roundNum}
+                  />
+                );
 
               case GAME_VIEW.RECORDING:
                 return (
@@ -129,7 +134,7 @@ const Game: React.FC<GameProps> = ({ gameChannel, initGameState }) => {
                 return <GameEndView />;
             }
           })()}
-        </GameLayout>
+        </InGameFrame>
       </ToneAudioContext.Provider>
     </GameContext.Provider>
   );

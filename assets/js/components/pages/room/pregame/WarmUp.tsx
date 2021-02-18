@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 
 import { DEFAULT_SYNTH_CONFIG } from "../../../../constants";
 import { RecordMidi } from "../../../audio";
@@ -27,7 +27,7 @@ const WarmUp: React.FC<WarmUpProps> = ({}) => {
     setSynth(newSynth);
   }, []);
 
-  return midiInputs.length > 0 && !!synth ? (
+  return !!synth ? (
     <ToneAudioContext.Provider value={{ Tone, midiInputs, synth }}>
       <RecordMidi
         submitRecording={() => {}}

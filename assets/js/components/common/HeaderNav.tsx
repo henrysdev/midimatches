@@ -8,7 +8,8 @@ const HeaderNav: React.FC<HeaderNavProps> = ({ playerAlias }) => (
   <div
     style={{
       display: "flex",
-      height: "32px",
+      padding: "8px",
+      paddingTop: "0px",
     }}
   >
     <div
@@ -18,7 +19,7 @@ const HeaderNav: React.FC<HeaderNavProps> = ({ playerAlias }) => (
     >
       <a href="/">
         <h5 style={{ fontFamily: "Audiowide, cursive", cursor: "pointer" }}>
-          Midi Matches
+          ///MIDI MATCHES
         </h5>
       </a>
     </div>

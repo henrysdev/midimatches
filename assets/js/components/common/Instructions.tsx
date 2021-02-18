@@ -2,7 +2,7 @@ import React from "react";
 
 interface InstructionsProps {
   title?: string;
-  description: string;
+  description?: string;
   children?: any;
 }
 const Instructions: React.FC<InstructionsProps> = ({
@@ -11,20 +11,10 @@ const Instructions: React.FC<InstructionsProps> = ({
   children,
 }) => {
   return (
-    <div
-      style={{
-        maxHeight: "300px",
-        overflow: "scroll",
-        overflowY: "auto",
-        overflowX: "auto",
-        padding: "8px",
-        boxShadow: "0 3px 10px rgb(0 0 0 / 8%)",
-        color: "#666",
-      }}
-    >
+    <div className="instructions_card">
       {!!title ? <div>{title}</div> : <></>}
       <div>
-        <p>{description}</p>
+        {!!description ? <p>{description}</p> : <></>}
         {children}
       </div>
     </div>
