@@ -5,15 +5,11 @@ import { User } from "../../../../types";
 
 interface PregameCenterPaneProps {
   gameInProgress: boolean;
-  numPlayersJoined: number;
-  numPlayersToStart: number;
   currentUser: User;
 }
 
 const PregameCenterPane: React.FC<PregameCenterPaneProps> = ({
   gameInProgress,
-  numPlayersJoined,
-  numPlayersToStart,
   currentUser,
 }) => {
   return (

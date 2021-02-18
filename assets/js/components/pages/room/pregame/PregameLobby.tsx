@@ -38,7 +38,7 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
         <div className="pregame_lobby_page_content">
           <MediumLargeTitle centered={false}>///PREGAME LOBBY</MediumLargeTitle>
           <MediumTitle centered={false}>{roomName}</MediumTitle>
-          {hasJoined ? (
+          {hasJoined || gameInProgress ? (
             <div className="pregame_lobby_flex_anchor">
               <div className="pregame_content_pane">
                 <div className="inline_screen inset_3d_border_shallow">
@@ -86,12 +86,10 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
               </div>
               <PregameCenterPane
                 gameInProgress={gameInProgress}
-                numPlayersJoined={numPlayersJoined}
-                numPlayersToStart={numPlayersToStart}
                 currentUser={currentUser}
               />
             </div>
-          ) : (
+          ) : !hasJoined && !gameInProgress ? (
             <div>
               <ComputerButton
                 callback={() => {
@@ -114,6 +112,8 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
                 <h5>JOIN GAME</h5>
               </ComputerButton>
             </div>
+          ) : (
+            <></>
           )}
         </div>
       </ComputerFrame>
