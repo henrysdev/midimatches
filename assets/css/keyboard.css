@@ -100,6 +100,7 @@
 
 .ReactPiano__NoteLabel {
   font-size: 12px;
+  font-family: "Roboto", sans-serif;
   text-align: center;
   text-transform: capitalize;
   /* Disable text selection */

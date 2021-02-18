@@ -65,7 +65,7 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
         input.removeListener("noteoff", "all");
       });
     };
-  }, []);
+  }, [midiInputs]);
 
   return (
     <div>
