@@ -26,28 +26,28 @@ const WinResultText: React.FC<WinResultTextProps> = ({
       {winners.length > 1 ? (
         <div>
           {endOfGame ? (
-            <MediumTitle title="Game Tie" />
+            <MediumTitle title="GAME TIE" />
           ) : (
-            <MediumTitle title="Round Tie" />
+            <MediumTitle title="ROUND TIE" />
           )}
 
           {winners.map((player) => {
             return (
-              <div key={`winner-${player.playerId}`}>
+              <p key={`winner-${player.playerId}`}>
                 {player.playerAlias} with {winResult.numPoints} votes
-              </div>
+              </p>
             );
           })}
         </div>
       ) : endOfGame ? (
         <div>
-          <MediumTitle title="Game Winner" />
-          <div>{`${winners[0].playerAlias} wins game with ${winResult.numPoints} total votes`}</div>
+          <MediumTitle title="GAME WINNER" />
+          <p>{`${winners[0].playerAlias} wins game with ${winResult.numPoints} total votes`}</p>
         </div>
       ) : (
         <div>
-          <MediumTitle title="Round Winner" />
-          <div>{`${winners[0].playerAlias} wins round ${roundNum} with ${winResult.numPoints} votes`}</div>
+          <MediumTitle title="ROUND WINNER" />
+          <p>{`${winners[0].playerAlias} wins round ${roundNum} with ${winResult.numPoints} votes`}</p>
         </div>
       )}
     </div>

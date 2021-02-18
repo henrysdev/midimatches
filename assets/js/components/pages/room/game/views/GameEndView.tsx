@@ -28,17 +28,19 @@ const GameEndView: React.FC<GameEndViewProps> = () => {
 
   return (
     <div>
-      <MediumLargeTitle title="End of Game" />
-      {!!winningPlayers && !!gameWinners ? (
-        <WinResultText
-          winResult={gameWinners}
-          winningPlayers={winningPlayers}
-          endOfGame={true}
-        />
-      ) : (
-        <></>
-      )}
-      <DynamicContent />
+      <MediumLargeTitle title="GAME END" />
+
+      <DynamicContent>
+        {!!winningPlayers && !!gameWinners ? (
+          <WinResultText
+            winResult={gameWinners}
+            winningPlayers={winningPlayers}
+            endOfGame={true}
+          />
+        ) : (
+          <></>
+        )}
+      </DynamicContent>
     </div>
   );
 };

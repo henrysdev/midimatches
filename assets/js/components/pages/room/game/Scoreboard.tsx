@@ -32,43 +32,32 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
   }, [scores]);
 
   return (
-    <div style={{ paddingBottom: "8px" }}>
-      {!!playersRowData && playersRowData.length > 0 ? (
-        <table
-          className="uk-table uk-table-divider"
-          style={{
-            marginTop: 0,
-            marginBottom: 0,
-            overflow: "scroll",
-            overflowY: "auto",
-            overflowX: "auto",
-          }}
-        >
-          <thead>
-            <tr>
-              <th>Rank</th>
-              <th>Player</th>
-              <th>Score</th>
-            </tr>
-          </thead>
-          <tbody>
-            {!!playersRowData && playersRowData.length > 0 ? (
-              playersRowData.map((playerData, idx) => (
-                <PlayerRow
-                  key={`player-card-${playerData.playerId}`}
-                  isCurrPlayer={playerData.playerId === currPlayer.playerId}
-                  player={playerData}
-                  rank={idx + 1}
-                />
-              ))
-            ) : (
-              <></>
-            )}
-          </tbody>
-        </table>
-      ) : (
-        <></>
-      )}
+    <div className="scoreboard_table_container ">
+      <div></div>
+
+      <table className="scoreboard_table inline_screen">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Player</th>
+            <th>Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          {!!playersRowData && playersRowData.length > 0 ? (
+            playersRowData.map((playerData, idx) => (
+              <PlayerRow
+                key={`player-card-${playerData.playerId}`}
+                isCurrPlayer={playerData.playerId === currPlayer.playerId}
+                player={playerData}
+                rank={idx + 1}
+              />
+            ))
+          ) : (
+            <></>
+          )}
+        </tbody>
+      </table>
     </div>
   );
 };

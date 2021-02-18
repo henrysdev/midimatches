@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import {
-  FullWidthButton,
+  ContentButton,
   Instructions,
   MediumLargeTitle,
   DynamicContent,
   Timer,
-} from "../../../../common/index";
+  TimerBox,
+} from "../../../../common";
 import { SUBMIT_READY_UP_EVENT } from "../../../../../constants/index";
 import { MidiConfiguration } from "../../../../audio";
 import { useGameContext } from "../../../../../hooks";
@@ -34,28 +35,18 @@ const GameStartView: React.FC<GameStartViewProps> = ({
 
   return (
     <div>
-      <MediumLargeTitle title="Starting Game" />
-      <Instructions description={"Confirm your MIDI input(s)"} />
-      {!!gameStartTimeout ? (
-        <Timer
-          key={gameStartTimeout}
-          descriptionText={"Game starts in "}
-          duration={gameStartTimeout}
-        />
-      ) : (
-        <></>
-      )}
+      <MediumLargeTitle title="STARTING GAME" />
       <DynamicContent>
         {isReady ? (
-          <div>
-            Get ready for play! The first round will begin as soon as everyone
-            is ready
-          </div>
+          <Instructions
+            description="Get ready for play! The first round will begin as soon as everyone
+          is ready"
+          />
         ) : (
           <div className="uk" style={{ margin: "auto", maxWidth: "400px" }}>
+            <Instructions description={"Confirm your MIDI input(s)"} />
             <MidiConfiguration setMidiInputs={setMidiInputs} />
-            <FullWidthButton
-              label="Ready Up"
+            <ContentButton
               callback={() => {
                 const sentMessage = pushMessageToChannel(
                   SUBMIT_READY_UP_EVENT,
@@ -72,11 +63,23 @@ const GameStartView: React.FC<GameStartViewProps> = ({
                     });
                 }
               }}
-              disabled={false}
-            />
+            >
+              Ready Up
+            </ContentButton>
           </div>
         )}
       </DynamicContent>
+      <TimerBox>
+        {!!gameStartTimeout ? (
+          <Timer
+            key={gameStartTimeout}
+            descriptionText={"Game starts in "}
+            duration={gameStartTimeout}
+          />
+        ) : (
+          <></>
+        )}
+      </TimerBox>
       {/* <Instructions description={metaInstructions}>
         <p>
           To test or configure the connection to your MIDI input device, click

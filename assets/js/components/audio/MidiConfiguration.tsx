@@ -51,15 +51,7 @@ const MidiConfiguration: React.FC<MidiConfigurationProps> = ({
   return (
     <div>
       {!!midiInputs ? (
-        <ul
-          style={{
-            maxHeight: "200px",
-            overflow: "scroll",
-            overflowY: "auto",
-            overflowX: "auto",
-            paddingLeft: "8px",
-          }}
-        >
+        <div className="btn-group">
           {midiInputs
             .sort((a, b) => a.name.localeCompare(b.name))
             .map((midiInput, idx) => (
@@ -69,7 +61,7 @@ const MidiConfiguration: React.FC<MidiConfigurationProps> = ({
                 toggleEnabled={toggleInputEnabled}
               />
             ))}
-        </ul>
+        </div>
       ) : (
         <div>No MIDI Inputs found</div>
       )}

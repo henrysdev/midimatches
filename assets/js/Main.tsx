@@ -10,20 +10,18 @@ const Main: React.FC = () => {
   const socket = useSocket();
 
   return loaded ? (
-    <div>
-      <CurrentUserContext.Provider value={{ user: currUserData.user }}>
-        <SocketContext.Provider value={{ socket: socket }}>
-          <HeaderNav
-            playerAlias={
-              !!currUserData && !!currUserData.user
-                ? currUserData.user.userAlias
-                : undefined
-            }
-          />
-          <PageRouter />
-        </SocketContext.Provider>
-      </CurrentUserContext.Provider>
-    </div>
+    <CurrentUserContext.Provider value={{ user: currUserData.user }}>
+      <SocketContext.Provider value={{ socket: socket }}>
+        <HeaderNav
+          playerAlias={
+            !!currUserData && !!currUserData.user
+              ? currUserData.user.userAlias
+              : undefined
+          }
+        />
+        <PageRouter />
+      </SocketContext.Provider>
+    </CurrentUserContext.Provider>
   ) : loading ? (
     <div>LOADING</div>
   ) : (

@@ -7,15 +7,12 @@ interface DynamicContentProps {
 const DynamicContent: React.FC<DynamicContentProps> = ({ children, style }) => {
   return (
     <div
-      style={{
-        ...style,
-        padding: "8px",
-        color: "#666",
-        marginBottom: "8px",
-        minHeight: "300px",
-      }}
+      className="dynamic_content_container relative_anchor"
+      style={!!style ? style : {}}
     >
-      {children}
+      <div className="centered_div" style={{ width: "100%" }}>
+        {children}
+      </div>
     </div>
   );
 };

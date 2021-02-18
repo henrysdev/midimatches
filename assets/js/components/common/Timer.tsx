@@ -1,6 +1,7 @@
 import React, { memo } from "react";
 import Countdown from "react-countdown";
 import { Milliseconds } from "../../types";
+import { MediumTitle } from "../common";
 
 interface TimerProps {
   duration: Milliseconds;
@@ -26,20 +27,19 @@ const Timer: React.FC<TimerProps> = memo(
       } else {
         // Render a countdown
         return (
-          <div>
+          <p>
             {!!descriptionText ? <span>{descriptionText}</span> : <></>}{" "}
             <span>{seconds + minutes * 60}</span>
-          </div>
+          </p>
         );
       }
     };
 
     return (
-      <div
-        className="uk-text-center"
-        style={{ ...style, fontSize: "16px", fontWeight: "bold" }}
-      >
-        <Countdown date={Date.now() + duration} renderer={renderer} />
+      <div className="gameplay_timer">
+        <MediumTitle>
+          <Countdown date={Date.now() + duration} renderer={renderer} />
+        </MediumTitle>
       </div>
     );
   }

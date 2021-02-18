@@ -5,3 +5,5 @@ export { Scoreboard } from "./Scoreboard";
 export { LeftSidebar } from "./LeftSidebar";
 export { GameSettings } from "./GameSettings";
 export { WinResultText } from "./WinResultText";
+export { InGameFrame } from "./InGameFrame";
+export { GameLeftPane } from "./GameLeftPane";

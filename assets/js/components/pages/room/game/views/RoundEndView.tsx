@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   Timer,
+  TimerBox,
   Instructions,
   MediumLargeTitle,
   DynamicContent,
@@ -36,25 +37,25 @@ const RoundEndView: React.FC<RoundEndViewProps> = () => {
   return (
     <div>
       <div>
-        <MediumLargeTitle title={`End of Round ${roundNum}`} />
-
-        {!!winningPlayers && !!roundWinners ? (
-          <WinResultText
-            winResult={roundWinners}
-            winningPlayers={winningPlayers}
-            roundNum={roundNum}
-            endOfGame={false}
-          />
-        ) : (
-          <></>
-        )}
-
+        <MediumLargeTitle title={`END OF ROUND ${roundNum}`} />
         <DynamicContent>
+          {!!winningPlayers && !!roundWinners ? (
+            <WinResultText
+              winResult={roundWinners}
+              winningPlayers={winningPlayers}
+              roundNum={roundNum}
+              endOfGame={false}
+            />
+          ) : (
+            <></>
+          )}
+        </DynamicContent>
+        <TimerBox>
           <Timer
             descriptionText={"Next round starting in "}
             duration={roundEndTimeout}
           />
-        </DynamicContent>
+        </TimerBox>
       </div>
     </div>
   );

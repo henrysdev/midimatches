@@ -10,13 +10,9 @@ interface MidiInputProps {
 const MidiInput: React.FC<MidiInputProps> = ({ input, toggleEnabled }) => {
   const [enabled, setEnabled] = useState<boolean>(true);
   return (
-    <button
-      className={"uk-text-left uk-button uk-button-default"}
-      style={
-        enabled
-          ? { width: "100%", paddingLeft: "4px" }
-          : { width: "100%", paddingLeft: "4px", backgroundColor: "#c9c9c9" }
-      }
+    <div
+      style={{ height: "20px" }}
+      className={enabled ? "midi_button" : "midi_button button_disabled"}
       onClick={() => {
         const toggled = !enabled;
         setEnabled(toggled);
@@ -35,7 +31,7 @@ const MidiInput: React.FC<MidiInputProps> = ({ input, toggleEnabled }) => {
         ></span>
       )}
       {input.name}
-    </button>
+    </div>
   );
 };
 export { MidiInput };

@@ -8,7 +8,11 @@ import {
   MAX_PLAYER_ALIAS_LENGTH,
   MIN_PLAYER_ALIAS_LENGTH,
 } from "../../../constants";
-import { FullWidthButton, MediumLargeTitle } from "../../common";
+import {
+  FullWidthButton,
+  MediumLargeTitle,
+  ComputerButton,
+} from "../../common";
 
 const RegisterPlayerPage: React.FC = () => {
   const [alias, setAlias] = useState<string>();
@@ -40,47 +44,41 @@ const RegisterPlayerPage: React.FC = () => {
   };
 
   return (
-    <div>
-      <div
-        style={{
-          maxWidth: "400px",
-          margin: "auto",
-          marginTop: "16px",
-          padding: "24px",
-          boxShadow: "0 5px 15px rgb(0 0 0 / 8%)",
-          color: "#666",
-        }}
-      >
-        <MediumLargeTitle title="Choose an Alias to Continue" />
-        <form style={{ margin: 0 }}>
-          <fieldset className="uk-fieldset">
-            <input
-              style={{ marginBottom: "8px" }}
-              className="uk-input"
-              type="text"
-              placeholder="Enter an alias..."
-              maxLength={MAX_PLAYER_ALIAS_LENGTH}
-              onChange={handleChange}
-            />
-          </fieldset>
-          <FullWidthButton
-            label="Continue"
+    <div className="register_player_container computer_frame outset_3d_border_deep">
+      <MediumLargeTitle>CHOOSE A PLAYER NAME</MediumLargeTitle>
+      <form className="register_player_form">
+        <fieldset>
+          <input
+            style={{ marginBottom: "8px" }}
+            className="alias_input"
+            type="text"
+            placeholder="Enter an alias..."
+            maxLength={MAX_PLAYER_ALIAS_LENGTH}
+            onChange={handleChange}
+          />
+        </fieldset>
+        {!!alias && alias.length < MIN_PLAYER_ALIAS_LENGTH ? (
+          <i className="alias_length_warning roboto_font">
+            Alias must be at least 3 characters long
+          </i>
+        ) : (
+          <></>
+        )}
+        {!alias || alias.length < MIN_PLAYER_ALIAS_LENGTH ? (
+          <></>
+        ) : (
+          <ComputerButton
             callback={() => {
               if (!!alias) {
                 submitRegisterPlayer(alias);
               }
             }}
-            disabled={!alias || alias.length < MIN_PLAYER_ALIAS_LENGTH}
-          />
-          {!!alias && alias.length < MIN_PLAYER_ALIAS_LENGTH ? (
-            <i style={{ marginLeft: 10, color: "red" }}>
-              Alias must be at least 3 characters long
-            </i>
-          ) : (
-            <></>
-          )}
-        </form>
-      </div>
+            extraClasses={["register_button"]}
+          >
+            <h5>SUBMIT</h5>
+          </ComputerButton>
+        )}
+      </form>
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { GameLayout } from "../pages/room/game";
+import { GameLayout, InGameFrame } from "../pages/room/game";
 import { GameContext, ToneAudioContext, PlayerContext } from "../../contexts";
 import { Keyboard } from "../audio";
 import {
@@ -11,7 +11,7 @@ import {
 } from "../pages/room/game/views";
 import { Loop } from "../../types";
 import { useWebMidi } from "../../hooks";
-import { DynamicContent } from "../common";
+import { DynamicContent, ComputerFrame } from "../common";
 import Tone from "tone";
 
 interface FakeTone {
@@ -95,6 +95,7 @@ const PregameDebug: React.FC = () => {
             numPoints: 2,
           },
           roundNum: 2,
+          roundRecordingStartTime: 100,
           recordings: [
             [
               "xb4z",
@@ -192,7 +193,15 @@ const PregameDebug: React.FC = () => {
         }}
       >
         <PlayerContext.Provider value={{ player: mockedPlayers[0] }}>
-          <ToneAudioContext.Provider value={{ midiInputs, Tone: Tone }}>
+          <ToneAudioContext.Provider value={{ midiInputs, Tone: mockTone }}>
+            <InGameFrame>
+              <RecordingView
+                isContestant={true}
+                pushMessageToChannel={() => {}}
+                playSample={() => {}}
+                stopSample={() => {}}
+              />
+            </InGameFrame>
             {/* <GameLayout>
               <PlaybackVotingView
                 pushMessageToChannel={() => {}}
@@ -200,7 +209,7 @@ const PregameDebug: React.FC = () => {
                 stopSample={() => {}}
               />
             </GameLayout> */}
-            <DynamicContent>
+            {/* <DynamicContent>
               <div>
                 <Keyboard
                   activeMidiList={[50]}
@@ -210,7 +219,7 @@ const PregameDebug: React.FC = () => {
                   stopNote={() => {}}
                 />
               </div>
-            </DynamicContent>
+            </DynamicContent> */}
           </ToneAudioContext.Provider>
         </PlayerContext.Provider>
       </GameContext.Provider>

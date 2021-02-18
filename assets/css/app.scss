@@ -3,8 +3,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
 
 @import "./browser_style_reset.css";
-@import "./gamelayout.css";
-@import "./game.css";
+@import "./core_styling.css";
+@import "./in_game_styling.css";
 @import "./keyboard.css";
 @import "./tournament.css";
 @import "./led_lights.css";
@@ -73,4 +73,10 @@ html {
 
 strong {
   font-weight: bold;
+}
+html {
+  height: 100%;
+}
+body {
+  min-height: 100%;
 }
