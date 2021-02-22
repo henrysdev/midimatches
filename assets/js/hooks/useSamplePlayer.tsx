@@ -5,6 +5,7 @@ type SamplePlayerTuple = [(url: string) => void, () => void, () => void];
 
 export function useSamplePlayer(Tone: any): SamplePlayerTuple {
   const [samplePlayer, setSamplePlayer] = useState() as any;
+  const [loadedSampleName, setLoadedSampleName] = useState<string>();
 
   useEffect(() => {
     const newSamplePlayer = new Tone.Player().toDestination();
@@ -13,8 +14,9 @@ export function useSamplePlayer(Tone: any): SamplePlayerTuple {
   }, []);
 
   const loadSample = (sampleBeatFilename: string) => {
-    if (!!samplePlayer) {
+    if (!!samplePlayer && sampleBeatFilename !== loadedSampleName) {
       samplePlayer.load(`${S3_BUCKET_URL}/sample-beats/${sampleBeatFilename}`);
+      setLoadedSampleName(sampleBeatFilename);
     }
   };
 

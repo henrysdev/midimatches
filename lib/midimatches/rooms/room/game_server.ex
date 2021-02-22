@@ -96,7 +96,7 @@ defmodule Midimatches.Rooms.Room.GameServer do
   Add a new player to the game.
   """
   def add_player(pid, %Player{} = player) do
-    GenServer.cast(pid, {:add_player, player})
+    GenServer.call(pid, {:add_player, player})
   end
 
   @spec drop_player(pid(), id()) :: :ok
@@ -135,17 +135,17 @@ defmodule Midimatches.Rooms.Room.GameServer do
   end
 
   @impl true
-  def handle_cast({:add_player, %Player{} = player}, %GameServer{} = state) do
-    instruction = GameLogic.add_player(state, player)
+  def handle_cast({:drop_player, player_id}, %GameServer{} = state) do
+    instruction = GameLogic.remove_player(state, player_id)
 
     {:noreply, exec_instruction(instruction)}
   end
 
   @impl true
-  def handle_cast({:drop_player, player_id}, %GameServer{} = state) do
-    instruction = GameLogic.remove_player(state, player_id)
+  def handle_call({:add_player, %Player{} = player}, _from, %GameServer{} = state) do
+    instruction = GameLogic.add_player(state, player)
 
-    {:noreply, exec_instruction(instruction)}
+    {:reply, :ok, exec_instruction(instruction)}
   end
 
   @impl true

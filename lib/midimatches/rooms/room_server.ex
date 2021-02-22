@@ -14,7 +14,8 @@ defmodule Midimatches.Rooms.RoomServer do
     Rooms.Room.Game,
     Rooms.Room.GameServer,
     Types.GameRules,
-    Types.Player
+    Types.Player,
+    Utils
   }
 
   @type id() :: String.t()
@@ -50,7 +51,7 @@ defmodule Midimatches.Rooms.RoomServer do
      }}
   end
 
-  @spec add_player(pid(), %Player{}) :: :ok
+  @spec add_player(pid(), %Player{}) :: %RoomServer{}
   @doc """
   Add a new player to a room
   """
@@ -147,7 +148,7 @@ defmodule Midimatches.Rooms.RoomServer do
         state
       end
 
-    {:reply, :ok, state}
+    {:reply, state, state}
   end
 
   @impl true
@@ -162,8 +163,6 @@ defmodule Midimatches.Rooms.RoomServer do
         %RoomServer{game: game, room_id: room_id, room_name: room_name, game_config: game_config}
       ) do
     Game.stop_game(game)
-
-    IO.inspect({:RESET_ROOM})
 
     state = %RoomServer{
       room_id: room_id,
@@ -204,20 +203,11 @@ defmodule Midimatches.Rooms.RoomServer do
   end
 
   @spec broadcast_lobby_state(%RoomServer{}) :: atom()
-  defp broadcast_lobby_state(%RoomServer{
-         room_id: room_id,
-         room_name: room_name,
-         game: game,
-         players: players,
-         game_config: %GameRules{
-           min_players: min_players
-         }
-       }) do
-    MidimatchesWeb.Endpoint.broadcast("room:#{room_id}", "lobby_update", %{
-      num_players_joined: MapSet.size(players),
-      num_players_to_start: min_players,
-      game_in_progress: !is_nil(game),
-      room_name: room_name
-    })
+  defp broadcast_lobby_state(%RoomServer{room_id: room_id} = state) do
+    MidimatchesWeb.Endpoint.broadcast(
+      "room:#{room_id}",
+      "lobby_update",
+      Utils.server_to_client_room_state(state)
+    )
   end
 end

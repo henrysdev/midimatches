@@ -44,13 +44,13 @@ const RoomPage: React.FC = () => {
       playerId: currentUser.userId,
       playerAlias: currentUser.userAlias,
     });
+
+    // channel init
     const path = window.location.pathname.split("/");
     const roomId = path[path.length - 1];
     const channel: Channel = socket.channel(`room:${roomId}`, {
       player_id: currentUser.userId,
     });
-
-    // join game
     channel
       .join()
       .receive("ok", (resp) => {
@@ -60,15 +60,47 @@ const RoomPage: React.FC = () => {
         console.log("Unable to join", resp);
       });
 
+    const joinRoomFlow = () => {
+      const sentMessage = channel.push(SUBMIT_JOIN, {
+        player_alias: currentUser.userAlias,
+        player_id: currentUser.userId,
+      });
+      if (!!sentMessage) {
+        sentMessage
+          .receive("ok", (body) => {
+            const { roomState, gameState } = unmarshalBody(
+              body
+            ) as PlayerJoinPayload;
+            if (roomState.inGame) {
+              console.log("IN GAME");
+              setInitGameState(gameState);
+              setGameInProgress(true);
+            } else {
+              console.log("IN LOBBY");
+              const {
+                numCurrPlayers: numPlayersJoined,
+                gameRules: { minPlayers: numPlayersToStart },
+                roomName,
+              } = roomState as LobbyUpdatePayload;
+              setLobbyState({ numPlayersJoined, numPlayersToStart, roomName });
+              setGameInProgress(false);
+            }
+            console.log("join game successful");
+          })
+          .receive("error", (err: any) => {
+            console.error("join game error: ", err);
+          });
+      }
+    };
+    joinRoomFlow();
+
     // lobby update
     channel.on(LOBBY_UPDATE_EVENT, (body) => {
       const {
-        numPlayersJoined,
-        numPlayersToStart,
-        gameInProgress,
+        numCurrPlayers: numPlayersJoined,
+        gameRules: { minPlayers: numPlayersToStart },
         roomName,
       } = unmarshalBody(body) as LobbyUpdatePayload;
-      setGameInProgress(gameInProgress);
       setLobbyState({ numPlayersJoined, numPlayersToStart, roomName });
     });
 
@@ -81,19 +113,7 @@ const RoomPage: React.FC = () => {
 
     // reset room
     channel.on(RESET_ROOM_EVENT, (_body) => {
-      const sentMessage = channel.push(SUBMIT_JOIN, {
-        player_alias: currentUser.userAlias,
-        player_id: currentUser.userId,
-      });
-      if (!!sentMessage) {
-        sentMessage
-          .receive("ok", (_reply: any) => {
-            console.log("reset rejoin successful");
-          })
-          .receive("error", (err: any) => {
-            console.error("join game error: ", err);
-          });
-      }
+      joinRoomFlow();
       resetRoom();
     });
 
@@ -110,42 +130,14 @@ const RoomPage: React.FC = () => {
     };
   }, []);
 
-  const pushMessageToServer = (
-    event: string,
-    payload: Object
-  ): Push | undefined => {
-    if (!!gameChannel) {
-      return gameChannel.push(event, payload);
-    }
-  };
-
-  const playerIsPlaying = useMemo(() => {
-    if (gameInProgress && !!gameChannel && !!currPlayer && !!initGameState) {
-      return !!initGameState.players
-        ? initGameState.players
-            .map((player) => player.playerId)
-            .includes(currPlayer.playerId)
-        : false;
-    }
-    return false;
-  }, [gameInProgress, currPlayer, initGameState]);
-
-  const submitPlayerJoin = (): any => {
-    return pushMessageToServer(SUBMIT_JOIN, {
-      player_alias: currentUser.userAlias,
-      player_id: currentUser.userId,
-    });
-  };
-
   return (
     <div>
-      {playerIsPlaying && !!gameChannel && !!currPlayer && !!initGameState ? (
+      {!!gameChannel && !!currPlayer && !!initGameState ? (
         <PlayerContext.Provider value={{ player: currPlayer }}>
           <Game gameChannel={gameChannel} initGameState={initGameState} />
         </PlayerContext.Provider>
       ) : !!gameChannel ? (
         <PregameLobby
-          submitPlayerJoin={submitPlayerJoin}
           gameInProgress={gameInProgress}
           numPlayersJoined={lobbyState.numPlayersJoined}
           numPlayersToStart={lobbyState.numPlayersToStart}

@@ -41,9 +41,9 @@ export type SamplePlayer = Tone.Player;
 // Server Data                                                               //
 ///////////////////////////////////////////////////////////////////////////////
 export interface LobbyUpdatePayload {
-  numPlayersJoined: number;
-  numPlayersToStart: number;
-  gameInProgress: boolean;
+  numCurrPlayers: number;
+  gameRules: GameRules;
+  inGame: boolean;
   roomName: string;
 }
 
@@ -51,9 +51,10 @@ export interface GameUpdatePayload {
   gameState: GameContextType;
 }
 
-export interface PlayerJoinPayload {
-  player: Player;
-}
+export type PlayerJoinPayload = {
+  roomState: RoomState;
+  gameState: GameState;
+};
 
 export interface ServerlistUpdatePayload {
   rooms: any[];

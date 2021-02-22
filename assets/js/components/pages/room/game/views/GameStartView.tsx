@@ -84,19 +84,6 @@ const GameStartView: React.FC<GameStartViewProps> = ({
           <></>
         )}
       </TimerBox>
-      {/* <Instructions description={metaInstructions}>
-        <p>
-          To test or configure the connection to your MIDI input device, click
-          the "Configure MIDI" button.
-        </p>
-        <p>
-          Once you are ready to start, click the "Ready Up" button.
-          <strong>
-            The game will begin within a minute, or as soon as everyone has
-            ready'd up.{" "}
-          </strong>
-        </p>
-      </Instructions> */}
     </div>
   );
 };

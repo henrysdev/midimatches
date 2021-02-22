@@ -4,10 +4,12 @@ defmodule Midimatches.Utils do
   """
 
   alias Midimatches.{
+    Pids,
     Rooms.Room.GameServer,
     Rooms.RoomServer,
     Types.ClientGameState,
     Types.ClientRoomState,
+    Types.ClientRoomGameJoin,
     Types.WinResult
   }
 
@@ -95,6 +97,33 @@ defmodule Midimatches.Utils do
       game_rules: server_state.game_config,
       num_curr_players: MapSet.size(server_state.players),
       in_game: !is_nil(server_state.game)
+    }
+  end
+
+  @spec server_room_to_client_room_game_join(%RoomServer{}) :: map()
+  @doc """
+  Transform room server state into a joined room and game client payload
+  """
+  def server_room_to_client_room_game_join(%RoomServer{room_id: room_id} = room_state) do
+    client_room_state =
+      room_state
+      |> server_to_client_room_state()
+      |> Map.from_struct()
+
+    client_game_state =
+      if client_room_state.in_game do
+        {:game_server, room_id}
+        |> Pids.fetch!()
+        |> :sys.get_state()
+        |> server_to_client_game_state()
+        |> Map.from_struct()
+      else
+        %ClientGameState{}
+      end
+
+    %ClientRoomGameJoin{
+      room_state: client_room_state,
+      game_state: client_game_state
     }
   end
 end

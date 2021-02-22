@@ -67,8 +67,10 @@ const Game: React.FC<GameProps> = ({ gameChannel, initGameState }) => {
         loadSample(currSampleBeat);
         break;
       case GAME_VIEW.RECORDING:
+        loadSample(currSampleBeat);
         break;
       case GAME_VIEW.PLAYBACK_VOTING:
+        loadSample(currSampleBeat);
         resetTone();
         break;
       case GAME_VIEW.ROUND_END:
