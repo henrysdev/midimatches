@@ -74,7 +74,7 @@ defmodule MidimatchesWeb.RoomChannel do
   #################################################################################################
 
   def handle_in(
-        "player_pregame_join",
+        "player_join",
         %{"player_alias" => player_alias, "player_id" => player_id},
         %Phoenix.Socket{assigns: %{room_id: room_id, player_id: player_id}} = socket
       ) do

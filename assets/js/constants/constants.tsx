@@ -25,7 +25,7 @@ export const RESET_ROOM_EVENT = "reset_room";
 export const LOBBY_UPDATE_EVENT = "lobby_update";
 
 export const SUBMIT_REGISTERED_JOIN = "user_enter_room";
-export const SUBMIT_PREGAME_JOIN = "player_pregame_join";
+export const SUBMIT_JOIN = "player_join";
 export const SUBMIT_LEAVE_ROOM = "player_leave_room";
 export const SUBMIT_READY_UP_EVENT = "player_ready_up";
 export const SUBMIT_RECORDING_EVENT = "player_recording";

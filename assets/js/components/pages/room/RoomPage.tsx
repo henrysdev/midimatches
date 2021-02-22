@@ -17,7 +17,7 @@ import {
   LOBBY_UPDATE_EVENT,
   RESET_ROOM_EVENT,
   SUBMIT_LEAVE_ROOM,
-  SUBMIT_PREGAME_JOIN,
+  SUBMIT_JOIN,
 } from "../../../constants";
 import { useCurrentUserContext, useSocketContext } from "../../../hooks";
 
@@ -81,14 +81,14 @@ const RoomPage: React.FC = () => {
 
     // reset room
     channel.on(RESET_ROOM_EVENT, (_body) => {
-      const sentMessage = channel.push(SUBMIT_PREGAME_JOIN, {
+      const sentMessage = channel.push(SUBMIT_JOIN, {
         player_alias: currentUser.userAlias,
         player_id: currentUser.userId,
       });
       if (!!sentMessage) {
         sentMessage
           .receive("ok", (_reply: any) => {
-            console.log("reset rejoin game successful");
+            console.log("reset rejoin successful");
           })
           .receive("error", (err: any) => {
             console.error("join game error: ", err);
@@ -131,7 +131,7 @@ const RoomPage: React.FC = () => {
   }, [gameInProgress, currPlayer, initGameState]);
 
   const submitPlayerJoin = (): any => {
-    return pushMessageToServer(SUBMIT_PREGAME_JOIN, {
+    return pushMessageToServer(SUBMIT_JOIN, {
       player_alias: currentUser.userAlias,
       player_id: currentUser.userId,
     });

@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
 
-import { SUBMIT_PREGAME_JOIN } from "../../../../constants";
 import {
   MediumLargeTitle,
   MediumTitle,

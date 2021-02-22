@@ -124,29 +124,30 @@ defmodule Midimatches.Rooms.RoomServer do
           game_config: %GameRules{
             min_players: num_players_to_start
           },
+          room_id: room_id,
           game: game
         } = state
       ) do
-    players = MapSet.put(players, player)
-    state = %RoomServer{state | players: players}
+    room_players = MapSet.put(players, player)
+    state = %RoomServer{state | players: room_players}
 
-    enough_players_to_start? = MapSet.size(players) == num_players_to_start
-    free_for_new_game? = is_nil(game)
+    state =
+      if is_nil(game) do
+        enough_players_to_start? = MapSet.size(room_players) == num_players_to_start
+        broadcast_lobby_state(state)
 
-    broadcast_lobby_state(state)
+        if enough_players_to_start? do
+          start_game(state)
+        else
+          state
+        end
+      else
+        game_server = Pids.fetch!({:game_server, room_id})
+        GameServer.add_player(game_server, player)
+        state
+      end
 
-    case {enough_players_to_start?, free_for_new_game?} do
-      {true, true} ->
-        state = start_game(state)
-        {:reply, state, state}
-
-      {true, false} ->
-        # TODO waiting queue for next game [?]
-        {:reply, state, state}
-
-      {false, _} ->
-        {:reply, state, state}
-    end
+    {:reply, :ok, state}
   end
 
   @impl true
@@ -161,6 +162,8 @@ defmodule Midimatches.Rooms.RoomServer do
         %RoomServer{game: game, room_id: room_id, room_name: room_name, game_config: game_config}
       ) do
     Game.stop_game(game)
+
+    IO.inspect({:RESET_ROOM})
 
     state = %RoomServer{
       room_id: room_id,
