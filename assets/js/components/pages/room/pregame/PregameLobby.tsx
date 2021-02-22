@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 import { SUBMIT_PREGAME_JOIN } from "../../../../constants";
 import {
@@ -28,6 +28,20 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
   currentUser,
   roomName,
 }) => {
+  useEffect(() => {
+    const sentMessage = submitPlayerJoin();
+    if (!!sentMessage) {
+      sentMessage
+        .receive("ok", (_reply: any) => {
+          console.log("join game successful");
+          setHasJoined(true);
+        })
+        .receive("error", (err: any) => {
+          console.error("join game error: ", err);
+        });
+    }
+  }, []);
+
   const [hasJoined, setHasJoined] = useState<boolean>(false);
 
   const [copySuccess, setCopySuccess] = useState<boolean>(false);
@@ -91,7 +105,7 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
             </div>
           ) : !hasJoined && !gameInProgress ? (
             <div>
-              <ComputerButton
+              {/* <ComputerButton
                 callback={() => {
                   const sentMessage = submitPlayerJoin(SUBMIT_PREGAME_JOIN, {
                     player_alias: currentUser.userAlias,
@@ -110,7 +124,7 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
                 }}
               >
                 <h5>JOIN GAME</h5>
-              </ComputerButton>
+              </ComputerButton> */}
             </div>
           ) : (
             <></>

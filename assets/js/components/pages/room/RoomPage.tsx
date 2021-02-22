@@ -17,6 +17,7 @@ import {
   LOBBY_UPDATE_EVENT,
   RESET_ROOM_EVENT,
   SUBMIT_LEAVE_ROOM,
+  SUBMIT_PREGAME_JOIN,
 } from "../../../constants";
 import { useCurrentUserContext, useSocketContext } from "../../../hooks";
 
@@ -80,12 +81,26 @@ const RoomPage: React.FC = () => {
 
     // reset room
     channel.on(RESET_ROOM_EVENT, (_body) => {
+      const sentMessage = channel.push(SUBMIT_PREGAME_JOIN, {
+        player_alias: currentUser.userAlias,
+        player_id: currentUser.userId,
+      });
+      if (!!sentMessage) {
+        sentMessage
+          .receive("ok", (_reply: any) => {
+            console.log("reset rejoin game successful");
+          })
+          .receive("error", (err: any) => {
+            console.error("join game error: ", err);
+          });
+      }
       resetRoom();
     });
 
     // leave room
     window.addEventListener("beforeunload", () => {
       channel.push(SUBMIT_LEAVE_ROOM, {});
+      channel.leave();
     });
 
     setGameChannel(channel);
@@ -115,21 +130,30 @@ const RoomPage: React.FC = () => {
     return false;
   }, [gameInProgress, currPlayer, initGameState]);
 
+  const submitPlayerJoin = (): any => {
+    return pushMessageToServer(SUBMIT_PREGAME_JOIN, {
+      player_alias: currentUser.userAlias,
+      player_id: currentUser.userId,
+    });
+  };
+
   return (
     <div>
       {playerIsPlaying && !!gameChannel && !!currPlayer && !!initGameState ? (
         <PlayerContext.Provider value={{ player: currPlayer }}>
           <Game gameChannel={gameChannel} initGameState={initGameState} />
         </PlayerContext.Provider>
-      ) : (
+      ) : !!gameChannel ? (
         <PregameLobby
-          submitPlayerJoin={pushMessageToServer}
+          submitPlayerJoin={submitPlayerJoin}
           gameInProgress={gameInProgress}
           numPlayersJoined={lobbyState.numPlayersJoined}
           numPlayersToStart={lobbyState.numPlayersToStart}
           currentUser={currentUser}
           roomName={lobbyState.roomName}
         />
+      ) : (
+        <></>
       )}
     </div>
   );
