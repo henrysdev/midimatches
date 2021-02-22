@@ -96,7 +96,7 @@ export interface ViewTimeouts {
 }
 
 export interface GameRules {
-  gameSizeNumPlayers: number;
+  minPlayers: number;
   timestepSize: Microseconds;
   soloTimeLimit: number;
   quantizationThreshold: number;

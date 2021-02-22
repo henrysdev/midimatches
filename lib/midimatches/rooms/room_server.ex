@@ -122,7 +122,7 @@ defmodule Midimatches.Rooms.RoomServer do
         %RoomServer{
           players: players,
           game_config: %GameRules{
-            game_size_num_players: num_players_to_start
+            min_players: num_players_to_start
           },
           game: game
         } = state
@@ -207,12 +207,12 @@ defmodule Midimatches.Rooms.RoomServer do
          game: game,
          players: players,
          game_config: %GameRules{
-           game_size_num_players: game_size_num_players
+           min_players: min_players
          }
        }) do
     MidimatchesWeb.Endpoint.broadcast("room:#{room_id}", "lobby_update", %{
       num_players_joined: MapSet.size(players),
-      num_players_to_start: game_size_num_players,
+      num_players_to_start: min_players,
       game_in_progress: !is_nil(game),
       room_name: room_name
     })

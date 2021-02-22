@@ -58,7 +58,7 @@ const Serverlist: React.FC<ServerlistProps> = ({
                           <div style={{ color: "#1aeb13" }}>Pregame</div>
                         )}
                       </td>
-                      <td>{`${room.numCurrPlayers} / ${room.gameRules.gameSizeNumPlayers}`}</td>
+                      <td>{`${room.numCurrPlayers} / ${room.gameRules.minPlayers}`}</td>
                       <td>{room.gameRules.roundsToWin}</td>
                     </tr>
                   );

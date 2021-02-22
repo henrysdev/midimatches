@@ -27,7 +27,7 @@ defmodule Midimatches.Types.ConfigsTest do
               "timestep_size": 50000,
               "quantization_threshold": 0.4,
               "rounds_to_win": 2,
-              "game_size_num_players": 3,
+              "min_players": 3,
               "view_timeouts": {
                 "game_start": 10000,
                 "round_start": 3000,
@@ -49,7 +49,7 @@ defmodule Midimatches.Types.ConfigsTest do
               timestep_size: 50_000,
               quantization_threshold: 0.4,
               rounds_to_win: 2,
-              game_size_num_players: 3,
+              min_players: 3,
               view_timeouts: %ViewTimeouts{
                 game_start: 10_000,
                 round_start: 3_000,

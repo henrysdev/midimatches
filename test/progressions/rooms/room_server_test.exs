@@ -140,7 +140,7 @@ defmodule Midimatches.RoomServerTest do
   @spec start_room_with_game(id(), String.t(), list(%Player{})) :: pid()
   defp start_room_with_game(room_id, room_name, players) do
     game_config = %GameRules{
-      game_size_num_players: length(players)
+      min_players: length(players)
     }
 
     {:ok, room_server} = start_supervised({RoomServer, [{room_id, room_name, game_config}]})
