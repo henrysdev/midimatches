@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { GameLayout, InGameFrame } from "../pages/room/game";
+import { InGameFrame } from "../pages/room/game";
 import { GameContext, ToneAudioContext, PlayerContext } from "../../contexts";
 import { Keyboard } from "../audio";
 import {
@@ -202,13 +202,6 @@ const PregameDebug: React.FC = () => {
                 stopSample={() => {}}
               />
             </InGameFrame>
-            {/* <GameLayout>
-              <PlaybackVotingView
-                pushMessageToChannel={() => {}}
-                playSample={() => {}}
-                stopSample={() => {}}
-              />
-            </GameLayout> */}
             {/* <DynamicContent>
               <div>
                 <Keyboard

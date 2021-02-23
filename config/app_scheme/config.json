@@ -8,6 +8,7 @@
         "rounds_to_win": 3,
         "max_players": 6,
         "view_timeouts": {
+          "game_start": 20000,
           "round_start": 3000,
           "recording": 30000,
           "playback_voting": 90000,
@@ -75,7 +76,7 @@
         "rounds_to_win": 3,
         "max_players": 3,
         "view_timeouts": {
-          "game_start": 20000,
+          "game_start": 5000,
           "round_start": 3000,
           "recording": 30000,
           "playback_voting": 60000,

@@ -14,7 +14,6 @@ const PregameCenterPane: React.FC<PregameCenterPaneProps> = ({
   currentUser,
 }) => {
   const audioCtx = useToneAudioContext();
-  console.log({ audioCtx });
 
   return (
     <div className="pregame_content_pane" style={{ marginLeft: "16px" }}>
