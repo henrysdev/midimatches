@@ -14,6 +14,7 @@ interface RecordMidiProps {
   roundRecordingStartTime: number;
   gameRules: GameRules;
   shouldRecord: boolean;
+  hideKeyboard?: boolean;
 }
 
 const RecordMidi: React.FC<RecordMidiProps> = ({
@@ -24,6 +25,7 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
   roundRecordingStartTime,
   gameRules,
   shouldRecord,
+  hideKeyboard = false,
 }) => {
   const { midiInputs, synth } = useToneAudioContext();
 
@@ -85,6 +87,7 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
             synth.triggerRelease(noteName);
           }
         }}
+        hideKeyboard={hideKeyboard}
       />
     </div>
   );

@@ -10,7 +10,7 @@ interface TimerProps {
   style?: Object;
 }
 const Timer: React.FC<TimerProps> = memo(
-  ({ duration, descriptionText, timesUpText, style }) => {
+  ({ duration, descriptionText, timesUpText, style: extraStyles = {} }) => {
     // Renderer callback with condition
     const renderer = ({
       minutes,
@@ -28,7 +28,7 @@ const Timer: React.FC<TimerProps> = memo(
         // Render a countdown
         const timeLeft = seconds + minutes * 60;
         return (
-          <p style={timeLeft <= 5 ? { color: "red" } : {}}>
+          <p style={timeLeft <= 5 ? { color: "red" } : extraStyles}>
             {!!descriptionText ? <span>{descriptionText}</span> : <></>}{" "}
             <span>{timeLeft}</span>
           </p>
