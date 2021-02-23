@@ -1,7 +1,7 @@
 defmodule MidimatchesWeb.PageController do
   use MidimatchesWeb, :controller
 
-  alias Midimatches.Rooms
+  alias Midimatches.{Pids, Rooms, Rooms.RoomServer}
 
   @spec index(Plug.Conn.t(), any) :: Plug.Conn.t()
   def index(conn, _params) do
@@ -28,7 +28,13 @@ defmodule MidimatchesWeb.PageController do
         )
 
       Rooms.room_exists?(room_id) ->
-        render(conn, "room.html")
+        room_server = Pids.fetch!({:room_server, room_id})
+
+        if RoomServer.full?(room_server) do
+          render(conn, "full_room.html")
+        else
+          render(conn, "room.html")
+        end
 
       true ->
         render(conn, "missing_room.html")

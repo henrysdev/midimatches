@@ -29,7 +29,7 @@ defmodule MidimatchesWeb.MatchmakingChannelTest do
   #     rooms: [
   #       %Midimatches.Types.ClientRoomState{
   #         game_rules: %Midimatches.Types.GameRules{
-  #           game_size_num_players: 4,
+  #           min_players: 4,
   #           quantization_threshold: 0.5,
   #           rounds_to_win: 3,
   #           solo_time_limit: 30,

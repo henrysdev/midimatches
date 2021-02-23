@@ -40,20 +40,22 @@ export type SamplePlayer = Tone.Player;
 ///////////////////////////////////////////////////////////////////////////////
 // Server Data                                                               //
 ///////////////////////////////////////////////////////////////////////////////
+export interface ResetRoomPayload {
+  roomState: RoomState;
+}
+
 export interface LobbyUpdatePayload {
-  numPlayersJoined: number;
-  numPlayersToStart: number;
-  gameInProgress: boolean;
-  roomName: string;
+  roomState: RoomState;
 }
 
 export interface GameUpdatePayload {
   gameState: GameContextType;
 }
 
-export interface PlayerJoinPayload {
-  player: Player;
-}
+export type PlayerJoinPayload = {
+  roomState: RoomState;
+  gameState: GameState;
+};
 
 export interface ServerlistUpdatePayload {
   rooms: any[];
@@ -67,6 +69,7 @@ export interface RoomState {
   roomId: string;
   roomName: string;
   inGame: boolean;
+  startGameDeadline: number;
 }
 
 export interface GameState {
@@ -96,7 +99,8 @@ export interface ViewTimeouts {
 }
 
 export interface GameRules {
-  gameSizeNumPlayers: number;
+  minPlayers: number;
+  maxPlayers: number;
   timestepSize: Microseconds;
   soloTimeLimit: number;
   quantizationThreshold: number;
@@ -117,7 +121,11 @@ type ScoreTuple = [string, number];
 ///////////////////////////////////////////////////////////////////////////////
 export interface ToneAudioContextType {
   Tone: any;
+  originalMidiInputs: Input[];
   midiInputs: Input[];
+  setMidiInputs: Function;
+  disabledMidiInputIds: string[];
+  setDisabledMidiInputIds: Function;
   synth: any;
 }
 

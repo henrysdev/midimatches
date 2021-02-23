@@ -19,7 +19,6 @@ defmodule Midimatches.Types.Configs do
           timestep_size: nil,
           quantization_threshold: nil,
           rounds_to_win: nil,
-          game_size_num_players: nil,
           view_timeouts: %ViewTimeouts{
             game_start: nil,
             round_start: nil,

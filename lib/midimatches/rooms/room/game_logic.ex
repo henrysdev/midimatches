@@ -42,6 +42,22 @@ defmodule Midimatches.Rooms.Room.GameLogic do
     }
   end
 
+  @spec add_player(%GameServer{}, %Player{}) :: instruction_map()
+  def add_player(%GameServer{players: players} = state, %Player{player_id: player_id} = player) do
+    updated_players = MapSet.put(players, player)
+    updated_contestants = [player_id | state.contestants] |> MapSet.new() |> MapSet.to_list()
+
+    %GameServer{
+      state
+      | player_ids_set: MapSet.put(state.player_ids_set, player_id),
+        players: updated_players,
+        contestants: updated_contestants,
+        ready_ups: MapSet.put(state.ready_ups, player_id),
+        scores: Map.put(state.scores, player_id, 0)
+    }
+    |> as_instruction(sync?: true, view_change?: false)
+  end
+
   @spec remove_player(%GameServer{}, id()) :: instruction_map()
   def remove_player(%GameServer{} = state, player_id) do
     updated_players =

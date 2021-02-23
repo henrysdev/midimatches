@@ -369,4 +369,78 @@ defmodule Midimatches.GameLogicTest do
 
     assert actual_state == expected_state
   end
+
+  test "add musician to game" do
+    players =
+      MapSet.new([
+        %Player{
+          player_id: "1",
+          player_alias: "foo"
+        },
+        %Player{
+          player_id: "2",
+          player_alias: "zoo"
+        },
+        %Player{
+          player_id: "3",
+          player_alias: "fee"
+        }
+      ])
+
+    new_player = %Player{
+      player_id: "4",
+      player_alias: "fum"
+    }
+
+    contestants = ["1", "2", "3"]
+    player_ids_set = MapSet.new(contestants)
+
+    game_server_state = %GameServer{
+      room_id: "1",
+      game_id: "abc",
+      players: players,
+      player_ids_set: player_ids_set,
+      game_view: :playback_voting,
+      contestants: contestants,
+      round_num: 3,
+      game_rules: %{rounds_to_win: 3},
+      sample_beats: []
+    }
+
+    %{state: actual_state} = GameLogic.add_player(game_server_state, new_player)
+
+    expected_state = %GameServer{
+      room_id: "1",
+      game_id: "abc",
+      players:
+        MapSet.new([
+          %Player{
+            player_id: "1",
+            player_alias: "foo"
+          },
+          %Player{
+            player_id: "2",
+            player_alias: "zoo"
+          },
+          %Player{
+            player_id: "3",
+            player_alias: "fee"
+          },
+          %Player{
+            player_id: "4",
+            player_alias: "fum"
+          }
+        ]),
+      player_ids_set: MapSet.new(["1", "2", "3", "4"]),
+      game_view: :playback_voting,
+      contestants: ["1", "2", "3", "4"],
+      round_num: 3,
+      game_rules: %{rounds_to_win: 3},
+      sample_beats: [],
+      scores: %{"4" => 0},
+      ready_ups: MapSet.new(["4"])
+    }
+
+    assert actual_state == expected_state
+  end
 end

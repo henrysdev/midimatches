@@ -1,30 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { Input } from "webmidi";
 import { MidiInput } from "./";
-import { useWebMidi } from "../../hooks";
 
 interface MidiConfigurationProps {
+  setDisabledMidiInputIds: Function;
+  disabledMidiInputIds: string[];
   setMidiInputs: Function;
+  originalMidiInputs: Input[];
 }
 
 const MidiConfiguration: React.FC<MidiConfigurationProps> = ({
+  setDisabledMidiInputIds,
+  disabledMidiInputIds,
   setMidiInputs,
+  originalMidiInputs,
 }) => {
-  const [midiInputs] = useWebMidi();
-  const [disabledMidiInputIds, setDisabledMidiInputIds] = useState<
-    Array<string>
-  >([]);
-
-  useEffect(() => {
-    if (!!midiInputs) {
-      setMidiInputs(
-        midiInputs.filter(
-          (input: Input) => !disabledMidiInputIds.includes(input.id)
-        )
-      );
-    }
-  }, [midiInputs]);
-
   const toggleInputEnabled = (input: Input, turningOn: boolean): void => {
     if (turningOn) {
       const idx = disabledMidiInputIds.findIndex(
@@ -33,7 +23,7 @@ const MidiConfiguration: React.FC<MidiConfigurationProps> = ({
       disabledMidiInputIds.splice(idx, 1);
       setDisabledMidiInputIds(disabledMidiInputIds);
       setMidiInputs(
-        midiInputs.filter(
+        originalMidiInputs.filter(
           (input: Input) => !disabledMidiInputIds.includes(input.id)
         )
       );
@@ -41,7 +31,7 @@ const MidiConfiguration: React.FC<MidiConfigurationProps> = ({
       disabledMidiInputIds.push(input.id);
       setDisabledMidiInputIds(disabledMidiInputIds);
       setMidiInputs(
-        midiInputs.filter(
+        originalMidiInputs.filter(
           (input: Input) => !disabledMidiInputIds.includes(input.id)
         )
       );
@@ -50,15 +40,18 @@ const MidiConfiguration: React.FC<MidiConfigurationProps> = ({
 
   return (
     <div>
-      {!!midiInputs && midiInputs.length > 0 ? (
+      {!!originalMidiInputs && originalMidiInputs.length > 0 ? (
         <div className="midi_button_group">
-          {midiInputs
+          {originalMidiInputs
             .sort((a, b) => a.name.localeCompare(b.name))
-            .map((midiInput, idx) => (
+            .map((originalMidiInput, idx) => (
               <MidiInput
                 key={`midi-input-${idx}`}
-                input={midiInput}
+                input={originalMidiInput}
                 toggleEnabled={toggleInputEnabled}
+                startEnabled={
+                  !disabledMidiInputIds.includes(originalMidiInput.id)
+                }
               />
             ))}
         </div>

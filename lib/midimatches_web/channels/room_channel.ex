@@ -13,7 +13,8 @@ defmodule MidimatchesWeb.RoomChannel do
     Types.Loop,
     Types.Note,
     Types.Player,
-    Types.TimestepSlice
+    Types.TimestepSlice,
+    Utils
   }
 
   require Logger
@@ -74,20 +75,30 @@ defmodule MidimatchesWeb.RoomChannel do
   #################################################################################################
 
   def handle_in(
-        "player_pregame_join",
+        "player_join",
         %{"player_alias" => player_alias, "player_id" => player_id},
         %Phoenix.Socket{assigns: %{room_id: room_id, player_id: player_id}} = socket
       ) do
     room_server = Pids.fetch!({:room_server, room_id})
+    game_server = Pids.fetch({:game_server, room_id})
 
     player = %Player{
       player_id: player_id,
       player_alias: player_alias
     }
 
-    RoomServer.add_player(room_server, player)
+    room_state = RoomServer.add_player(room_server, player)
 
-    {:reply, {:ok, %{player: player}},
+    payload = Utils.server_room_to_client_room_game_join(room_state)
+
+    socket =
+      if is_nil(game_server) do
+        socket
+      else
+        assign(socket, game_server: game_server)
+      end
+
+    {:reply, {:ok, payload},
      socket
      |> assign(room_server: room_server)
      |> assign(player_id: player_id)}

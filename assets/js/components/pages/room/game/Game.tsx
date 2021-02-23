@@ -1,9 +1,9 @@
-import { Channel } from "phoenix";
 import React, { useEffect, useState, useMemo } from "react";
+import { Channel } from "phoenix";
 
 import * as Tone from "tone";
-import { GAME_VIEW, DEFAULT_SYNTH_CONFIG } from "../../../../constants";
-import { GameContext, ToneAudioContext } from "../../../../contexts";
+import { GAME_VIEW } from "../../../../constants";
+import { GameContext } from "../../../../contexts";
 import {
   GameEndView,
   GameStartView,
@@ -17,8 +17,7 @@ import {
   useSamplePlayer,
   usePlayerContext,
 } from "../../../../hooks";
-import { GameLayout, InGameFrame } from ".";
-import { Input } from "webmidi";
+import { InGameFrame } from ".";
 import { GameContextType } from "../../../../types";
 
 interface GameProps {
@@ -31,10 +30,8 @@ const Game: React.FC<GameProps> = ({ gameChannel, initGameState }) => {
     gameChannel,
     initGameState
   );
-  const [midiInputs, setMidiInputs] = useState<Array<Input>>([]);
   const [loadSample, playSample, stopSample] = useSamplePlayer(Tone);
-  const { player: currPlayer } = usePlayerContext();
-  const [synth, setSynth] = useState<any>();
+  const [joinedMidRecording, setJoinedMidRecording] = useState<boolean>(true);
 
   const currSampleBeat = useMemo(() => {
     return gameContext.sampleBeats[gameContext.roundNum - 1];
@@ -47,34 +44,27 @@ const Game: React.FC<GameProps> = ({ gameChannel, initGameState }) => {
   };
 
   useEffect(() => {
-    Tone.context.lookAhead = 0;
-    const newSynth = new Tone.PolySynth(DEFAULT_SYNTH_CONFIG).toDestination();
-    // const newSynth = new Tone.Sampler({
-    //   urls: {
-    //     C4: "funk_daddy_c4.mp3",
-    //     C5: "funk_daddy_c5.mp3",
-    //   },
-    //   baseUrl: "https://progressions-game.s3.amazonaws.com/synths/funk_daddy/",
-    // }).toDestination();
-    setSynth(newSynth);
-  }, []);
-
-  useEffect(() => {
     switch (currentView) {
       case GAME_VIEW.GAME_START:
         break;
       case GAME_VIEW.ROUND_START:
+        setJoinedMidRecording(false);
         loadSample(currSampleBeat);
         break;
       case GAME_VIEW.RECORDING:
+        loadSample(currSampleBeat);
         break;
       case GAME_VIEW.PLAYBACK_VOTING:
+        setJoinedMidRecording(false);
+        loadSample(currSampleBeat);
         resetTone();
         break;
       case GAME_VIEW.ROUND_END:
+        setJoinedMidRecording(false);
         resetTone();
         break;
       case GAME_VIEW.GAME_END:
+        setJoinedMidRecording(false);
         resetTone();
         break;
     }
@@ -82,60 +72,47 @@ const Game: React.FC<GameProps> = ({ gameChannel, initGameState }) => {
 
   return (
     <GameContext.Provider value={gameContext} key={currentView}>
-      <ToneAudioContext.Provider value={{ Tone, midiInputs, synth }}>
-        <InGameFrame>
-          {(() => {
-            switch (currentView) {
-              case GAME_VIEW.GAME_START:
-                return (
-                  <GameStartView
-                    pushMessageToChannel={pushMessage}
-                    setMidiInputs={setMidiInputs}
-                  />
-                );
+      <InGameFrame>
+        {(() => {
+          switch (currentView) {
+            case GAME_VIEW.GAME_START:
+              return <GameStartView pushMessageToChannel={pushMessage} />;
 
-              case GAME_VIEW.ROUND_START:
-                return (
-                  <RoundStartView
-                    pushMessageToChannel={pushMessage}
-                    roundNum={gameContext.roundNum}
-                  />
-                );
+            case GAME_VIEW.ROUND_START:
+              return (
+                <RoundStartView
+                  pushMessageToChannel={pushMessage}
+                  roundNum={gameContext.roundNum}
+                />
+              );
 
-              case GAME_VIEW.RECORDING:
-                return (
-                  <RecordingView
-                    isContestant={
-                      !!gameContext.players
-                        ? gameContext.players
-                            .map(({ playerId }) => playerId)
-                            .includes(currPlayer.playerId)
-                        : false
-                    }
-                    pushMessageToChannel={pushMessage}
-                    playSample={playSample}
-                    stopSample={stopSample}
-                  />
-                );
+            case GAME_VIEW.RECORDING:
+              return (
+                <RecordingView
+                  isContestant={!joinedMidRecording}
+                  pushMessageToChannel={pushMessage}
+                  playSample={playSample}
+                  stopSample={stopSample}
+                />
+              );
 
-              case GAME_VIEW.PLAYBACK_VOTING:
-                return (
-                  <PlaybackVotingView
-                    pushMessageToChannel={pushMessage}
-                    playSample={playSample}
-                    stopSample={stopSample}
-                  />
-                );
+            case GAME_VIEW.PLAYBACK_VOTING:
+              return (
+                <PlaybackVotingView
+                  pushMessageToChannel={pushMessage}
+                  playSample={playSample}
+                  stopSample={stopSample}
+                />
+              );
 
-              case GAME_VIEW.ROUND_END:
-                return <RoundEndView />;
+            case GAME_VIEW.ROUND_END:
+              return <RoundEndView />;
 
-              case GAME_VIEW.GAME_END:
-                return <GameEndView />;
-            }
-          })()}
-        </InGameFrame>
-      </ToneAudioContext.Provider>
+            case GAME_VIEW.GAME_END:
+              return <GameEndView />;
+          }
+        })()}
+      </InGameFrame>
     </GameContext.Provider>
   );
 };

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 import { WarmUp } from ".";
 import { User } from "../../../../types";
+import { useToneAudioContext } from "../../../../hooks";
 
 interface PregameCenterPaneProps {
   gameInProgress: boolean;
@@ -12,6 +13,9 @@ const PregameCenterPane: React.FC<PregameCenterPaneProps> = ({
   gameInProgress,
   currentUser,
 }) => {
+  const audioCtx = useToneAudioContext();
+  console.log({ audioCtx });
+
   return (
     <div className="pregame_content_pane" style={{ marginLeft: "16px" }}>
       <div className="inline_screen inset_3d_border_shallow">

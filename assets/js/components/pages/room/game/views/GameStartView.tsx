@@ -13,7 +13,6 @@ import { useGameContext } from "../../../../../hooks";
 
 interface GameStartViewProps {
   pushMessageToChannel: Function;
-  setMidiInputs: Function;
 }
 
 const metaInstructions = `
@@ -24,7 +23,6 @@ the gameplay.
 
 const GameStartView: React.FC<GameStartViewProps> = ({
   pushMessageToChannel,
-  setMidiInputs,
 }) => {
   const [isReady, setIsReady] = useState<boolean>(false);
   const {
@@ -49,7 +47,7 @@ const GameStartView: React.FC<GameStartViewProps> = ({
                 "Confirm your MIDI input(s). You will be able to play with your computer keyboard and mouse as well."
               }
             />
-            <MidiConfiguration setMidiInputs={setMidiInputs} />
+            {/* <MidiConfiguration setMidiInputs={setMidiInputs} /> */}
             <ContentButton
               callback={() => {
                 const sentMessage = pushMessageToChannel(
@@ -84,19 +82,6 @@ const GameStartView: React.FC<GameStartViewProps> = ({
           <></>
         )}
       </TimerBox>
-      {/* <Instructions description={metaInstructions}>
-        <p>
-          To test or configure the connection to your MIDI input device, click
-          the "Configure MIDI" button.
-        </p>
-        <p>
-          Once you are ready to start, click the "Ready Up" button.
-          <strong>
-            The game will begin within a minute, or as soon as everyone has
-            ready'd up.{" "}
-          </strong>
-        </p>
-      </Instructions> */}
     </div>
   );
 };

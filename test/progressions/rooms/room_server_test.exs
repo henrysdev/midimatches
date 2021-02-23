@@ -136,11 +136,48 @@ defmodule Midimatches.RoomServerTest do
     assert Process.alive?(game_server) == false
   end
 
+  test "room full?" do
+    room_id = "1"
+    room_name = "foobar"
+
+    game_config = %GameRules{
+      max_players: 3
+    }
+
+    [m1, m2, m3] = [
+      %Player{
+        player_id: "m1",
+        player_alias: "foo"
+      },
+      %Player{
+        player_id: "m2",
+        player_alias: "zoo"
+      },
+      %Player{
+        player_id: "m3",
+        player_alias: "fee"
+      }
+    ]
+
+    {:ok, room_server} = start_supervised({RoomServer, [{room_id, room_name, game_config}]})
+
+    RoomServer.add_player(room_server, m1)
+    RoomServer.add_player(room_server, m2)
+    RoomServer.add_player(room_server, m3)
+    assert RoomServer.full?(room_server) == true
+
+    RoomServer.drop_player(room_server, m1.player_id)
+    assert RoomServer.full?(room_server) == false
+
+    RoomServer.add_player(room_server, m1)
+    assert RoomServer.full?(room_server) == true
+  end
+
   @type id() :: String.t()
   @spec start_room_with_game(id(), String.t(), list(%Player{})) :: pid()
   defp start_room_with_game(room_id, room_name, players) do
     game_config = %GameRules{
-      game_size_num_players: length(players)
+      min_players: length(players)
     }
 
     {:ok, room_server} = start_supervised({RoomServer, [{room_id, room_name, game_config}]})

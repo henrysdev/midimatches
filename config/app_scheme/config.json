@@ -6,11 +6,11 @@
         "timestep_size": 50,
         "quantization_threshold": 0.5,
         "rounds_to_win": 3,
-        "game_size_num_players": 5,
+        "max_players": 6,
         "view_timeouts": {
           "game_start": 60000,
           "round_start": 3000,
-          "recording": 45000,
+          "recording": 30000,
           "playback_voting": 90000,
           "round_end": 10000,
           "game_end": 10000
@@ -23,11 +23,12 @@
         "timestep_size": 50,
         "quantization_threshold": 0.5,
         "rounds_to_win": 3,
-        "game_size_num_players": 5,
+        "min_players": 4,
+        "max_players": 5,
         "view_timeouts": {
           "game_start": 60000,
           "round_start": 3000,
-          "recording": 45000,
+          "recording": 30000,
           "playback_voting": 90000,
           "round_end": 10000,
           "game_end": 10000
@@ -40,11 +41,12 @@
         "timestep_size": 50,
         "quantization_threshold": 0.5,
         "rounds_to_win": 3,
-        "game_size_num_players": 4,
+        "min_players": 3,
+        "max_players": 4,
         "view_timeouts": {
           "game_start": 60000,
           "round_start": 3000,
-          "recording": 45000,
+          "recording": 30000,
           "playback_voting": 90000,
           "round_end": 10000,
           "game_end": 10000
@@ -57,11 +59,12 @@
         "timestep_size": 50,
         "quantization_threshold": 0.5,
         "rounds_to_win": 3,
-        "game_size_num_players": 4,
+        "min_players": 3,
+        "max_players": 4,
         "view_timeouts": {
           "game_start": 60000,
           "round_start": 3000,
-          "recording": 45000,
+          "recording": 30000,
           "playback_voting": 90000,
           "round_end": 10000,
           "game_end": 10000
@@ -74,11 +77,12 @@
         "timestep_size": 50,
         "quantization_threshold": 0.5,
         "rounds_to_win": 3,
-        "game_size_num_players": 3,
+        "min_players": 3,
+        "max_players": 3,
         "view_timeouts": {
           "game_start": 60000,
           "round_start": 3000,
-          "recording": 45000,
+          "recording": 30000,
           "playback_voting": 60000,
           "round_end": 10000,
           "game_end": 10000
@@ -91,11 +95,12 @@
         "timestep_size": 50,
         "quantization_threshold": 0.5,
         "rounds_to_win": 3,
-        "game_size_num_players": 3,
+        "min_players": 3,
+        "max_players": 3,
         "view_timeouts": {
           "game_start": 60000,
           "round_start": 3000,
-          "recording": 45000,
+          "recording": 30000,
           "playback_voting": 60000,
           "round_end": 10000,
           "game_end": 10000
@@ -108,11 +113,12 @@
         "timestep_size": 50,
         "quantization_threshold": 0.5,
         "rounds_to_win": 3,
-        "game_size_num_players": 2,
+        "min_players": 3,
+        "max_players": 3,
         "view_timeouts": {
           "game_start": 60000,
           "round_start": 3000,
-          "recording": 45000,
+          "recording": 30000,
           "playback_voting": 60000,
           "round_end": 10000,
           "game_end": 10000
@@ -125,11 +131,12 @@
         "timestep_size": 50,
         "quantization_threshold": 0.5,
         "rounds_to_win": 3,
-        "game_size_num_players": 2,
+        "min_players": 3,
+        "max_players": 3,
         "view_timeouts": {
           "game_start": 60000,
           "round_start": 3000,
-          "recording": 45000,
+          "recording": 30000,
           "playback_voting": 60000,
           "round_end": 10000,
           "game_end": 10000
@@ -142,11 +149,12 @@
         "timestep_size": 50,
         "quantization_threshold": 0.5,
         "rounds_to_win": 3,
-        "game_size_num_players": 2,
+        "min_players": 3,
+        "max_players": 3,
         "view_timeouts": {
           "game_start": 60000,
           "round_start": 3000,
-          "recording": 45000,
+          "recording": 30000,
           "playback_voting": 60000,
           "round_end": 10000,
           "game_end": 10000
@@ -159,7 +167,8 @@
         "timestep_size": 50,
         "quantization_threshold": 0.5,
         "rounds_to_win": 3,
-        "game_size_num_players": 2,
+        "min_players": 3,
+        "max_players": 3,
         "view_timeouts": {
           "game_start": 1000,
           "round_start": 1000,

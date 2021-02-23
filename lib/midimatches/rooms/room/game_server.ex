@@ -13,6 +13,7 @@ defmodule Midimatches.Rooms.Room.GameServer do
     Rooms.Room.GameLogic,
     Rooms.RoomServer,
     Types.GameRules,
+    Types.Player,
     Types.WinResult,
     Utils
   }
@@ -90,6 +91,14 @@ defmodule Midimatches.Rooms.Room.GameServer do
     GenServer.call(pid, {:advance_from_game_view, curr_view, view_counter})
   end
 
+  @spec add_player(pid(), %Player{}) :: :ok
+  @doc """
+  Add a new player to the game.
+  """
+  def add_player(pid, %Player{} = player) do
+    GenServer.call(pid, {:add_player, player})
+  end
+
   @spec drop_player(pid(), id()) :: :ok
   @doc """
   Remove a musician from the game.
@@ -130,6 +139,13 @@ defmodule Midimatches.Rooms.Room.GameServer do
     instruction = GameLogic.remove_player(state, player_id)
 
     {:noreply, exec_instruction(instruction)}
+  end
+
+  @impl true
+  def handle_call({:add_player, %Player{} = player}, _from, %GameServer{} = state) do
+    instruction = GameLogic.add_player(state, player)
+
+    {:reply, :ok, exec_instruction(instruction)}
   end
 
   @impl true

@@ -99,7 +99,7 @@ defmodule Midimatches.UtilsTest do
 
   test "transforms server room state to client room state" do
     game_config = %GameRules{
-      game_size_num_players: 5
+      min_players: 5
     }
 
     server_room_state = %RoomServer{

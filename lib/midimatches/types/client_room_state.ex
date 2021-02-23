@@ -14,5 +14,6 @@ defmodule Midimatches.Types.ClientRoomState do
     field(:num_curr_players, number(), enforce: true)
     field(:game_rules, %GameRules{}, enforce: true)
     field(:in_game, boolean(), enforce: true)
+    field(:start_game_deadline, integer(), default: -1)
   end
 end

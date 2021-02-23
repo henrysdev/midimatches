@@ -18,7 +18,10 @@ const PlayerRow: React.FC<PlayerRowProps> = ({
   rank,
 }) => {
   return (
-    <tr className="scoreboard_player_row">
+    <tr
+      className="scoreboard_player_row"
+      style={isCurrPlayer ? { backgroundColor: "rgb(204, 220, 255)" } : {}}
+    >
       <td>{rank}</td>
       <td>{playerAlias}</td>
       <td>{playerScore}</td>
