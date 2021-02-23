@@ -17,7 +17,16 @@ defmodule Midimatches.Utils do
   @type freq_pair() :: {id(), number()}
 
   @spec build_win_result(list(freq_pair)) :: %WinResult{}
-  def build_win_result(freq_list) when length(freq_list) > 0 do
+  def build_win_result(freq_list) when freq_list == [] do
+    max_votes = 0
+
+    %WinResult{
+      winners: [],
+      num_points: max_votes
+    }
+  end
+
+  def build_win_result(freq_list) do
     {_id, max_votes} = Enum.max_by(freq_list, fn {_id, freq} -> freq end)
 
     %WinResult{
@@ -25,15 +34,6 @@ defmodule Midimatches.Utils do
         freq_list
         |> Stream.filter(fn {_id, freq} -> freq == max_votes end)
         |> Enum.map(fn {id, _freq} -> id end),
-      num_points: max_votes
-    }
-  end
-
-  def build_win_result(freq_list) when length(freq_list) == 0 do
-    max_votes = 0
-
-    %WinResult{
-      winners: [],
       num_points: max_votes
     }
   end
