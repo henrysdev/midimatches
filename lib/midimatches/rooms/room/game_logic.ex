@@ -82,7 +82,7 @@ defmodule Midimatches.Rooms.Room.GameLogic do
         players: updated_players,
         contestants: Enum.reject(state.contestants, &(&1 == player_id)),
         ready_ups: MapSet.delete(state.ready_ups, player_id),
-        recordings: Map.delete(state.recordings, player_id),
+        # recordings: Map.delete(state.recordings, player_id),
         votes: updated_votes,
         scores: Map.delete(state.scores, player_id)
     }

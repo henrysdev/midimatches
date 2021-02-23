@@ -72,6 +72,7 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
   };
 
   const playbackMusician = (timestepSize: number, playNote: Function): void => {
+    Tone.start();
     const startTime = Tone.now();
     Tone.Transport.cancel(0);
     Tone.Transport.start(startTime);

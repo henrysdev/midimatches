@@ -5,6 +5,7 @@ import { Input } from "webmidi";
 import { Keyboard } from ".";
 import { MIDINoteEvent, GameRules } from "../../types";
 import { useToneAudioContext, useNoteRecorder } from "../../hooks";
+import * as Tone from "tone";
 
 interface RecordMidiProps {
   submitRecording: Function;
@@ -46,6 +47,7 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
 
   // init on load
   useEffect(() => {
+    Tone.start();
     return () => {
       stopSample();
       [...Array(200).keys()].forEach((midiNumber) => {

@@ -5,7 +5,7 @@ defmodule Midimatches.Types.GameRules.ViewTimeouts do
 
   use TypedStruct
 
-  @default_game_start_timeout 20_000
+  @default_game_start_timeout 10_000
   @default_round_start_timeout 3_000
   @default_recording_timeout 50_000
   @default_playback_voting_timeout 90_000
