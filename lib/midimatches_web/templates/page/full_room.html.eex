@@ -1,0 +1,18 @@
+<!-- /web/templates/error/404.html.eex -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Room Is Full</title>
+  </head>
+
+  <body>
+    <h1>Room Is Full</h1>
+    <p>Try using the <a href="/servers"><strong>server list</strong></a> on the home page to find other rooms</p>
+  </body>
+</html>

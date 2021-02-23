@@ -77,6 +77,14 @@ defmodule Midimatches.Rooms.RoomServer do
     GenServer.call(pid, :get_players)
   end
 
+  @spec full?(pid()) :: boolean()
+  @doc """
+  Return true if room is at max capacity of players
+  """
+  def full?(pid) do
+    GenServer.call(pid, :full?)
+  end
+
   @spec reset_room(pid()) :: :ok
   @doc """
   Reset the current game by stopping and restarting
@@ -156,6 +164,21 @@ defmodule Midimatches.Rooms.RoomServer do
   @impl true
   def handle_call(:get_players, _from, %RoomServer{players: players} = state) do
     {:reply, players, state}
+  end
+
+  @impl true
+  def handle_call(
+        :full?,
+        _from,
+        %RoomServer{
+          players: players,
+          # TODO have a room config and use this max_players, could be diff from game max_players
+          game_config: %GameRules{
+            max_players: max_players
+          }
+        } = state
+      ) do
+    {:reply, MapSet.size(players) == max_players, state}
   end
 
   @impl true
