@@ -1,11 +1,19 @@
 import React, { useState } from "react";
 
 import { useToneAudioContext } from "../../../../hooks";
+import { MidiConfiguration } from "../../../audio";
 
 interface GameSettingsProps {}
 
 const GameSettings: React.FC<GameSettingsProps> = ({}) => {
-  const { Tone } = useToneAudioContext();
+  const {
+    Tone,
+    midiInputs,
+    setMidiInputs,
+    disabledMidiInputIds,
+    setDisabledMidiInputIds,
+    originalMidiInputs,
+  } = useToneAudioContext();
   const [soundIsOn, setSoundIsOn] = useState<boolean>(Tone.Master.mute);
 
   const toggleMute = () => {
@@ -16,7 +24,14 @@ const GameSettings: React.FC<GameSettingsProps> = ({}) => {
 
   return (
     <div className="in_game_settings_pane inline_screen">
-      <h5 style={{ textAlign: "left", color: "#999" }}>Settings</h5>
+      <h5 style={{ textAlign: "left", color: "#999" }}>MIDI Inputs</h5>
+      <MidiConfiguration
+        originalMidiInputs={originalMidiInputs}
+        setMidiInputs={setMidiInputs}
+        disabledMidiInputIds={disabledMidiInputIds}
+        setDisabledMidiInputIds={setDisabledMidiInputIds}
+      />
+      <h5 style={{ textAlign: "left", color: "#999" }}>Sound</h5>
       <ul style={{ listStyleType: "none", paddingLeft: 0 }}>
         <li style={{ padding: 0 }}>
           {soundIsOn ? (

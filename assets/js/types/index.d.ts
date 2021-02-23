@@ -118,7 +118,11 @@ type ScoreTuple = [string, number];
 ///////////////////////////////////////////////////////////////////////////////
 export interface ToneAudioContextType {
   Tone: any;
+  originalMidiInputs: Input[];
   midiInputs: Input[];
+  setMidiInputs: Function;
+  disabledMidiInputIds: string[];
+  setDisabledMidiInputIds: Function;
   synth: any;
 }
 

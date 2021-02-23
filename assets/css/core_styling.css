@@ -404,8 +404,10 @@ input:checked + .slider:before {
 }
 
 .midi_button_group {
+  margin: 8px;
   background-color: rgb(205, 205, 205);
-  max-height: 200px;
+  max-height: 160px;
+
   overflow: scroll;
   overflow-y: auto;
   overflow-x: auto;
@@ -418,6 +420,7 @@ input:checked + .slider:before {
   display: block;
   padding: 4px;
   font-family: "Roboto", sans-serif;
+  overflow: hidden;
   margin: 4px;
 }
 

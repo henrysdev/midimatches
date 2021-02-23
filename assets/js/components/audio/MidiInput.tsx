@@ -5,10 +5,15 @@ import { Input } from "webmidi";
 interface MidiInputProps {
   input: Input;
   toggleEnabled: (input: Input, turningOn: boolean) => void;
+  startEnabled?: boolean;
 }
 
-const MidiInput: React.FC<MidiInputProps> = ({ input, toggleEnabled }) => {
-  const [enabled, setEnabled] = useState<boolean>(true);
+const MidiInput: React.FC<MidiInputProps> = ({
+  input,
+  toggleEnabled,
+  startEnabled = true,
+}) => {
+  const [enabled, setEnabled] = useState<boolean>(startEnabled);
   return (
     <div
       style={{ height: "20px" }}

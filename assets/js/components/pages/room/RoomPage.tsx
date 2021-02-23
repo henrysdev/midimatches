@@ -1,6 +1,8 @@
 import { Channel, Socket, Push } from "phoenix";
 import React, { useEffect, useState, useMemo } from "react";
 
+import * as Tone from "tone";
+import { Input } from "webmidi";
 import { unmarshalBody } from "../../../utils";
 import {
   PlayerJoinPayload,
@@ -11,17 +13,44 @@ import {
 } from "../../../types";
 import { Game } from "./game/Game";
 import { PregameLobby } from "./pregame/PregameLobby";
-import { PlayerContext } from "../../../contexts";
+import { PlayerContext, ToneAudioContext } from "../../../contexts";
 import {
   START_GAME_EVENT,
   LOBBY_UPDATE_EVENT,
   RESET_ROOM_EVENT,
   SUBMIT_LEAVE_ROOM,
   SUBMIT_JOIN,
+  DEFAULT_SYNTH_CONFIG,
 } from "../../../constants";
-import { useCurrentUserContext, useSocketContext } from "../../../hooks";
+import {
+  useCurrentUserContext,
+  useSocketContext,
+  useWebMidi,
+} from "../../../hooks";
 
 const RoomPage: React.FC = () => {
+  // midi inputs init
+  const [originalMidiInputs] = useWebMidi();
+  const [midiInputs, setMidiInputs] = useState<Array<Input>>([]);
+  const [disabledMidiInputIds, setDisabledMidiInputIds] = useState<
+    Array<string>
+  >([]);
+
+  // synth init
+  const [synth, setSynth] = useState<any>();
+  useEffect(() => {
+    Tone.context.lookAhead = 0;
+    const newSynth = new Tone.PolySynth(DEFAULT_SYNTH_CONFIG).toDestination();
+    // const newSynth = new Tone.Sampler({
+    //   urls: {
+    //     C4: "funk_daddy_c4.mp3",
+    //     C5: "funk_daddy_c5.mp3",
+    //   },
+    //   baseUrl: "https://progressions-game.s3.amazonaws.com/synths/funk_daddy/",
+    // }).toDestination();
+    setSynth(newSynth);
+  }, []);
+
   const [gameChannel, setGameChannel] = useState<Channel>();
   const [gameInProgress, setGameInProgress] = useState<boolean>(false);
   const [currPlayer, setCurrPlayer] = useState<Player>();
@@ -72,11 +101,9 @@ const RoomPage: React.FC = () => {
               body
             ) as PlayerJoinPayload;
             if (roomState.inGame) {
-              console.log("IN GAME");
               setInitGameState(gameState);
               setGameInProgress(true);
             } else {
-              console.log("IN LOBBY");
               const {
                 numCurrPlayers: numPlayersJoined,
                 gameRules: { minPlayers: numPlayersToStart },
@@ -132,21 +159,33 @@ const RoomPage: React.FC = () => {
 
   return (
     <div>
-      {!!gameChannel && !!currPlayer && !!initGameState ? (
-        <PlayerContext.Provider value={{ player: currPlayer }}>
-          <Game gameChannel={gameChannel} initGameState={initGameState} />
-        </PlayerContext.Provider>
-      ) : !!gameChannel ? (
-        <PregameLobby
-          gameInProgress={gameInProgress}
-          numPlayersJoined={lobbyState.numPlayersJoined}
-          numPlayersToStart={lobbyState.numPlayersToStart}
-          currentUser={currentUser}
-          roomName={lobbyState.roomName}
-        />
-      ) : (
-        <></>
-      )}
+      <ToneAudioContext.Provider
+        value={{
+          Tone,
+          midiInputs,
+          setMidiInputs,
+          disabledMidiInputIds,
+          setDisabledMidiInputIds,
+          originalMidiInputs,
+          synth,
+        }}
+      >
+        {!!gameChannel && !!currPlayer && !!initGameState ? (
+          <PlayerContext.Provider value={{ player: currPlayer }}>
+            <Game gameChannel={gameChannel} initGameState={initGameState} />
+          </PlayerContext.Provider>
+        ) : !!gameChannel ? (
+          <PregameLobby
+            gameInProgress={gameInProgress}
+            numPlayersJoined={lobbyState.numPlayersJoined}
+            numPlayersToStart={lobbyState.numPlayersToStart}
+            currentUser={currentUser}
+            roomName={lobbyState.roomName}
+          />
+        ) : (
+          <></>
+        )}
+      </ToneAudioContext.Provider>
     </div>
   );
 };
