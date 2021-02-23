@@ -16,13 +16,9 @@ const GameLeftPane: React.FC<GameLeftPaneProps> = ({}) => {
           <Scoreboard
             players={
               !!players
-                ? roundNum === 1
-                  ? players
-                      .filter((player) => readyUps.includes(player.playerId))
-                      .sort((a, b) =>
-                        a.playerAlias.localeCompare(b.playerAlias)
-                      )
-                  : players
+                ? players.sort((a, b) =>
+                    a.playerAlias.localeCompare(b.playerAlias)
+                  )
                 : ([] as Player[])
             }
             currPlayer={currPlayer}

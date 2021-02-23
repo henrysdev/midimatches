@@ -9,6 +9,7 @@ interface LeftSidebarProps {}
 const LeftSidebar: React.FC<LeftSidebarProps> = ({}) => {
   const { players, readyUps, roundNum, scores } = useGameContext();
   const { player: currPlayer } = usePlayerContext();
+  console.log({ players });
   return (
     <div
       className="left_sidebar"
@@ -20,15 +21,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({}) => {
       }}
     >
       <Scoreboard
-        players={
-          !!players
-            ? roundNum === 1
-              ? players
-                  .filter((player) => readyUps.includes(player.playerId))
-                  .sort((a, b) => a.playerAlias.localeCompare(b.playerAlias))
-              : players
-            : ([] as Player[])
-        }
+        players={!!players ? players : ([] as Player[])}
         currPlayer={currPlayer}
         scores={scores}
       />
