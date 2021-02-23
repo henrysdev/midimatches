@@ -15,6 +15,7 @@ interface PregameLobbyProps {
   gameInProgress: boolean;
   numPlayersJoined: number;
   numPlayersToStart: number;
+  maxPlayers: number;
   currentUser: User;
   roomName: string;
   startGameDeadline: number;
@@ -24,12 +25,14 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
   gameInProgress,
   numPlayersJoined,
   numPlayersToStart,
+  maxPlayers,
   currentUser,
   roomName,
   startGameDeadline,
 }) => {
   const [copySuccess, setCopySuccess] = useState<boolean>(false);
 
+  console.log(numPlayersToStart - numPlayersJoined);
   return (
     <div>
       <ComputerFrame>
@@ -40,9 +43,16 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
             <div className="pregame_content_pane">
               <div className="inline_screen inset_3d_border_shallow">
                 <p>
-                  <strong>{`${numPlayersJoined}/${numPlayersToStart} Players. Need ${
-                    numPlayersToStart - numPlayersJoined
-                  } more players to start game`}</strong>
+                  <strong>{`${numPlayersJoined}/${maxPlayers} Players.`}</strong>
+                  {numPlayersToStart - numPlayersJoined > 0 ? (
+                    <strong>
+                      {` Need at least ${
+                        numPlayersToStart - numPlayersJoined
+                      } more players to start game`}
+                    </strong>
+                  ) : (
+                    <></>
+                  )}
                 </p>
               </div>
               <ComputerButton

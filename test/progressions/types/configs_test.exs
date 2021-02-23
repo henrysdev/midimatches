@@ -50,6 +50,8 @@ defmodule Midimatches.Types.ConfigsTest do
               quantization_threshold: 0.4,
               rounds_to_win: 2,
               min_players: 3,
+              max_players: 4,
+              pregame_countdown: 10_000,
               view_timeouts: %ViewTimeouts{
                 game_start: 10_000,
                 round_start: 3_000,

@@ -107,7 +107,7 @@ const RoomPage: React.FC = () => {
             } else {
               const {
                 numCurrPlayers: numPlayersJoined,
-                gameRules: { minPlayers: numPlayersToStart },
+                gameRules: { minPlayers: numPlayersToStart, maxPlayers },
                 roomName,
                 startGameDeadline,
               } = roomState as RoomState;
@@ -116,6 +116,7 @@ const RoomPage: React.FC = () => {
                 numPlayersToStart,
                 roomName,
                 startGameDeadline,
+                maxPlayers,
               });
               setGameInProgress(false);
             }
@@ -133,7 +134,7 @@ const RoomPage: React.FC = () => {
       const {
         roomState: {
           numCurrPlayers: numPlayersJoined,
-          gameRules: { minPlayers: numPlayersToStart },
+          gameRules: { minPlayers: numPlayersToStart, maxPlayers },
           roomName,
           startGameDeadline,
         },
@@ -143,6 +144,7 @@ const RoomPage: React.FC = () => {
         numPlayersToStart,
         roomName,
         startGameDeadline,
+        maxPlayers,
       });
     });
 
@@ -207,6 +209,7 @@ const RoomPage: React.FC = () => {
           <PregameLobby
             gameInProgress={gameInProgress}
             numPlayersJoined={lobbyState.numPlayersJoined}
+            maxPlayers={lobbyState.maxPlayers}
             numPlayersToStart={lobbyState.numPlayersToStart}
             startGameDeadline={lobbyState.startGameDeadline}
             currentUser={currentUser}
