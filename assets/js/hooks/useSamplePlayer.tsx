@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { S3_BUCKET_URL } from "../constants";
+import { S3_BUCKET_URL, DEFAULT_SAMPLE_VOLUME } from "../constants";
 
 type SamplePlayerTuple = [(url: string) => void, () => void, () => void];
 
@@ -9,7 +9,7 @@ export function useSamplePlayer(Tone: any): SamplePlayerTuple {
 
   useEffect(() => {
     const newSamplePlayer = new Tone.Player().toDestination();
-    newSamplePlayer.volume.value = -3;
+    newSamplePlayer.volume.value = DEFAULT_SAMPLE_VOLUME;
     setSamplePlayer(newSamplePlayer);
   }, []);
 

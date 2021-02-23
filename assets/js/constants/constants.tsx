@@ -40,6 +40,8 @@ export const DEFAULT_NUM_RECORDED_LOOPS = 1;
 export const DEFAULT_RECORDING_LENGTH =
   DEFAULT_SAMPLE_LENGTH * DEFAULT_NUM_RECORDED_LOOPS;
 
+export const DEFAULT_SAMPLE_VOLUME = -4;
+
 export const DEFAULT_SYNTH_CONFIG = {
   oscillator: {
     type: "amtriangle",
@@ -53,6 +55,44 @@ export const DEFAULT_SYNTH_CONFIG = {
     sustain: 0.2,
     release: 0.5,
   },
-  volume: -1,
+  volume: -2,
   portamento: 0.05,
 } as Tone.SynthOptions;
+
+export const DEFAULT_FM_SYNTH_CONFIG = {
+  volume: -2,
+  detune: 0,
+  portamento: 0,
+  harmonicity: 1,
+  oscillator: {
+    partialCount: 0,
+    partials: [],
+    phase: 0,
+    type: "sine",
+  },
+  envelope: {
+    attack: 0.001,
+    attackCurve: "linear",
+    decay: 0.3,
+    decayCurve: "exponential",
+    release: 0.5,
+    releaseCurve: "exponential",
+    sustain: 1,
+  },
+  modulation: {
+    partialCount: 0,
+    partials: [],
+    phase: 7,
+    type: "sawtooth",
+  },
+  modulationEnvelope: {
+    attack: 0.03,
+    attackCurve: "linear",
+    decay: 0.01,
+    decayCurve: "exponential",
+    release: 0.5,
+    releaseCurve: "exponential",
+    sustain: 1,
+  },
+  modulationIndex: 12.22,
+} as any;

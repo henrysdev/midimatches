@@ -21,7 +21,7 @@ import {
   RESET_ROOM_EVENT,
   SUBMIT_LEAVE_ROOM,
   SUBMIT_JOIN,
-  DEFAULT_SYNTH_CONFIG,
+  DEFAULT_FM_SYNTH_CONFIG,
 } from "../../../constants";
 import {
   useCurrentUserContext,
@@ -46,11 +46,20 @@ const RoomPage: React.FC = () => {
     }
   }, [originalMidiInputs]);
 
-  // synth init
+  // synth + Tone init
   const [synth, setSynth] = useState<any>();
   useEffect(() => {
     Tone.context.lookAhead = 0;
-    const newSynth = new Tone.PolySynth(DEFAULT_SYNTH_CONFIG).toDestination();
+    Tone.Master.volume.value = -1;
+
+    const autoWah = new Tone.AutoWah(60, 6, -30).toDestination();
+    const chorus = new Tone.Chorus(3, 0.5, 0.5).start();
+    const vibrato = new Tone.Vibrato("16n", 0.05);
+
+    const newSynth = new Tone.PolySynth(Tone.FMSynth, DEFAULT_FM_SYNTH_CONFIG);
+
+    newSynth.chain(vibrato, chorus, Tone.Destination);
+
     // const newSynth = new Tone.Sampler({
     //   urls: {
     //     C4: "funk_daddy_c4.mp3",
