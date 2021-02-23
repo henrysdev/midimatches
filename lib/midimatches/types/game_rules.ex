@@ -13,6 +13,7 @@ defmodule Midimatches.Types.GameRules do
   @default_min_players 4
   @default_solo_time_limit 30
   @default_view_timeouts %ViewTimeouts{}
+  @default_pregame_countdown 10_000
 
   @derive Jason.Encoder
   typedstruct do
@@ -23,5 +24,6 @@ defmodule Midimatches.Types.GameRules do
     field(:max_players, integer(), default: @default_min_players + 2)
     field(:solo_time_limit, integer(), default: @default_solo_time_limit)
     field(:view_timeouts, map(), default: @default_view_timeouts)
+    field(:pregame_countdown, integer(), default: @default_pregame_countdown)
   end
 end

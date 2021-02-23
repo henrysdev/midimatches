@@ -5,6 +5,7 @@ import {
   MediumTitle,
   ComputerFrame,
   ComputerButton,
+  Timer,
 } from "../../../common";
 import { PregameDebug } from "../../../debug";
 import { PregameCenterPane, WarmUp } from ".";
@@ -16,6 +17,7 @@ interface PregameLobbyProps {
   numPlayersToStart: number;
   currentUser: User;
   roomName: string;
+  startGameDeadline: number;
 }
 
 const PregameLobby: React.FC<PregameLobbyProps> = ({
@@ -24,6 +26,7 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
   numPlayersToStart,
   currentUser,
   roomName,
+  startGameDeadline,
 }) => {
   const [copySuccess, setCopySuccess] = useState<boolean>(false);
 
@@ -84,6 +87,15 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
             />
           </div>
         </div>
+        {!!startGameDeadline && startGameDeadline > -1 ? (
+          <Timer
+            descriptionText={"Intermission - Next game in "}
+            duration={startGameDeadline - Date.now()}
+            timesUpText={"Game will start as soon as there are enough players"}
+          />
+        ) : (
+          <></>
+        )}
       </ComputerFrame>
       {/* <PregameDebug /> */}
     </div>

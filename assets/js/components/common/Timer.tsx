@@ -23,7 +23,7 @@ const Timer: React.FC<TimerProps> = memo(
     }) => {
       if (completed) {
         // Render a completed state
-        return <div>{timesUpText}</div>;
+        return <p>{timesUpText}</p>;
       } else {
         // Render a countdown
         const timeLeft = seconds + minutes * 60;

@@ -10,6 +10,7 @@ import {
   GameContextType,
   StartGamePayload,
   LobbyUpdatePayload,
+  RoomState,
 } from "../../../types";
 import { Game } from "./game/Game";
 import { PregameLobby } from "./pregame/PregameLobby";
@@ -108,8 +109,14 @@ const RoomPage: React.FC = () => {
                 numCurrPlayers: numPlayersJoined,
                 gameRules: { minPlayers: numPlayersToStart },
                 roomName,
-              } = roomState as LobbyUpdatePayload;
-              setLobbyState({ numPlayersJoined, numPlayersToStart, roomName });
+                startGameDeadline,
+              } = roomState as RoomState;
+              setLobbyState({
+                numPlayersJoined,
+                numPlayersToStart,
+                roomName,
+                startGameDeadline,
+              });
               setGameInProgress(false);
             }
             console.log("join game successful");
@@ -124,11 +131,19 @@ const RoomPage: React.FC = () => {
     // lobby update
     channel.on(LOBBY_UPDATE_EVENT, (body) => {
       const {
-        numCurrPlayers: numPlayersJoined,
-        gameRules: { minPlayers: numPlayersToStart },
-        roomName,
+        roomState: {
+          numCurrPlayers: numPlayersJoined,
+          gameRules: { minPlayers: numPlayersToStart },
+          roomName,
+          startGameDeadline,
+        },
       } = unmarshalBody(body) as LobbyUpdatePayload;
-      setLobbyState({ numPlayersJoined, numPlayersToStart, roomName });
+      setLobbyState({
+        numPlayersJoined,
+        numPlayersToStart,
+        roomName,
+        startGameDeadline,
+      });
     });
 
     // start game
@@ -139,7 +154,21 @@ const RoomPage: React.FC = () => {
     });
 
     // reset room
-    channel.on(RESET_ROOM_EVENT, (_body) => {
+    channel.on(RESET_ROOM_EVENT, (body) => {
+      const {
+        roomState: {
+          numCurrPlayers: numPlayersJoined,
+          gameRules: { minPlayers: numPlayersToStart },
+          roomName,
+          startGameDeadline,
+        },
+      } = unmarshalBody(body) as LobbyUpdatePayload;
+      setLobbyState({
+        numPlayersJoined,
+        numPlayersToStart,
+        roomName,
+        startGameDeadline,
+      });
       joinRoomFlow();
       resetRoom();
     });
@@ -179,6 +208,7 @@ const RoomPage: React.FC = () => {
             gameInProgress={gameInProgress}
             numPlayersJoined={lobbyState.numPlayersJoined}
             numPlayersToStart={lobbyState.numPlayersToStart}
+            startGameDeadline={lobbyState.startGameDeadline}
             currentUser={currentUser}
             roomName={lobbyState.roomName}
           />

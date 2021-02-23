@@ -8,8 +8,8 @@ defmodule Midimatches.Utils do
     Rooms.Room.GameServer,
     Rooms.RoomServer,
     Types.ClientGameState,
-    Types.ClientRoomState,
     Types.ClientRoomGameJoin,
+    Types.ClientRoomState,
     Types.WinResult
   }
 
@@ -96,7 +96,8 @@ defmodule Midimatches.Utils do
       room_name: server_state.room_name,
       game_rules: server_state.game_config,
       num_curr_players: MapSet.size(server_state.players),
-      in_game: !is_nil(server_state.game)
+      in_game: !is_nil(server_state.game),
+      start_game_deadline: server_state.start_game_deadline
     }
   end
 

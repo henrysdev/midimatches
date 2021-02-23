@@ -27,6 +27,8 @@ defmodule Midimatches.Rooms.RoomServer do
     field(:players, MapSet.t(Player), default: MapSet.new())
     field(:game_config, %GameRules{}, default: %GameRules{})
     field(:game, pid, default: nil)
+    field(:start_game_deadline, number(), default: -1)
+    field(:primed_to_start, boolean(), default: true)
   end
 
   def start_link(args) do
@@ -123,10 +125,11 @@ defmodule Midimatches.Rooms.RoomServer do
         %RoomServer{
           players: players,
           game_config: %GameRules{
-            min_players: num_players_to_start
+            min_players: min_players_to_start
           },
           room_id: room_id,
-          game: game
+          game: game,
+          primed_to_start: primed_to_start
         } = state
       ) do
     room_players = MapSet.put(players, player)
@@ -134,10 +137,9 @@ defmodule Midimatches.Rooms.RoomServer do
 
     state =
       if is_nil(game) do
-        enough_players_to_start? = MapSet.size(room_players) == num_players_to_start
         broadcast_lobby_state(state)
 
-        if enough_players_to_start? do
+        if MapSet.size(room_players) >= min_players_to_start and primed_to_start == true do
           start_game(state)
         else
           state
@@ -160,18 +162,35 @@ defmodule Midimatches.Rooms.RoomServer do
   def handle_call(
         :reset_room,
         _from,
-        %RoomServer{game: game, room_id: room_id, room_name: room_name, game_config: game_config}
+        %RoomServer{
+          game: game,
+          room_id: room_id,
+          room_name: room_name,
+          game_config:
+            %GameRules{
+              pregame_countdown: pregame_countdown
+            } = game_config
+        }
       ) do
     Game.stop_game(game)
 
     state = %RoomServer{
       room_id: room_id,
       room_name: room_name,
-      game_config: game_config
+      game_config: game_config,
+      start_game_deadline: :os.system_time(:millisecond) + pregame_countdown,
+      primed_to_start: false
     }
 
     broadcast_reset_room(state)
-    broadcast_lobby_state(state)
+
+    room_pid = self()
+
+    spawn(fn ->
+      Process.sleep(pregame_countdown)
+      send(room_pid, :advance_to_game)
+      nil
+    end)
 
     {:reply, state, state}
   end
@@ -187,6 +206,30 @@ defmodule Midimatches.Rooms.RoomServer do
     {:reply, state, state}
   end
 
+  @impl true
+  def handle_info(
+        :advance_to_game,
+        %RoomServer{
+          players: players,
+          game_config: %GameRules{
+            min_players: min_players_to_start
+          },
+          game: game
+        } = state
+      ) do
+    state = %RoomServer{state | primed_to_start: true}
+
+    state =
+      if is_nil(game) and MapSet.size(players) >= min_players_to_start do
+        broadcast_lobby_state(state)
+        start_game(state)
+      else
+        state
+      end
+
+    {:noreply, state}
+  end
+
   @spec start_game(%RoomServer{}) :: %RoomServer{}
   defp start_game(
          %RoomServer{room_id: room_id, players: players, game_config: game_config} = state
@@ -198,8 +241,10 @@ defmodule Midimatches.Rooms.RoomServer do
   end
 
   @spec broadcast_reset_room(%RoomServer{}) :: atom()
-  defp broadcast_reset_room(%RoomServer{room_id: room_id}) do
-    MidimatchesWeb.Endpoint.broadcast("room:#{room_id}", "reset_room", %{})
+  defp broadcast_reset_room(%RoomServer{room_id: room_id} = state) do
+    MidimatchesWeb.Endpoint.broadcast("room:#{room_id}", "reset_room", %{
+      room_state: Utils.server_to_client_room_state(state)
+    })
   end
 
   @spec broadcast_lobby_state(%RoomServer{}) :: atom()
@@ -207,7 +252,7 @@ defmodule Midimatches.Rooms.RoomServer do
     MidimatchesWeb.Endpoint.broadcast(
       "room:#{room_id}",
       "lobby_update",
-      Utils.server_to_client_room_state(state)
+      %{room_state: Utils.server_to_client_room_state(state)}
     )
   end
 end

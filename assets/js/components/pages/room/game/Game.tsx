@@ -44,7 +44,6 @@ const Game: React.FC<GameProps> = ({ gameChannel, initGameState }) => {
   };
 
   useEffect(() => {
-    console.log(currentView);
     switch (currentView) {
       case GAME_VIEW.GAME_START:
         break;

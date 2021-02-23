@@ -41,10 +41,7 @@ export type SamplePlayer = Tone.Player;
 // Server Data                                                               //
 ///////////////////////////////////////////////////////////////////////////////
 export interface LobbyUpdatePayload {
-  numCurrPlayers: number;
-  gameRules: GameRules;
-  inGame: boolean;
-  roomName: string;
+  roomState: RoomState;
 }
 
 export interface GameUpdatePayload {
@@ -68,6 +65,7 @@ export interface RoomState {
   roomId: string;
   roomName: string;
   inGame: boolean;
+  startGameDeadline: number;
 }
 
 export interface GameState {
@@ -98,6 +96,7 @@ export interface ViewTimeouts {
 
 export interface GameRules {
   minPlayers: number;
+  maxPlayers: number;
   timestepSize: Microseconds;
   soloTimeLimit: number;
   quantizationThreshold: number;
