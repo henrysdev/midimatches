@@ -7,6 +7,7 @@ import {
   DynamicContent,
 } from "../../../../common";
 import { useGameContext } from "../../../../../hooks";
+import { calcMsUntilMsTimestamp } from "../../../../../utils";
 import { WinResult, Player } from "../../../../../types";
 import { WinResultText } from "../";
 
@@ -19,6 +20,7 @@ const RoundEndView: React.FC<RoundEndViewProps> = () => {
     gameRules: {
       viewTimeouts: { roundEnd: roundEndTimeout },
     },
+    viewDeadline,
     players,
   } = useGameContext();
 
@@ -53,7 +55,7 @@ const RoundEndView: React.FC<RoundEndViewProps> = () => {
         <TimerBox>
           <Timer
             descriptionText={"Next round starting in "}
-            duration={roundEndTimeout}
+            duration={calcMsUntilMsTimestamp(viewDeadline)}
           />
         </TimerBox>
       </div>

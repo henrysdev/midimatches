@@ -10,6 +10,7 @@ import {
 import { SUBMIT_READY_UP_EVENT } from "../../../../../constants/index";
 import { MidiConfiguration } from "../../../../audio";
 import { useGameContext } from "../../../../../hooks";
+import { calcMsUntilMsTimestamp } from "../../../../../utils";
 
 interface GameStartViewProps {
   pushMessageToChannel: Function;
@@ -29,6 +30,7 @@ const GameStartView: React.FC<GameStartViewProps> = ({
     gameRules: {
       viewTimeouts: { gameStart: gameStartTimeout },
     },
+    viewDeadline,
   } = useGameContext();
 
   return (
@@ -74,9 +76,8 @@ const GameStartView: React.FC<GameStartViewProps> = ({
       <TimerBox>
         {!!gameStartTimeout ? (
           <Timer
-            key={gameStartTimeout}
             descriptionText={"Game starts in "}
-            duration={gameStartTimeout}
+            duration={calcMsUntilMsTimestamp(viewDeadline)}
           />
         ) : (
           <></>

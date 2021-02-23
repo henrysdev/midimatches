@@ -15,12 +15,14 @@ interface KeyboardProps {
   activeMidiList: number[];
   playNote: Function;
   stopNote: Function;
+  hideKeyboard?: boolean;
 }
 
 const Keyboard: React.FC<KeyboardProps> = ({
   activeMidiList,
   playNote,
   stopNote,
+  hideKeyboard = false,
 }) => {
   return (
     <div
@@ -37,6 +39,7 @@ const Keyboard: React.FC<KeyboardProps> = ({
         }}
       >
         <Piano
+          disabled={hideKeyboard}
           noteRange={noteRange}
           keyboardShortcuts={keyboardShortcuts}
           activeNotes={activeMidiList}

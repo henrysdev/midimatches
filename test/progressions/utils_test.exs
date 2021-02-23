@@ -91,7 +91,8 @@ defmodule Midimatches.UtilsTest do
       contestants: server_state.contestants,
       scores: [["1", 0], ["2", 0], ["3", 1], ["4", 2]],
       round_winners: server_state.round_winners,
-      sample_beats: ["track_1", "track2", "track3"]
+      sample_beats: ["track_1", "track2", "track3"],
+      view_deadline: -1
     }
 
     assert actual_client_state == expected_client_state
@@ -121,5 +122,27 @@ defmodule Midimatches.UtilsTest do
     actual_client_room_state = Utils.server_to_client_room_state(server_room_state)
 
     assert actual_client_room_state == expected_client_room_state
+  end
+
+  describe "calc future timestamp" do
+    test "returns accurate timestamp relative to current time by default" do
+      ms_to_add = 10_000
+      current = :os.system_time(:millisecond)
+      actual_time = Utils.calc_future_timestamp(ms_to_add)
+
+      expected_time = current + ms_to_add
+
+      assert actual_time == expected_time
+    end
+
+    test "returns accurate timestamp relative to given time" do
+      ms_to_add = 10_000
+      start_time = 1_614_089_526_601
+      actual_time = Utils.calc_future_timestamp(ms_to_add, start_time)
+
+      expected_time = 1_614_089_536_601
+
+      assert actual_time == expected_time
+    end
   end
 end

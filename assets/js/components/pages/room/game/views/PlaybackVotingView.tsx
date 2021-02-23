@@ -13,6 +13,7 @@ import {
 } from "../../../../common";
 import { shuffleArray, genRandomColors } from "../../../../../utils";
 import { Color, Loop, RecordingTuple } from "../../../../../types";
+import { calcMsUntilMsTimestamp } from "../../../../../utils";
 
 interface PlaybackVotingViewProps {
   pushMessageToChannel: Function;
@@ -35,6 +36,7 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
     gameRules: {
       viewTimeouts: { playbackVoting: playbackVotingTimeout },
     },
+    viewDeadline,
   } = useGameContext();
 
   const { player: currPlayer } = usePlayerContext();
@@ -145,7 +147,7 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
         {!!playbackVotingTimeout ? (
           <Timer
             descriptionText={"Voting ends in "}
-            duration={playbackVotingTimeout}
+            duration={calcMsUntilMsTimestamp(viewDeadline)}
           />
         ) : (
           <></>

@@ -50,6 +50,7 @@ defmodule Midimatches.Rooms.Room.GameServer do
     field(:round_num, integer(), default: 1)
     field(:round_winners, %WinResult{}, default: nil)
     field(:scores, %{required(id()) => integer()}, default: %{})
+    field(:view_deadline, integer(), default: -1)
   end
 
   def start_link(args) do
@@ -215,6 +216,13 @@ defmodule Midimatches.Rooms.Room.GameServer do
     check_game_empty(state)
 
     state =
+      if view_change? do
+        update_view_deadline(state)
+      else
+        state
+      end
+
+    state =
       if sync_clients? do
         broadcast_gamestate(state)
       else
@@ -231,6 +239,25 @@ defmodule Midimatches.Rooms.Room.GameServer do
       end
 
     state
+  end
+
+  @spec update_view_deadline(%GameServer{}) :: %GameServer{}
+  defp update_view_deadline(
+         %GameServer{
+           game_view: game_view,
+           game_rules: %{view_timeouts: view_timeouts}
+         } = state
+       ) do
+    view_deadline =
+      if Map.has_key?(view_timeouts, game_view) do
+        view_timeouts
+        |> Map.get(game_view)
+        |> Utils.calc_future_timestamp()
+      else
+        -1
+      end
+
+    %GameServer{state | view_deadline: view_deadline}
   end
 
   @spec schedule_view_timeout(%GameServer{}) :: %GameServer{}

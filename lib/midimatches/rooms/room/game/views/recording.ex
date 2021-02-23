@@ -19,17 +19,11 @@ defmodule Midimatches.Rooms.Room.Game.Views.Recording do
         }
   @type record_payload() :: {id(), any}
 
-  @empty_recording %{
-    timestep_slices: []
-  }
-
   @spec advance_view(%GameServer{}) :: %GameServer{}
   def advance_view(
         %GameServer{
-          contestants: contestants,
           recordings: recordings,
           game_view: :recording,
-          players: players,
           game_rules:
             %GameRules{
               solo_time_limit: solo_time_limit,
@@ -37,26 +31,17 @@ defmodule Midimatches.Rooms.Room.Game.Views.Recording do
             } = game_rules
         } = state
       ) do
-    # simulate missing recording submissions with empty recordings
-    missing_contestants =
-      contestants
-      |> Stream.reject(&(recordings |> Map.keys() |> Enum.member?(&1)))
-
-    state =
-      Enum.reduce(missing_contestants, state, fn contestant_id, acc_state ->
-        recording_payload = {contestant_id, @empty_recording}
-        simulate_add_recording(acc_state, recording_payload)
-      end)
-
     # handle special case where we want to calculate length of playback voting timeout
     # based on how many players are in the game
+    number_of_recordings = recordings |> Map.keys() |> length()
+
     state = %GameServer{
       state
       | game_rules: %GameRules{
           game_rules
           | view_timeouts: %ViewTimeouts{
               view_timeouts
-              | playback_voting: MapSet.size(players) * solo_time_limit
+              | playback_voting: number_of_recordings * solo_time_limit
             }
         }
     }
@@ -89,23 +74,6 @@ defmodule Midimatches.Rooms.Room.Game.Views.Recording do
     end
   end
 
-  @spec simulate_add_recording(%GameServer{}, any) :: %GameServer{}
-  defp simulate_add_recording(%GameServer{} = state, record_payload) do
-    case recording_status(state, record_payload) do
-      :last_valid_recording ->
-        state
-        |> valid_recording(record_payload)
-        |> advance_view()
-
-      :valid_recording ->
-        state
-        |> valid_recording(record_payload)
-
-      _bad_recording ->
-        GameLogic.as_instruction(state, sync?: false, view_change?: false)
-    end
-  end
-
   @spec recording_status(%GameServer{}, record_payload()) :: recording_status()
   defp recording_status(
          %GameServer{contestants: contestants, recordings: recordings},
@@ -128,4 +96,46 @@ defmodule Midimatches.Rooms.Room.Game.Views.Recording do
   def valid_recording(%GameServer{recordings: recordings} = state, {player_id, recording}) do
     %GameServer{state | recordings: Map.put(recordings, player_id, recording)}
   end
+
+  # Auto recording logic (save logic for bot usage)
+  # - to be called from advance_view()
+
+  # @empty_recording %{
+  #   timestep_slices: []
+  # }
+  # @spec auto_create_recordings(%GameServer{}) :: %GameServer{}
+  # defp auto_create_recordings(
+  #        %GameServer{
+  #          contestants: contestants,
+  #          recordings: recordings,
+  #          game_view: :recording
+  #        } = state
+  #      ) do
+  #   # simulate missing recording submissions with empty recordings
+  #   missing_contestants =
+  #     contestants
+  #     |> Stream.reject(&(recordings |> Map.keys() |> Enum.member?(&1)))
+
+  #   Enum.reduce(missing_contestants, state, fn contestant_id, acc_state ->
+  #     recording_payload = {contestant_id, @empty_recording}
+  #     simulate_add_recording(acc_state, recording_payload)
+  #   end)
+  # end
+
+  # @spec simulate_add_recording(%GameServer{}, any) :: %GameServer{}
+  # defp simulate_add_recording(%GameServer{} = state, record_payload) do
+  #   case recording_status(state, record_payload) do
+  #     :last_valid_recording ->
+  #       state
+  #       |> valid_recording(record_payload)
+  #       |> advance_view()
+
+  #     :valid_recording ->
+  #       state
+  #       |> valid_recording(record_payload)
+
+  #     _bad_recording ->
+  #       GameLogic.as_instruction(state, sync?: false, view_change?: false)
+  #   end
+  # end
 end
