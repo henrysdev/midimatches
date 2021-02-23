@@ -8,7 +8,8 @@ defmodule Midimatches.Rooms.Room.GameLogic do
     Rooms.Room.GameServer,
     S3Client,
     Types.GameRules,
-    Types.Player
+    Types.Player,
+    Utils
   }
 
   require Logger
@@ -38,7 +39,8 @@ defmodule Midimatches.Rooms.Room.GameLogic do
       game_view: :game_start,
       contestants: player_ids_list,
       sample_beats: sample_beats,
-      scores: player_ids_list |> Enum.map(&{&1, 0}) |> Map.new()
+      scores: player_ids_list |> Enum.map(&{&1, 0}) |> Map.new(),
+      view_deadline: Utils.calc_future_timestamp(game_rules.view_timeouts.game_start)
     }
   end
 

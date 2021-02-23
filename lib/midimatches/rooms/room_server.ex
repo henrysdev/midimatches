@@ -201,7 +201,7 @@ defmodule Midimatches.Rooms.RoomServer do
       room_id: room_id,
       room_name: room_name,
       game_config: game_config,
-      start_game_deadline: :os.system_time(:millisecond) + pregame_countdown,
+      start_game_deadline: Utils.calc_future_timestamp(pregame_countdown),
       primed_to_start: false
     }
 

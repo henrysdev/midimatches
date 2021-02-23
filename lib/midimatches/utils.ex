@@ -82,7 +82,8 @@ defmodule Midimatches.Utils do
       scores: scores_list,
       round_num: server_state.round_num,
       round_winners: server_state.round_winners,
-      sample_beats: server_state.sample_beats
+      sample_beats: server_state.sample_beats,
+      view_deadline: server_state.view_deadline
     }
   end
 
@@ -126,5 +127,15 @@ defmodule Midimatches.Utils do
       room_state: client_room_state,
       game_state: client_game_state
     }
+  end
+
+  @spec calc_future_timestamp(integer(), integer()) :: integer()
+  @doc """
+  Calculate the correct utc millisecond timestamp. Uses milliseconds after current
+  timestamp by default.
+  """
+  def calc_future_timestamp(millis_in_future, curr \\ :os.system_time(:millisecond))
+      when is_nil(millis_in_future) == false do
+    curr + millis_in_future
   end
 end

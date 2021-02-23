@@ -7,6 +7,7 @@ import {
   DynamicContent,
 } from "../../../../common";
 import { useGameContext } from "../../../../../hooks";
+import { calcMsUntilMsTimestamp } from "../../../../../utils";
 
 interface RoundStartViewProps {
   pushMessageToChannel: Function;
@@ -25,6 +26,7 @@ const RoundStartView: React.FC<RoundStartViewProps> = ({
     gameRules: {
       viewTimeouts: { roundStart: roundStartTimeout },
     },
+    viewDeadline,
   } = useGameContext();
   return (
     <div>
@@ -36,7 +38,7 @@ const RoundStartView: React.FC<RoundStartViewProps> = ({
       <TimerBox>
         <Timer
           descriptionText={"Play starting in "}
-          duration={roundStartTimeout}
+          duration={calcMsUntilMsTimestamp(viewDeadline)}
         />
       </TimerBox>
     </div>

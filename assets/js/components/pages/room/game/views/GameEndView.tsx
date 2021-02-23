@@ -6,7 +6,7 @@ import {
   DynamicContent,
 } from "../../../../common";
 import { useGameContext } from "../../../../../hooks";
-import { WinResult, Player } from "../../../../../types";
+import { Player } from "../../../../../types";
 import { WinResultText } from "../";
 
 interface GameEndViewProps {}

@@ -87,6 +87,7 @@ export interface GameState {
   roundNum: number;
   scores: ScoreTuple[];
   roundWinners?: WinResult;
+  viewDeadline: number;
 }
 
 export interface ViewTimeouts {

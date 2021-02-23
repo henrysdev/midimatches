@@ -6,6 +6,7 @@ defmodule Midimatches.GameServerTest do
     Rooms.Room.GameServer,
     TestHelpers,
     Types.GameRules,
+    Types.GameRules.ViewTimeouts,
     Types.Player
   }
 
@@ -176,7 +177,7 @@ defmodule Midimatches.GameServerTest do
         ])
 
       game_rules = %GameRules{
-        view_timeouts: %{
+        view_timeouts: %ViewTimeouts{
           round_start: 10
         }
       }
