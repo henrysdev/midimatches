@@ -399,8 +399,12 @@ input:checked + .slider:before {
 
 .dynamic_content_container {
   padding: 8px;
-  height: 400px;
+  min-height: 400px;
+  max-height: 800px;
   border-radius: 10px;
+  overflow: scroll;
+  overflow-y: auto;
+  overflow-x: auto;
 }
 
 .midi_button_group {

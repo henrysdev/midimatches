@@ -53,7 +53,7 @@ const Serverlist: React.FC<ServerlistProps> = ({
                       <td>{room.roomName}</td>
                       <td>
                         {room.inGame ? (
-                          <div style={{ color: "red" }}>In Game</div>
+                          <div style={{ color: "blue" }}>In Game</div>
                         ) : (
                           <div style={{ color: "#1aeb13" }}>Pregame</div>
                         )}

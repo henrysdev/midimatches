@@ -40,6 +40,10 @@ export type SamplePlayer = Tone.Player;
 ///////////////////////////////////////////////////////////////////////////////
 // Server Data                                                               //
 ///////////////////////////////////////////////////////////////////////////////
+export interface ResetRoomPayload {
+  roomState: RoomState;
+}
+
 export interface LobbyUpdatePayload {
   roomState: RoomState;
 }

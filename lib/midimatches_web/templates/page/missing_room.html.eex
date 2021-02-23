@@ -13,6 +13,6 @@
 
   <body>
     <h1>Room Does Not Exist</h1>
-    <p>Try using the <a href="/servers"><strong>server list</strong></a> on the home page to find active rooms</p>
+    <p>Try using the <a href="/servers"><strong>server list</strong></a> to find active rooms</p>
   </body>
 </html>

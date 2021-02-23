@@ -3,9 +3,11 @@ defmodule Midimatches.Rooms.Room.Game.Views.Recording do
   Game logic specific to the recording game view
   """
 
-  alias Midimatches.Rooms.Room.{
-    GameLogic,
-    GameServer
+  alias Midimatches.{
+    Rooms.Room.GameLogic,
+    Rooms.Room.GameServer,
+    Types.GameRules,
+    Types.GameRules.ViewTimeouts
   }
 
   @type id() :: String.t()
@@ -23,9 +25,19 @@ defmodule Midimatches.Rooms.Room.Game.Views.Recording do
 
   @spec advance_view(%GameServer{}) :: %GameServer{}
   def advance_view(
-        %GameServer{contestants: contestants, recordings: recordings, game_view: :recording} =
-          state
+        %GameServer{
+          contestants: contestants,
+          recordings: recordings,
+          game_view: :recording,
+          players: players,
+          game_rules:
+            %GameRules{
+              solo_time_limit: solo_time_limit,
+              view_timeouts: view_timeouts
+            } = game_rules
+        } = state
       ) do
+    # simulate missing recording submissions with empty recordings
     missing_contestants =
       contestants
       |> Stream.reject(&(recordings |> Map.keys() |> Enum.member?(&1)))
@@ -35,6 +47,19 @@ defmodule Midimatches.Rooms.Room.Game.Views.Recording do
         recording_payload = {contestant_id, @empty_recording}
         simulate_add_recording(acc_state, recording_payload)
       end)
+
+    # handle special case where we want to calculate length of playback voting timeout
+    # based on how many players are in the game
+    state = %GameServer{
+      state
+      | game_rules: %GameRules{
+          game_rules
+          | view_timeouts: %ViewTimeouts{
+              view_timeouts
+              | playback_voting: MapSet.size(players) * solo_time_limit
+            }
+        }
+    }
 
     %GameServer{state | game_view: :playback_voting}
   end
