@@ -32,7 +32,6 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
 }) => {
   const [copySuccess, setCopySuccess] = useState<boolean>(false);
 
-  console.log(numPlayersToStart - numPlayersJoined);
   return (
     <div>
       <ComputerFrame>
@@ -43,7 +42,7 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
             <div className="pregame_content_pane">
               <div className="inline_screen inset_3d_border_shallow">
                 <p>
-                  <strong>{`${numPlayersJoined}/${maxPlayers} Players.`}</strong>
+                  {`${numPlayersJoined}/${maxPlayers} Players.`}
                   {numPlayersToStart - numPlayersJoined > 0 ? (
                     <strong>
                       {` Need at least ${

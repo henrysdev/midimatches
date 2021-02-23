@@ -15,16 +15,6 @@ const MidiConfiguration: React.FC<MidiConfigurationProps> = ({
   setMidiInputs,
   originalMidiInputs,
 }) => {
-  useEffect(() => {
-    if (!!originalMidiInputs) {
-      setMidiInputs(
-        originalMidiInputs.filter(
-          (input: Input) => !disabledMidiInputIds.includes(input.id)
-        )
-      );
-    }
-  }, [originalMidiInputs]);
-
   const toggleInputEnabled = (input: Input, turningOn: boolean): void => {
     if (turningOn) {
       const idx = disabledMidiInputIds.findIndex(

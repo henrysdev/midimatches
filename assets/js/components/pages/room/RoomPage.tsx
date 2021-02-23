@@ -36,6 +36,15 @@ const RoomPage: React.FC = () => {
   const [disabledMidiInputIds, setDisabledMidiInputIds] = useState<
     Array<string>
   >([]);
+  useEffect(() => {
+    if (!!originalMidiInputs) {
+      setMidiInputs(
+        originalMidiInputs.filter(
+          (input: Input) => !disabledMidiInputIds.includes(input.id)
+        )
+      );
+    }
+  }, [originalMidiInputs]);
 
   // synth init
   const [synth, setSynth] = useState<any>();
