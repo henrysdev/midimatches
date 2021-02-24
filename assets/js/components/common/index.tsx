@@ -14,3 +14,5 @@ export { ComputerFrame } from "./ComputerFrame";
 export { ComputerButton } from "./ComputerButton";
 export { ContentButton } from "./ContentButton";
 export { TimerBox } from "./TimerBox";
+export { LoadingSpinner } from "./LoadingSpinner";
+export { PageContent } from "./PageContent";

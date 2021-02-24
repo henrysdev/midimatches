@@ -4,14 +4,11 @@ const HowToPlay: React.FC = () => {
   return (
     <div className="landing_page_info inset_3d_border_shallow inline_screen">
       <dl>
-        <dt>
-          <h5>WELCOME!</h5>
-        </dt>
         <dd>
           <p>
-            Midi Matches is a multiplayer improvisational keyboard game that
-            aims to combine the joy of playing electronic keyboard with the
-            thrill of friendly competition.
+            Midi Matches is a multiplayer improvisational piano game that aims
+            to combine the joy of playing electronic keyboard with the thrill of
+            friendly competition.
           </p>
         </dd>
         <br />

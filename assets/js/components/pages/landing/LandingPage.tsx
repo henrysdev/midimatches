@@ -7,7 +7,7 @@ const LandingPage: React.FC = () => {
     <ComputerFrame>
       <div className="landing_page_content">
         <div>
-          <MediumLargeTitle centered={false}>///MIDI MATCHES</MediumLargeTitle>
+          <MediumLargeTitle centered={false}>///WELCOME</MediumLargeTitle>
           <HowToPlay />
           <ComputerButton callback={() => (window.location.href = "/servers")}>
             <h5>LET'S PLAY!</h5>

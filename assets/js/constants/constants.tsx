@@ -97,6 +97,8 @@ export const DEFAULT_FM_SYNTH_CONFIG = {
   modulationIndex: 12.22,
 } as any;
 
+export const DEFAULT_MANUAL_NOTE_VELOCITY = 65;
+
 // const newSynth = new Tone.Sampler({
 //   urls: {
 //     C4: "funk_daddy_c4.mp3",

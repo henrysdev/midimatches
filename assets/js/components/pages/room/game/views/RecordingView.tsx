@@ -88,10 +88,7 @@ const RecordingView: React.FC<RecordingViewProps> = ({
 
             {!!roundRecordingStartTime ? (
               <RecordMidi
-                hideKeyboard={
-                  recordingState === RecordingState.INIT ||
-                  recordingState === RecordingState.DONE
-                }
+                hideKeyboard={recordingState === RecordingState.INIT}
                 submitRecording={submitRecording}
                 playSample={playSampleWrapper}
                 stopSample={stopSample}

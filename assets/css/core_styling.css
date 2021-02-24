@@ -439,3 +439,121 @@ input:checked + .slider:before {
 strong {
   font-weight: bold;
 }
+
+@import url(https://fonts.googleapis.com/css?family=Roboto:300);
+
+.loading_keys_container {
+  margin: 200px;
+  display: flex;
+  align-items: center;
+  height: 90%;
+  left: 200px;
+}
+.loading_keys {
+  margin: 1em auto;
+  font-family: "Arial";
+  font-weight: bold;
+}
+.loading_keys span {
+  font-size: 3em;
+  color: #f0e7db;
+  background: rgb(113, 112, 112);
+  display: table-cell;
+  /* box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3), 0 5px 0 #ccc; */
+  padding: 0 15px;
+  line-height: 100px;
+  animation: jumb 1s infinite;
+}
+@keyframes jumb {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-30px);
+    box-shadow: 0 15px 0 #f0e7db;
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+.loading_keys span:nth-child(1) {
+  border-radius: 10px 0 0 10px;
+  animation-delay: 0s;
+}
+.loading_keys span:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.loading_keys span:nth-child(3) {
+  animation-delay: 0.2s;
+}
+.loading_keys span:nth-child(4) {
+  animation-delay: 0.3s;
+}
+.loading_keys span:nth-child(5) {
+  animation-delay: 0.4s;
+}
+.loading_keys span:nth-child(6) {
+  animation-delay: 0.5s;
+}
+.loading_keys span:nth-child(7) {
+  animation-delay: 0.6s;
+}
+.loading_keys span:last-child {
+  border-radius: 0 10px 10px 0;
+}
+
+.header_nav {
+  background-color: rgb(227, 227, 227);
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  overflow: scroll;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+.logo_keys {
+  font: 10px "Audiowide", cursive;
+  fill: rgb(69, 69, 69);
+}
+.logo_text {
+  font: 10px "Audiowide", cursive;
+  fill: rgb(69, 69, 69);
+}
+
+.nav_header_logo {
+  padding: 8px;
+  left: 50%;
+}
+
+.page_content {
+  margin-top: 48px;
+}
+
+.sticky {
+  position: fixed;
+  top: 0;
+  width: calc(100% - 8px);
+  overflow: hidden;
+}
+
+.navbar_actions_group {
+  float: left;
+  flex: 1;
+}
+
+.navbar_action {
+  margin: 8px;
+  border-radius: 10px;
+}
+
+.navbar_icon {
+  vertical-align: "middle";
+  color: rgb(69, 69, 69);
+  border-radius: 4px;
+}
+
+.navbar_icon:hover {
+  background-color: rgb(69, 69, 69);
+  color: white;
+}
