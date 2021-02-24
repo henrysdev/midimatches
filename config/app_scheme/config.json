@@ -1,7 +1,7 @@
 {
   "rooms": [
     {
-      "room_name": "ROOM A",
+      "room_name": "Apple",
       "server": {
         "timestep_size": 50,
         "quantization_threshold": 0.5,
@@ -18,7 +18,7 @@
       }
     },
     {
-      "room_name": "ROOM B",
+      "room_name": "Banana",
       "server": {
         "timestep_size": 50,
         "quantization_threshold": 0.5,
@@ -35,7 +35,7 @@
       }
     },
     {
-      "room_name": "ROOM C",
+      "room_name": "Cherry",
       "server": {
         "timestep_size": 50,
         "quantization_threshold": 0.5,
@@ -52,7 +52,7 @@
       }
     },
     {
-      "room_name": "ROOM D",
+      "room_name": "Dragon Fruit",
       "server": {
         "timestep_size": 50,
         "quantization_threshold": 0.5,
@@ -69,7 +69,7 @@
       }
     },
     {
-      "room_name": "ROOM E",
+      "room_name": "Elderberry",
       "server": {
         "timestep_size": 50,
         "quantization_threshold": 0.5,
@@ -86,7 +86,7 @@
       }
     },
     {
-      "room_name": "ROOM F",
+      "room_name": "Florida Orange",
       "server": {
         "timestep_size": 50,
         "quantization_threshold": 0.5,
@@ -103,7 +103,7 @@
       }
     },
     {
-      "room_name": "ROOM G",
+      "room_name": "Grape",
       "server": {
         "timestep_size": 50,
         "quantization_threshold": 0.5,
@@ -120,7 +120,7 @@
       }
     },
     {
-      "room_name": "ROOM H",
+      "room_name": "Honeydew",
       "server": {
         "timestep_size": 50,
         "quantization_threshold": 0.5,
@@ -137,24 +137,7 @@
       }
     },
     {
-      "room_name": "ROOM I",
-      "server": {
-        "timestep_size": 50,
-        "quantization_threshold": 0.5,
-        "rounds_to_win": 3,
-        "max_players": 3,
-        "view_timeouts": {
-          "game_start": 20000,
-          "round_start": 3000,
-          "recording": 30000,
-          "playback_voting": 60000,
-          "round_end": 10000,
-          "game_end": 10000
-        }
-      }
-    },
-    {
-      "room_name": "[DEV]",
+      "room_name": "[DEV TEST]",
       "server": {
         "timestep_size": 50,
         "quantization_threshold": 0.5,

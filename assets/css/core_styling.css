@@ -501,3 +501,59 @@ strong {
 .loading_keys span:last-child {
   border-radius: 0 10px 10px 0;
 }
+
+.header_nav {
+  background-color: rgb(227, 227, 227);
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  overflow: scroll;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+.logo_keys {
+  font: 10px "Audiowide", cursive;
+  fill: rgb(69, 69, 69);
+}
+.logo_text {
+  font: 10px "Audiowide", cursive;
+  fill: rgb(69, 69, 69);
+}
+
+.nav_header_logo {
+  padding: 8px;
+  left: 50%;
+}
+
+.page_content {
+  margin-top: 48px;
+}
+
+.sticky {
+  position: fixed;
+  top: 0;
+  width: calc(100% - 8px);
+  overflow: hidden;
+}
+
+.navbar_actions_group {
+  float: left;
+  flex: 1;
+}
+
+.navbar_action {
+  margin: 8px;
+  border-radius: 10px;
+}
+
+.navbar_icon {
+  vertical-align: "middle";
+  color: rgb(69, 69, 69);
+  border-radius: 4px;
+}
+
+.navbar_icon:hover {
+  background-color: rgb(69, 69, 69);
+  color: white;
+}

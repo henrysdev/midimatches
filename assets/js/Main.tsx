@@ -3,7 +3,7 @@ import React from "react";
 import { HeaderNav, ComputerFrame } from "./components/common/index";
 import { useCurrentUser, useSocket } from "./hooks";
 import { CurrentUserContext, SocketContext } from "./contexts";
-import { LoadingSpinner } from "./components/common";
+import { LoadingSpinner, PageContent } from "./components/common";
 import PageRouter from "./PageRouter";
 
 const Main: React.FC = () => {
@@ -20,7 +20,9 @@ const Main: React.FC = () => {
               : undefined
           }
         />
-        <PageRouter />
+        <PageContent>
+          <PageRouter />
+        </PageContent>
       </SocketContext.Provider>
     </CurrentUserContext.Provider>
   ) : loading ? (
