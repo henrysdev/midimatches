@@ -20,11 +20,6 @@ interface PlaybackVotingViewProps {
   stopSample: Function;
 }
 
-const desc = `
-Listen through other players' recordings. Once all recordings have been heard you will be able to cast a vote for your favorite. 
-If voting time expires before you have voted, your vote will be cast randomly.
-`;
-
 const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
   pushMessageToChannel,
   stopSample,
@@ -103,7 +98,14 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
     <div>
       <MediumLargeTitle>LISTEN AND VOTE</MediumLargeTitle>
       <DynamicContent>
-        <Instructions description={desc} />
+        {voteSubmitted ? (
+          <></>
+        ) : (
+          <Instructions
+            description="Listen through other players' recordings. Once all 
+        recordings have been heard you will be able to cast a vote for your favorite."
+          />
+        )}
         {voteSubmitted ? (
           <p style={{ textAlign: "center" }}>
             Vote submitted successfully. Waiting on other players...
