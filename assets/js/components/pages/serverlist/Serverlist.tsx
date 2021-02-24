@@ -28,10 +28,10 @@ const Serverlist: React.FC<ServerlistProps> = ({
           <table className="serverlist_table inline_screen">
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Status</th>
-                <th>Players</th>
-                <th># Rounds</th>
+                <th>NAME</th>
+                <th>STATUS</th>
+                <th>PLAYERS</th>
+                <th># ROUNDS</th>
               </tr>
             </thead>
             <tbody>
@@ -52,7 +52,9 @@ const Serverlist: React.FC<ServerlistProps> = ({
                     >
                       <td>{room.roomName}</td>
                       <td>
-                        {room.inGame ? (
+                        {room.numCurrPlayers === room.gameRules.maxPlayers ? (
+                          <div style={{ color: "red" }}>Full</div>
+                        ) : room.inGame ? (
                           <div style={{ color: "blue" }}>In Game</div>
                         ) : (
                           <div style={{ color: "#1aeb13" }}>Pregame</div>
@@ -70,16 +72,24 @@ const Serverlist: React.FC<ServerlistProps> = ({
           <div className="serverlist_details_pane_wrapper">
             <div className="serverlist_details_pane inline_screen inset_3d_border_shallow">
               <div className="server_details_content_wrapper">
-                <h5>{selectedRoom.roomName}</h5>
+                <h5>ROOM DETAILS</h5>
                 <div className="server_details_content_body">
                   <ul>
                     <div>
-                      <strong>Game Mode: </strong>
-                      Classic
+                      <strong>Room Name: </strong>
+                      {selectedRoom.roomName}
                     </div>
                     <div>
-                      <strong>Player Requirements: </strong>
-                      None
+                      <strong>Game: </strong>
+                      Free-for-all
+                    </div>
+                    <div>
+                      <strong>Min Players: </strong>
+                      {selectedRoom.gameRules.minPlayers}
+                    </div>
+                    <div>
+                      <strong>Max Players: </strong>
+                      {selectedRoom.gameRules.maxPlayers}
                     </div>
                   </ul>
                 </div>

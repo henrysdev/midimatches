@@ -1,4 +1,4 @@
-import { GAME_VIEW } from "../constants";
+import { GAME_VIEW, DEFAULT_SAMPLE_COLORS } from "../constants";
 import {
   Loop,
   Note,
@@ -133,5 +133,5 @@ export function loopToEvents(
 }
 
 export function genRandomColors(count: number): Array<Color> {
-  return randomColor({ count, luminosity: "bright" });
+  return shuffleArray(DEFAULT_SAMPLE_COLORS).slice(0, count);
 }

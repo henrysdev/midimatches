@@ -34,6 +34,24 @@ export const SUBMIT_VOTE_EVENT = "player_vote";
 export const MIN_PLAYER_ALIAS_LENGTH = 3;
 export const MAX_PLAYER_ALIAS_LENGTH = 10;
 
+export const DEFAULT_SAMPLE_COLORS = [
+  "#FF7F00",
+  "#FFD400",
+  "#FFFF00",
+  "#BFFF00",
+  "#6AFF00",
+  "#00EAFF",
+  "#0095FF",
+  "#0040FF",
+  "#AA00FF",
+  "#FF00AA",
+  "#8F2323",
+  "#8F6A23",
+  "#4F8F23",
+  "#23628F",
+  "#6B238F",
+];
+
 export const DEFAULT_SAMPLE_PLAY_BUFFER_LENGTH = 2;
 export const DEFAULT_SAMPLE_LENGTH = 10.6667;
 export const DEFAULT_NUM_RECORDED_LOOPS = 1;
