@@ -44,8 +44,10 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
 
   const recordings = useMemo(() => {
     return !!allRecordings && !!currPlayer
-      ? allRecordings.filter(
-          ([playerId, _recording]) => playerId !== currPlayer.playerId
+      ? shuffleArray(
+          allRecordings.filter(
+            ([playerId, _recording]) => playerId !== currPlayer.playerId
+          )
         )
       : [];
   }, [allRecordings, currPlayer]);

@@ -37,8 +37,6 @@ export const MAX_PLAYER_ALIAS_LENGTH = 10;
 export const DEFAULT_SAMPLE_COLORS = [
   "#FF7F00",
   "#FFD400",
-  "#FFFF00",
-  "#BFFF00",
   "#6AFF00",
   "#00EAFF",
   "#0095FF",
