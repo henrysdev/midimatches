@@ -17,7 +17,6 @@ import { calcMsUntilMsTimestamp } from "../../../../../utils";
 
 interface PlaybackVotingViewProps {
   pushMessageToChannel: Function;
-  playSample: Function;
   stopSample: Function;
 }
 
@@ -28,7 +27,6 @@ If voting time expires before you have voted, your vote will be cast randomly.
 
 const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
   pushMessageToChannel,
-  playSample,
   stopSample,
 }) => {
   const {
@@ -125,7 +123,6 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
                     key={`player-${playerId}`}
                     recording={recording}
                     playerId={playerId}
-                    playSample={playSample}
                     stopSample={stopSample}
                     color={color}
                     submitVote={submitVote}

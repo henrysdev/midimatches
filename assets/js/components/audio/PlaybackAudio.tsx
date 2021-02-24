@@ -15,7 +15,6 @@ import { RecordingVisual } from "./";
 interface PlaybackAudioProps {
   recording: Loop;
   playerId: string;
-  playSample: Function;
   stopSample: Function;
   color: Color;
   submitVote: Function;
@@ -30,7 +29,6 @@ interface PlaybackAudioProps {
 const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
   recording,
   playerId,
-  playSample,
   stopSample,
   color,
   submitVote,
@@ -46,7 +44,7 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
   } = useGameContext();
 
   const [progress, setProgress] = useState<number>(0);
-  const { synth } = useToneAudioContext();
+  const { synth, samplePlayer } = useToneAudioContext();
   const [hovering, setHovering] = useState<boolean>(false);
 
   useEffect(() => {
@@ -81,7 +79,13 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
 
     part.start();
     startPlayheadProgress(startTime);
-    scheduleSampleLoop(0, playSample, DEFAULT_NUM_RECORDED_LOOPS, true);
+    scheduleSampleLoop(
+      0,
+      () => {},
+      DEFAULT_NUM_RECORDED_LOOPS,
+      true,
+      samplePlayer
+    );
   };
 
   const startPlayheadProgress = (startTime: number): void => {

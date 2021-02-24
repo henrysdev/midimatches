@@ -1,28 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { S3_BUCKET_URL, DEFAULT_SAMPLE_VOLUME } from "../constants";
 
-type SamplePlayerTuple = [(url: string) => void, () => void, () => void];
+type SamplePlayerTuple = [any, (url: string) => void, () => void];
 
 export function useSamplePlayer(Tone: any): SamplePlayerTuple {
-  const [samplePlayer, setSamplePlayer] = useState() as any;
   const [loadedSampleName, setLoadedSampleName] = useState<string>();
 
-  useEffect(() => {
+  const samplePlayer = useMemo(() => {
     const newSamplePlayer = new Tone.Player().toDestination();
     newSamplePlayer.volume.value = DEFAULT_SAMPLE_VOLUME;
-    setSamplePlayer(newSamplePlayer);
+    return newSamplePlayer;
   }, []);
 
   const loadSample = (sampleBeatFilename: string) => {
     if (!!samplePlayer && sampleBeatFilename !== loadedSampleName) {
       samplePlayer.load(`${S3_BUCKET_URL}/sample-beats/${sampleBeatFilename}`);
       setLoadedSampleName(sampleBeatFilename);
-    }
-  };
-
-  const playSample = () => {
-    if (!!samplePlayer) {
-      samplePlayer.start();
     }
   };
 
@@ -33,5 +26,5 @@ export function useSamplePlayer(Tone: any): SamplePlayerTuple {
     }
   };
 
-  return [loadSample, playSample, stopSample];
+  return [samplePlayer, loadSample, stopSample];
 }

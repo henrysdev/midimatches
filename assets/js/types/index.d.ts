@@ -128,6 +128,10 @@ export interface ToneAudioContextType {
   disabledMidiInputIds: string[];
   setDisabledMidiInputIds: Function;
   synth: any;
+  samplePlayer: any;
+  loadSample: Function;
+  stopSample: Function;
+  resetTone: Function;
 }
 
 export interface PlayerContextType {

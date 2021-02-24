@@ -198,7 +198,6 @@ const PregameDebug: React.FC = () => {
               <RecordingView
                 isContestant={true}
                 pushMessageToChannel={() => {}}
-                playSample={() => {}}
                 stopSample={() => {}}
               />
             </InGameFrame>

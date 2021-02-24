@@ -25,6 +25,7 @@ import {
 } from "../../../constants";
 import {
   useCurrentUserContext,
+  useSamplePlayer,
   useSocketContext,
   useWebMidi,
 } from "../../../hooks";
@@ -55,20 +56,19 @@ const RoomPage: React.FC = () => {
     const autoWah = new Tone.AutoWah(60, 6, -30).toDestination();
     const chorus = new Tone.Chorus(3, 0.5, 0.5).start();
     const vibrato = new Tone.Vibrato("16n", 0.05);
-
     const newSynth = new Tone.PolySynth(Tone.FMSynth, DEFAULT_FM_SYNTH_CONFIG);
-
     newSynth.chain(vibrato, chorus, Tone.Destination);
 
-    // const newSynth = new Tone.Sampler({
-    //   urls: {
-    //     C4: "funk_daddy_c4.mp3",
-    //     C5: "funk_daddy_c5.mp3",
-    //   },
-    //   baseUrl: "https://progressions-game.s3.amazonaws.com/synths/funk_daddy/",
-    // }).toDestination();
     setSynth(newSynth);
   }, []);
+
+  // sample player
+  const [samplePlayer, loadSample, stopSample] = useSamplePlayer(Tone);
+  const resetTone = () => {
+    stopSample();
+    Tone.Transport.cancel(0);
+    Tone.Transport.stop();
+  };
 
   const [gameChannel, setGameChannel] = useState<Channel>();
   const [gameInProgress, setGameInProgress] = useState<boolean>(false);
@@ -217,6 +217,10 @@ const RoomPage: React.FC = () => {
           setDisabledMidiInputIds,
           originalMidiInputs,
           synth,
+          samplePlayer,
+          loadSample,
+          stopSample,
+          resetTone,
         }}
       >
         {!!gameChannel && !!currPlayer && !!initGameState ? (

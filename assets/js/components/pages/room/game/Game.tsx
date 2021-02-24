@@ -16,6 +16,7 @@ import {
   useGameServerState,
   useSamplePlayer,
   usePlayerContext,
+  useToneAudioContext,
 } from "../../../../hooks";
 import { InGameFrame } from ".";
 import { GameContextType } from "../../../../types";
@@ -30,18 +31,14 @@ const Game: React.FC<GameProps> = ({ gameChannel, initGameState }) => {
     gameChannel,
     initGameState
   );
-  const [loadSample, playSample, stopSample] = useSamplePlayer(Tone);
+
+  const { loadSample, stopSample, resetTone } = useToneAudioContext();
+
   const [joinedMidRecording, setJoinedMidRecording] = useState<boolean>(true);
 
   const currSampleBeat = useMemo(() => {
     return gameContext.sampleBeats[gameContext.roundNum - 1];
   }, [gameContext.roundNum]);
-
-  const resetTone = () => {
-    stopSample();
-    Tone.Transport.cancel(0);
-    Tone.Transport.stop();
-  };
 
   useEffect(() => {
     switch (currentView) {
@@ -91,7 +88,6 @@ const Game: React.FC<GameProps> = ({ gameChannel, initGameState }) => {
                 <RecordingView
                   isContestant={!joinedMidRecording}
                   pushMessageToChannel={pushMessage}
-                  playSample={playSample}
                   stopSample={stopSample}
                 />
               );
@@ -100,7 +96,6 @@ const Game: React.FC<GameProps> = ({ gameChannel, initGameState }) => {
               return (
                 <PlaybackVotingView
                   pushMessageToChannel={pushMessage}
-                  playSample={playSample}
                   stopSample={stopSample}
                 />
               );
