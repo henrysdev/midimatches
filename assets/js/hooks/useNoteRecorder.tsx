@@ -45,7 +45,7 @@ export function useNoteRecorder({
   gameRules,
   shouldRecord,
 }: NoteRecorderProps): NoteRecorder {
-  const { Tone } = useToneAudioContext();
+  const { samplePlayer } = useToneAudioContext();
 
   const [internalState, _setInternalState] = useState<InternalState>(
     {} as InternalState
@@ -169,7 +169,8 @@ export function useNoteRecorder({
         roundRecordingStartTime,
         playSample,
         startRecord,
-        stopRecord
+        stopRecord,
+        samplePlayer
       );
     }
   }, [roundRecordingStartTime]);

@@ -96,3 +96,11 @@ export const DEFAULT_FM_SYNTH_CONFIG = {
   },
   modulationIndex: 12.22,
 } as any;
+
+// const newSynth = new Tone.Sampler({
+//   urls: {
+//     C4: "funk_daddy_c4.mp3",
+//     C5: "funk_daddy_c5.mp3",
+//   },
+//   baseUrl: "https://progressions-game.s3.amazonaws.com/synths/funk_daddy/",
+// }).toDestination();

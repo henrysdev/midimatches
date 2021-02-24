@@ -26,14 +26,12 @@ enum RecordingState {
 interface RecordingViewProps {
   isContestant: boolean;
   pushMessageToChannel: Function;
-  playSample: Function;
   stopSample: Function;
 }
 
 const RecordingView: React.FC<RecordingViewProps> = ({
   isContestant,
   pushMessageToChannel,
-  playSample,
   stopSample,
 }) => {
   const [isSamplePlaying, setIsSamplePlaying] = useState<boolean>(false);
@@ -51,7 +49,6 @@ const RecordingView: React.FC<RecordingViewProps> = ({
 
   const playSampleWrapper = () => {
     setIsSamplePlaying(true);
-    playSample();
   };
 
   const { gameRules, roundRecordingStartTime, viewDeadline } = useGameContext();

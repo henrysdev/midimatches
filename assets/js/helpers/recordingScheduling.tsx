@@ -43,9 +43,10 @@ interface ScheduleDeadlines {
 
 export function scheduleRecordingDeadlines(
   serverSendTimestamp: number,
-  playSample: Function,
+  playSampleCallback: Function,
   startRecording: Function,
-  stopRecording: Function
+  stopRecording: Function,
+  samplePlayer: any
 ): void {
   // get deadlines
   const deadlines = calcRecordingDeadlines(
@@ -59,9 +60,10 @@ export function scheduleRecordingDeadlines(
   // schedule deadlines
   scheduleRecordingAudioTimeline(
     deadlines,
-    playSample,
+    playSampleCallback,
     startRecording,
-    stopRecording
+    stopRecording,
+    samplePlayer
   );
 }
 
@@ -78,16 +80,17 @@ export function getRecordingStartTimestamp(
 
 export function scheduleSampleLoop(
   sampleStartTime: Seconds,
-  playSample: Function,
+  playSampleCallback: Function,
   iterations: number,
-  startImmediately: boolean
+  startImmediately: boolean,
+  samplePlayer: any
 ): void {
   const sampleLoop = new Tone.Loop({
     interval: DEFAULT_SAMPLE_LENGTH,
     iterations,
     callback: (time: Seconds) => {
-      console.log("play sample loop iteration callback ", time);
-      playSample();
+      samplePlayer.start(time);
+      playSampleCallback();
     },
   });
 
@@ -100,13 +103,20 @@ function scheduleRecordingAudioTimeline(
   { sampleStartTime, recordingStartTime, recordingEndTime }: ScheduleDeadlines,
   playSample: Function,
   startRecording: Function,
-  stopRecording: Function
+  stopRecording: Function,
+  samplePlayer: any
 ): void {
   Tone.Transport.start("+0");
 
   // start sample loop
   const iterations = 1 + DEFAULT_NUM_RECORDED_LOOPS; // one intro iteration + three recorded iterations
-  scheduleSampleLoop(sampleStartTime, playSample, iterations, false);
+  scheduleSampleLoop(
+    sampleStartTime,
+    playSample,
+    iterations,
+    false,
+    samplePlayer
+  );
 
   // start recording
   Tone.Transport.scheduleOnce((time: Seconds) => {
