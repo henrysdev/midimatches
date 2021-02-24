@@ -55,7 +55,8 @@ defmodule MidimatchesWeb.RoomChannel do
        socket
        |> assign(room_id: room_id)
        |> assign(room_server: room_server)
-       |> assign(player_id: player_id)}
+       |> assign(player_id: player_id)
+       |> assign_game_server()}
     else
       {:error, "room #{room_id} does not exist"}
     end
@@ -80,7 +81,6 @@ defmodule MidimatchesWeb.RoomChannel do
         %Phoenix.Socket{assigns: %{room_id: room_id, player_id: player_id}} = socket
       ) do
     room_server = Pids.fetch!({:room_server, room_id})
-    game_server = Pids.fetch({:game_server, room_id})
 
     player = %Player{
       player_id: player_id,
@@ -88,20 +88,9 @@ defmodule MidimatchesWeb.RoomChannel do
     }
 
     room_state = RoomServer.add_player(room_server, player)
-
     payload = Utils.server_room_to_client_room_game_join(room_state)
 
-    socket =
-      if is_nil(game_server) do
-        socket
-      else
-        assign(socket, game_server: game_server)
-      end
-
-    {:reply, {:ok, payload},
-     socket
-     |> assign(room_server: room_server)
-     |> assign(player_id: player_id)}
+    {:reply, {:ok, payload}, assign_game_server(socket)}
   end
 
   def handle_in(
@@ -180,5 +169,20 @@ defmodule MidimatchesWeb.RoomChannel do
   def handle_out("reset_room", msg, %Phoenix.Socket{} = socket) do
     push(socket, "reset_room", msg)
     {:noreply, socket}
+  end
+
+  #################################################################################################
+  ## Helpers                                                                                     ##
+  #################################################################################################
+
+  @spec assign_game_server(%Phoenix.Socket{}) :: %Phoenix.Socket{}
+  defp assign_game_server(%Phoenix.Socket{assigns: %{room_id: room_id}} = socket) do
+    game_server = Pids.fetch({:game_server, room_id})
+
+    if is_nil(game_server) do
+      socket
+    else
+      assign(socket, game_server: game_server)
+    end
   end
 end
