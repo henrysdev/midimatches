@@ -7,6 +7,7 @@ import {
   scheduleRecordingDeadlines,
   getRecordingStartTimestamp,
 } from "../helpers";
+import { DEFAULT_MANUAL_NOTE_VELOCITY } from "../constants";
 import { msToMicros, microsToMs, midiVelocityToToneVelocity } from "../utils";
 
 interface NoteRecorderProps {
@@ -179,17 +180,22 @@ export function useNoteRecorder({
     noteNumber: number
   ): { noteNumber: number; noteVelocity: number } => {
     if (internalState.activeNotes.has(noteNumber)) {
+      // midi event
       const origNote = internalState.activeNotes.get(noteNumber);
       const origVelocity = !!origNote ? origNote.velocity : 0;
       const noteVelocity = midiVelocityToToneVelocity(origVelocity);
       return { noteNumber, noteVelocity };
     } else {
+      // keyboard/mouse event
       handleNoteOn({
         note: { number: noteNumber },
-        rawVelocity: 100,
+        rawVelocity: DEFAULT_MANUAL_NOTE_VELOCITY,
         receivedTimestep: Date.now(),
       });
-      return { noteNumber, noteVelocity: 0.3 };
+      return {
+        noteNumber,
+        noteVelocity: midiVelocityToToneVelocity(DEFAULT_MANUAL_NOTE_VELOCITY),
+      };
     }
   };
 
