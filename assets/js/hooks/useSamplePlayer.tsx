@@ -20,7 +20,7 @@ export function useSamplePlayer(Tone: any): SamplePlayerTuple {
   };
 
   const stopSample = () => {
-    if (!!samplePlayer) {
+    if (!!samplePlayer && samplePlayer.state === "started") {
       Tone.Transport.cancel(0);
       samplePlayer.stop();
     }

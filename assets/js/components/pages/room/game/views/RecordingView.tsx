@@ -76,7 +76,7 @@ const RecordingView: React.FC<RecordingViewProps> = ({
             {recordingState === RecordingState.INIT ? (
               <Instructions description="Loading sample and syncing clients..." />
             ) : recordingState === RecordingState.SAMPLE ? (
-              <Instructions description="Get ready to record!" />
+              <Instructions description="Listen to the sample and get ready to record!" />
             ) : recordingState === RecordingState.RECORDING ? (
               <Instructions description="Recording in progress... keep playing!" />
             ) : (
