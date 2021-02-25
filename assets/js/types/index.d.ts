@@ -132,6 +132,7 @@ export interface ToneAudioContextType {
   loadSample: Function;
   stopSample: Function;
   resetTone: Function;
+  isSamplePlayerLoaded: boolean;
 }
 
 export interface PlayerContextType {

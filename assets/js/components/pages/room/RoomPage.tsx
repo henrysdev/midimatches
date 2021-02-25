@@ -29,6 +29,7 @@ import {
   useSocketContext,
   useWebMidi,
 } from "../../../hooks";
+import { PregameDebug } from "../../debug";
 
 const RoomPage: React.FC = () => {
   // midi inputs init
@@ -63,7 +64,12 @@ const RoomPage: React.FC = () => {
   }, []);
 
   // sample player
-  const [samplePlayer, loadSample, stopSample] = useSamplePlayer(Tone);
+  const [
+    isSamplePlayerLoaded,
+    samplePlayer,
+    loadSample,
+    stopSample,
+  ] = useSamplePlayer(Tone);
   const resetTone = () => {
     stopSample();
     Tone.Transport.cancel(0);
@@ -221,6 +227,7 @@ const RoomPage: React.FC = () => {
           loadSample,
           stopSample,
           resetTone,
+          isSamplePlayerLoaded,
         }}
       >
         {!!gameChannel && !!currPlayer && !!initGameState ? (
@@ -241,6 +248,7 @@ const RoomPage: React.FC = () => {
           <></>
         )}
       </ToneAudioContext.Provider>
+      {/* <PregameDebug /> */}
     </div>
   );
 };

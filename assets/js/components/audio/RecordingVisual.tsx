@@ -10,6 +10,8 @@ interface RecordingVisualProps {
   progress: number;
   isPlaying: boolean;
   emptyRecording: boolean;
+  firstPlayback: boolean;
+  listenComplete: boolean;
 }
 
 const keyboardRange = 100;
@@ -20,6 +22,8 @@ const RecordingVisual: React.FC<RecordingVisualProps> = ({
   progress,
   isPlaying,
   emptyRecording,
+  firstPlayback,
+  listenComplete,
 }) => {
   const {
     gameRules: { timestepSize },
@@ -43,10 +47,12 @@ const RecordingVisual: React.FC<RecordingVisualProps> = ({
         minHeight: "50px",
         height: "100%",
         border: "1px solid black",
+        zIndex: 11,
+        overflow: "hidden",
       }}
-      className="uk-background-muted"
     >
       <div
+        className="roboto_font"
         style={{
           margin: "0",
           position: "absolute",
@@ -57,7 +63,13 @@ const RecordingVisual: React.FC<RecordingVisualProps> = ({
       >
         (Empty Recording)
       </div>
-      {isPlaying ? drawProgress(progress) : <></>}
+      {isPlaying ? (
+        drawProgress(progress, firstPlayback)
+      ) : listenComplete ? (
+        <></>
+      ) : (
+        drawClockedRecording()
+      )}
     </div>
   ) : (
     <div
@@ -67,6 +79,9 @@ const RecordingVisual: React.FC<RecordingVisualProps> = ({
         minHeight: "50px",
         height: "100%",
         border: "1px solid black",
+        zIndex: 11,
+        backgroundColor: color,
+        overflow: "hidden",
       }}
     >
       <div>
@@ -75,10 +90,16 @@ const RecordingVisual: React.FC<RecordingVisualProps> = ({
             notePoint,
             percentagePerTimestep,
             percentagePerKey,
-            color
+            "black"
           )
         )}
-        {isPlaying ? drawProgress(progress) : <></>}
+        {isPlaying ? (
+          drawProgress(progress, firstPlayback)
+        ) : listenComplete ? (
+          <></>
+        ) : (
+          drawClockedRecording()
+        )}
       </div>
     </div>
   );
@@ -146,19 +167,27 @@ const drawNotePointByPercentages = (
   );
 };
 
-const drawProgress = (progress: number) => {
+const drawProgress = (progress: number, firstPlayback: boolean) => {
   return (
     <div
-      className="playback_progress"
+      className={
+        firstPlayback
+          ? "playback_progress cloaked_recording_fill"
+          : "playback_progress"
+      }
       style={{
-        position: "absolute",
-        width: `${progress * 100}%`,
-        height: "100%",
-        backgroundColor: "black",
-        opacity: 0.5,
-        left: 0,
-        bottom: 0,
+        width: `${100 - progress * 100}%`,
+        borderLeft: `${progress > 0 && progress < 1 ? "2px solid red" : ""}`,
       }}
+    ></div>
+  );
+};
+
+const drawClockedRecording = () => {
+  return (
+    <div
+      className={"playback_progress cloaked_recording_fill"}
+      style={{ width: "100%" }}
     ></div>
   );
 };

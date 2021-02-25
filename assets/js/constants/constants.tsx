@@ -35,19 +35,20 @@ export const MIN_PLAYER_ALIAS_LENGTH = 3;
 export const MAX_PLAYER_ALIAS_LENGTH = 10;
 
 export const DEFAULT_SAMPLE_COLORS = [
-  "#FF7F00",
-  "#FFD400",
-  "#6AFF00",
-  "#00EAFF",
-  "#0095FF",
-  "#0040FF",
-  "#AA00FF",
-  "#FF00AA",
-  "#8F2323",
-  "#8F6A23",
-  "#4F8F23",
-  "#23628F",
-  "#6B238F",
+  "rgba(255, 127, 0, 0.15)",
+  "rgba(255, 213, 0, 0.15)",
+  "rgba(255, 212, 0, 0.15)",
+  "rgba(106, 255, 0, 0.15)",
+  "rgba(0, 234, 255, 0.15)",
+  "rgba(0, 149, 255, 0.15)",
+  "rgba(0, 64, 255, 0.15)",
+  "rgba(170, 0, 255, 0.15)",
+  "rgba(255, 0, 170, 0.15)",
+  "rgba(143, 35, 35, 0.15)",
+  "rgba(143, 106, 35, 0.15)",
+  "rgba(79, 143, 35, 0.15)",
+  "rgba(35, 98, 143, 0.15)",
+  "rgba(107, 35, 143, 0.15)",
 ];
 
 export const DEFAULT_SAMPLE_PLAY_BUFFER_LENGTH = 2;
