@@ -77,7 +77,7 @@ export const DEFAULT_SYNTH_CONFIG = {
 } as Tone.SynthOptions;
 
 export const DEFAULT_FM_SYNTH_CONFIG = {
-  volume: -2,
+  volume: -3,
   detune: 0,
   portamento: 0,
   harmonicity: 1,

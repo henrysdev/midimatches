@@ -288,9 +288,15 @@ defmodule Midimatches.Rooms.Room.GameServer do
   end
 
   @spec check_game_empty(%GameServer{}) :: %GameServer{} | :ok
-  def check_game_empty(%GameServer{players: players} = state) do
+  @doc """
+  Check that there are still enough players in game to continue the game. If there is not,
+  then reset the room back to pregame lobby.
+  """
+  def check_game_empty(
+        %GameServer{players: players, game_rules: %GameRules{min_players: min_players}} = state
+      ) do
     # reset room if not enough players to play
-    if MapSet.size(players) <= 1 do
+    if MapSet.size(players) < min_players do
       back_to_room_lobby(state)
     else
       state
