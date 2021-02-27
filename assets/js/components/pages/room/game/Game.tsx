@@ -32,7 +32,12 @@ const Game: React.FC<GameProps> = ({ gameChannel, initGameState }) => {
     initGameState
   );
 
-  const { loadSample, stopSample, resetTone } = useToneAudioContext();
+  const {
+    isSamplePlayerLoaded,
+    loadSample,
+    stopSample,
+    resetTone,
+  } = useToneAudioContext();
 
   const [joinedMidRecording, setJoinedMidRecording] = useState<boolean>(true);
 
@@ -97,6 +102,7 @@ const Game: React.FC<GameProps> = ({ gameChannel, initGameState }) => {
                 <PlaybackVotingView
                   pushMessageToChannel={pushMessage}
                   stopSample={stopSample}
+                  isSamplePlayerLoaded={isSamplePlayerLoaded}
                 />
               );
 

@@ -557,3 +557,55 @@ strong {
   background-color: rgb(69, 69, 69);
   color: white;
 }
+
+.frozen {
+  position: relative;
+}
+
+.frozen:after {
+  content: " ";
+  z-index: 10;
+  display: block;
+  position: absolute;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(242, 242, 242, 0.6);
+}
+
+.playback_progress {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  height: 100%;
+}
+
+.cloaked_recording_fill {
+  background-color: black;
+  opacity: 0.5;
+}
+
+.recording_playback {
+  flex: 5;
+  padding: 8px;
+  margin: auto;
+  margin-top: 4px;
+  border: 1px solid #666;
+  box-shadow: 0 5px 5px rgb(0 0 0 / 8%);
+  color: #666;
+  overflow: hidden;
+}
+
+.highlight_on_hover:hover {
+  background-color: #f8f8f8;
+  cursor: pointer;
+}
+
+.piano_roll_container {
+  position: relative;
+  width: 100%;
+  min-height: 50px;
+  height: 100%;
+  border: 1px solid black;
+}

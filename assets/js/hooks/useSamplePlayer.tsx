@@ -1,10 +1,11 @@
 import { useState, useEffect, useMemo } from "react";
 import { S3_BUCKET_URL, DEFAULT_SAMPLE_VOLUME } from "../constants";
 
-type SamplePlayerTuple = [any, (url: string) => void, () => void];
+type SamplePlayerTuple = [boolean, any, (url: string) => void, () => void];
 
 export function useSamplePlayer(Tone: any): SamplePlayerTuple {
   const [loadedSampleName, setLoadedSampleName] = useState<string>();
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   const samplePlayer = useMemo(() => {
     const newSamplePlayer = new Tone.Player().toDestination();
@@ -12,10 +13,14 @@ export function useSamplePlayer(Tone: any): SamplePlayerTuple {
     return newSamplePlayer;
   }, []);
 
-  const loadSample = (sampleBeatFilename: string) => {
+  const loadSample = async (sampleBeatFilename: string) => {
     if (!!samplePlayer && sampleBeatFilename !== loadedSampleName) {
-      samplePlayer.load(`${S3_BUCKET_URL}/sample-beats/${sampleBeatFilename}`);
+      setIsLoaded(false);
+      await samplePlayer.load(
+        `${S3_BUCKET_URL}/sample-beats/${sampleBeatFilename}`
+      );
       setLoadedSampleName(sampleBeatFilename);
+      setIsLoaded(true);
     }
   };
 
@@ -26,5 +31,5 @@ export function useSamplePlayer(Tone: any): SamplePlayerTuple {
     }
   };
 
-  return [samplePlayer, loadSample, stopSample];
+  return [isLoaded, samplePlayer, loadSample, stopSample];
 }

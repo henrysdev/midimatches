@@ -24,6 +24,7 @@ interface PlaybackAudioProps {
   completeListening: Function;
   canVote: boolean;
   emptyRecording: boolean;
+  autoPlayingId?: string;
 }
 
 const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
@@ -38,6 +39,7 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
   completeListening,
   canVote,
   emptyRecording,
+  autoPlayingId,
 }) => {
   const {
     gameRules: { timestepSize },
@@ -45,13 +47,18 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
 
   const [progress, setProgress] = useState<number>(0);
   const { synth, samplePlayer } = useToneAudioContext();
-  const [hovering, setHovering] = useState<boolean>(false);
 
   useEffect(() => {
     return () => {
       Tone.Transport.cancel(0);
     };
   }, []);
+
+  useEffect(() => {
+    if (!!autoPlayingId && autoPlayingId === playerId) {
+      playbackMusician(timestepSize, playNote);
+    }
+  }, [autoPlayingId]);
 
   const playNote = (
     note: number,
@@ -97,7 +104,7 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
         const progress = (currTime - startTime) / DEFAULT_RECORDING_LENGTH;
         if (progress >= 0.99) {
           completeListening(playerId);
-          setProgress(0);
+          setProgress(1.0);
         } else {
           setProgress(progress);
         }
@@ -108,68 +115,65 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
     );
   };
 
+  const startManualPlayback = () => {
+    if (!autoPlayingId) {
+      playbackMusician(timestepSize, playNote);
+    }
+  };
+
+  const cssClasses = useMemo(() => {
+    let classes = ["recording_playback"];
+    if (!canVote) {
+      classes.push("frozen");
+    } else {
+      classes.push("highlight_on_hover");
+    }
+    return [...classes].join(" ");
+  }, [isPlaying, listenComplete, canVote]);
+
   return (
-    <div style={{ padding: "8px" }}>
+    <div className="roboto_font" style={{ padding: "8px" }}>
       Anonymous
       <div style={{ display: "flex" }}>
-        <div
-          style={{
-            flex: "5",
-            padding: "8px",
-            margin: "auto",
-            marginTop: "4px",
-            border: "1px solid #666",
-            boxShadow: "0 5px 5px rgb(0 0 0 / 8%)",
-            color: "#666",
-            cursor: "pointer",
-            backgroundColor: hovering ? "#f8f8f8" : "white",
-          }}
-          onMouseEnter={() => setHovering(true)}
-          onMouseLeave={() => setHovering(false)}
-          onClick={() => playbackMusician(timestepSize, playNote)}
-        >
+        <div className={cssClasses} onClick={() => startManualPlayback()}>
           <div
             style={{
               display: "flex",
             }}
           >
-            <div
-              style={{
-                width: "32px",
-              }}
-            >
-              {isPlaying ? (
-                listenComplete ? (
-                  <i
-                    style={{ verticalAlign: "middle", color: "green" }}
-                    className="material-icons"
-                  >
-                    done
-                  </i>
-                ) : (
+            {!canVote ? (
+              <div
+                style={{
+                  width: "32px",
+                }}
+              >
+                {isPlaying ? (
                   <i
                     style={{ verticalAlign: "middle", color: "blue" }}
                     className="material-icons"
                   >
                     hearing
                   </i>
-                )
-              ) : listenComplete ? (
-                <i
-                  style={{ verticalAlign: "middle", color: "green" }}
-                  className="material-icons"
-                >
-                  done
-                </i>
-              ) : (
-                <i
-                  style={{ verticalAlign: "middle", color: "red" }}
-                  className="material-icons"
-                >
-                  hearing_disabled
-                </i>
-              )}
-            </div>
+                ) : listenComplete ? (
+                  <i
+                    style={{ verticalAlign: "middle", color: "green" }}
+                    className="material-icons"
+                  >
+                    check_circle_outline
+                  </i>
+                ) : (
+                  <i
+                    style={{ verticalAlign: "middle", color: "red" }}
+                    className="material-icons"
+                  >
+                    hearing_disabled
+                  </i>
+                )}
+              </div>
+            ) : (
+              <></>
+            )}
+
             <div
               style={{
                 flex: "5",
@@ -181,6 +185,8 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
                 progress={progress}
                 isPlaying={isPlaying}
                 emptyRecording={emptyRecording}
+                firstPlayback={autoPlayingId === playerId}
+                listenComplete={listenComplete}
               />
             </div>
           </div>

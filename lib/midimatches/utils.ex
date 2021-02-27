@@ -68,6 +68,7 @@ defmodule Midimatches.Utils do
       server_state.recordings
       |> Map.to_list()
       |> Enum.map(&Tuple.to_list(&1))
+      |> Enum.shuffle()
 
     scores_list =
       server_state.scores

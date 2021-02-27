@@ -1,6 +1,9 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 
-import { SUBMIT_VOTE_EVENT } from "../../../../../constants";
+import {
+  SUBMIT_VOTE_EVENT,
+  DEFAULT_RECORDING_LENGTH,
+} from "../../../../../constants";
 import { useGameContext, usePlayerContext } from "../../../../../hooks";
 import { PlaybackAudio } from "../../../../audio";
 import {
@@ -13,16 +16,18 @@ import {
 } from "../../../../common";
 import { shuffleArray, genRandomColors } from "../../../../../utils";
 import { Color, Loop, RecordingTuple } from "../../../../../types";
-import { calcMsUntilMsTimestamp } from "../../../../../utils";
+import { calcMsUntilMsTimestamp, secToMs } from "../../../../../utils";
 
 interface PlaybackVotingViewProps {
   pushMessageToChannel: Function;
   stopSample: Function;
+  isSamplePlayerLoaded: boolean;
 }
 
 const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
   pushMessageToChannel,
   stopSample,
+  isSamplePlayerLoaded,
 }) => {
   const {
     recordings: allRecordings,
@@ -48,7 +53,42 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
           ([playerId, _recording]) => playerId !== currPlayer.playerId
         )
       : [];
-  }, [allRecordings, currPlayer]);
+  }, []);
+
+  const randomColors: Array<Color> = useMemo(() => {
+    const numColorsNeeded = !!recordings ? Object.keys(recordings).length : 0;
+    return genRandomColors(numColorsNeeded);
+  }, []);
+
+  // auto play
+  const [autoPlayingTrackIdx, setAutoPlayingTrackIdx] = useState<number>(-1);
+  const autoPlayCounter = useRef(null) as any;
+
+  useEffect(() => {
+    if (isSamplePlayerLoaded) {
+      if (autoPlayingTrackIdx === -1) {
+        setAutoPlayingTrackIdx((idx) => idx + 1);
+      }
+
+      if (autoPlayingTrackIdx < recordings.length) {
+        autoPlayCounter.current = setTimeout(() => {
+          setAutoPlayingTrackIdx((idx) => idx + 1);
+        }, secToMs(DEFAULT_RECORDING_LENGTH));
+      }
+    }
+
+    return () => {
+      clearTimeout(autoPlayCounter.current);
+    };
+  }, [autoPlayingTrackIdx, isSamplePlayerLoaded]);
+
+  const autoPlayingId = useMemo(() => {
+    return !!recordings &&
+      recordings.length > autoPlayingTrackIdx &&
+      autoPlayingTrackIdx >= 0
+      ? recordings[autoPlayingTrackIdx][0]
+      : undefined;
+  }, [autoPlayingTrackIdx]);
 
   useEffect(() => {
     const emptyMusicians = recordings
@@ -72,11 +112,6 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
     ]);
     setListenCompleteTracks(updatedListenCompleteTracksSet);
   };
-
-  const randomColors: Array<Color> = useMemo(() => {
-    const numColorsNeeded = Object.keys(recordings).length;
-    return genRandomColors(numColorsNeeded);
-  }, [Object.keys(recordings).length]);
 
   const submitVote = (playerId: string): void => {
     const sentMessage = pushMessageToChannel(SUBMIT_VOTE_EVENT, {
@@ -134,6 +169,7 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
                     canVote={canVote}
                     completeListening={completeListening}
                     emptyRecording={emptyRecordings.has(playerId)}
+                    autoPlayingId={autoPlayingId}
                   />
                 </div>
               );
