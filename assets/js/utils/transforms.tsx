@@ -108,6 +108,10 @@ export function shuffleArray(array: Array<any>): Array<any> {
   return newArray;
 }
 
+export function randomElement(array: Array<any>): any {
+  return array[Math.floor(Math.random() * array.length)];
+}
+
 export function loopToEvents(
   loop: Loop,
   now: number,

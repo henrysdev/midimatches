@@ -16,7 +16,7 @@ const InGameFrame: React.FC<InGameFrameProps> = ({
 }) => {
   return (
     <ComputerFrame>
-      <div>
+      <div style={{ padding: "8px" }}>
         <MediumLargeTitle centered={false}>{title}</MediumLargeTitle>
         {!!subtitle ? (
           <MediumTitle centered={false}>{subtitle}</MediumTitle>

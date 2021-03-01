@@ -11,10 +11,11 @@ import {
   Timer,
   Instructions,
   MediumLargeTitle,
+  MediumTitle,
   DynamicContent,
   TimerBox,
 } from "../../../common";
-import { secToMs, calcMsUntilMsTimestamp } from "../../../../utils";
+import { secToMs, unmarshalBody } from "../../../../utils";
 import { useGameContext } from "../../../../hooks";
 
 enum RecordingState {
@@ -27,11 +28,15 @@ enum RecordingState {
 interface PracticeRecordingViewProps {
   setRecordingCallback: Function;
   stopSample: Function;
+  advanceView: Function;
+  sampleName: string;
 }
 
 const PracticeRecordingView: React.FC<PracticeRecordingViewProps> = ({
   setRecordingCallback,
   stopSample,
+  advanceView,
+  sampleName,
 }) => {
   const [isSamplePlaying, setIsSamplePlaying] = useState<boolean>(false);
   const [isRecording, setIsRecording] = useState<boolean>(false);
@@ -39,10 +44,9 @@ const PracticeRecordingView: React.FC<PracticeRecordingViewProps> = ({
 
   const submitRecording = (recording: any) => {
     if (!!recording) {
-      setRecordingCallback(SUBMIT_RECORDING_EVENT, {
-        recording: JSON.stringify(recording),
-      });
+      setRecordingCallback(unmarshalBody(recording));
       setFinishedRecording(true);
+      advanceView();
     }
   };
 
@@ -50,7 +54,7 @@ const PracticeRecordingView: React.FC<PracticeRecordingViewProps> = ({
     setIsSamplePlaying(true);
   };
 
-  const { gameRules, roundRecordingStartTime, viewDeadline } = useGameContext();
+  const { gameRules, roundRecordingStartTime } = useGameContext();
 
   const recordingState: RecordingState = useMemo(() => {
     if (isSamplePlaying && !isRecording && !isFinishedRecording) {
@@ -66,7 +70,8 @@ const PracticeRecordingView: React.FC<PracticeRecordingViewProps> = ({
 
   return (
     <div>
-      <MediumLargeTitle title="PLAY AND RECORD" />
+      <MediumLargeTitle>PRACTICE - RECORDING</MediumLargeTitle>
+      <MediumTitle>{sampleName}</MediumTitle>
       <div>
         <DynamicContent
           style={isRecording ? { backgroundColor: "#ffd9db" } : {}}

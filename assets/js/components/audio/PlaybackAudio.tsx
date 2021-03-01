@@ -25,6 +25,7 @@ interface PlaybackAudioProps {
   canVote: boolean;
   emptyRecording: boolean;
   autoPlayingId?: string;
+  practiceMode?: boolean;
 }
 
 const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
@@ -40,6 +41,7 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
   canVote,
   emptyRecording,
   autoPlayingId,
+  practiceMode = false,
 }) => {
   const {
     gameRules: { timestepSize },
@@ -135,8 +137,8 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
   }, [isPlaying, listenComplete, canVote]);
 
   return (
-    <div className="roboto_font" style={{ padding: "8px" }}>
-      Anonymous
+    <div style={{ padding: "8px" }}>
+      {!practiceMode ? <div className="roboto_font">Anonymous</div> : <></>}
       <div style={{ display: "flex" }}>
         <div className={cssClasses} onClick={() => startManualPlayback()}>
           <div
@@ -195,7 +197,7 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
           </div>
         </div>
 
-        {canVote ? (
+        {!practiceMode && canVote ? (
           <div
             style={{
               flex: "1",

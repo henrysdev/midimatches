@@ -16,12 +16,13 @@ import {
   TimerBox,
   ComputerButton,
 } from "../../../common";
+import { randomElement } from "../../../../utils";
 import { useLoadRandomSamples } from "../../../../hooks";
 
 interface PracticeSampleSelectionViewProps {
   samples: string[];
   loadSample: Function;
-  setCurrentSample: Function;
+  pickNewSample: Function;
   advanceView: Function;
   currentSample?: string;
 }
@@ -29,12 +30,13 @@ interface PracticeSampleSelectionViewProps {
 const PracticeSampleSelectionView: React.FC<PracticeSampleSelectionViewProps> = ({
   samples,
   loadSample,
-  setCurrentSample,
+  pickNewSample,
   currentSample,
   advanceView,
 }) => {
   return (
     <div>
+      <MediumLargeTitle>PRACTICE - SAMPLE SELECTION</MediumLargeTitle>
       <DynamicContent>
         {!!currentSample ? (
           <div>
@@ -45,10 +47,7 @@ const PracticeSampleSelectionView: React.FC<PracticeSampleSelectionViewProps> = 
         )}
         <ComputerButton
           callback={() => {
-            const newSample =
-              samples[Math.floor(Math.random() * samples.length)];
-            loadSample(newSample);
-            setCurrentSample(newSample);
+            pickNewSample(samples, currentSample);
           }}
         >
           <h5>NEW SAMPLE</h5>
