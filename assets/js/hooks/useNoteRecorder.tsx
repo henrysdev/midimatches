@@ -12,7 +12,7 @@ import { msToMicros, microsToMs, midiVelocityToToneVelocity } from "../utils";
 
 interface NoteRecorderProps {
   submitRecording: Function;
-  playSample: Function;
+  sampleStartPlayCallback: Function;
   setIsRecording: Function;
   roundRecordingStartTime: number;
   gameRules: GameRules;
@@ -40,7 +40,7 @@ interface NoteRecorder {
 
 export function useNoteRecorder({
   submitRecording,
-  playSample,
+  sampleStartPlayCallback,
   setIsRecording,
   roundRecordingStartTime,
   gameRules,
@@ -168,7 +168,7 @@ export function useNoteRecorder({
     if (!!roundRecordingStartTime && shouldRecord) {
       scheduleRecordingDeadlines(
         roundRecordingStartTime,
-        playSample,
+        sampleStartPlayCallback,
         startRecord,
         stopRecord,
         samplePlayer

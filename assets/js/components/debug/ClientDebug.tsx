@@ -11,7 +11,9 @@ interface ClientDebugProps {
 const ClientDebug: React.FC<ClientDebugProps> = ({ playerId }) => {
   const gameContext = useGameContext();
   const { Tone } = useToneAudioContext();
-  const [loadSample, playSample, stopSample] = useSamplePlayer(Tone);
+  const [loadSample, sampleStartPlayCallback, stopSample] = useSamplePlayer(
+    Tone
+  );
 
   return (
     <div>

@@ -4,6 +4,7 @@ import {
   SUBMIT_RECORDING_EVENT,
   DEFAULT_SAMPLE_LENGTH,
   DEFAULT_RECORDING_LENGTH,
+  DEFAULT_WARMUP_LENGTH,
 } from "../../../../../constants";
 import { RecordMidi } from "../../../../audio";
 import {
@@ -18,7 +19,7 @@ import { useGameContext } from "../../../../../hooks";
 
 enum RecordingState {
   INIT,
-  SAMPLE,
+  WARMUP,
   RECORDING,
   DONE,
 }
@@ -47,7 +48,7 @@ const RecordingView: React.FC<RecordingViewProps> = ({
     }
   };
 
-  const playSampleWrapper = () => {
+  const sampleStartPlayCallbackWrapper = () => {
     setIsSamplePlaying(true);
   };
 
@@ -55,7 +56,7 @@ const RecordingView: React.FC<RecordingViewProps> = ({
 
   const recordingState: RecordingState = useMemo(() => {
     if (isSamplePlaying && !isRecording && !isFinishedRecording) {
-      return RecordingState.SAMPLE;
+      return RecordingState.WARMUP;
     } else if (isSamplePlaying && isRecording && !isFinishedRecording) {
       return RecordingState.RECORDING;
     } else if (isFinishedRecording) {
@@ -75,7 +76,7 @@ const RecordingView: React.FC<RecordingViewProps> = ({
           >
             {recordingState === RecordingState.INIT ? (
               <Instructions description="Loading sample and syncing clients..." />
-            ) : recordingState === RecordingState.SAMPLE ? (
+            ) : recordingState === RecordingState.WARMUP ? (
               <Instructions description="Listen to the sample and get ready to record!" />
             ) : recordingState === RecordingState.RECORDING ? (
               <Instructions description="Recording in progress... keep playing!" />
@@ -90,7 +91,7 @@ const RecordingView: React.FC<RecordingViewProps> = ({
               <RecordMidi
                 hideKeyboard={recordingState === RecordingState.INIT}
                 submitRecording={submitRecording}
-                playSample={playSampleWrapper}
+                sampleStartPlayCallback={sampleStartPlayCallbackWrapper}
                 stopSample={stopSample}
                 setIsRecording={setIsRecording}
                 gameRules={gameRules}
@@ -104,11 +105,11 @@ const RecordingView: React.FC<RecordingViewProps> = ({
           <TimerBox>
             {recordingState === RecordingState.INIT ? (
               <></>
-            ) : recordingState === RecordingState.SAMPLE ? (
+            ) : recordingState === RecordingState.WARMUP ? (
               <Timer
                 key={`sample-timer-${isSamplePlaying}`}
                 descriptionText={"Recording starts in "}
-                duration={secToMs(DEFAULT_SAMPLE_LENGTH)}
+                duration={secToMs(DEFAULT_WARMUP_LENGTH)}
               />
             ) : recordingState === RecordingState.RECORDING ? (
               <div>

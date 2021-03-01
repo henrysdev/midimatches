@@ -9,7 +9,7 @@ import * as Tone from "tone";
 
 interface RecordMidiProps {
   submitRecording: Function;
-  playSample: Function;
+  sampleStartPlayCallback: Function;
   stopSample: Function;
   setIsRecording: Function;
   roundRecordingStartTime: number;
@@ -20,7 +20,7 @@ interface RecordMidiProps {
 
 const RecordMidi: React.FC<RecordMidiProps> = ({
   submitRecording,
-  playSample,
+  sampleStartPlayCallback,
   stopSample,
   setIsRecording,
   roundRecordingStartTime,
@@ -38,7 +38,7 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
     stopRecordedNote,
   } = useNoteRecorder({
     submitRecording,
-    playSample,
+    sampleStartPlayCallback,
     setIsRecording,
     roundRecordingStartTime,
     gameRules,
