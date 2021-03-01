@@ -1,14 +1,25 @@
 import React from "react";
 
+import { MediumLargeTitle, MediumTitle } from "../../../common";
 import { GameLeftPane } from ".";
+import { useGameContext } from "../../../../hooks";
+
+const gameMode = "FREE-FOR-ALL";
 
 interface InGameFrameProps {
   children?: any;
+  roomName: string;
 }
-const InGameFrame: React.FC<InGameFrameProps> = ({ children }) => {
+
+const InGameFrame: React.FC<InGameFrameProps> = ({ children, roomName }) => {
+  const { roundNum } = useGameContext();
   return (
     <div className="computer_frame outset_3d_border_deep">
       <div>
+        <MediumLargeTitle centered={false}>///IN GAME</MediumLargeTitle>
+        <MediumTitle centered={false}>{`${roomName} / ${gameMode} ${
+          !!roundNum ? `/ ROUND ${roundNum}` : ""
+        }`}</MediumTitle>
         <div className="in_game_content_flex_anchor">
           <div className="game_left_content_pane_wrapper">
             <GameLeftPane />

@@ -232,7 +232,11 @@ const RoomPage: React.FC = () => {
       >
         {!!gameChannel && !!currPlayer && !!initGameState ? (
           <PlayerContext.Provider value={{ player: currPlayer }}>
-            <Game gameChannel={gameChannel} initGameState={initGameState} />
+            <Game
+              gameChannel={gameChannel}
+              initGameState={initGameState}
+              roomName={lobbyState.roomName}
+            />
           </PlayerContext.Provider>
         ) : !!gameChannel ? (
           <PregameLobby

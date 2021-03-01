@@ -46,7 +46,7 @@ const Serverlist: React.FC<ServerlistProps> = ({
                       onClick={() => setSelectedRoom(room)}
                       className={
                         !!selectedRoom && selectedRoom.roomId === room.roomId
-                          ? "selected_highlight_color"
+                          ? "item_selected"
                           : ""
                       }
                     >

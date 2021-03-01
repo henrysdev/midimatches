@@ -40,7 +40,7 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
           <MediumTitle centered={false}>{roomName}</MediumTitle>
           <div className="pregame_lobby_flex_anchor">
             <div className="pregame_content_pane">
-              <div className="inline_screen inset_3d_border_shallow">
+              <div className="inline_screen inset_3d_border_shallow rounded_border">
                 <p>
                   {`${numPlayersJoined}/${maxPlayers} Players.`}
                   {numPlayersToStart - numPlayersJoined > 0 ? (

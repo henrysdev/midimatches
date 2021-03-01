@@ -13,7 +13,7 @@
 }
 
 .banner_button {
-  box-shadow: 0 3px 10px rgb(0 0 0 / 8%);
+  box-shadow: 0 5px 13px rgb(0 0 0 / 8%);
   padding: 8px;
   background-color: #ebdfce;
   width: 50%;
@@ -25,8 +25,11 @@
   border-radius: 10px;
 }
 
+.banner_button:active {
+  box-shadow: none;
+}
+
 .content_button {
-  /* background-color: #d8d8d8; */
   margin-top: 8px;
   padding: 8px;
   cursor: pointer;
@@ -608,4 +611,16 @@ strong {
   min-height: 50px;
   height: 100%;
   border: 1px solid black;
+}
+
+.rounded_border {
+  border-radius: 10px;
+}
+
+.item_hover {
+  background-color: #c7c7c7;
+}
+
+.item_selected {
+  background-color: #aeaeae;
 }

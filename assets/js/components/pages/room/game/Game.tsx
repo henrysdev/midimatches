@@ -24,9 +24,14 @@ import { GameContextType } from "../../../../types";
 interface GameProps {
   gameChannel: Channel;
   initGameState: GameContextType;
+  roomName: string;
 }
 
-const Game: React.FC<GameProps> = ({ gameChannel, initGameState }) => {
+const Game: React.FC<GameProps> = ({
+  gameChannel,
+  initGameState,
+  roomName,
+}) => {
   const [currentView, gameContext, pushMessage] = useGameServerState(
     gameChannel,
     initGameState
@@ -74,7 +79,7 @@ const Game: React.FC<GameProps> = ({ gameChannel, initGameState }) => {
 
   return (
     <GameContext.Provider value={gameContext} key={currentView}>
-      <InGameFrame>
+      <InGameFrame roomName={roomName}>
         {(() => {
           switch (currentView) {
             case GAME_VIEW.GAME_START:
