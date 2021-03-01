@@ -4,6 +4,8 @@ import {
   DEFAULT_SAMPLE_LENGTH,
   DEFAULT_RECORDING_LENGTH,
   DEFAULT_NUM_RECORDED_LOOPS,
+  DEFAULT_WARMUP_LENGTH,
+  DEFAULT_NUM_WARMUP_LOOPS,
 } from "../constants";
 import { Milliseconds, Seconds } from "../types";
 import { msToSec, secToMs } from "../utils";
@@ -71,7 +73,7 @@ export function getRecordingStartTimestamp(
   serverSendTimestamp: Milliseconds
 ): Milliseconds {
   const bufferTime = secToMs(DEFAULT_SAMPLE_PLAY_BUFFER_LENGTH);
-  const sampleIntro = secToMs(DEFAULT_SAMPLE_LENGTH);
+  const sampleIntro = secToMs(DEFAULT_WARMUP_LENGTH);
   const recordingStartTimestamp = Math.abs(
     serverSendTimestamp + bufferTime + sampleIntro
   );
@@ -89,6 +91,7 @@ export function scheduleSampleLoop(
     interval: DEFAULT_SAMPLE_LENGTH,
     iterations,
     callback: (time: Seconds) => {
+      console.log("sample loop iteration ", time);
       samplePlayer.start(time);
       playSampleCallback();
     },
@@ -109,7 +112,7 @@ function scheduleRecordingAudioTimeline(
   Tone.Transport.start("+0");
 
   // start sample loop
-  const iterations = 1 + DEFAULT_NUM_RECORDED_LOOPS; // one intro iteration + three recorded iterations
+  const iterations = DEFAULT_NUM_WARMUP_LOOPS + DEFAULT_NUM_RECORDED_LOOPS; // one intro iteration + three recorded iterations
   scheduleSampleLoop(
     sampleStartTime,
     playSample,
@@ -146,7 +149,7 @@ export function calcRecordingDeadlines(
   );
 
   const sampleStartTime = nowTone + timeTilSampleStart;
-  const recordingStartTime = sampleStartTime + sampleTime;
+  const recordingStartTime = sampleStartTime + DEFAULT_WARMUP_LENGTH;
   const recordingEndTime = recordingStartTime + recordingTime;
 
   return {
