@@ -1,5 +1,9 @@
 import { useState, useEffect, useMemo } from "react";
-import { S3_BUCKET_URL, DEFAULT_SAMPLE_VOLUME } from "../constants";
+import {
+  S3_BUCKET_URL,
+  DEFAULT_SAMPLE_VOLUME,
+  DEFAULT_SAMPLE_LENGTH,
+} from "../constants";
 
 type SamplePlayerTuple = [boolean, any, (url: string) => void, () => void];
 
@@ -8,7 +12,11 @@ export function useSamplePlayer(Tone: any): SamplePlayerTuple {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   const samplePlayer = useMemo(() => {
-    const newSamplePlayer = new Tone.Player().toDestination();
+    const newSamplePlayer = new Tone.Player({
+      loop: true,
+      loopStart: 0,
+      loopEnd: DEFAULT_SAMPLE_LENGTH,
+    }).toDestination();
     newSamplePlayer.volume.value = DEFAULT_SAMPLE_VOLUME;
     return newSamplePlayer;
   }, []);

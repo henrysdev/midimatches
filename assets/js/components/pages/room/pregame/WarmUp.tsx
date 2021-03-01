@@ -12,7 +12,7 @@ const WarmUp: React.FC<WarmUpProps> = ({}) => {
   return !!synth ? (
     <RecordMidi
       submitRecording={() => {}}
-      playSample={() => {}}
+      sampleStartPlayCallback={() => {}}
       stopSample={() => {}}
       setIsRecording={() => {}}
       gameRules={{} as GameRules}

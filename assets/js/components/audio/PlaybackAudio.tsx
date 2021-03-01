@@ -9,7 +9,7 @@ import {
   DEFAULT_RECORDING_LENGTH,
 } from "../../constants";
 import { useGameContext, useToneAudioContext } from "../../hooks";
-import { scheduleSampleLoop } from "../../helpers";
+import { scheduleSamplePlay } from "../../helpers";
 import { RecordingVisual } from "./";
 
 interface PlaybackAudioProps {
@@ -84,15 +84,18 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
 
     const part = buildPart(recording, timestepSize, playNote);
 
-    part.start();
     startPlayheadProgress(startTime);
-    scheduleSampleLoop(
-      0,
-      () => {},
-      DEFAULT_NUM_RECORDED_LOOPS,
-      true,
-      samplePlayer
-    );
+
+    if (!!samplePlayer && !!samplePlayer.loop) {
+      console.log("Playback stage - set back to loop = false");
+      samplePlayer.loop = false;
+    }
+
+    samplePlayer.stop(`+0`);
+    samplePlayer.seek(0);
+
+    samplePlayer.start(`+0.1`);
+    part.start(`+0.1`);
   };
 
   const startPlayheadProgress = (startTime: number): void => {

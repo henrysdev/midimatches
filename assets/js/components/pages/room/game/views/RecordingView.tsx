@@ -48,7 +48,7 @@ const RecordingView: React.FC<RecordingViewProps> = ({
     }
   };
 
-  const playSampleWrapper = () => {
+  const sampleStartPlayCallbackWrapper = () => {
     setIsSamplePlaying(true);
   };
 
@@ -91,7 +91,7 @@ const RecordingView: React.FC<RecordingViewProps> = ({
               <RecordMidi
                 hideKeyboard={recordingState === RecordingState.INIT}
                 submitRecording={submitRecording}
-                playSample={playSampleWrapper}
+                sampleStartPlayCallback={sampleStartPlayCallbackWrapper}
                 stopSample={stopSample}
                 setIsRecording={setIsRecording}
                 gameRules={gameRules}

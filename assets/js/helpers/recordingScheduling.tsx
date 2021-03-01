@@ -45,7 +45,7 @@ interface ScheduleDeadlines {
 
 export function scheduleRecordingDeadlines(
   serverSendTimestamp: number,
-  playSampleCallback: Function,
+  sampleStartPlayCallback: Function,
   startRecording: Function,
   stopRecording: Function,
   samplePlayer: any
@@ -62,7 +62,7 @@ export function scheduleRecordingDeadlines(
   // schedule deadlines
   scheduleRecordingAudioTimeline(
     deadlines,
-    playSampleCallback,
+    sampleStartPlayCallback,
     startRecording,
     stopRecording,
     samplePlayer
@@ -80,46 +80,38 @@ export function getRecordingStartTimestamp(
   return recordingStartTimestamp;
 }
 
-export function scheduleSampleLoop(
-  sampleStartTime: Seconds,
-  playSampleCallback: Function,
-  iterations: number,
-  startImmediately: boolean,
-  samplePlayer: any
+export function scheduleSamplePlay(
+  samplePlayer: any,
+  startTime: Seconds = 0,
+  loopIterations: number
 ): void {
-  const sampleLoop = new Tone.Loop({
-    interval: DEFAULT_SAMPLE_LENGTH,
-    iterations,
-    callback: (time: Seconds) => {
-      console.log("sample loop iteration ", time);
-      samplePlayer.start(time);
-      playSampleCallback();
-    },
-  });
-
-  startImmediately
-    ? sampleLoop.start()
-    : sampleLoop.start(`+${sampleStartTime}`);
+  samplePlayer.start(`+${startTime}`);
+  samplePlayer.stop(`+${startTime + loopIterations * DEFAULT_SAMPLE_LENGTH}`);
 }
 
 function scheduleRecordingAudioTimeline(
   { sampleStartTime, recordingStartTime, recordingEndTime }: ScheduleDeadlines,
-  playSample: Function,
+  sampleStartPlayCallback: Function,
   startRecording: Function,
   stopRecording: Function,
   samplePlayer: any
 ): void {
   Tone.Transport.start("+0");
+  if (!!samplePlayer && !samplePlayer.loop) {
+    console.log("Recording stage - set back to loop = true");
+    samplePlayer.loop = true;
+  }
 
   // start sample loop
-  const iterations = DEFAULT_NUM_WARMUP_LOOPS + DEFAULT_NUM_RECORDED_LOOPS; // one intro iteration + three recorded iterations
-  scheduleSampleLoop(
-    sampleStartTime,
-    playSample,
-    iterations,
-    false,
-    samplePlayer
-  );
+  const loopIterations = DEFAULT_NUM_WARMUP_LOOPS + DEFAULT_NUM_RECORDED_LOOPS;
+
+  scheduleSamplePlay(samplePlayer, sampleStartTime, loopIterations);
+
+  // start sample (warmup)
+  Tone.Transport.scheduleOnce((time: Seconds) => {
+    console.log("warmup start callback ", time);
+    sampleStartPlayCallback();
+  }, `+${sampleStartTime}`);
 
   // start recording
   Tone.Transport.scheduleOnce((time: Seconds) => {
