@@ -24,6 +24,7 @@ defmodule MidimatchesWeb.Router do
     get "/room/:room_id", PageController, :room
     get "/room/debug_create/:room_id", PageController, :debug_create_room
     get "/register", PageController, :register_player
+    get "/practice", PageController, :practice
   end
 
   scope "/api", MidimatchesWeb do
@@ -32,6 +33,8 @@ defmodule MidimatchesWeb.Router do
     put "/user/edit", UserController, :edit
     get "/user/self", UserController, :self
     get "/user/reset", UserController, :reset
+
+    get "/samples/random", SampleController, :random
   end
 
   # Enables LiveDashboard only for development

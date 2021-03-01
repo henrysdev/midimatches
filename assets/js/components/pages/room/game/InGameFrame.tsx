@@ -1,37 +1,38 @@
 import React from "react";
 
-import { MediumLargeTitle, MediumTitle } from "../../../common";
+import { MediumLargeTitle, MediumTitle, ComputerFrame } from "../../../common";
 import { GameLeftPane } from ".";
-import { useGameContext } from "../../../../hooks";
-
-const gameMode = "FREE-FOR-ALL";
 
 interface InGameFrameProps {
-  children?: any;
-  roomName: string;
+  title: string;
+  subtitle?: any;
+  children: any;
 }
 
-const InGameFrame: React.FC<InGameFrameProps> = ({ children, roomName }) => {
-  const { roundNum } = useGameContext();
+const InGameFrame: React.FC<InGameFrameProps> = ({
+  children,
+  title,
+  subtitle,
+}) => {
   return (
-    <div className="computer_frame outset_3d_border_deep">
+    <ComputerFrame>
       <div>
-        <MediumLargeTitle centered={false}>///IN GAME</MediumLargeTitle>
-        <MediumTitle centered={false}>{`${roomName} / ${gameMode} ${
-          !!roundNum ? `/ ROUND ${roundNum}` : ""
-        }`}</MediumTitle>
+        <MediumLargeTitle centered={false}>{title}</MediumLargeTitle>
+        {!!subtitle ? (
+          <MediumTitle centered={false}>{subtitle}</MediumTitle>
+        ) : (
+          <></>
+        )}
         <div className="in_game_content_flex_anchor">
-          <div className="game_left_content_pane_wrapper">
-            <GameLeftPane />
-          </div>
+          <div className="game_left_content_pane_wrapper">{children[0]}</div>
           <div className="gameplay_pane_wrapper">
             <div className="gameplay_pane inset_3d_border_deep inline_screen">
-              <div className="gameplay_pane_inner">{children}</div>
+              <div className="gameplay_pane_inner">{children[1]}</div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </ComputerFrame>
   );
 };
 export { InGameFrame };

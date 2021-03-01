@@ -20,6 +20,7 @@ import {
 } from "../../../../hooks";
 import { InGameFrame } from ".";
 import { GameContextType } from "../../../../types";
+import { GameLeftPane } from "./GameLeftPane";
 
 interface GameProps {
   gameChannel: Channel;
@@ -79,7 +80,11 @@ const Game: React.FC<GameProps> = ({
 
   return (
     <GameContext.Provider value={gameContext} key={currentView}>
-      <InGameFrame roomName={roomName}>
+      <InGameFrame
+        title="///GAME"
+        subtitle={`${roomName} / FREE-FOR-ALL / ROUND ${gameContext.roundNum}`}
+      >
+        <GameLeftPane />
         {(() => {
           switch (currentView) {
             case GAME_VIEW.GAME_START:

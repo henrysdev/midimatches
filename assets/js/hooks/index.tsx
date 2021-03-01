@@ -5,4 +5,6 @@ export { useNoteRecorder } from "./useNoteRecorder";
 export { useLoad } from "./useLoad";
 export { useCurrentUser } from "./useCurrentUser";
 export { useSocket } from "./useSocket";
+export { useAudioContextProvider } from "./useAudioContextProvider";
+export { useLoadRandomSamples } from "./useLoadRandomSamples";
 export * from "./context";

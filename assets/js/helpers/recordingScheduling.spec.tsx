@@ -17,8 +17,8 @@ describe("scheduleRecordingStart", () => {
 
     const expectedDeadlines = {
       sampleStartTime: 313.976,
-      recordingStartTime: 323.976,
-      recordingEndTime: 353.976,
+      recordingStartTime: 324.6427,
+      recordingEndTime: 354.6427,
     };
 
     const actualDeadlines = calcRecordingDeadlines(

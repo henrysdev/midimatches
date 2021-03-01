@@ -54,4 +54,18 @@ defmodule MidimatchesWeb.PageController do
   def register_player(conn, _params) do
     render(conn, "register_player.html", destination: "/servers")
   end
+
+  @spec practice(Plug.Conn.t(), map) :: Plug.Conn.t()
+  @doc """
+  Routes to page that renders a single player practice game mode.
+  """
+  def practice(conn, _params) do
+    if conn |> get_session(:user) |> is_nil() do
+      redirect(conn,
+        to: Routes.page_path(conn, :register_player, destination: "/practice")
+      )
+    else
+      render(conn, "practice.html")
+    end
+  end
 end

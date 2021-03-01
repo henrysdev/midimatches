@@ -194,7 +194,7 @@ const PregameDebug: React.FC = () => {
       >
         <PlayerContext.Provider value={{ player: mockedPlayers[0] }}>
           <ToneAudioContext.Provider value={{ midiInputs, Tone: mockTone }}>
-            <InGameFrame roomName="heoieei">
+            <InGameFrame title="AAA">
               <GameStartView pushMessageToChannel={() => {}} />
               {/* <RecordingView
                 isContestant={true}

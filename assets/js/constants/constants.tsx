@@ -15,6 +15,12 @@ export enum GAME_VIEW {
   GAME_END,
 }
 
+export enum PRACTICE_GAME_VIEW {
+  SAMPLE_SELECTION,
+  RECORDING,
+  PLAYBACK,
+}
+
 export const S3_BUCKET_URL = "https://progressions-game.s3.amazonaws.com";
 
 export const SERVERLIST_UPDATE_EVENT = "serverlist_update";
