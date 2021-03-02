@@ -12,7 +12,9 @@ use Mix.Config
 config :midimatches, MidimatchesWeb.Endpoint,
   url: [host: System.get_env("RENDER_EXTERNAL_HOSTNAME") || "localhost", port: 80],
   cache_static_manifest: "priv/static/cache_manifest.json",
-  force_ssl: [rewrite_on: [:x_forwarded_proto], hsts: true, host: nil]
+  force_ssl: [hsts: true]
+
+# [rewrite_on: [:x_forwarded_proto], hsts: true, host: nil]
 
 # Do not print debug messages in production
 config :logger, level: :info
