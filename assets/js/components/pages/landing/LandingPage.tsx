@@ -9,7 +9,7 @@ const LandingPage: React.FC = () => {
         <div>
           <MediumLargeTitle centered={false}>///WELCOME</MediumLargeTitle>
           <HowToPlay />
-          <ComputerButton callback={() => (window.location.href = "/servers")}>
+          <ComputerButton callback={() => (window.location.href = "/menu")}>
             <h5>LET'S PLAY!</h5>
           </ComputerButton>
         </div>

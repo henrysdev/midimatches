@@ -44,7 +44,7 @@ const RegisterPlayerPage: React.FC = () => {
   };
 
   return (
-    <div className="register_player_container computer_frame outset_3d_border_deep">
+    <div className="narrow_center_container computer_frame outset_3d_border_deep">
       <MediumLargeTitle>CHOOSE A PLAYER NAME</MediumLargeTitle>
       <form className="register_player_form">
         <fieldset>

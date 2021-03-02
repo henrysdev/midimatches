@@ -8,6 +8,17 @@ defmodule MidimatchesWeb.PageController do
     render(conn, "index.html")
   end
 
+  @spec menu(Plug.Conn.t(), any) :: Plug.Conn.t()
+  def menu(conn, _params) do
+    if conn |> get_session(:user) |> is_nil() do
+      redirect(conn,
+        to: Routes.page_path(conn, :register_player, destination: "/menu")
+      )
+    else
+      render(conn, "menu.html")
+    end
+  end
+
   @spec serverlist(Plug.Conn.t(), any) :: Plug.Conn.t()
   def serverlist(conn, _params) do
     if conn |> get_session(:user) |> is_nil() do
@@ -52,7 +63,7 @@ defmodule MidimatchesWeb.PageController do
   end
 
   def register_player(conn, _params) do
-    render(conn, "register_player.html", destination: "/servers")
+    render(conn, "register_player.html", destination: "/menu")
   end
 
   @spec practice(Plug.Conn.t(), map) :: Plug.Conn.t()

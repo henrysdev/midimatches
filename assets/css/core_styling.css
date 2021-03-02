@@ -283,7 +283,7 @@ input:checked + .slider:before {
   -o-transform: translate(-50%, -50%);
 }
 
-.register_player_container {
+.narrow_center_container {
   max-width: 400px;
   margin: auto;
   padding: 24px;
@@ -623,4 +623,15 @@ strong {
 
 .item_selected {
   background-color: #aeaeae;
+}
+
+.main_menu_btn_group {
+  padding: 8px;
+}
+
+.main_menu_btn_group .main_menu_btn {
+  padding-top: 8px;
+}
+.main_menu_btn_group:first-child .main_menu_btn {
+  padding-top: 16px;
 }
