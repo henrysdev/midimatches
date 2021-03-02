@@ -8,7 +8,7 @@
 use Mix.Config
 
 # Configures the endpoint
-config :progressions, MidimatchesWeb.Endpoint,
+config :midimatches, MidimatchesWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "61uuB1EEWOsdVnmjqxSetWbmTCghERuN+VKNVLRve3t8xSRnvZhcmc1+ElQ/rt5s",
   render_errors: [view: MidimatchesWeb.ErrorView, accepts: ~w(html json), layout: false],
@@ -24,7 +24,7 @@ config :logger, :console,
 config :phoenix, :json_library, Jason
 
 # Configures custom application env vars
-config :progressions,
+config :midimatches,
   rooms_config: "config/app_scheme/config.json"
 
 # Import environment specific config. This must remain at the bottom
