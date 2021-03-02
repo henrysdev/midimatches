@@ -48,7 +48,7 @@ defmodule MidimatchesWeb.RoomChannel do
         socket
       ) do
     if Rooms.room_exists?(room_id) do
-      send(self(), {:init_conn, room_id})
+      send(self(), {:init_conn, room_id, player_id})
       room_server = Pids.fetch!({:room_server, room_id})
 
       {:ok,
@@ -62,11 +62,11 @@ defmodule MidimatchesWeb.RoomChannel do
     end
   end
 
-  def handle_info({:init_conn, room_id}, socket) do
+  def handle_info({:init_conn, room_id, player_id}, socket) do
     Pids.fetch!({:room_server, room_id})
     |> RoomServer.sync_lobby_state()
 
-    PresenceTracker.track_conn(self(), "room: " <> room_id)
+    PresenceTracker.track_conn(self(), player_id, "room: " <> room_id)
 
     {:noreply, socket}
   end

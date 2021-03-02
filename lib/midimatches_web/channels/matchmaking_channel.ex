@@ -21,8 +21,6 @@ defmodule MidimatchesWeb.MatchmakingChannel do
   def handle_info({:init_serverlist}, socket) do
     room_states = Matchmaking.get_rooms_list()
 
-    PresenceTracker.track_conn(self(), "serverlist_update")
-
     push(socket, "serverlist_update", %{
       rooms: room_states
     })

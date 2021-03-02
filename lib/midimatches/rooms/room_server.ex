@@ -107,21 +107,30 @@ defmodule Midimatches.Rooms.RoomServer do
         # _from,
         %RoomServer{players: players, game: game, room_id: room_id} = state
       ) do
-    state = %RoomServer{
-      state
-      | players:
-          players
-          |> MapSet.to_list()
-          |> Enum.reject(&(&1.player_id == player_id))
-          |> MapSet.new()
-    }
+    valid_player_to_drop? =
+      players
+      |> MapSet.to_list()
+      |> Enum.any?(&(&1.player_id == player_id))
 
-    if is_nil(game) do
-      broadcast_lobby_state(state)
-      {:noreply, state}
+    if valid_player_to_drop? do
+      state = %RoomServer{
+        state
+        | players:
+            players
+            |> MapSet.to_list()
+            |> Enum.reject(&(&1.player_id == player_id))
+            |> MapSet.new()
+      }
+
+      if is_nil(game) do
+        broadcast_lobby_state(state)
+        {:noreply, state}
+      else
+        game_server = Pids.fetch!({:game_server, room_id})
+        GameServer.drop_player(game_server, player_id)
+        {:noreply, state}
+      end
     else
-      game_server = Pids.fetch!({:game_server, room_id})
-      GameServer.drop_player(game_server, player_id)
       {:noreply, state}
     end
   end

@@ -5,7 +5,13 @@ defmodule MidimatchesWeb.PresenceTracker do
   """
 
   alias __MODULE__
-  alias Midimatches.Utils
+
+  alias Midimatches.{
+    Pids,
+    Rooms.RoomServer
+  }
+
+  require Logger
 
   use Phoenix.Tracker
 
@@ -28,8 +34,17 @@ defmodule MidimatchesWeb.PresenceTracker do
         Phoenix.PubSub.direct_broadcast!(state.node_name, state.pubsub_server, topic, msg)
       end
 
-      for {key, meta} <- leaves do
-        msg = {:leave, key, meta}
+      for {player_id, %{topic: "room: " <> room_id} = meta} <- leaves do
+        room_server = Pids.fetch({:room_server, room_id})
+
+        if is_nil(room_server) do
+          :ok
+        else
+          Logger.warn("Presence tracker dropping player_id #{player_id} from room_id #{room_id}")
+          RoomServer.drop_player(room_server, player_id)
+        end
+
+        msg = {:leave, player_id, meta}
         Phoenix.PubSub.direct_broadcast!(state.node_name, state.pubsub_server, topic, msg)
       end
     end
@@ -40,8 +55,7 @@ defmodule MidimatchesWeb.PresenceTracker do
   @doc """
   Track a websocket connection
   """
-  def track_conn(pid, topic) do
-    uuid = Utils.gen_uuid()
-    Phoenix.Tracker.track(PresenceTracker, pid, topic, uuid, %{topic: topic, stat: "away"})
+  def track_conn(pid, user_id, topic) do
+    Phoenix.Tracker.track(PresenceTracker, pid, topic, user_id, %{topic: topic, stat: "away"})
   end
 end
