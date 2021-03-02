@@ -20,8 +20,10 @@ defmodule MidimatchesWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    get "/menu", PageController, :menu
     get "/servers", PageController, :serverlist
     get "/room/:room_id", PageController, :room
+    # TODO remove (or only allow in dev)
     get "/room/debug_create/:room_id", PageController, :debug_create_room
     get "/register", PageController, :register_player
     get "/practice", PageController, :practice
@@ -30,8 +32,8 @@ defmodule MidimatchesWeb.Router do
   scope "/api", MidimatchesWeb do
     pipe_through :api
 
-    put "/user/edit", UserController, :edit
     get "/user/self", UserController, :self
+    # TODO remove (or only allow in dev)
     get "/user/reset", UserController, :reset
 
     get "/samples/random", SampleController, :random

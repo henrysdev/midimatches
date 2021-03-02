@@ -1,13 +1,6 @@
 defmodule MidimatchesWeb.UserControllerTest do
   use MidimatchesWeb.ConnCase, async: true
 
-  test "PUT /api/user/edit", %{conn: conn} do
-    conn = put(conn, Routes.user_path(conn, :edit), %{"user_alias" => "chumbawumba"})
-
-    assert json_response(conn, 200) == %{}
-    assert %{user_id: _, user_alias: "chumbawumba"} = get_session(conn, :user)
-  end
-
   test "GET /api/user/self", %{conn: conn} do
     conn =
       session_conn()

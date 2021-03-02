@@ -283,7 +283,7 @@ input:checked + .slider:before {
   -o-transform: translate(-50%, -50%);
 }
 
-.register_player_container {
+.narrow_center_container {
   max-width: 400px;
   margin: auto;
   padding: 24px;
@@ -300,6 +300,7 @@ input:checked + .slider:before {
 }
 
 .alias_length_warning {
+  margin-top: 4px;
   color: red;
 }
 
@@ -623,4 +624,23 @@ strong {
 
 .item_selected {
   background-color: #aeaeae;
+}
+
+.main_menu_btn_group {
+  padding: 8px;
+}
+
+.main_menu_btn_group .main_menu_btn {
+  padding-top: 8px;
+}
+.main_menu_btn_group:first-child .main_menu_btn {
+  padding-top: 16px;
+}
+
+.register_player_submit_button {
+  width: 100%;
+  padding: 8px;
+  height: 40px;
+  background-color: #ebe8e3;
+  border-radius: 10px;
 }

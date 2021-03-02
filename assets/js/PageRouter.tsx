@@ -9,6 +9,7 @@ import {
   RoomPage,
   RegisterPlayerPage,
   ServerlistPage,
+  MenuPage,
 } from "./components/pages/index";
 
 const PageRouter: React.FC = () => {
@@ -18,7 +19,8 @@ const PageRouter: React.FC = () => {
     <BrowserRouter>
       <Switch>
         <Route exact path="/" component={LandingPage} />
-        <Route exact path="/servers" component={ServerlistPage} />
+        <Route path="/menu" component={MenuPage} />
+        <Route path="/servers" component={ServerlistPage} />
         <Route path="/room" component={RoomPage} />
         <Route path="/practice" component={PracticePage} />
         <Route path="/register" component={RegisterPlayerPage} />
