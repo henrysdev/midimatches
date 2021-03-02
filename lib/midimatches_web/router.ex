@@ -23,8 +23,6 @@ defmodule MidimatchesWeb.Router do
     get "/menu", PageController, :menu
     get "/servers", PageController, :serverlist
     get "/room/:room_id", PageController, :room
-    # TODO remove (or only allow in dev)
-    get "/room/debug_create/:room_id", PageController, :debug_create_room
     get "/register", PageController, :register_player
     get "/practice", PageController, :practice
   end
@@ -37,6 +35,8 @@ defmodule MidimatchesWeb.Router do
     get "/user/reset", UserController, :reset
 
     get "/samples/random", SampleController, :random
+
+    post "/room", RoomController, :create
   end
 
   # Enables LiveDashboard only for development

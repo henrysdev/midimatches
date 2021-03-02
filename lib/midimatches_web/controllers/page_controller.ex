@@ -24,7 +24,6 @@ defmodule MidimatchesWeb.PageController do
     end
   end
 
-  @spec serverlist(Plug.Conn.t(), any) :: Plug.Conn.t()
   def serverlist(conn, _params) do
     if conn |> get_session(:user) |> is_nil() do
       redirect(conn,

@@ -53,14 +53,14 @@ defmodule Midimatches.RoomsTest do
     :sys.get_state(ProcessRegistry)
 
     assert length(Rooms.list_rooms()) == length(room_ids)
-    assert Pids.fetch({:room, "2"}) != nil
+    assert Pids.fetch({:room_supervisor, "2"}) != nil
 
     Rooms.drop_room("2")
 
     :sys.get_state(Rooms)
     :sys.get_state(ProcessRegistry)
 
-    assert Pids.fetch({:room, "2"}) == nil
+    assert Pids.fetch({:room_supervisor, "2"}) == nil
     assert Pids.fetch({:game_server, "2"}) == nil
     assert length(Rooms.list_rooms()) == length(room_ids) - 1
   end

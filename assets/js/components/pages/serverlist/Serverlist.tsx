@@ -1,7 +1,13 @@
 import React, { useMemo, useRef, useState } from "react";
 
-import { MediumLargeTitle, ContentButton, ComputerButton } from "../../common";
+import {
+  MediumLargeTitle,
+  ContentButton,
+  ComputerButton,
+  MediumTitle,
+} from "../../common";
 import { RoomState } from "../../../types";
+import { CreateRoomForm } from "./CreateRoomForm";
 
 interface ServerlistProps {
   roomStates: RoomState[];
@@ -21,11 +27,14 @@ const Serverlist: React.FC<ServerlistProps> = ({
   const [selectedRoom, setSelectedRoom] = useState<RoomState>();
 
   return (
-    <div>
+    <div style={{ height: "100%" }}>
       <MediumLargeTitle centered={false}>///ROOM LIST</MediumLargeTitle>
       <div className="serverlist_flex_anchor">
-        <div className="serverlist_table_wrapper inset_3d_border_shallow">
-          <table className="serverlist_table inline_screen">
+        <div className="serverlist_create_room_wrapper ">
+          <CreateRoomForm />
+        </div>
+        <div className="serverlist_table_wrapper inset_3d_border_shallow inline_screen">
+          <table className="serverlist_table">
             <thead>
               <tr>
                 <th>NAME</th>

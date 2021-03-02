@@ -19,8 +19,10 @@ defmodule Midimatches.RoomServerTest do
     room_name = "foobar"
 
     {:ok, room_server} = start_supervised({RoomServer, [{room_id, room_name}]})
+    actual_state = :sys.get_state(room_server)
 
-    assert :sys.get_state(room_server) == %RoomServer{
+    assert actual_state == %RoomServer{
+             created_at: actual_state.created_at,
              players: MapSet.new(),
              game_config: %GameRules{},
              room_name: room_name,
@@ -168,6 +170,64 @@ defmodule Midimatches.RoomServerTest do
 
     RoomServer.drop_player(room_server, m1.player_id)
     assert RoomServer.full?(room_server) == false
+  end
+
+  describe "detect if room server is stale" do
+    test "when room is stale" do
+      now = :os.system_time(:millisecond)
+      freshness_cutoff = now - 300
+      server_deadline = now - 400
+
+      room_id = "1"
+      room_name = "foobar"
+
+      {:ok, room_server} = start_supervised({RoomServer, [{room_id, room_name}]})
+
+      :sys.replace_state(room_server, fn state ->
+        %RoomServer{state | created_at: server_deadline}
+      end)
+
+      assert RoomServer.stale?(room_server, freshness_cutoff)
+    end
+
+    test "when room is not stale (by players in room)" do
+      now = :os.system_time(:millisecond)
+      freshness_cutoff = now - 300
+      server_deadline = now - 400
+
+      room_id = "1"
+      room_name = "foobar"
+
+      {:ok, room_server} = start_supervised({RoomServer, [{room_id, room_name}]})
+
+      RoomServer.add_player(room_server, %Player{
+        player_id: "m1",
+        player_alias: "foo"
+      })
+
+      :sys.replace_state(room_server, fn state ->
+        %RoomServer{state | created_at: server_deadline}
+      end)
+
+      assert !RoomServer.stale?(room_server, freshness_cutoff)
+    end
+
+    test "when room is not stale (by timestamp)" do
+      now = :os.system_time(:millisecond)
+      freshness_cutoff = now - 300
+      server_deadline = now - 299
+
+      room_id = "1"
+      room_name = "foobar"
+
+      {:ok, room_server} = start_supervised({RoomServer, [{room_id, room_name}]})
+
+      :sys.replace_state(room_server, fn state ->
+        %RoomServer{state | created_at: server_deadline}
+      end)
+
+      assert !RoomServer.stale?(room_server, freshness_cutoff)
+    end
   end
 
   @type id() :: String.t()

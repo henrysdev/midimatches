@@ -25,7 +25,7 @@ defmodule Midimatches.Rooms.Room do
           {room_id, room_name, %RoomConfig{room_config | room_name: room_name}}
       end
 
-    Pids.register({:room, room_id}, self())
+    Pids.register({:room_supervisor, room_id}, self())
 
     children = [
       {RoomServer, [{room_id, room_name, room_config.server}]}

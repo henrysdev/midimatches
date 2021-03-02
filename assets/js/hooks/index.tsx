@@ -7,4 +7,5 @@ export { useCurrentUser } from "./useCurrentUser";
 export { useSocket } from "./useSocket";
 export { useAudioContextProvider } from "./useAudioContextProvider";
 export { useLoadRandomSamples } from "./useLoadRandomSamples";
+export { useLoadCreateRoom } from "./useLoadCreateRoom";
 export * from "./context";
