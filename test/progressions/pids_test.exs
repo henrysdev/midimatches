@@ -6,8 +6,8 @@ defmodule Midimatches.PidsTest do
   test "registers and returns supported pids" do
     room_ids = ["41231", "52323", "6123412"]
 
-    reg_results = Enum.map(room_ids, &Pids.register({:room, &1}, fn _ -> nil end))
-    get_results = Enum.map(room_ids, &Pids.fetch({:room, &1}))
+    reg_results = Enum.map(room_ids, &Pids.register({:room_supervisor, &1}, fn _ -> nil end))
+    get_results = Enum.map(room_ids, &Pids.fetch({:room_supervisor, &1}))
 
     assert length(room_ids) == length(reg_results)
     assert length(room_ids) == length(get_results)
@@ -22,12 +22,12 @@ defmodule Midimatches.PidsTest do
   end
 
   test "returns nil for pid not found" do
-    assert nil == Pids.fetch({:room, "928u902817482"})
+    assert nil == Pids.fetch({:room_supervisor, "928u902817482"})
   end
 
   test "only accepts supported process types and id formats" do
     results =
-      [:room, :game_server]
+      [:room_supervisor, :game_server]
       |> Enum.map(fn a -> {a, "1"} end)
       |> Enum.map(&Pids.register(&1, spawn(fn -> nil end)))
 

@@ -29,6 +29,7 @@ defmodule Midimatches.Rooms.RoomServer do
     field(:game, pid, default: nil)
     field(:start_game_deadline, number(), default: -1)
     field(:primed_to_start, boolean(), default: true)
+    field(:created_at, number(), default: -1)
   end
 
   def start_link(args) do
@@ -49,7 +50,8 @@ defmodule Midimatches.Rooms.RoomServer do
      %RoomServer{
        room_id: room_id,
        room_name: room_name,
-       game_config: game_config
+       game_config: game_config,
+       created_at: :os.system_time(:millisecond)
      }}
   end
 
@@ -83,6 +85,14 @@ defmodule Midimatches.Rooms.RoomServer do
   """
   def full?(pid) do
     GenServer.call(pid, :full?)
+  end
+
+  @spec stale?(pid(), number()) :: boolean()
+  @doc """
+  Return true if room has not been used in awhile
+  """
+  def stale?(pid, freshness_cutoff) do
+    GenServer.call(pid, {:stale?, freshness_cutoff})
   end
 
   @spec reset_room(pid()) :: :ok
@@ -188,6 +198,26 @@ defmodule Midimatches.Rooms.RoomServer do
         } = state
       ) do
     {:reply, MapSet.size(players) == max_players, state}
+  end
+
+  @impl true
+  def handle_call(
+        {:stale?, freshness_cutoff},
+        _from,
+        %RoomServer{
+          players: players,
+          game: game,
+          start_game_deadline: start_game_deadline,
+          created_at: created_at
+        } = state
+      ) do
+    last_activity_timestamp = max(created_at, start_game_deadline)
+
+    if MapSet.size(players) == 0 and is_nil(game) and last_activity_timestamp < freshness_cutoff do
+      {:reply, true, state}
+    else
+      {:reply, false, state}
+    end
   end
 
   @impl true

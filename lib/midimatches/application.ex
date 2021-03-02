@@ -7,6 +7,7 @@ defmodule Midimatches.Application do
 
   alias Midimatches.{
     Matchmaking.ServerlistUpdater,
+    RoomsGarbageCollector,
     Types.Configs
   }
 
@@ -23,7 +24,8 @@ defmodule Midimatches.Application do
       # Start a worker by calling: Midimatches.Worker.start_link(arg)
       {DynamicSupervisor, strategy: :one_for_one, name: Midimatches.Rooms},
       {Registry, keys: :unique, name: ProcessRegistry},
-      {ServerlistUpdater, []},
+      {ServerlistUpdater, [{3_000}]},
+      {RoomsGarbageCollector, []},
       {Task, fn -> configure() end},
       {PresenceTracker, [name: PresenceTracker, pubsub_server: Midimatches.PubSub]}
     ]

@@ -28,7 +28,7 @@ defmodule Midimatches.Rooms do
   Check if a room process exists for the given id.
   """
   def room_exists?(room_id) do
-    Pids.fetch({:room, room_id}) != nil
+    Pids.fetch({:room_supervisor, room_id}) != nil
   end
 
   @spec add_room(id(), String.t()) :: {atom(), pid() | String.t()}
@@ -48,7 +48,7 @@ defmodule Midimatches.Rooms do
   Drop room process from supervision tree.
   """
   def drop_room(room_id) do
-    room = Pids.fetch({:room, room_id})
+    room = Pids.fetch({:room_supervisor, room_id})
 
     if room != nil do
       DynamicSupervisor.terminate_child(__MODULE__, room)

@@ -6,8 +6,8 @@ defmodule MidimatchesWeb.RoomController do
 
   alias Midimatches.{
     Rooms,
-    Types.GameRules,
-    Types.Configs.RoomConfig
+    Types.Configs.RoomConfig,
+    Types.GameRules
   }
 
   @spec create(Plug.Conn.t(), map) :: Plug.Conn.t()

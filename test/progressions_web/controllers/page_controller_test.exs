@@ -6,15 +6,15 @@ defmodule MidimatchesWeb.PageControllerTest do
     assert html_response(conn, 200) =~ "react-app"
   end
 
-  test "GET /practice", %{conn: conn} do
-    conn = get(conn, "/practice")
-    assert html_response(conn, 200) =~ "react-app"
-  end
+  # test "GET /practice", %{conn: conn} do
+  #   conn = get(conn, "/practice")
+  #   assert html_response(conn, 200) =~ "react-app"
+  # end
 
-  test "GET /menu", %{conn: conn} do
-    conn = get(conn, "/menu")
-    assert html_response(conn, 200) =~ "react-app"
-  end
+  # test "GET /menu", %{conn: conn} do
+  #   conn = get(conn, "/menu")
+  #   assert html_response(conn, 200) =~ "react-app"
+  # end
 
   describe "GET /register" do
     test "menu dest", %{conn: conn} do
