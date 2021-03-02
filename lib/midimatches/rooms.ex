@@ -25,7 +25,7 @@ defmodule Midimatches.Rooms do
 
   @spec room_exists?(id()) :: boolean()
   @doc """
-  Check if a room process exists for the given id
+  Check if a room process exists for the given id.
   """
   def room_exists?(room_id) do
     Pids.fetch({:room, room_id}) != nil
@@ -45,7 +45,7 @@ defmodule Midimatches.Rooms do
 
   @spec drop_room(id()) :: {atom(), pid() | String.t()}
   @doc """
-  Drop room from supervision tree
+  Drop room process from supervision tree.
   """
   def drop_room(room_id) do
     room = Pids.fetch({:room, room_id})
@@ -59,7 +59,7 @@ defmodule Midimatches.Rooms do
 
   @spec list_rooms() :: list()
   @doc """
-  List current rooms
+  List currently active room processes.
   """
   def list_rooms do
     DynamicSupervisor.which_children(__MODULE__)
@@ -67,14 +67,25 @@ defmodule Midimatches.Rooms do
 
   @spec configure_rooms(list(%RoomConfig{})) :: :ok
   @doc """
-  Start child room processes with given configurations. Only to be called when starting a room
-  from a configuration
+  Start room processes with given configurations.
   """
   def configure_rooms(room_configs) do
     room_configs
-    |> Enum.each(fn cfg ->
-      room_id = Utils.gen_uuid()
-      DynamicSupervisor.start_child(__MODULE__, {Room, [{room_id, cfg.room_name, cfg}]})
-    end)
+    |> Enum.each(&configure_room/1)
+  end
+
+  @spec configure_room(%RoomConfig{}) :: id()
+  @doc """
+  Start a room process with the given configuration.
+  """
+  def configure_room(%RoomConfig{} = room_config) do
+    room_id = Utils.gen_uuid()
+
+    DynamicSupervisor.start_child(
+      __MODULE__,
+      {Room, [{room_id, room_config.room_name, room_config}]}
+    )
+
+    room_id
   end
 end

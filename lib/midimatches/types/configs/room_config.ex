@@ -7,6 +7,7 @@ defmodule Midimatches.Types.Configs.RoomConfig do
 
   alias Midimatches.Types.GameRules
 
+  @derive Jason.Encoder
   typedstruct do
     field(:room_name, String.t(), enforce: true)
     field(:server, %GameRules{}, default: %GameRules{})

@@ -29,12 +29,13 @@ const RegisterPlayerPage: React.FC = () => {
 
   return (
     <div className="narrow_center_container computer_frame outset_3d_border_deep">
+      <br />
       <MediumLargeTitle>CHOOSE A PLAYER NAME</MediumLargeTitle>
       <form className="register_player_form">
         <fieldset>
           <input
             style={{ marginBottom: "8px" }}
-            className="alias_input roboto_font"
+            className="form_text_input roboto_font"
             type="text"
             id="user_alias"
             name="user_alias"
