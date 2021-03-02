@@ -16,7 +16,7 @@ import {
 
 const RegisterPlayerPage: React.FC = () => {
   const [alias, setAlias] = useState<string>();
-  const [urlDestination, setUrlDestination] = useState<string>("/");
+  const [urlDestination, setUrlDestination] = useState<string>("/menu");
 
   useEffect(() => {
     const windowRef = window as any;
@@ -27,22 +27,6 @@ const RegisterPlayerPage: React.FC = () => {
     setAlias(e.target.value.trim());
   };
 
-  const submitRegisterPlayer = (playerAlias: string) => {
-    // POST request using fetch inside useEffect React hook
-    const requestOptions = {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        user_alias: playerAlias,
-      }),
-    };
-    fetch("/api/user/edit", requestOptions)
-      .then((response) => response.json())
-      .then((_data) => {
-        window.location.href = urlDestination;
-      });
-  };
-
   return (
     <div className="narrow_center_container computer_frame outset_3d_border_deep">
       <MediumLargeTitle>CHOOSE A PLAYER NAME</MediumLargeTitle>
@@ -50,33 +34,28 @@ const RegisterPlayerPage: React.FC = () => {
         <fieldset>
           <input
             style={{ marginBottom: "8px" }}
-            className="alias_input"
+            className="alias_input roboto_font"
             type="text"
+            id="user_alias"
+            name="user_alias"
             placeholder="Enter an alias..."
             maxLength={MAX_PLAYER_ALIAS_LENGTH}
             onChange={handleChange}
           />
+          <input hidden={true} value={urlDestination} name="url_destination" />
+          <input
+            className="register_player_submit_button roboto_font"
+            disabled={!alias || alias.length < MIN_PLAYER_ALIAS_LENGTH}
+            type="submit"
+            value="SUBMIT"
+          />
         </fieldset>
         {!!alias && alias.length < MIN_PLAYER_ALIAS_LENGTH ? (
-          <i className="alias_length_warning roboto_font">
+          <div className="alias_length_warning roboto_font">
             Alias must be at least 3 characters long
-          </i>
+          </div>
         ) : (
           <></>
-        )}
-        {!alias || alias.length < MIN_PLAYER_ALIAS_LENGTH ? (
-          <></>
-        ) : (
-          <ComputerButton
-            callback={() => {
-              if (!!alias) {
-                submitRegisterPlayer(alias);
-              }
-            }}
-            extraClasses={["register_button"]}
-          >
-            <h5>SUBMIT</h5>
-          </ComputerButton>
         )}
       </form>
     </div>

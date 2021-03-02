@@ -4,23 +4,6 @@ defmodule MidimatchesWeb.UserController do
   """
   use MidimatchesWeb, :controller
 
-  alias Midimatches.Utils
-
-  @spec edit(Plug.Conn.t(), map) :: Plug.Conn.t()
-  @doc """
-  Edit user object to their session
-  """
-  def edit(conn, %{"user_alias" => user_alias}) do
-    if is_nil(get_session(conn, :user)) do
-      new_user = %{user_alias: user_alias, user_id: Utils.gen_uuid()}
-      put_session(conn, :user, new_user)
-    else
-      existing_user = get_session(conn, :user)
-      put_session(conn, :user, %{existing_user | user_alias: user_alias})
-    end
-    |> json(%{})
-  end
-
   @spec self(Plug.Conn.t(), map) :: Plug.Conn.t()
   @doc """
   Get current session user
