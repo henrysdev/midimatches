@@ -5,6 +5,7 @@ import { MobilePlaceholder } from "./MobilePlaceholder";
 
 import {
   LandingPage,
+  PracticePage,
   RoomPage,
   RegisterPlayerPage,
   ServerlistPage,
@@ -19,6 +20,7 @@ const PageRouter: React.FC = () => {
         <Route exact path="/" component={LandingPage} />
         <Route exact path="/servers" component={ServerlistPage} />
         <Route path="/room" component={RoomPage} />
+        <Route path="/practice" component={PracticePage} />
         <Route path="/register" component={RegisterPlayerPage} />
       </Switch>
     </BrowserRouter>

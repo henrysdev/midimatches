@@ -17,7 +17,7 @@ const PregameCenterPane: React.FC<PregameCenterPaneProps> = ({
 
   return (
     <div className="pregame_content_pane" style={{ marginLeft: "16px" }}>
-      <div className="inline_screen inset_3d_border_shallow">
+      <div className="inline_screen inset_3d_border_shallow rounded_border">
         {gameInProgress ? (
           <div>
             <p>

@@ -62,30 +62,36 @@ defmodule Midimatches.Rooms.Room.GameLogic do
 
   @spec remove_player(%GameServer{}, id()) :: instruction_map()
   def remove_player(%GameServer{} = state, player_id) do
-    updated_players =
-      state.players
-      |> MapSet.to_list()
-      |> Enum.reject(&(&1.player_id == player_id))
-      |> MapSet.new()
+    valid_player_to_drop? = MapSet.member?(state.player_ids_set, player_id)
 
-    # filter out vote cast by the leaving player's. Votes for the leaving player will be treated
-    # as equal to abstaining.
-    updated_votes =
-      state.votes
-      |> Map.to_list()
-      |> Enum.reject(fn {voter, _candidate} -> voter == player_id end)
-      |> Map.new()
+    if valid_player_to_drop? do
+      updated_players =
+        state.players
+        |> MapSet.to_list()
+        |> Enum.reject(&(&1.player_id == player_id))
+        |> MapSet.new()
 
-    %GameServer{
+      # filter out vote cast by the leaving player's. Votes for the leaving player will be treated
+      # as equal to abstaining.
+      updated_votes =
+        state.votes
+        |> Map.to_list()
+        |> Enum.reject(fn {voter, _candidate} -> voter == player_id end)
+        |> Map.new()
+
+      %GameServer{
+        state
+        | player_ids_set: MapSet.delete(state.player_ids_set, player_id),
+          players: updated_players,
+          contestants: Enum.reject(state.contestants, &(&1 == player_id)),
+          ready_ups: MapSet.delete(state.ready_ups, player_id),
+          votes: updated_votes,
+          scores: Map.delete(state.scores, player_id)
+      }
+    else
       state
-      | player_ids_set: MapSet.delete(state.player_ids_set, player_id),
-        players: updated_players,
-        contestants: Enum.reject(state.contestants, &(&1 == player_id)),
-        ready_ups: MapSet.delete(state.ready_ups, player_id),
-        votes: updated_votes,
-        scores: Map.delete(state.scores, player_id)
-    }
-    |> as_instruction(sync?: true, view_change?: false)
+    end
+    |> as_instruction(sync?: valid_player_to_drop?, view_change?: false)
   end
 
   @spec ready_up(%GameServer{}, id()) :: instruction_map()

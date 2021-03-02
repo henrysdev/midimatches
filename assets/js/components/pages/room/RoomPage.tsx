@@ -1,8 +1,6 @@
 import { Channel, Socket, Push } from "phoenix";
 import React, { useEffect, useState, useMemo } from "react";
 
-import * as Tone from "tone";
-import { Input } from "webmidi";
 import { unmarshalBody } from "../../../utils";
 import {
   PlayerJoinPayload,
@@ -21,60 +19,16 @@ import {
   RESET_ROOM_EVENT,
   SUBMIT_LEAVE_ROOM,
   SUBMIT_JOIN,
-  DEFAULT_FM_SYNTH_CONFIG,
 } from "../../../constants";
 import {
+  useAudioContextProvider,
   useCurrentUserContext,
-  useSamplePlayer,
   useSocketContext,
-  useWebMidi,
 } from "../../../hooks";
 import { PregameDebug } from "../../debug";
 
 const RoomPage: React.FC = () => {
-  // midi inputs init
-  const [originalMidiInputs] = useWebMidi();
-  const [midiInputs, setMidiInputs] = useState<Array<Input>>([]);
-  const [disabledMidiInputIds, setDisabledMidiInputIds] = useState<
-    Array<string>
-  >([]);
-  useEffect(() => {
-    if (!!originalMidiInputs) {
-      setMidiInputs(
-        originalMidiInputs.filter(
-          (input: Input) => !disabledMidiInputIds.includes(input.id)
-        )
-      );
-    }
-  }, [originalMidiInputs]);
-
-  // synth + Tone init
-  const [synth, setSynth] = useState<any>();
-  useEffect(() => {
-    Tone.context.lookAhead = 0;
-    Tone.Master.volume.value = -1;
-
-    const autoWah = new Tone.AutoWah(60, 6, -30).toDestination();
-    const chorus = new Tone.Chorus(3, 0.5, 0.5).start();
-    const vibrato = new Tone.Vibrato("16n", 0.05);
-    const newSynth = new Tone.PolySynth(Tone.FMSynth, DEFAULT_FM_SYNTH_CONFIG);
-    newSynth.chain(vibrato, chorus, Tone.Destination);
-
-    setSynth(newSynth);
-  }, []);
-
-  // sample player
-  const [
-    isSamplePlayerLoaded,
-    samplePlayer,
-    loadSample,
-    stopSample,
-  ] = useSamplePlayer(Tone);
-  const resetTone = () => {
-    stopSample();
-    Tone.Transport.cancel(0);
-    Tone.Transport.stop();
-  };
+  const toneAudioContext = useAudioContextProvider();
 
   const [gameChannel, setGameChannel] = useState<Channel>();
   const [gameInProgress, setGameInProgress] = useState<boolean>(false);
@@ -214,25 +168,14 @@ const RoomPage: React.FC = () => {
 
   return (
     <div>
-      <ToneAudioContext.Provider
-        value={{
-          Tone,
-          midiInputs,
-          setMidiInputs,
-          disabledMidiInputIds,
-          setDisabledMidiInputIds,
-          originalMidiInputs,
-          synth,
-          samplePlayer,
-          loadSample,
-          stopSample,
-          resetTone,
-          isSamplePlayerLoaded,
-        }}
-      >
+      <ToneAudioContext.Provider value={toneAudioContext}>
         {!!gameChannel && !!currPlayer && !!initGameState ? (
           <PlayerContext.Provider value={{ player: currPlayer }}>
-            <Game gameChannel={gameChannel} initGameState={initGameState} />
+            <Game
+              gameChannel={gameChannel}
+              initGameState={initGameState}
+              roomName={lobbyState.roomName}
+            />
           </PlayerContext.Provider>
         ) : !!gameChannel ? (
           <PregameLobby

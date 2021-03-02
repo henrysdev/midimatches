@@ -168,9 +168,6 @@ defmodule Midimatches.RoomServerTest do
 
     RoomServer.drop_player(room_server, m1.player_id)
     assert RoomServer.full?(room_server) == false
-
-    RoomServer.add_player(room_server, m1)
-    assert RoomServer.full?(room_server) == true
   end
 
   @type id() :: String.t()

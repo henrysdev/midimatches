@@ -20,13 +20,19 @@ import {
 } from "../../../../hooks";
 import { InGameFrame } from ".";
 import { GameContextType } from "../../../../types";
+import { GameLeftPane } from "./GameLeftPane";
 
 interface GameProps {
   gameChannel: Channel;
   initGameState: GameContextType;
+  roomName: string;
 }
 
-const Game: React.FC<GameProps> = ({ gameChannel, initGameState }) => {
+const Game: React.FC<GameProps> = ({
+  gameChannel,
+  initGameState,
+  roomName,
+}) => {
   const [currentView, gameContext, pushMessage] = useGameServerState(
     gameChannel,
     initGameState
@@ -74,7 +80,11 @@ const Game: React.FC<GameProps> = ({ gameChannel, initGameState }) => {
 
   return (
     <GameContext.Provider value={gameContext} key={currentView}>
-      <InGameFrame>
+      <InGameFrame
+        title="///GAME"
+        subtitle={`${roomName} / FREE-FOR-ALL / ROUND ${gameContext.roundNum}`}
+      >
+        <GameLeftPane />
         {(() => {
           switch (currentView) {
             case GAME_VIEW.GAME_START:

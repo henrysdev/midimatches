@@ -194,17 +194,18 @@ const PregameDebug: React.FC = () => {
       >
         <PlayerContext.Provider value={{ player: mockedPlayers[0] }}>
           <ToneAudioContext.Provider value={{ midiInputs, Tone: mockTone }}>
-            <InGameFrame>
+            <InGameFrame title="AAA">
+              <GameStartView pushMessageToChannel={() => {}} />
               {/* <RecordingView
                 isContestant={true}
                 pushMessageToChannel={() => {}}
                 stopSample={() => {}}
               /> */}
-              <PlaybackVotingView
+              {/* <PlaybackVotingView
                 pushMessageToChannel={() => {}}
                 stopSample={() => {}}
                 isSamplePlayerLoaded={true}
-              />
+              /> */}
             </InGameFrame>
             {/* <DynamicContent>
               <div>
