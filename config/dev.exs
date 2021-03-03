@@ -56,6 +56,8 @@ config :midimatches, MidimatchesWeb.Endpoint,
     ]
   ]
 
+config :midimatches, :s3_client, Midimatches.S3Client
+
 # # Do not include metadata nor timestamps in development logs
 # config :logger, :console, format: "[$level] $message\n"
 
