@@ -208,16 +208,31 @@ defmodule Midimatches.Rooms.RoomServer do
           players: players,
           game: game,
           start_game_deadline: start_game_deadline,
-          created_at: created_at
+          created_at: created_at,
+          game_config: %GameRules{
+            permanent_room: permanent_room
+          }
         } = state
       ) do
-    last_activity_timestamp = max(created_at, start_game_deadline)
+    # last_activity_timestamp = max(created_at, start_game_deadline)
 
-    if MapSet.size(players) == 0 and is_nil(game) and last_activity_timestamp < freshness_cutoff do
-      {:reply, true, state}
-    else
-      {:reply, false, state}
+    cond do
+      permanent_room ->
+        {:reply, false, state}
+
+      MapSet.size(players) == 0 and is_nil(game) and
+          max(created_at, start_game_deadline) < freshness_cutoff ->
+        {:reply, true, state}
+
+      true ->
+        {:reply, false, state}
     end
+
+    # if MapSet.size(players) == 0 and is_nil(game) and last_activity_timestamp < freshness_cutoff do
+    #   {:reply, true, state}
+    # else
+    #   {:reply, false, state}
+    # end
   end
 
   @impl true
