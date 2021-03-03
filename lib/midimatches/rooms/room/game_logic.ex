@@ -6,7 +6,7 @@ defmodule Midimatches.Rooms.Room.GameLogic do
   alias Midimatches.{
     Rooms.Room.Game.Views,
     Rooms.Room.GameServer,
-    S3Client,
+    S3ClientProxy,
     Types.GameRules,
     Types.Player,
     Utils
@@ -28,7 +28,7 @@ defmodule Midimatches.Rooms.Room.GameLogic do
       |> MapSet.to_list()
       |> Enum.map(& &1.player_id)
 
-    sample_beats = S3Client.random_sample_beats(game_rules.rounds_to_win)
+    sample_beats = S3ClientProxy.random_sample_beats(game_rules.rounds_to_win)
 
     %GameServer{
       room_id: room_id,

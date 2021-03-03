@@ -16,3 +16,5 @@ config :logger,
 config :logger, :error_log,
   path: "dev/log.log",
   level: :debug
+
+config :midimatches, :s3_client, Midimatches.S3Client.Mock
