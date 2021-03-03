@@ -15,6 +15,7 @@ defmodule Midimatches.Types.GameRules do
   @default_solo_time_limit 30_000
   @default_view_timeouts %ViewTimeouts{}
   @default_pregame_countdown 10_000
+  @default_permanent_room false
 
   @derive Jason.Encoder
   typedstruct do
@@ -25,6 +26,9 @@ defmodule Midimatches.Types.GameRules do
     field(:max_players, integer(), default: @default_max_players)
     field(:solo_time_limit, integer(), default: @default_solo_time_limit)
     field(:view_timeouts, map(), default: @default_view_timeouts)
+    # TODO move to room config
     field(:pregame_countdown, integer(), default: @default_pregame_countdown)
+    # TODO move to room config
+    field(:permanent_room, boolean(), default: @default_permanent_room)
   end
 end

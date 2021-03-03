@@ -228,6 +228,24 @@ defmodule Midimatches.RoomServerTest do
 
       assert !RoomServer.stale?(room_server, freshness_cutoff)
     end
+
+    test "when room is not stale (by permanent field)" do
+      now = :os.system_time(:millisecond)
+      freshness_cutoff = now - 300
+      server_deadline = now - 400
+
+      room_id = "1"
+      room_name = "foobar"
+
+      {:ok, room_server} =
+        start_supervised({RoomServer, [{room_id, room_name, %GameRules{permanent_room: true}}]})
+
+      :sys.replace_state(room_server, fn state ->
+        %RoomServer{state | created_at: server_deadline}
+      end)
+
+      assert !RoomServer.stale?(room_server, freshness_cutoff)
+    end
   end
 
   @type id() :: String.t()
