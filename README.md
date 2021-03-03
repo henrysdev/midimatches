@@ -1,6 +1,6 @@
-# Midi Matches
+# MIDI Matches
 
-[Midi Matches](https://progressions.gigalixirapp.com/) is a browser-based online multiplayer game that aims to combine the joy of improvisational keyboard with the thrill of friendly competition.
+[MIDI Matches](https://midimatches.onrender.com/) is a browser-based online multiplayer game that aims to combine the joy of improvisational keyboard with the thrill of friendly competition.
 
 The core game mechanic revolves around facing off with other musicians on creating short keyboard solos over beats.
 
