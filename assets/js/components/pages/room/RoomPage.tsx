@@ -45,6 +45,9 @@ const RoomPage: React.FC = () => {
   const resetRoom = () => {
     setGameInProgress(false);
     setInitGameState(undefined);
+    if (!!toneAudioContext && !!toneAudioContext.stopSample) {
+      toneAudioContext.stopSample();
+    }
   };
 
   useEffect(() => {
