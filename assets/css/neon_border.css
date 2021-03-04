@@ -1,0 +1,97 @@
+@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap");
+
+.neon_border {
+  position: relative;
+  color: #67f403;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: 0.5s;
+  letter-spacing: 4px;
+  overflow: hidden;
+  box-shadow: 0 0 5px #67f403, 0 0 25px #67f403, 0 0 50px #67f403,
+    0 0 200px #67f403;
+  -webkit-box-reflect: below 1px linear-gradient(transparent, #0005);
+}
+/* .neon_border:hover {
+  background: #67f403;
+  color: #050801;
+  box-shadow: 0 0 5px #67f403, 0 0 25px #67f403, 0 0 50px #67f403,
+    0 0 200px #67f403;
+  -webkit-box-reflect: below 1px linear-gradient(transparent, #0005);
+} */
+.neon_border span {
+  position: absolute;
+  display: block;
+}
+.neon_border span:nth-child(1) {
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, #67f403);
+  animation: animate1 4s linear infinite;
+}
+@keyframes animate1 {
+  0% {
+    left: -100%;
+  }
+  50%,
+  100% {
+    left: 100%;
+  }
+}
+.neon_border span:nth-child(2) {
+  top: -100%;
+  right: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, transparent, #67f403);
+  animation: animate2 4s linear infinite;
+  animation-delay: 1s;
+}
+@keyframes animate2 {
+  0% {
+    top: -100%;
+  }
+  50%,
+  100% {
+    top: 100%;
+  }
+}
+.neon_border span:nth-child(3) {
+  bottom: 0;
+  right: -100%;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(270deg, transparent, #67f403);
+  animation: animate3 4s linear infinite;
+  animation-delay: 2s;
+}
+@keyframes animate3 {
+  0% {
+    right: -100%;
+  }
+  50%,
+  100% {
+    right: 100%;
+  }
+}
+
+.neon_border span:nth-child(4) {
+  bottom: -100%;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(360deg, transparent, #67f403);
+  animation: animate4 4s linear infinite;
+  animation-delay: 3s;
+}
+@keyframes animate4 {
+  0% {
+    bottom: -100%;
+  }
+  50%,
+  100% {
+    bottom: 100%;
+  }
+}
