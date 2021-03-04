@@ -2,7 +2,7 @@ import React from "react";
 import { useGameContext, usePlayerContext } from "../../../../hooks";
 import { Scoreboard } from "./Scoreboard";
 import { Player } from "../../../../types";
-import { GameSettings } from ".";
+import { GameSettings, ChatBox } from ".";
 
 interface GameLeftPaneProps {}
 
@@ -27,6 +27,9 @@ const GameLeftPane: React.FC<GameLeftPaneProps> = ({}) => {
         </div>
         <div className="settings_flex_wrapper inset_3d_border_deep">
           <GameSettings />
+        </div>
+        <div className="chatbox_flex_wrapper inset_3d_border_deep">
+          <ChatBox />
         </div>
       </div>
     </div>

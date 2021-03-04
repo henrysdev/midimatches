@@ -114,6 +114,12 @@ export interface WinResult {
   numPoints: number;
 }
 
+export interface ChatMessage {
+  playerId: string;
+  messageText: string;
+  timestamp: number;
+}
+
 type RecordingTuple = [string, any];
 type ScoreTuple = [string, number];
 
@@ -157,6 +163,11 @@ export interface SocketContextType {
 }
 
 type GameContextType = GameState;
+
+export interface ChatContextType {
+  chatHistory: ChatMessage[];
+  submitChatMessageEvent: (messageText: string) => void;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Player Data                                                               //

@@ -712,3 +712,49 @@ strong {
 .form_input_label {
   margin-bottom: 4px;
 }
+
+.chatbox_flex_wrapper {
+  flex: 4;
+  margin: 8px;
+}
+
+.chat_box {
+  padding: 8px;
+  width: 300px;
+}
+
+.chat_messages_container {
+  height: 268px;
+  overflow: auto;
+  display: relative;
+}
+
+.chat_message_item {
+  background-color: white;
+  color: black;
+  border: 1px green solid;
+  /* height: 32px; */
+}
+
+.chat_message_author_label {
+  border: 1px red solid;
+  /* font-size: 8px; */
+}
+
+.chat_messages_text {
+  border: 1px blue solid;
+  /* font-size: 12px; */
+  /* font-weight: bold; */
+}
+
+.chat_text_entry_container {
+  display: flex;
+}
+
+.chat_text_entry {
+  flex: 8;
+}
+
+.chat_send_button {
+  flex: 1;
+}

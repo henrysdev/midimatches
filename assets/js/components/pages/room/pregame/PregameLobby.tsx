@@ -10,6 +10,7 @@ import {
 import { PregameDebug } from "../../../debug";
 import { PregameCenterPane, WarmUp } from ".";
 import { User } from "../../../../types";
+import { ChatBox } from "../game";
 
 interface PregameLobbyProps {
   gameInProgress: boolean;
@@ -89,6 +90,7 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
                   )}
                 </h5>
               </ComputerButton>
+              <ChatBox />
             </div>
             <PregameCenterPane
               gameInProgress={gameInProgress}

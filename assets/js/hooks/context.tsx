@@ -6,6 +6,7 @@ import {
   PlayerContext,
   CurrentUserContext,
   SocketContext,
+  ChatContext,
 } from "../contexts";
 
 import {
@@ -14,6 +15,7 @@ import {
   PlayerContextType,
   CurrentUserContextType,
   SocketContextType,
+  ChatContextType,
 } from "../types";
 
 export function useGameContext() {
@@ -34,4 +36,8 @@ export function useCurrentUserContext() {
 
 export function useSocketContext() {
   return useContext(SocketContext) as SocketContextType;
+}
+
+export function useChatContext() {
+  return useContext(ChatContext) as ChatContextType;
 }

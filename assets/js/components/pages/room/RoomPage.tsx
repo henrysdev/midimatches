@@ -9,19 +9,28 @@ import {
   StartGamePayload,
   LobbyUpdatePayload,
   RoomState,
+  ChatMessage,
 } from "../../../types";
 import { Game } from "./game/Game";
 import { PregameLobby } from "./pregame/PregameLobby";
-import { PlayerContext, ToneAudioContext } from "../../../contexts";
+import {
+  PlayerContext,
+  ToneAudioContext,
+  ChatContext,
+} from "../../../contexts";
 import {
   START_GAME_EVENT,
   LOBBY_UPDATE_EVENT,
   RESET_ROOM_EVENT,
   SUBMIT_LEAVE_ROOM,
   SUBMIT_JOIN,
+  NEW_CHAT_MESSAGE_EVENT,
+  MAX_CHAT_HISTORY_LENGTH,
+  SUBMIT_CHAT_MESSAGE,
 } from "../../../constants";
 import {
   useAudioContextProvider,
+  useChat,
   useCurrentUserContext,
   useSocketContext,
 } from "../../../hooks";
@@ -29,6 +38,7 @@ import { PregameDebug } from "../../debug";
 
 const RoomPage: React.FC = () => {
   const toneAudioContext = useAudioContextProvider();
+  const [chatHistory, handleChatMessage] = useChat(MAX_CHAT_HISTORY_LENGTH);
 
   const [gameChannel, setGameChannel] = useState<Channel>();
   const [gameInProgress, setGameInProgress] = useState<boolean>(false);
@@ -47,6 +57,12 @@ const RoomPage: React.FC = () => {
     setInitGameState(undefined);
     if (!!toneAudioContext && !!toneAudioContext.stopSample) {
       toneAudioContext.stopSample();
+    }
+  };
+
+  const submitChatMessageEvent = (messageText: string): void => {
+    if (!!gameChannel) {
+      gameChannel.push(SUBMIT_CHAT_MESSAGE, { message_text: messageText });
     }
   };
 
@@ -110,6 +126,12 @@ const RoomPage: React.FC = () => {
     };
     joinRoomFlow();
 
+    // receive chat
+    channel.on(NEW_CHAT_MESSAGE_EVENT, (body) => {
+      const chatMessage = unmarshalBody(body) as ChatMessage;
+      handleChatMessage(chatMessage);
+    });
+
     // lobby update
     channel.on(LOBBY_UPDATE_EVENT, (body) => {
       const {
@@ -172,27 +194,29 @@ const RoomPage: React.FC = () => {
   return (
     <div>
       <ToneAudioContext.Provider value={toneAudioContext}>
-        {!!gameChannel && !!currPlayer && !!initGameState ? (
-          <PlayerContext.Provider value={{ player: currPlayer }}>
-            <Game
-              gameChannel={gameChannel}
-              initGameState={initGameState}
+        <ChatContext.Provider value={{ chatHistory, submitChatMessageEvent }}>
+          {!!gameChannel && !!currPlayer && !!initGameState ? (
+            <PlayerContext.Provider value={{ player: currPlayer }}>
+              <Game
+                gameChannel={gameChannel}
+                initGameState={initGameState}
+                roomName={lobbyState.roomName}
+              />
+            </PlayerContext.Provider>
+          ) : !!gameChannel ? (
+            <PregameLobby
+              gameInProgress={gameInProgress}
+              numPlayersJoined={lobbyState.numPlayersJoined}
+              maxPlayers={lobbyState.maxPlayers}
+              numPlayersToStart={lobbyState.numPlayersToStart}
+              startGameDeadline={lobbyState.startGameDeadline}
+              currentUser={currentUser}
               roomName={lobbyState.roomName}
             />
-          </PlayerContext.Provider>
-        ) : !!gameChannel ? (
-          <PregameLobby
-            gameInProgress={gameInProgress}
-            numPlayersJoined={lobbyState.numPlayersJoined}
-            maxPlayers={lobbyState.maxPlayers}
-            numPlayersToStart={lobbyState.numPlayersToStart}
-            startGameDeadline={lobbyState.startGameDeadline}
-            currentUser={currentUser}
-            roomName={lobbyState.roomName}
-          />
-        ) : (
-          <></>
-        )}
+          ) : (
+            <></>
+          )}
+        </ChatContext.Provider>
       </ToneAudioContext.Provider>
       {/* <PregameDebug /> */}
     </div>
