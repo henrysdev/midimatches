@@ -18,7 +18,7 @@ import {
   usePlayerContext,
   useToneAudioContext,
 } from "../../../../hooks";
-import { InGameFrame } from ".";
+import { InGameFrame, GameSubContexts } from ".";
 import { GameContextType } from "../../../../types";
 import { GameLeftPane } from "./GameLeftPane";
 
@@ -79,51 +79,53 @@ const Game: React.FC<GameProps> = ({
   }, [currentView]);
 
   return (
-    <GameContext.Provider value={gameContext} key={currentView}>
-      <InGameFrame
-        title="///GAME"
-        subtitle={`${roomName} / FREE-FOR-ALL / ROUND ${gameContext.roundNum}`}
-      >
-        <GameLeftPane />
-        {(() => {
-          switch (currentView) {
-            case GAME_VIEW.GAME_START:
-              return <GameStartView pushMessageToChannel={pushMessage} />;
+    <GameContext.Provider value={gameContext}>
+      <GameSubContexts gameContext={gameContext}>
+        <InGameFrame
+          title="///GAME"
+          subtitle={`${roomName} / FREE-FOR-ALL / ROUND ${gameContext.roundNum}`}
+        >
+          <GameLeftPane />
+          {(() => {
+            switch (currentView) {
+              case GAME_VIEW.GAME_START:
+                return <GameStartView pushMessageToChannel={pushMessage} />;
 
-            case GAME_VIEW.ROUND_START:
-              return (
-                <RoundStartView
-                  pushMessageToChannel={pushMessage}
-                  roundNum={gameContext.roundNum}
-                />
-              );
+              case GAME_VIEW.ROUND_START:
+                return (
+                  <RoundStartView
+                    pushMessageToChannel={pushMessage}
+                    roundNum={gameContext.roundNum}
+                  />
+                );
 
-            case GAME_VIEW.RECORDING:
-              return (
-                <RecordingView
-                  isContestant={!joinedMidRecording}
-                  pushMessageToChannel={pushMessage}
-                  stopSample={stopSample}
-                />
-              );
+              case GAME_VIEW.RECORDING:
+                return (
+                  <RecordingView
+                    isContestant={!joinedMidRecording}
+                    pushMessageToChannel={pushMessage}
+                    stopSample={stopSample}
+                  />
+                );
 
-            case GAME_VIEW.PLAYBACK_VOTING:
-              return (
-                <PlaybackVotingView
-                  pushMessageToChannel={pushMessage}
-                  stopSample={stopSample}
-                  isSamplePlayerLoaded={isSamplePlayerLoaded}
-                />
-              );
+              case GAME_VIEW.PLAYBACK_VOTING:
+                return (
+                  <PlaybackVotingView
+                    pushMessageToChannel={pushMessage}
+                    stopSample={stopSample}
+                    isSamplePlayerLoaded={isSamplePlayerLoaded}
+                  />
+                );
 
-            case GAME_VIEW.ROUND_END:
-              return <RoundEndView />;
+              case GAME_VIEW.ROUND_END:
+                return <RoundEndView />;
 
-            case GAME_VIEW.GAME_END:
-              return <GameEndView />;
-          }
-        })()}
-      </InGameFrame>
+              case GAME_VIEW.GAME_END:
+                return <GameEndView />;
+            }
+          })()}
+        </InGameFrame>
+      </GameSubContexts>
     </GameContext.Provider>
   );
 };

@@ -9,7 +9,10 @@ import {
 } from "../../../../common";
 import { SUBMIT_READY_UP_EVENT } from "../../../../../constants/index";
 import { MidiConfiguration } from "../../../../audio";
-import { useGameContext } from "../../../../../hooks";
+import {
+  useGameRulesContext,
+  useViewDeadlineContext,
+} from "../../../../../hooks";
 import { calcMsUntilMsTimestamp } from "../../../../../utils";
 
 interface GameStartViewProps {
@@ -23,8 +26,9 @@ const GameStartView: React.FC<GameStartViewProps> = ({
     gameRules: {
       viewTimeouts: { gameStart: gameStartTimeout },
     },
-    viewDeadline,
-  } = useGameContext();
+  } = useGameRulesContext();
+
+  const { viewDeadline } = useViewDeadlineContext();
 
   return (
     <div>

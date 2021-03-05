@@ -1,7 +1,7 @@
 import React, { useState, useEffect, memo } from "react";
 
 import { ChatMessage, Player } from "../../types";
-import { useChatContext, useGameContext } from "../../hooks";
+import { useChatContext } from "../../hooks";
 import { MAX_CHARS_PER_CHAT_MESSAGE } from "../../constants";
 
 interface ChatBoxProps {
@@ -53,8 +53,6 @@ const ChatBox: React.FC<ChatBoxProps> = memo(({ players }) => {
           name="chat_text_entry"
           maxLength={MAX_CHARS_PER_CHAT_MESSAGE}
           value={messageTextBuffer}
-          onFocus={() => console.log("focused!")}
-          onBlur={() => console.log("blurred!")}
           onChange={handleTextBufferChange}
           onKeyDown={(e: any) => {
             if (e.key === "Enter") {

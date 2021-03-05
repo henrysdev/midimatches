@@ -179,7 +179,7 @@ const RoomPage: React.FC = () => {
     // leave room
     window.addEventListener("beforeunload", () => {
       channel.push(SUBMIT_LEAVE_ROOM, {});
-      // channel.leave();
+      channel.leave();
     });
 
     setGameChannel(channel);

@@ -6,3 +6,10 @@ export const PlayerContext = createContext({});
 export const CurrentUserContext = createContext({});
 export const SocketContext = createContext({});
 export const ChatContext = createContext({});
+
+// Game Sub-contexts
+export const GameViewContext = createContext({});
+export const PlayersContext = createContext({});
+export const ViewDeadlineContext = createContext({});
+export const GameRulesContext = createContext({});
+export const ScoresContext = createContext({});

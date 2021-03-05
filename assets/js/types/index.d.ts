@@ -170,6 +170,26 @@ export interface ChatContextType {
   submitChatMessageEvent: (messageText: string) => void;
 }
 
+export interface GameViewContextType {
+  gameView: string;
+}
+
+export interface PlayersContextType {
+  players?: Player[];
+}
+
+export interface ViewDeadlineContextType {
+  viewDeadline: number;
+}
+
+export interface GameRulesContextType {
+  gameRules: GameRules;
+}
+
+export interface ScoresContextType {
+  scores: ScoreTuple[];
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // Player Data                                                               //
 ///////////////////////////////////////////////////////////////////////////////
