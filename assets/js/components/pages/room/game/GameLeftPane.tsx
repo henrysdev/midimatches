@@ -35,9 +35,6 @@ const GameLeftPane: React.FC<GameLeftPaneProps> = memo(({}) => {
         <div className="settings_flex_wrapper inset_3d_border_deep">
           <GameSettings />
         </div>
-        <div className="chatbox_flex_wrapper inset_3d_border_deep">
-          <ChatBox players={players} />
-        </div>
       </div>
     </div>
   );

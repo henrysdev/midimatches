@@ -90,7 +90,7 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
                   )}
                 </h5>
               </ComputerButton>
-              <ChatBox players={roomPlayers} />
+              {/* <ChatBox players={roomPlayers} /> */}
             </div>
             <PregameCenterPane
               gameInProgress={gameInProgress}

@@ -20,7 +20,7 @@ import {
 } from "../../../../hooks";
 import { InGameFrame, GameSubContexts } from ".";
 import { GameContextType } from "../../../../types";
-import { GameLeftPane } from "./GameLeftPane";
+import { GameLeftPane, GameRightPane } from ".";
 
 interface GameProps {
   gameChannel: Channel;
@@ -124,6 +124,7 @@ const Game: React.FC<GameProps> = ({
                 return <GameEndView />;
             }
           })()}
+          <GameRightPane />
         </InGameFrame>
       </GameSubContexts>
     </GameContext.Provider>

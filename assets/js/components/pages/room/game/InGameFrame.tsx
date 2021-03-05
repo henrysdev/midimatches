@@ -30,6 +30,7 @@ const InGameFrame: React.FC<InGameFrameProps> = ({
               <div className="gameplay_pane_inner">{children[1]}</div>
             </div>
           </div>
+          <div className="game_right_content_pane_wrapper">{children[2]}</div>
         </div>
       </div>
     </ComputerFrame>

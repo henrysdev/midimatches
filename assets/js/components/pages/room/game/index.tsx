@@ -6,3 +6,4 @@ export { WinResultText } from "./WinResultText";
 export { InGameFrame } from "./InGameFrame";
 export { GameLeftPane } from "./GameLeftPane";
 export { GameSubContexts } from "./GameSubContexts";
+export { GameRightPane } from "./GameRightPane";

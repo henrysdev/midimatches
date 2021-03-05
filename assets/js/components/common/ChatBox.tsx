@@ -24,6 +24,16 @@ const ChatBox: React.FC<ChatBoxProps> = memo(({ players }) => {
     }
   };
 
+  const [allSeenPlayers, setAllSeenPlayers] = useState<any>({});
+
+  useEffect(() => {
+    const updatedSeenPlayers = players.reduce((acc, player) => {
+      acc[player.playerId] = player;
+      return acc;
+    }, allSeenPlayers);
+    setAllSeenPlayers(updatedSeenPlayers);
+  }, [players.length]);
+
   return (
     <div className="chat_box inline_screen">
       <div className="chat_messages_container">
@@ -34,12 +44,15 @@ const ChatBox: React.FC<ChatBoxProps> = memo(({ players }) => {
           ): JSX.Element => {
             return (
               <div key={index} className="chat_message_item">
-                <div className="chat_message_author_label roboto_font">
-                  {players.find((x) => x.playerId === playerId)?.playerAlias}
-                </div>
-                <div className="chat_message_text roboto_font">
+                <span className="chat_message_author_label roboto_font">
+                  {playerId in allSeenPlayers
+                    ? allSeenPlayers[playerId].playerAlias
+                    : playerId}
+                  {": "}
+                </span>
+                <span className="chat_message_text roboto_font">
                   {messageText}
-                </div>
+                </span>
               </div>
             );
           }
@@ -47,7 +60,7 @@ const ChatBox: React.FC<ChatBoxProps> = memo(({ players }) => {
       </div>
       <div className="chat_text_entry_container">
         <input
-          className="chat_text_entry"
+          className="chat_text_entry roboto_font"
           type="text"
           id="chat_text_entry"
           name="chat_text_entry"
@@ -62,7 +75,7 @@ const ChatBox: React.FC<ChatBoxProps> = memo(({ players }) => {
           }}
         />
         <input
-          className="chat_send_button"
+          className="chat_send_button roboto_font"
           type="submit"
           value="SEND"
           onClick={() => handleSubmitTextBuffer()}
