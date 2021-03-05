@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, memo } from "react";
 
 import { ChatMessage, Player } from "../../types";
 import { useChatContext, useGameContext } from "../../hooks";
@@ -8,18 +8,8 @@ interface ChatBoxProps {
   players: Array<Player>;
 }
 
-const ChatBox: React.FC<ChatBoxProps> = ({ players }) => {
+const ChatBox: React.FC<ChatBoxProps> = memo(({ players }) => {
   const { chatHistory, submitChatMessageEvent } = useChatContext();
-
-  const [allPlayersMap, setAllPlayersMap] = useState<any>({});
-
-  useEffect(() => {
-    const newPlayersMap = players.reduce((accObj: any, player: Player) => {
-      accObj[player.playerId] = player;
-      return accObj;
-    }, allPlayersMap);
-    setAllPlayersMap(newPlayersMap);
-  }, [players.length]);
 
   const [messageTextBuffer, setMessageTextBuffer] = useState<string>("");
 
@@ -45,9 +35,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ players }) => {
             return (
               <div key={index} className="chat_message_item">
                 <div className="chat_message_author_label roboto_font">
-                  {playerId in allPlayersMap
-                    ? allPlayersMap[playerId].playerAlias
-                    : ""}
+                  {players.find((x) => x.playerId === playerId)?.playerAlias}
                 </div>
                 <div className="chat_message_text roboto_font">
                   {messageText}
@@ -84,5 +72,5 @@ const ChatBox: React.FC<ChatBoxProps> = ({ players }) => {
       </div>
     </div>
   );
-};
+});
 export { ChatBox };
