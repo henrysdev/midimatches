@@ -4,7 +4,6 @@ import {
   SUBMIT_VOTE_EVENT,
   DEFAULT_RECORDING_LENGTH,
 } from "../../../../constants";
-import { useGameContext, usePlayerContext } from "../../../../hooks";
 import { PlaybackAudio } from "../../../audio";
 import {
   SimpleButton,

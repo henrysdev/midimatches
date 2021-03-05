@@ -16,3 +16,4 @@ export { ContentButton } from "./ContentButton";
 export { TimerBox } from "./TimerBox";
 export { LoadingSpinner } from "./LoadingSpinner";
 export { PageContent } from "./PageContent";
+export { ChatBox } from "./ChatBox";

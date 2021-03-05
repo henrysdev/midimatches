@@ -8,7 +8,7 @@ import {
   DEFAULT_NUM_RECORDED_LOOPS,
   DEFAULT_RECORDING_LENGTH,
 } from "../../constants";
-import { useGameContext, useToneAudioContext } from "../../hooks";
+import { useGameRulesContext, useToneAudioContext } from "../../hooks";
 import { scheduleSamplePlay } from "../../helpers";
 import { RecordingVisual } from "./";
 
@@ -45,7 +45,7 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
 }) => {
   const {
     gameRules: { timestepSize },
-  } = useGameContext();
+  } = useGameRulesContext();
 
   const [progress, setProgress] = useState<number>(0);
   const { synth, samplePlayer } = useToneAudioContext();

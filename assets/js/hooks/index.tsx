@@ -8,4 +8,5 @@ export { useSocket } from "./useSocket";
 export { useAudioContextProvider } from "./useAudioContextProvider";
 export { useLoadRandomSamples } from "./useLoadRandomSamples";
 export { useLoadCreateRoom } from "./useLoadCreateRoom";
+export { useChat } from "./useChat";
 export * from "./context";

@@ -227,12 +227,6 @@ defmodule Midimatches.Rooms.RoomServer do
       true ->
         {:reply, false, state}
     end
-
-    # if MapSet.size(players) == 0 and is_nil(game) and last_activity_timestamp < freshness_cutoff do
-    #   {:reply, true, state}
-    # else
-    #   {:reply, false, state}
-    # end
   end
 
   @impl true

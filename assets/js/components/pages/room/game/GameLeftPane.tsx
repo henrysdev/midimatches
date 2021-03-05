@@ -1,13 +1,20 @@
-import React from "react";
-import { useGameContext, usePlayerContext } from "../../../../hooks";
+import React, { memo, useEffect } from "react";
+import {
+  useGameContext,
+  usePlayerContext,
+  usePlayersContext,
+  useScoresContext,
+} from "../../../../hooks";
 import { Scoreboard } from "./Scoreboard";
 import { Player } from "../../../../types";
 import { GameSettings } from ".";
+import { ChatBox } from "../../../common";
 
 interface GameLeftPaneProps {}
 
-const GameLeftPane: React.FC<GameLeftPaneProps> = ({}) => {
-  const { players, readyUps, roundNum, scores } = useGameContext();
+const GameLeftPane: React.FC<GameLeftPaneProps> = memo(({}) => {
+  const { players = [] } = usePlayersContext();
+  const { scores } = useScoresContext();
   const { player: currPlayer } = usePlayerContext();
   return (
     <div className="left_game_content_pane">
@@ -31,5 +38,5 @@ const GameLeftPane: React.FC<GameLeftPaneProps> = ({}) => {
       </div>
     </div>
   );
-};
+});
 export { GameLeftPane };

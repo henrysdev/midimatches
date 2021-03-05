@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { Loop, TimestepSlice, Note, Color } from "../../types";
-import { useGameContext } from "../../hooks";
+import { useGameRulesContext } from "../../hooks";
 import { microsToMs, msToSec } from "../../utils";
 import { DEFAULT_RECORDING_LENGTH } from "../../constants";
 
@@ -27,7 +27,7 @@ const RecordingVisual: React.FC<RecordingVisualProps> = ({
 }) => {
   const {
     gameRules: { timestepSize },
-  } = useGameContext();
+  } = useGameRulesContext();
 
   const { percentagePerTimestep, percentagePerKey } = useMemo(
     () => calcPercentageUnits(keyboardRange, timestepSize),

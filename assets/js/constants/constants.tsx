@@ -29,6 +29,7 @@ export const GAME_UPDATE_EVENT = "game_update";
 export const START_GAME_EVENT = "start_game";
 export const RESET_ROOM_EVENT = "reset_room";
 export const LOBBY_UPDATE_EVENT = "lobby_update";
+export const NEW_CHAT_MESSAGE_EVENT = "new_chat_message";
 
 export const SUBMIT_REGISTERED_JOIN = "user_enter_room";
 export const SUBMIT_JOIN = "player_join";
@@ -36,6 +37,10 @@ export const SUBMIT_LEAVE_ROOM = "player_leave_room";
 export const SUBMIT_READY_UP_EVENT = "player_ready_up";
 export const SUBMIT_RECORDING_EVENT = "player_recording";
 export const SUBMIT_VOTE_EVENT = "player_vote";
+export const SUBMIT_CHAT_MESSAGE = "player_chat_message";
+
+export const MAX_CHAT_HISTORY_LENGTH = 25;
+export const MAX_CHARS_PER_CHAT_MESSAGE = 80;
 
 export const MIN_PLAYER_ALIAS_LENGTH = 3;
 export const MAX_PLAYER_ALIAS_LENGTH = 10;

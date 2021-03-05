@@ -10,6 +10,7 @@ defmodule MidimatchesWeb.RoomChannel do
     Rooms,
     Rooms.Room.GameServer,
     Rooms.RoomServer,
+    Types.ChatMessage,
     Types.Loop,
     Types.Note,
     Types.Player,
@@ -131,6 +132,22 @@ defmodule MidimatchesWeb.RoomChannel do
         %Phoenix.Socket{assigns: %{game_server: game_server, player_id: player_id}} = socket
       ) do
     GameServer.player_vote(game_server, player_id, vote)
+
+    {:reply, {:ok, %{}}, socket}
+  end
+
+  def handle_in(
+        "player_chat_message",
+        %{"message_text" => message_text},
+        %Phoenix.Socket{assigns: %{player_id: player_id}} = socket
+      ) do
+    chat_message = %ChatMessage{
+      player_id: player_id,
+      message_text: message_text,
+      timestamp: :os.system_time(:millisecond)
+    }
+
+    broadcast!(socket, "new_chat_message", chat_message)
 
     {:reply, {:ok, %{}}, socket}
   end

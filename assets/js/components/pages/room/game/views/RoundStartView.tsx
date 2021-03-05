@@ -6,7 +6,7 @@ import {
   MediumLargeTitle,
   DynamicContent,
 } from "../../../../common";
-import { useGameContext } from "../../../../../hooks";
+import { useViewDeadlineContext } from "../../../../../hooks";
 import { calcMsUntilMsTimestamp } from "../../../../../utils";
 
 interface RoundStartViewProps {
@@ -22,12 +22,7 @@ const RoundStartView: React.FC<RoundStartViewProps> = ({
   pushMessageToChannel,
   roundNum,
 }) => {
-  const {
-    gameRules: {
-      viewTimeouts: { roundStart: roundStartTimeout },
-    },
-    viewDeadline,
-  } = useGameContext();
+  const { viewDeadline } = useViewDeadlineContext();
   return (
     <div>
       <MediumLargeTitle title={`STARTING ROUND ${roundNum}`} />

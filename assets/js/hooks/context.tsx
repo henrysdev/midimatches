@@ -6,6 +6,12 @@ import {
   PlayerContext,
   CurrentUserContext,
   SocketContext,
+  ChatContext,
+  GameViewContext,
+  PlayersContext,
+  ViewDeadlineContext,
+  GameRulesContext,
+  ScoresContext,
 } from "../contexts";
 
 import {
@@ -14,7 +20,14 @@ import {
   PlayerContextType,
   CurrentUserContextType,
   SocketContextType,
+  ChatContextType,
+  GameViewContextType,
+  PlayersContextType,
+  ViewDeadlineContextType,
+  GameRulesContextType,
+  ScoresContextType,
 } from "../types";
+import { Player } from "tone";
 
 export function useGameContext() {
   return useContext(GameContext) as GameContextType;
@@ -34,4 +47,28 @@ export function useCurrentUserContext() {
 
 export function useSocketContext() {
   return useContext(SocketContext) as SocketContextType;
+}
+
+export function useChatContext() {
+  return useContext(ChatContext) as ChatContextType;
+}
+
+export function useGameViewContext() {
+  return useContext(GameViewContext) as GameViewContextType;
+}
+
+export function usePlayersContext() {
+  return useContext(PlayersContext) as PlayersContextType;
+}
+
+export function useViewDeadlineContext() {
+  return useContext(ViewDeadlineContext) as ViewDeadlineContextType;
+}
+
+export function useGameRulesContext() {
+  return useContext(GameRulesContext) as GameRulesContextType;
+}
+
+export function useScoresContext() {
+  return useContext(ScoresContext) as ScoresContextType;
 }

@@ -6,15 +6,16 @@ import {
   ComputerFrame,
   ComputerButton,
   Timer,
+  ChatBox,
 } from "../../../common";
 import { PregameDebug } from "../../../debug";
 import { PregameCenterPane, WarmUp } from ".";
-import { User } from "../../../../types";
+import { User, Player } from "../../../../types";
 
 interface PregameLobbyProps {
   gameInProgress: boolean;
-  numPlayersJoined: number;
   numPlayersToStart: number;
+  roomPlayers: Player[];
   maxPlayers: number;
   currentUser: User;
   roomName: string;
@@ -23,8 +24,8 @@ interface PregameLobbyProps {
 
 const PregameLobby: React.FC<PregameLobbyProps> = ({
   gameInProgress,
-  numPlayersJoined,
   numPlayersToStart,
+  roomPlayers = [],
   maxPlayers,
   currentUser,
   roomName,
@@ -42,11 +43,11 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
             <div className="pregame_content_pane">
               <div className="inline_screen inset_3d_border_shallow rounded_border">
                 <p>
-                  {`${numPlayersJoined}/${maxPlayers} Players.`}
-                  {numPlayersToStart - numPlayersJoined > 0 ? (
+                  {`${roomPlayers.length}/${maxPlayers} Players.`}
+                  {numPlayersToStart - roomPlayers.length > 0 ? (
                     <strong>
                       {` Need at least ${
-                        numPlayersToStart - numPlayersJoined
+                        numPlayersToStart - roomPlayers.length
                       } more players to start game`}
                     </strong>
                   ) : (
@@ -89,6 +90,7 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
                   )}
                 </h5>
               </ComputerButton>
+              {/* <ChatBox players={roomPlayers} /> */}
             </div>
             <PregameCenterPane
               gameInProgress={gameInProgress}

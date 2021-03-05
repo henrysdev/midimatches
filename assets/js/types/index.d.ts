@@ -65,6 +65,7 @@ export type StartGamePayload = GameUpdatePayload;
 
 export interface RoomState {
   gameRules: GameRules;
+  roomPlayers: Player[];
   numCurrPlayers: number;
   roomId: string;
   roomName: string;
@@ -114,6 +115,12 @@ export interface WinResult {
   numPoints: number;
 }
 
+export interface ChatMessage {
+  playerId: string;
+  messageText: string;
+  timestamp: number;
+}
+
 type RecordingTuple = [string, any];
 type ScoreTuple = [string, number];
 
@@ -157,6 +164,31 @@ export interface SocketContextType {
 }
 
 type GameContextType = GameState;
+
+export interface ChatContextType {
+  chatHistory: ChatMessage[];
+  submitChatMessageEvent: (messageText: string) => void;
+}
+
+export interface GameViewContextType {
+  gameView: string;
+}
+
+export interface PlayersContextType {
+  players?: Player[];
+}
+
+export interface ViewDeadlineContextType {
+  viewDeadline: number;
+}
+
+export interface GameRulesContextType {
+  gameRules: GameRules;
+}
+
+export interface ScoresContextType {
+  scores: ScoreTuple[];
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Player Data                                                               //
