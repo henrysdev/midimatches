@@ -65,6 +65,7 @@ export type StartGamePayload = GameUpdatePayload;
 
 export interface RoomState {
   gameRules: GameRules;
+  roomPlayers: Player[];
   numCurrPlayers: number;
   roomId: string;
   roomName: string;

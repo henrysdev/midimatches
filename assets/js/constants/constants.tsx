@@ -39,7 +39,8 @@ export const SUBMIT_RECORDING_EVENT = "player_recording";
 export const SUBMIT_VOTE_EVENT = "player_vote";
 export const SUBMIT_CHAT_MESSAGE = "player_chat_message";
 
-export const MAX_CHAT_HISTORY_LENGTH = 5;
+export const MAX_CHAT_HISTORY_LENGTH = 25;
+export const MAX_CHARS_PER_CHAT_MESSAGE = 80;
 
 export const MIN_PLAYER_ALIAS_LENGTH = 3;
 export const MAX_PLAYER_ALIAS_LENGTH = 10;

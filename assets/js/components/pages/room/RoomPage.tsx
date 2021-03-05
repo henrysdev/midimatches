@@ -38,14 +38,13 @@ import { PregameDebug } from "../../debug";
 
 const RoomPage: React.FC = () => {
   const toneAudioContext = useAudioContextProvider();
-  const [chatHistory, handleChatMessage] = useChat(MAX_CHAT_HISTORY_LENGTH);
+  const [chatHistory, handleChatMessage] = useChat();
 
   const [gameChannel, setGameChannel] = useState<Channel>();
   const [gameInProgress, setGameInProgress] = useState<boolean>(false);
   const [currPlayer, setCurrPlayer] = useState<Player>();
   const [initGameState, setInitGameState] = useState<GameContextType>();
   const [lobbyState, setLobbyState] = useState<any>({
-    numPlayersJoined: 0,
     numPlayersToStart: 0,
     roomName: "",
   });
@@ -103,17 +102,17 @@ const RoomPage: React.FC = () => {
               setGameInProgress(true);
             } else {
               const {
-                numCurrPlayers: numPlayersJoined,
                 gameRules: { minPlayers: numPlayersToStart, maxPlayers },
                 roomName,
+                roomPlayers,
                 startGameDeadline,
               } = roomState as RoomState;
               setLobbyState({
-                numPlayersJoined,
                 numPlayersToStart,
                 roomName,
                 startGameDeadline,
                 maxPlayers,
+                roomPlayers,
               });
               setGameInProgress(false);
             }
@@ -136,18 +135,18 @@ const RoomPage: React.FC = () => {
     channel.on(LOBBY_UPDATE_EVENT, (body) => {
       const {
         roomState: {
-          numCurrPlayers: numPlayersJoined,
+          roomPlayers,
           gameRules: { minPlayers: numPlayersToStart, maxPlayers },
           roomName,
           startGameDeadline,
         },
       } = unmarshalBody(body) as LobbyUpdatePayload;
       setLobbyState({
-        numPlayersJoined,
         numPlayersToStart,
         roomName,
         startGameDeadline,
         maxPlayers,
+        roomPlayers,
       });
     });
 
@@ -162,14 +161,13 @@ const RoomPage: React.FC = () => {
     channel.on(RESET_ROOM_EVENT, (body) => {
       const {
         roomState: {
-          numCurrPlayers: numPlayersJoined,
+          roomPlayers,
           gameRules: { minPlayers: numPlayersToStart },
           roomName,
           startGameDeadline,
         },
       } = unmarshalBody(body) as LobbyUpdatePayload;
       setLobbyState({
-        numPlayersJoined,
         numPlayersToStart,
         roomName,
         startGameDeadline,
@@ -206,7 +204,7 @@ const RoomPage: React.FC = () => {
           ) : !!gameChannel ? (
             <PregameLobby
               gameInProgress={gameInProgress}
-              numPlayersJoined={lobbyState.numPlayersJoined}
+              roomPlayers={lobbyState.roomPlayers}
               maxPlayers={lobbyState.maxPlayers}
               numPlayersToStart={lobbyState.numPlayersToStart}
               startGameDeadline={lobbyState.startGameDeadline}

@@ -738,12 +738,12 @@ strong {
 
 .chat_message_author_label {
   border: 1px red solid;
-  /* font-size: 8px; */
+  font-size: 1em;
 }
 
 .chat_messages_text {
   border: 1px blue solid;
-  /* font-size: 12px; */
+  font-size: 2em;
   /* font-weight: bold; */
 }
 

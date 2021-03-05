@@ -6,6 +6,7 @@ import {
   Microseconds,
   Seconds,
   Color,
+  Player,
 } from "../types";
 import _ from "lodash";
 import randomColor from "randomcolor";

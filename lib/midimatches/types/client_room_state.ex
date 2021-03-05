@@ -3,7 +3,10 @@ defmodule Midimatches.Types.ClientRoomState do
 
   use TypedStruct
 
-  alias Midimatches.Types.GameRules
+  alias Midimatches.Types.{
+    GameRules,
+    Player
+  }
 
   @type id() :: String.t()
 
@@ -15,5 +18,6 @@ defmodule Midimatches.Types.ClientRoomState do
     field(:game_rules, %GameRules{}, enforce: true)
     field(:in_game, boolean(), enforce: true)
     field(:start_game_deadline, integer(), default: -1)
+    field(:room_players, list(%Player{}), default: [])
   end
 end

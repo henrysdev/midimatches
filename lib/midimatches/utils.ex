@@ -106,9 +106,11 @@ defmodule Midimatches.Utils do
       room_id: server_state.room_id,
       room_name: server_state.room_name,
       game_rules: server_state.game_config,
+      # TODO stop sending as it can be figured out from room_players
       num_curr_players: MapSet.size(server_state.players),
       in_game: !is_nil(server_state.game),
-      start_game_deadline: server_state.start_game_deadline
+      start_game_deadline: server_state.start_game_deadline,
+      room_players: MapSet.to_list(server_state.players)
     }
   end
 

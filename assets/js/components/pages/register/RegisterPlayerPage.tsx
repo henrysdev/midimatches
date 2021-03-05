@@ -1,5 +1,5 @@
 import { Channel, Socket } from "phoenix";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 
 import { unmarshalBody } from "../../../utils";
 import { ServerlistUpdatePayload, RoomState } from "../../../types";
@@ -24,7 +24,7 @@ const RegisterPlayerPage: React.FC = () => {
   }, []);
 
   const handleChange = (e: any) => {
-    setAlias(e.target.value.trim());
+    setAlias(e.target.value);
   };
 
   return (
