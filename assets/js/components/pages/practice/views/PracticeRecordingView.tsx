@@ -72,75 +72,69 @@ const PracticeRecordingView: React.FC<PracticeRecordingViewProps> = ({
     <div className="view_container">
       <MediumLargeTitle>PRACTICE - RECORDING</MediumLargeTitle>
       <MediumTitle>{sampleName}</MediumTitle>
-      <div>
-        <DynamicContent
-          style={isRecording ? { backgroundColor: "#ffd9db" } : {}}
-        >
-          {recordingState === RecordingState.INIT ? (
-            <Instructions description="Loading sample..." />
-          ) : recordingState === RecordingState.WARMUP ? (
-            <Instructions description="Listen to the sample and get ready to record!" />
-          ) : recordingState === RecordingState.RECORDING ? (
-            <Instructions description="Recording in progress... keep playing!" />
-          ) : (
-            <Instructions
-              description="Recording submitted. Waiting for other players to finish
+      <DynamicContent style={isRecording ? { backgroundColor: "#ffd9db" } : {}}>
+        {recordingState === RecordingState.INIT ? (
+          <Instructions description="Loading sample..." />
+        ) : recordingState === RecordingState.WARMUP ? (
+          <Instructions description="Listen to the sample and get ready to record!" />
+        ) : recordingState === RecordingState.RECORDING ? (
+          <Instructions description="Recording in progress... keep playing!" />
+        ) : (
+          <Instructions
+            description="Recording submitted. Waiting for other players to finish
             recording..."
-            />
-          )}
+          />
+        )}
 
-          {!!roundRecordingStartTime ? (
-            <RecordMidi
-              hideKeyboard={recordingState === RecordingState.INIT}
-              submitRecording={submitRecording}
-              sampleStartPlayCallback={sampleStartPlayCallbackWrapper}
-              stopSample={stopSample}
-              setIsRecording={setIsRecording}
-              gameRules={gameRules}
-              roundRecordingStartTime={roundRecordingStartTime}
-              shouldRecord={true}
-            />
-          ) : (
-            <></>
-          )}
-        </DynamicContent>
-        <TimerBox>
-          {recordingState === RecordingState.INIT ? (
-            <></>
-          ) : recordingState === RecordingState.WARMUP ? (
+        {!!roundRecordingStartTime ? (
+          <RecordMidi
+            hideKeyboard={recordingState === RecordingState.INIT}
+            submitRecording={submitRecording}
+            sampleStartPlayCallback={sampleStartPlayCallbackWrapper}
+            stopSample={stopSample}
+            setIsRecording={setIsRecording}
+            gameRules={gameRules}
+            roundRecordingStartTime={roundRecordingStartTime}
+            shouldRecord={true}
+          />
+        ) : (
+          <></>
+        )}
+      </DynamicContent>
+      <TimerBox>
+        {recordingState === RecordingState.INIT ? (
+          <></>
+        ) : recordingState === RecordingState.WARMUP ? (
+          <Timer
+            key={`sample-timer-${isSamplePlaying}`}
+            descriptionText={"Recording starts in "}
+            duration={secToMs(DEFAULT_WARMUP_LENGTH)}
+          />
+        ) : recordingState === RecordingState.RECORDING ? (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <i
+              style={{ verticalAlign: "middle", color: "red" }}
+              className="material-icons"
+            >
+              radio_button_checked
+            </i>
             <Timer
-              key={`sample-timer-${isSamplePlaying}`}
-              descriptionText={"Recording starts in "}
-              duration={secToMs(DEFAULT_WARMUP_LENGTH)}
+              key={`record-timer-${isRecording}`}
+              descriptionText={"Recording ends in "}
+              duration={secToMs(DEFAULT_RECORDING_LENGTH)}
+              style={{ color: "red" }}
             />
-          ) : recordingState === RecordingState.RECORDING ? (
-            <div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <i
-                  style={{ verticalAlign: "middle", color: "red" }}
-                  className="material-icons"
-                >
-                  radio_button_checked
-                </i>
-                <Timer
-                  key={`record-timer-${isRecording}`}
-                  descriptionText={"Recording ends in "}
-                  duration={secToMs(DEFAULT_RECORDING_LENGTH)}
-                  style={{ color: "red" }}
-                />
-              </div>
-            </div>
-          ) : (
-            <></>
-          )}
-        </TimerBox>
-      </div>
+          </div>
+        ) : (
+          <></>
+        )}
+      </TimerBox>
     </div>
   );
 };

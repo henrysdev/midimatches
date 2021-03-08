@@ -70,7 +70,7 @@ const RecordingView: React.FC<RecordingViewProps> = ({
     <div className="view_container">
       <MediumLargeTitle title="PLAY AND RECORD" />
       {isContestant ? (
-        <div>
+        <div style={{ height: "100%" }}>
           <DynamicContent
             style={isRecording ? { backgroundColor: "#ffd9db" } : {}}
           >

@@ -90,7 +90,7 @@ const PracticePage: React.FC<PracticePageProps> = ({ children }) => {
                 </div>
               </DynamicContent>
             ) : loaded ? (
-              <div>
+              <div style={{ height: "100%" }}>
                 {(() => {
                   switch (currentView) {
                     case PRACTICE_GAME_VIEW.SAMPLE_SELECTION:
@@ -123,17 +123,21 @@ const PracticePage: React.FC<PracticePageProps> = ({ children }) => {
 
                     case PRACTICE_GAME_VIEW.PLAYBACK:
                       return !!currentSample ? (
-                        <PracticePlaybackView
-                          isSamplePlayerLoaded={
-                            toneAudioContext.isSamplePlayerLoaded
-                          }
-                          sampleName={currentSample}
-                          stopSample={toneAudioContext.stopSample}
-                          recording={currentRecording}
-                          advanceView={() => {
-                            setCurrentView(PRACTICE_GAME_VIEW.SAMPLE_SELECTION);
-                          }}
-                        />
+                        <div style={{ height: "100%" }}>
+                          <PracticePlaybackView
+                            isSamplePlayerLoaded={
+                              toneAudioContext.isSamplePlayerLoaded
+                            }
+                            sampleName={currentSample}
+                            stopSample={toneAudioContext.stopSample}
+                            recording={currentRecording}
+                            advanceView={() => {
+                              setCurrentView(
+                                PRACTICE_GAME_VIEW.SAMPLE_SELECTION
+                              );
+                            }}
+                          />
+                        </div>
                       ) : (
                         <></>
                       );
