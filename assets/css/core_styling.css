@@ -139,6 +139,7 @@
 
 .serverlist_table th {
   font-family: "Audiowide", cursive;
+  color: #666;
 }
 
 .serverlist_table table,
@@ -424,6 +425,11 @@ input:checked + .slider:before {
 
 .scoreboard_table {
   width: 100%;
+}
+
+.scoreboard_table th {
+  font-family: "Audiowide", cursive;
+  color: #666;
 }
 
 .scoreboard_player_row {
@@ -731,69 +737,20 @@ strong {
 .inline_width_input_submit {
   width: 100%;
   padding: 8px;
-  background-color: rgb(245, 245, 245);
-  cursor: pointer;
   min-height: 48px;
   max-height: 96px;
   margin-top: 16px;
-  border: none;
-  font-family: "Audiowide", cursive;
-  color: #666;
-  border: 2px solid #999;
   border-radius: 6px;
-}
-
-.inline_width_input_submit:hover {
-  background-color: rgb(233, 233, 233);
-}
-
-.inline_width_input_submit:active {
-  background-color: rgb(223, 223, 223);
-  box-shadow: none;
 }
 
 .inline_half_button {
-  box-shadow: 0 5px 13px rgb(0 0 0 / 8%);
   padding: 8px;
-  background-color: rgb(250, 250, 250);
   width: 50%;
-  cursor: pointer;
   min-height: 48px;
   max-height: 96px;
   margin-top: 16px;
   margin-left: 25%;
   border-radius: 6px;
-}
-
-.inline_half_button:hover {
-  background-color: rgb(233, 233, 233);
-}
-
-.inline_half_button:active {
-  background-color: rgb(223, 223, 223);
-  box-shadow: none;
-}
-
-.inline_vote_button {
-  box-shadow: 0 5px 13px rgb(0 0 0 / 8%);
-  padding: 8px;
-  background-color: rgb(250, 250, 250);
-  width: 50%;
-  cursor: pointer;
-  min-height: 48px;
-  max-height: 96px;
-  margin-top: 16px;
-  margin-left: 25%;
-  border-radius: 6px;
-}
-
-.inline_vote_button:hover {
-  background-color: rgb(233, 233, 233);
-}
-
-.inline_vote_button:active {
-  background-color: rgb(223, 223, 223);
-  box-shadow: none;
 }
 
 .form_text_input {
@@ -873,6 +830,21 @@ strong {
   flex: 1;
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
+  /* background-color: rgb(245, 245, 245);
+  cursor: pointer;
+  border: none;
+  font-family: "Audiowide", cursive;
+  color: #666;
+  border: 2px solid #999; */
+}
+
+.chat_send_button:hover {
+  background-color: rgb(233, 233, 233);
+}
+
+.chat_send_button:active {
+  background-color: rgb(223, 223, 223);
+  box-shadow: none;
 }
 
 .error_page {
@@ -888,4 +860,21 @@ strong {
 
 .view_container {
   height: 100%;
+}
+
+.styled_button {
+  background-color: rgb(245, 245, 245);
+  cursor: pointer;
+  font-family: "Audiowide", cursive;
+  color: #666;
+  border: 2px solid #999;
+}
+
+.styled_button:hover {
+  background-color: rgb(233, 233, 233);
+}
+
+.styled_button:active {
+  background-color: rgb(223, 223, 223);
+  box-shadow: none;
 }

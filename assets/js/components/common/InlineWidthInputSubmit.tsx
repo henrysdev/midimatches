@@ -10,7 +10,7 @@ const InlineWidthInputSubmit: React.FC<InlineWidthInputSubmitProps> = ({
 }) => {
   return (
     <input
-      className="inline_width_input_submit roboto_font"
+      className="styled_button inline_width_input_submit roboto_font"
       disabled={disabled}
       type="submit"
       value={label}

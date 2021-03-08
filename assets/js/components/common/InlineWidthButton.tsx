@@ -11,7 +11,7 @@ const InlineWidthButton: React.FC<InlineWidthButtonProps> = ({
   return (
     <div
       onClick={() => callback()}
-      className="inline_half_button relative_anchor"
+      className="styled_button inline_half_button relative_anchor"
     >
       <div className="centered_div">{children}</div>
     </div>
