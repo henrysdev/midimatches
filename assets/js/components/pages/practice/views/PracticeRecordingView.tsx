@@ -69,7 +69,7 @@ const PracticeRecordingView: React.FC<PracticeRecordingViewProps> = ({
   }, [isSamplePlaying, isRecording, isFinishedRecording]);
 
   return (
-    <div>
+    <div className="view_container">
       <MediumLargeTitle>PRACTICE - RECORDING</MediumLargeTitle>
       <MediumTitle>{sampleName}</MediumTitle>
       <div>

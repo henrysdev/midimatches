@@ -24,7 +24,7 @@ const RoundStartView: React.FC<RoundStartViewProps> = ({
 }) => {
   const { viewDeadline } = useViewDeadlineContext();
   return (
-    <div>
+    <div className="view_container">
       <MediumLargeTitle title={`STARTING ROUND ${roundNum}`} />
 
       <DynamicContent>

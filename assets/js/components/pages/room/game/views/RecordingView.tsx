@@ -67,7 +67,7 @@ const RecordingView: React.FC<RecordingViewProps> = ({
   }, [isSamplePlaying, isRecording, isFinishedRecording]);
 
   return (
-    <div>
+    <div className="view_container">
       <MediumLargeTitle title="PLAY AND RECORD" />
       {isContestant ? (
         <div>

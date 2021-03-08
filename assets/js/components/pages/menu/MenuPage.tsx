@@ -41,7 +41,7 @@ const MenuPage: React.FC = () => {
             callback={() => (window.location.href = "/register")}
             extraClasses={["register_button"]}
           >
-            <h5>CHANGE ALIAS</h5>
+            <h5>CHANGE NAME</h5>
           </ComputerButton>
         </div>
         <div className="main_menu_btn">

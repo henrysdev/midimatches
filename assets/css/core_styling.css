@@ -374,14 +374,19 @@ input:checked + .slider:before {
 
 .in_game_content_flex_anchor {
   display: flex;
+  height: calc(100% - 32px);
 }
 
 .game_left_content_pane_wrapper {
   flex: 2;
+  height: 100%;
+  /* height: calc(100% - 200px); */
 }
 
 .game_right_content_pane_wrapper {
   width: 20%;
+  height: 100%;
+  /* height: calc(100% - 200px); */
 }
 
 .left_game_content_pane_flex_anchor {
@@ -425,11 +430,16 @@ input:checked + .slider:before {
 .gameplay_pane_wrapper {
   flex: 5;
   padding: 8px;
-  overflow: hidden;
+  height: calc(100% - 16px);
 }
 
 .gameplay_pane {
   padding: 8px;
+  height: calc(100% - 48px);
+}
+
+.gameplay_pane_inner {
+  height: 100%;
 }
 
 .instructions_card {
@@ -443,17 +453,18 @@ input:checked + .slider:before {
   bottom: 10px;
 }
 
+.timer_box_anchor {
+  position: absolute;
+  bottom: 36px;
+  width: 256px;
+  left: calc(50% - 100px);
+}
+
 .timer_box_wrapper {
   border-radius: 10px 10px 0 0;
   border-bottom: none;
-  transform: translate(0%, 28%);
-  -ms-transform: translate(0%, 30%);
-  -moz-transform: translate(0%, 30%);
-  -o-transform: translate(0%, 30%);
   position: relative;
   height: 60px;
-  width: 30%;
-  left: 35%;
 }
 
 .timer_box {
@@ -468,7 +479,8 @@ input:checked + .slider:before {
 
 .dynamic_content_container {
   padding: 8px;
-  min-height: 400px;
+  height: calc(100% - 90px);
+  min-height: 300px;
   max-height: 800px;
   border-radius: 10px;
   overflow: scroll;
@@ -709,7 +721,7 @@ strong {
   height: 32px;
   font-size: 1em;
   border: 2px solid #999;
-  border-radius: 0px;
+  border-radius: 6px;
 }
 
 .inline_width_input_submit {
@@ -724,6 +736,7 @@ strong {
   font-family: "Audiowide", cursive;
   color: #666;
   border: 2px solid #999;
+  border-radius: 6px;
 }
 
 .inline_width_input_submit:hover {
@@ -765,7 +778,7 @@ strong {
 .form_number_input {
   border-radius: 10px;
   border: 2px solid #999;
-  border-radius: 0;
+  border-radius: 6px;
   width: 32px;
   height: 32px;
   font-size: 1em;
@@ -845,4 +858,8 @@ strong {
 
 .register_content_wrapper {
   margin: 16px;
+}
+
+.view_container {
+  height: 100%;
 }

@@ -36,7 +36,7 @@ const PracticeSampleSelectionView: React.FC<PracticeSampleSelectionViewProps> = 
   advanceView,
 }) => {
   return (
-    <div>
+    <div className="view_container">
       <MediumLargeTitle>PRACTICE - SAMPLE SELECTION</MediumLargeTitle>
       <DynamicContent>
         {!!currentSample ? (
@@ -51,7 +51,12 @@ const PracticeSampleSelectionView: React.FC<PracticeSampleSelectionViewProps> = 
             pickNewSample(samples, currentSample);
           }}
         >
-          <h5>NEW SAMPLE</h5>
+          <h5>
+            NEW SAMPLE{" "}
+            <i style={{ verticalAlign: "middle" }} className="material-icons">
+              loop
+            </i>
+          </h5>
         </InlineWidthButton>
         <InlineWidthButton callback={() => advanceView()}>
           <h5>CONTINUE</h5>

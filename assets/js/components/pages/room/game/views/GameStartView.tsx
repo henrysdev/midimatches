@@ -31,7 +31,7 @@ const GameStartView: React.FC<GameStartViewProps> = ({
   const { viewDeadline } = useViewDeadlineContext();
 
   return (
-    <div>
+    <div className="view_container">
       <MediumLargeTitle title="STARTING GAME" />
       <DynamicContent>
         <div className="uk" style={{ margin: "auto", maxWidth: "400px" }}>

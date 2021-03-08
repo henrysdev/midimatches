@@ -37,7 +37,7 @@ const RoundEndView: React.FC<RoundEndViewProps> = () => {
   }, [roundWinners]);
 
   return (
-    <div>
+    <div className="view_container">
       <div>
         <MediumLargeTitle title={`END OF ROUND ${roundNum}`} />
         <DynamicContent>
