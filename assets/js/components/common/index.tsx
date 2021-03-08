@@ -18,3 +18,4 @@ export { LoadingSpinner } from "./LoadingSpinner";
 export { PageContent } from "./PageContent";
 export { ChatBox } from "./ChatBox";
 export { InlineWidthButton } from "./InlineWidthButton";
+export { InlineWidthInputSubmit } from "./InlineWidthInputSubmit";

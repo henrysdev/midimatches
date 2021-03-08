@@ -81,9 +81,9 @@ const Serverlist: React.FC<ServerlistProps> = ({
           <div className="serverlist_details_pane_wrapper">
             <div className="serverlist_details_pane inline_screen inset_3d_border_shallow">
               <div className="server_details_content_wrapper">
-                <h5>ROOM DETAILS</h5>
+                <h4>ROOM DETAILS</h4>
                 <div className="server_details_content_body">
-                  <ul>
+                  <ul className="roboto_font">
                     <div>
                       <strong>Room Name: </strong>
                       {selectedRoom.roomName}

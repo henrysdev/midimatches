@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useMemo } from "react";
 
 import { useLoad, useLoadCreateRoom } from "../../../hooks";
-import { MediumTitle } from "../../common";
+import { MediumTitle, InlineWidthInputSubmit } from "../../common";
 import { CreateRoomPayload } from "../../../types";
 
 const CreateRoomForm: React.FC = () => {
   const [roomName, setRoomName] = useState<string>("");
-  const [maxPlayers, setMaxPlayers] = useState<number>(3);
+  const [maxPlayers, setMaxPlayers] = useState<number>(4);
   const [numRounds, setNumRounds] = useState<number>(3);
 
   const handleRoomNameChange = (e: any) => {
@@ -48,7 +48,7 @@ const CreateRoomForm: React.FC = () => {
 
   return (
     <div className="create_room_wrapper inset_3d_border_shallow inline_screen">
-      <MediumTitle centered={false}>CREATE NEW ROOM</MediumTitle>
+      <MediumTitle centered={false}>NEW ROOM</MediumTitle>
       {loading || loaded ? (
         <div>LOADING SPINNER HERE</div>
       ) : loadError ? (
@@ -56,6 +56,7 @@ const CreateRoomForm: React.FC = () => {
       ) : (
         <form
           className="create_room_form"
+          autoComplete="off"
           onKeyDown={(e: any) => {
             if (e.key === "Enter") {
               e.preventDefault();
@@ -69,14 +70,13 @@ const CreateRoomForm: React.FC = () => {
           }}
         >
           <fieldset>
-            <div className="form_input_label roboto_font">Room Name </div>
             <input
               style={{ marginBottom: "8px" }}
-              className="form_text_input roboto_font"
+              className="inline_width_text_input roboto_font"
               type="text"
               id="room_name"
               name="room_name"
-              placeholder="Enter a room name..."
+              placeholder="Enter room name..."
               value={roomName}
               maxLength={20}
               onChange={handleRoomNameChange}
@@ -90,7 +90,7 @@ const CreateRoomForm: React.FC = () => {
               max="8" // TODO have actual max constant
               id="max_players"
               name="max_players"
-              placeholder="3"
+              placeholder="4"
               value={maxPlayers}
               maxLength={20}
               onChange={handleMaxPlayersChange}
@@ -112,11 +112,9 @@ const CreateRoomForm: React.FC = () => {
             {loading ? (
               <>LOADING</>
             ) : (
-              <input
-                className="inline_width_button roboto_font"
+              <InlineWidthInputSubmit
+                label="CREATE AND JOIN"
                 disabled={!trimmedRoomName || trimmedRoomName.length < 3}
-                type="submit"
-                value="CREATE AND JOIN"
               />
             )}
           </fieldset>
