@@ -12,7 +12,10 @@
   </head>
 
   <body>
-    <h1>500 - Internal Server Error</h1>
-    <p>Encountered unexpected exception.</p>
+    <div class="error_page relative_anchor">
+      <div class="error_page_content centered_div centered_title">
+        <h1>500 - Internal Server Error</h1>
+      </div>
+    </div>
   </body>
 </html>

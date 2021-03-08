@@ -12,7 +12,11 @@
   </head>
 
   <body>
-    <h1>404 - Page Not Found</h1>
-    <p>This isn't the page you were looking for.</p>
+    <div class="error_page relative_anchor">
+      <div class="error_page_content centered_div centered_title">
+        <h1>404 - Page Not Found</h1>
+        <p>This isn't the page you were looking for.</p>
+      </div>
+    </div>
   </body>
 </html>
