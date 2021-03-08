@@ -785,12 +785,8 @@ strong {
 }
 
 .chat_messages_container {
-  overflow: hidden;
-  overflow-x: hidden;
-  overflow-y: auto;
-  display: relative;
-  height: calc(100% - 32px);
-  width: 100%;
+  position: absolute;
+  bottom: 36px;
 }
 
 .chat_message_item {

@@ -1,5 +1,5 @@
 import React from "react";
-import { Piano, MidiNumbers, KeyboardShortcuts } from "react-piano";
+import { Piano, MidiNumbers, KeyboardShortcuts } from "../reactpiano";
 
 const noteRange = {
   first: MidiNumbers.fromNote("c3"),
@@ -16,6 +16,7 @@ interface KeyboardProps {
   playNote: Function;
   stopNote: Function;
   hideKeyboard?: boolean;
+  disableKeyboardInput?: boolean;
 }
 
 const Keyboard: React.FC<KeyboardProps> = ({
@@ -23,6 +24,7 @@ const Keyboard: React.FC<KeyboardProps> = ({
   playNote,
   stopNote,
   hideKeyboard = false,
+  disableKeyboardInput = false,
 }) => {
   return (
     <div
@@ -39,7 +41,9 @@ const Keyboard: React.FC<KeyboardProps> = ({
         }}
       >
         <Piano
+          frozen={hideKeyboard}
           disabled={hideKeyboard}
+          disableKeyboardInput={disableKeyboardInput}
           noteRange={noteRange}
           keyboardShortcuts={keyboardShortcuts}
           activeNotes={activeMidiList}
