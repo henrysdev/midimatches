@@ -14,6 +14,7 @@ import {
   MediumTitle,
   MediumLargeTitle,
   ComputerButton,
+  InlineWidthButton,
 } from "../../../common";
 import { secToMs } from "../../../../utils";
 
@@ -63,7 +64,7 @@ const PracticePlaybackView: React.FC<PracticePlaybackViewProps> = ({
   }, [autoPlayingTrackIdx]);
 
   return (
-    <div>
+    <div className="view_container">
       <MediumLargeTitle>PRACTICE - PLAYBACK</MediumLargeTitle>
       <MediumTitle>{sampleName}</MediumTitle>
       <DynamicContent>
@@ -88,9 +89,9 @@ const PracticePlaybackView: React.FC<PracticePlaybackViewProps> = ({
         ) : (
           <div>No recordings available</div>
         )}
-        <ComputerButton callback={() => advanceView()}>
+        <InlineWidthButton callback={() => advanceView()}>
           <h5>CONTINUE</h5>
-        </ComputerButton>
+        </InlineWidthButton>
       </DynamicContent>
     </div>
   );

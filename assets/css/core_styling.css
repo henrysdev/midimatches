@@ -42,6 +42,7 @@
     rgb(172, 172, 172),
     rgb(232, 232, 232)
   );
+  border-radius: 10px;
 }
 .content_button:hover {
   background-image: linear-gradient(
@@ -134,6 +135,11 @@
 .serverlist_table {
   width: 100%;
   height: 100%;
+}
+
+.serverlist_table th {
+  font-family: "Audiowide", cursive;
+  color: #666;
 }
 
 .serverlist_table table,
@@ -373,14 +379,19 @@ input:checked + .slider:before {
 
 .in_game_content_flex_anchor {
   display: flex;
+  height: calc(100% - 48px);
 }
 
 .game_left_content_pane_wrapper {
   flex: 2;
+  height: 100%;
+  /* height: calc(100% - 200px); */
 }
 
 .game_right_content_pane_wrapper {
   width: 20%;
+  height: 100%;
+  /* height: calc(100% - 200px); */
 }
 
 .left_game_content_pane_flex_anchor {
@@ -416,6 +427,11 @@ input:checked + .slider:before {
   width: 100%;
 }
 
+.scoreboard_table th {
+  font-family: "Audiowide", cursive;
+  color: #666;
+}
+
 .scoreboard_player_row {
   padding-top: 1px;
   padding-bottom: 1px;
@@ -424,11 +440,16 @@ input:checked + .slider:before {
 .gameplay_pane_wrapper {
   flex: 5;
   padding: 8px;
-  overflow: hidden;
+  height: calc(100% - 16px);
 }
 
 .gameplay_pane {
   padding: 8px;
+  height: calc(100% - 48px);
+}
+
+.gameplay_pane_inner {
+  height: 100%;
 }
 
 .instructions_card {
@@ -442,17 +463,18 @@ input:checked + .slider:before {
   bottom: 10px;
 }
 
+.timer_box_anchor {
+  position: absolute;
+  bottom: 48px;
+  width: 256px;
+  left: calc(50% - 100px);
+}
+
 .timer_box_wrapper {
   border-radius: 10px 10px 0 0;
   border-bottom: none;
-  transform: translate(0%, 28%);
-  -ms-transform: translate(0%, 30%);
-  -moz-transform: translate(0%, 30%);
-  -o-transform: translate(0%, 30%);
   position: relative;
   height: 60px;
-  width: 30%;
-  left: 35%;
 }
 
 .timer_box {
@@ -467,7 +489,8 @@ input:checked + .slider:before {
 
 .dynamic_content_container {
   padding: 8px;
-  min-height: 400px;
+  height: calc(100% - 90px);
+  min-height: 300px;
   max-height: 800px;
   border-radius: 10px;
   overflow: scroll;
@@ -701,12 +724,33 @@ strong {
   padding-top: 16px;
 }
 
-.register_player_submit_button {
+.inline_width_text_input {
+  width: 100%;
+  background-color: white;
+  cursor: pointer;
+  height: 32px;
+  font-size: 1em;
+  border: 2px solid #999;
+  border-radius: 6px;
+}
+
+.inline_width_input_submit {
   width: 100%;
   padding: 8px;
-  height: 40px;
-  background-color: #ebe8e3;
-  border-radius: 10px;
+  min-height: 48px;
+  max-height: 96px;
+  margin-top: 16px;
+  border-radius: 6px;
+}
+
+.inline_half_button {
+  padding: 8px;
+  width: 50%;
+  min-height: 48px;
+  max-height: 96px;
+  margin-top: 16px;
+  margin-left: 25%;
+  border-radius: 6px;
 }
 
 .form_text_input {
@@ -716,7 +760,11 @@ strong {
 
 .form_number_input {
   border-radius: 10px;
-  padding: 8px;
+  border: 2px solid #999;
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  font-size: 1em;
 }
 
 .form_input_label {
@@ -782,4 +830,55 @@ strong {
   flex: 1;
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
+  /* background-color: rgb(245, 245, 245);
+  cursor: pointer;
+  border: none;
+  font-family: "Audiowide", cursive;
+  color: #666;
+  border: 2px solid #999; */
+}
+
+.chat_send_button:hover {
+  background-color: rgb(233, 233, 233);
+}
+
+.chat_send_button:active {
+  background-color: rgb(223, 223, 223);
+  box-shadow: none;
+}
+
+.error_page {
+  position: relative;
+  background-color: white;
+  width: 100%;
+  height: 100vh;
+}
+
+.register_content_wrapper {
+  margin: 16px;
+}
+
+.view_container {
+  height: 100%;
+}
+
+.styled_button {
+  background-color: rgb(245, 245, 245);
+  cursor: pointer;
+  font-family: "Audiowide", cursive;
+  color: #666;
+  border: 2px solid #999;
+}
+
+.styled_button:hover {
+  background-color: rgb(233, 233, 233);
+}
+
+.styled_button:active {
+  background-color: rgb(223, 223, 223);
+  box-shadow: none;
+}
+
+.settings_item_label {
+  color: #666;
 }

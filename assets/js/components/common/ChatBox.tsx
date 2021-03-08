@@ -60,6 +60,7 @@ const ChatBox: React.FC<ChatBoxProps> = memo(({ players }) => {
       </div>
       <div className="chat_text_entry_container">
         <input
+          autoComplete="off"
           className="chat_text_entry roboto_font"
           type="text"
           id="chat_text_entry"
@@ -75,9 +76,9 @@ const ChatBox: React.FC<ChatBoxProps> = memo(({ players }) => {
           }}
         />
         <input
-          className="chat_send_button roboto_font"
+          className="styled_button chat_send_button roboto_font"
           type="submit"
-          value="SEND"
+          value="Send"
           onClick={() => handleSubmitTextBuffer()}
         />
       </div>

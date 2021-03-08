@@ -27,7 +27,7 @@ const GameEndView: React.FC<GameEndViewProps> = () => {
   }, [gameWinners]);
 
   return (
-    <div>
+    <div className="view_container">
       <MediumLargeTitle title="GAME END" />
 
       <DynamicContent>

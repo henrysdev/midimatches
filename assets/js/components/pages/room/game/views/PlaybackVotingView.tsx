@@ -130,7 +130,7 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
   };
 
   return (
-    <div>
+    <div className="view_container">
       <MediumLargeTitle>LISTEN AND VOTE</MediumLargeTitle>
       <DynamicContent>
         {voteSubmitted ? (

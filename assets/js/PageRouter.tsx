@@ -20,7 +20,7 @@ const PageRouter: React.FC = () => {
       <Switch>
         <Route exact path="/" component={LandingPage} />
         <Route path="/menu" component={MenuPage} />
-        <Route path="/servers" component={ServerlistPage} />
+        <Route path="/rooms" component={ServerlistPage} />
         <Route path="/room" component={RoomPage} />
         <Route path="/practice" component={PracticePage} />
         <Route path="/register" component={RegisterPlayerPage} />
