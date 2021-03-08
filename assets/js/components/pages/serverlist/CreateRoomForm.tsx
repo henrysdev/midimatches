@@ -113,7 +113,7 @@ const CreateRoomForm: React.FC = () => {
               <>LOADING</>
             ) : (
               <input
-                className="register_player_submit_button roboto_font"
+                className="inline_width_button roboto_font"
                 disabled={!trimmedRoomName || trimmedRoomName.length < 3}
                 type="submit"
                 value="CREATE AND JOIN"

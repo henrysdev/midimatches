@@ -701,7 +701,7 @@ strong {
   padding-top: 16px;
 }
 
-.register_player_submit_button {
+.inline_width_button {
   width: 100%;
   padding: 8px;
   height: 40px;

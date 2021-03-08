@@ -53,7 +53,7 @@ const RegisterPlayerPage: React.FC = () => {
             name="url_destination"
           />
           <input
-            className="register_player_submit_button roboto_font"
+            className="inline_width_button roboto_font"
             disabled={
               !trimmedAlias || trimmedAlias.length < MIN_PLAYER_ALIAS_LENGTH
             }
