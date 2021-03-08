@@ -24,14 +24,14 @@ const GameSettings: React.FC<GameSettingsProps> = ({}) => {
 
   return (
     <div className="in_game_settings_pane inline_screen">
-      <h5 style={{ textAlign: "left", color: "#999" }}>MIDI Inputs</h5>
+      <h5 className="settings_item_label">MIDI Inputs</h5>
       <MidiConfiguration
         originalMidiInputs={originalMidiInputs}
         setMidiInputs={setMidiInputs}
         disabledMidiInputIds={disabledMidiInputIds}
         setDisabledMidiInputIds={setDisabledMidiInputIds}
       />
-      <h5 style={{ textAlign: "left", color: "#999" }}>Sound</h5>
+      <h5 className="settings_item_label">Sound</h5>
       <ul style={{ listStyleType: "none", paddingLeft: 0 }}>
         <li style={{ padding: 0 }}>
           {soundIsOn ? (

@@ -19,3 +19,4 @@ export { PageContent } from "./PageContent";
 export { ChatBox } from "./ChatBox";
 export { InlineWidthButton } from "./InlineWidthButton";
 export { InlineWidthInputSubmit } from "./InlineWidthInputSubmit";
+export { VinylLoadingSpinner } from "./VinylLoadingSpinner";

@@ -878,3 +878,7 @@ strong {
   background-color: rgb(223, 223, 223);
   box-shadow: none;
 }
+
+.settings_item_label {
+  color: #666;
+}

@@ -16,7 +16,7 @@ import { WarmUp } from "../room/pregame";
 import { PRACTICE_GAME_VIEW } from "../../../constants";
 import { PracticeRecordingView } from "./views/PracticeRecordingView";
 import { PracticeSampleSelectionView } from "./views/PracticeSampleSelectionView";
-import { LoadingSpinner, DynamicContent } from "../../common";
+import { VinylLoadingSpinner, DynamicContent } from "../../common";
 import { PracticePlaybackView } from "./views/PracticePlaybackView";
 
 interface PracticePageProps {
@@ -86,7 +86,7 @@ const PracticePage: React.FC<PracticePageProps> = ({ children }) => {
             {loading ? (
               <DynamicContent>
                 <div className="centered_div">
-                  <LoadingSpinner />
+                  <VinylLoadingSpinner />
                 </div>
               </DynamicContent>
             ) : loaded ? (

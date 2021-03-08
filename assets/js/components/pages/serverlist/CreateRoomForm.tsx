@@ -1,7 +1,11 @@
 import React, { useEffect, useState, useMemo } from "react";
 
 import { useLoad, useLoadCreateRoom } from "../../../hooks";
-import { MediumTitle, InlineWidthInputSubmit } from "../../common";
+import {
+  MediumTitle,
+  InlineWidthInputSubmit,
+  VinylLoadingSpinner,
+} from "../../common";
 import { CreateRoomPayload } from "../../../types";
 
 const CreateRoomForm: React.FC = () => {
@@ -50,7 +54,9 @@ const CreateRoomForm: React.FC = () => {
     <div className="create_room_wrapper inset_3d_border_shallow inline_screen">
       <MediumTitle centered={false}>NEW ROOM</MediumTitle>
       {loading || loaded ? (
-        <div>LOADING SPINNER HERE</div>
+        <div className="relative_anchor">
+          <VinylLoadingSpinner />
+        </div>
       ) : loadError ? (
         <div>FAILED</div>
       ) : (

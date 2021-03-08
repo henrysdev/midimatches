@@ -1,0 +1,93 @@
+.vynil {
+  width: 380px;
+  height: 380px;
+  border-radius: 50%;
+  margin: 0 auto;
+}
+.label {
+  width: 100px;
+  height: 100px;
+  background-color: #d7d3fe;
+  position: absolute;
+  top: 36%;
+  left: 36%;
+  border: 5px solid #000;
+}
+.hole {
+  width: 25px;
+  height: 25px;
+  background-color: rgb(205, 205, 205);
+  border: 5px solid black;
+  z-index: 1;
+  position: absolute;
+  top: 46%;
+  left: 46%;
+}
+.label__content {
+  text-align: center;
+  font-size: 4em;
+  line-height: 2;
+  text-transform: uppercase;
+  z-index: 1;
+  color: black;
+}
+.vynil__round {
+  background-color: #696769;
+  border: 10px solid black;
+  position: relative;
+}
+.vynil__border {
+  border: 5px solid #b4b3b4;
+  position: absolute;
+  border-style: inset;
+  transform: rotate(-65deg);
+}
+.vynil__border-1 {
+  width: 90%;
+  height: 90%;
+  top: 5%;
+  left: 5%;
+}
+.vynil__border-2 {
+  width: 70%;
+  height: 70%;
+  top: 15%;
+  left: 15%;
+}
+.vynil__border-3 {
+  width: 50%;
+  height: 50%;
+  top: 25%;
+  left: 25%;
+}
+.spin {
+  animation-name: spin;
+  animation-duration: 2000ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+.shade:after {
+  content: "";
+  position: absolute;
+  top: 6%;
+  width: 185px;
+  height: 380px;
+  display: inline-block;
+  background: rgba(26, 26, 26, 0.5);
+  border-top-left-radius: 200px;
+  border-bottom-left-radius: 200px;
+  transform: rotate(-20deg);
+  z-index: 1;
+}
+.shade {
+  display: block;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
