@@ -23,7 +23,7 @@ const PregameCenterPane: React.FC<PregameCenterPaneProps> = ({
             <p>
               <strong>Game in progress.</strong> A new game will be starting in
               a few minutes. Feel free to
-              <a href="/servers">find another server</a> or play keyboard in the
+              <a href="/rooms">find another server</a> or play keyboard in the
               meantime.
             </p>
             <WarmUp />

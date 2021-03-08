@@ -27,7 +27,7 @@ defmodule MidimatchesWeb.PageController do
   def serverlist(conn, _params) do
     if conn |> get_session(:user) |> is_nil() do
       redirect(conn,
-        to: Routes.page_path(conn, :register_player, destination: "/servers")
+        to: Routes.page_path(conn, :register_player, destination: "/rooms")
       )
     else
       render(conn, "serverlist.html")
@@ -82,7 +82,7 @@ defmodule MidimatchesWeb.PageController do
           to: Routes.page_path(conn, :room, room_id)
         )
 
-      "/servers" ->
+      "/rooms" ->
         redirect(conn,
           to: Routes.page_path(conn, :serverlist)
         )

@@ -22,7 +22,7 @@ const MenuPage: React.FC = () => {
       <div className="main_menu_btn_group">
         <div className="main_menu_btn">
           <ComputerButton
-            callback={() => (window.location.href = "/servers")}
+            callback={() => (window.location.href = "/rooms")}
             extraClasses={["register_button"]}
           >
             <h5>PLAY ONLINE</h5>

@@ -23,7 +23,7 @@ defmodule MidimatchesWeb.PageControllerTest do
     end
 
     test "servers dest", %{conn: conn} do
-      conn = get(conn, "/register", destination: "/servers", user_alias: "abkd")
+      conn = get(conn, "/register", destination: "/rooms", user_alias: "abkd")
       assert html_response(conn, 200) =~ "urlDestination"
     end
 
