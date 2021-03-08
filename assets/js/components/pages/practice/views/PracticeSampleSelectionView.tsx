@@ -15,6 +15,7 @@ import {
   DynamicContent,
   TimerBox,
   ComputerButton,
+  InlineWidthButton,
 } from "../../../common";
 import { randomElement } from "../../../../utils";
 import { useLoadRandomSamples } from "../../../../hooks";
@@ -45,16 +46,16 @@ const PracticeSampleSelectionView: React.FC<PracticeSampleSelectionViewProps> = 
         ) : (
           <></>
         )}
-        <ComputerButton
+        <InlineWidthButton
           callback={() => {
             pickNewSample(samples, currentSample);
           }}
         >
           <h5>NEW SAMPLE</h5>
-        </ComputerButton>
-        <ComputerButton callback={() => advanceView()}>
+        </InlineWidthButton>
+        <InlineWidthButton callback={() => advanceView()}>
           <h5>CONTINUE</h5>
-        </ComputerButton>
+        </InlineWidthButton>
       </DynamicContent>
     </div>
   );
