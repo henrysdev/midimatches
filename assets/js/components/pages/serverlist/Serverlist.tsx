@@ -37,10 +37,10 @@ const Serverlist: React.FC<ServerlistProps> = ({
           <table className="serverlist_table">
             <thead>
               <tr>
-                <th>NAME</th>
-                <th>STATUS</th>
-                <th>PLAYERS</th>
-                <th># ROUNDS</th>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Players</th>
+                <th># Rounds</th>
               </tr>
             </thead>
             <tbody>
