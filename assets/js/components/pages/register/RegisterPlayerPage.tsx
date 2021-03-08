@@ -15,7 +15,7 @@ import {
 } from "../../common";
 
 const RegisterPlayerPage: React.FC = () => {
-  const [alias, setAlias] = useState<string>();
+  const [alias, setAlias] = useState<string>("");
   const [urlDestination, setUrlDestination] = useState<string>("/menu");
 
   useEffect(() => {
@@ -26,6 +26,10 @@ const RegisterPlayerPage: React.FC = () => {
   const handleChange = (e: any) => {
     setAlias(e.target.value);
   };
+
+  const trimmedAlias = useMemo(() => {
+    return alias.trim();
+  }, [alias]);
 
   return (
     <div className="narrow_center_container computer_frame outset_3d_border_deep">
@@ -43,15 +47,21 @@ const RegisterPlayerPage: React.FC = () => {
             maxLength={MAX_PLAYER_ALIAS_LENGTH}
             onChange={handleChange}
           />
-          <input hidden={true} value={urlDestination} name="url_destination" />
+          <input
+            hidden={true}
+            defaultValue={urlDestination}
+            name="url_destination"
+          />
           <input
             className="register_player_submit_button roboto_font"
-            disabled={!alias || alias.length < MIN_PLAYER_ALIAS_LENGTH}
+            disabled={
+              !trimmedAlias || trimmedAlias.length < MIN_PLAYER_ALIAS_LENGTH
+            }
             type="submit"
             value="SUBMIT"
           />
         </fieldset>
-        {!!alias && alias.length < MIN_PLAYER_ALIAS_LENGTH ? (
+        {!!trimmedAlias && trimmedAlias.length < MIN_PLAYER_ALIAS_LENGTH ? (
           <div className="alias_length_warning roboto_font">
             Alias must be at least 3 characters long
           </div>

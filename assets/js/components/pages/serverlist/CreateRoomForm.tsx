@@ -10,8 +10,12 @@ const CreateRoomForm: React.FC = () => {
   const [numRounds, setNumRounds] = useState<number>(3);
 
   const handleRoomNameChange = (e: any) => {
-    setRoomName(e.target.value.trim());
+    setRoomName(e.target.value);
   };
+  const trimmedRoomName = useMemo(() => {
+    return roomName.trim();
+  }, [roomName]);
+
   const handleMaxPlayersChange = (e: any) => {
     const targetVal = e.target.value.trim();
     setMaxPlayers(parseInt(targetVal));
@@ -22,11 +26,11 @@ const CreateRoomForm: React.FC = () => {
   };
   const requestBody = useMemo((): CreateRoomPayload => {
     return {
-      room_name: roomName,
+      room_name: trimmedRoomName,
       max_players: maxPlayers,
       num_rounds: numRounds,
     };
-  }, [roomName, maxPlayers, numRounds]);
+  }, [trimmedRoomName, maxPlayers, numRounds]);
 
   const {
     data,
@@ -110,7 +114,7 @@ const CreateRoomForm: React.FC = () => {
             ) : (
               <input
                 className="register_player_submit_button roboto_font"
-                disabled={!roomName || roomName.length < 3}
+                disabled={!trimmedRoomName || trimmedRoomName.length < 3}
                 type="submit"
                 value="CREATE AND JOIN"
               />
