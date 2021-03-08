@@ -48,7 +48,7 @@ const CreateRoomForm: React.FC = () => {
 
   return (
     <div className="create_room_wrapper inset_3d_border_shallow inline_screen">
-      <MediumTitle centered={false}>CREATE ROOM</MediumTitle>
+      <MediumTitle centered={false}>CREATE NEW ROOM</MediumTitle>
       {loading || loaded ? (
         <div>LOADING SPINNER HERE</div>
       ) : loadError ? (

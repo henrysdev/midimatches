@@ -18,7 +18,7 @@ const MenuPage: React.FC = () => {
   return (
     <div className="narrow_center_container computer_frame outset_3d_border_deep">
       <br />
-      <MediumLargeTitle>///MIDI MATCHES</MediumLargeTitle>
+      <MediumLargeTitle>///PLAYER MENU</MediumLargeTitle>
       <div className="main_menu_btn_group">
         <div className="main_menu_btn">
           <ComputerButton
