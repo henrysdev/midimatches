@@ -71,6 +71,17 @@ const CreateRoomForm: React.FC = () => {
     }
   }, [loaded]);
 
+  const submitDisabled = useMemo(() => {
+    return !trimmedRoomName || trimmedRoomName.length < MIN_ROOM_NAME_LENGTH;
+  }, [trimmedRoomName]);
+
+  const handleSubmitForm = (e: any) => {
+    e.preventDefault();
+    if (!submitDisabled) {
+      submitRequest(requestBody);
+    }
+  };
+
   return (
     <div className="create_room_wrapper inset_3d_border_shallow inline_screen">
       <MediumTitle centered={false}>NEW ROOM</MediumTitle>
@@ -88,14 +99,12 @@ const CreateRoomForm: React.FC = () => {
           autoComplete="off"
           onKeyDown={(e: any) => {
             if (e.key === "Enter") {
-              e.preventDefault();
-              submitRequest(requestBody);
+              handleSubmitForm(e);
             }
           }}
           onSubmit={(e: any) => {
-            e.preventDefault();
             e.stopPropagation();
-            submitRequest(requestBody);
+            handleSubmitForm(e);
           }}
         >
           <fieldset>
@@ -138,10 +147,7 @@ const CreateRoomForm: React.FC = () => {
             />
             <InlineWidthInputSubmit
               label="CREATE AND JOIN"
-              disabled={
-                !trimmedRoomName ||
-                trimmedRoomName.length < MIN_ROOM_NAME_LENGTH
-              }
+              disabled={submitDisabled}
             />
           </fieldset>
           {loaded && badRequest ? (

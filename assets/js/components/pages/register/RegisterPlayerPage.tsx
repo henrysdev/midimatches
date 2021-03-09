@@ -58,6 +58,17 @@ const RegisterPlayerPage: React.FC = () => {
     }
   }, [loaded]);
 
+  const submitDisabled = useMemo(() => {
+    return !!trimmedAlias && trimmedAlias.length < MIN_PLAYER_ALIAS_LENGTH;
+  }, [trimmedAlias]);
+
+  const handleSubmitForm = (e: any) => {
+    e.preventDefault();
+    if (!submitDisabled) {
+      submitRequest(requestBody);
+    }
+  };
+
   return (
     <div className="narrow_center_container computer_frame outset_3d_border_deep">
       <br />
@@ -75,14 +86,12 @@ const RegisterPlayerPage: React.FC = () => {
             autoComplete="off"
             onKeyDown={(e: any) => {
               if (e.key === "Enter") {
-                e.preventDefault();
-                submitRequest(requestBody);
+                handleSubmitForm(e);
               }
             }}
             onSubmit={(e: any) => {
-              e.preventDefault();
               e.stopPropagation();
-              submitRequest(requestBody);
+              handleSubmitForm(e);
             }}
           >
             <fieldset>
@@ -95,8 +104,7 @@ const RegisterPlayerPage: React.FC = () => {
                 maxLength={MAX_PLAYER_ALIAS_LENGTH}
                 onChange={handleChange}
               />
-              {!!trimmedAlias &&
-              trimmedAlias.length < MIN_PLAYER_ALIAS_LENGTH ? (
+              {submitDisabled ? (
                 <div className="alias_length_warning roboto_font">
                   Alias must be at least 3 characters long
                 </div>
@@ -111,9 +119,7 @@ const RegisterPlayerPage: React.FC = () => {
               />
               <InlineWidthInputSubmit
                 label="SUBMIT"
-                disabled={
-                  !trimmedAlias || trimmedAlias.length < MIN_PLAYER_ALIAS_LENGTH
-                }
+                disabled={submitDisabled}
               />
             </fieldset>
             {loaded && badRequest ? (
