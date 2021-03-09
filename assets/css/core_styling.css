@@ -878,3 +878,39 @@ strong {
 .settings_item_label {
   color: #666;
 }
+
+.volume_slider_container {
+  width: 100%;
+}
+
+.volume_slider {
+  -webkit-appearance: none;
+  height: 5px;
+  background: #bcc7da;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: 0.2s;
+  transition: opacity 0.2s;
+}
+
+.volume_slider:hover {
+  opacity: 1;
+}
+
+.volume_slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #5085da;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.volume_slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: #5085da;
+  cursor: pointer;
+  border-radius: 5px;
+}
