@@ -14,6 +14,8 @@ import {
   MIN_NUM_ROUNDS,
   MAX_NUM_ROUNDS,
   DEFAULT_NUM_ROUNDS,
+  MIN_ROOM_NAME_LENGTH,
+  MAX_ROOM_NAME_LENGTH,
 } from "../../../constants";
 import { min, max } from "lodash";
 
@@ -105,7 +107,7 @@ const CreateRoomForm: React.FC = () => {
               name="room_name"
               placeholder="Enter room name..."
               value={roomName}
-              maxLength={20}
+              maxLength={MAX_ROOM_NAME_LENGTH}
               onChange={handleRoomNameChange}
             />
             <div className="form_input_label roboto_font">Max Players </div>
@@ -119,7 +121,6 @@ const CreateRoomForm: React.FC = () => {
               name="max_players"
               placeholder={`${DEFAULT_ROOM_SIZE}`}
               value={maxPlayers}
-              maxLength={20}
               onChange={handleMaxPlayersChange}
             />
             <div className="form_input_label roboto_font"># Rounds</div>
@@ -133,12 +134,14 @@ const CreateRoomForm: React.FC = () => {
               name="num_rounds"
               placeholder={`${DEFAULT_NUM_ROUNDS}`}
               value={numRounds}
-              maxLength={20}
               onChange={handleNumRoundsChange}
             />
             <InlineWidthInputSubmit
               label="CREATE AND JOIN"
-              disabled={!trimmedRoomName || trimmedRoomName.length < 3}
+              disabled={
+                !trimmedRoomName ||
+                trimmedRoomName.length < MIN_ROOM_NAME_LENGTH
+              }
             />
           </fieldset>
           {loaded && badRequest ? (

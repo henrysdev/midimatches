@@ -16,6 +16,8 @@ defmodule MidimatchesWeb.RoomController do
   @min_players 3
   @max_num_rounds 10
   @min_num_rounds 1
+  @min_room_name_length 3
+  @max_room_name_length 20
 
   @spec create(Plug.Conn.t(), map) :: Plug.Conn.t()
   @doc """
@@ -60,7 +62,13 @@ defmodule MidimatchesWeb.RoomController do
   @spec parse_room_name(String.t()) :: {:error, String.t()} | {:ok, String.t()}
   defp parse_room_name(room_name) do
     # TODO profanity filter
-    {:ok, room_name}
+    room_name_len = String.length(room_name)
+
+    if room_name_len < @min_room_name_length or room_name_len > @max_room_name_length do
+      {:error, invalid_value_error("room_name")}
+    else
+      {:ok, room_name}
+    end
   end
 
   @spec parse_max_players(integer()) :: {:error, String.t()} | {:ok, integer()}

@@ -4,8 +4,7 @@ defmodule MidimatchesWeb.PageController do
   alias Midimatches.{
     Pids,
     Rooms,
-    Rooms.RoomServer,
-    Utils
+    Rooms.RoomServer
   }
 
   @spec index(Plug.Conn.t(), any) :: Plug.Conn.t()

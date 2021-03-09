@@ -13,6 +13,17 @@ defmodule MidimatchesWeb.RoomControllerTest do
       assert json_response(conn, 200)["link_to_room"] =~ "/room/"
     end
 
+    test "invalid roon_name value", %{conn: conn} do
+      conn =
+        post(conn, "/api/room", %{
+          "room_name" => "ab",
+          "max_players" => 4,
+          "num_rounds" => 3
+        })
+
+      assert json_response(conn, 400)["error"] =~ "room_name"
+    end
+
     test "invalid max_players value", %{conn: conn} do
       conn =
         post(conn, "/api/room", %{
@@ -21,11 +32,7 @@ defmodule MidimatchesWeb.RoomControllerTest do
           "num_rounds" => 3
         })
 
-      expected_resp = %{
-        "error" => "Invalid value for max_players"
-      }
-
-      assert json_response(conn, 400) == expected_resp
+      assert json_response(conn, 400)["error"] =~ "max_players"
     end
 
     test "invalid num_rounds value", %{conn: conn} do
@@ -36,11 +43,7 @@ defmodule MidimatchesWeb.RoomControllerTest do
           "num_rounds" => 9999
         })
 
-      expected_resp = %{
-        "error" => "Invalid value for num_rounds"
-      }
-
-      assert json_response(conn, 400) == expected_resp
+      assert json_response(conn, 400)["error"] =~ "num_rounds"
     end
   end
 end
