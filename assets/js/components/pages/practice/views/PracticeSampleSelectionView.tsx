@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 
 import {
   SUBMIT_RECORDING_EVENT,
@@ -18,12 +18,14 @@ import {
   InlineWidthButton,
 } from "../../../common";
 import { randomElement } from "../../../../utils";
-import { useLoadRandomSamples } from "../../../../hooks";
+import { useToneAudioContext } from "../../../../hooks";
 
 interface PracticeSampleSelectionViewProps {
   samples: string[];
   loadSample: Function;
   pickNewSample: Function;
+  stopSample: Function;
+  samplePlayer: any;
   advanceView: Function;
   currentSample?: string;
 }
@@ -31,34 +33,93 @@ interface PracticeSampleSelectionViewProps {
 const PracticeSampleSelectionView: React.FC<PracticeSampleSelectionViewProps> = ({
   samples,
   loadSample,
+  stopSample,
+  samplePlayer,
   pickNewSample,
   currentSample,
   advanceView,
 }) => {
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+
+  const stopSamplePreview = () => {
+    stopSample();
+    setIsPlaying(false);
+  };
+
+  const startSamplePreview = () => {
+    samplePlayer.start();
+    setIsPlaying(true);
+  };
+
+  const togglePlaySample = () => {
+    if (isPlaying) {
+      stopSamplePreview();
+    } else {
+      startSamplePreview();
+    }
+  };
+
   return (
     <div className="view_container">
       <MediumLargeTitle>PRACTICE - SAMPLE SELECTION</MediumLargeTitle>
       <DynamicContent>
         {!!currentSample ? (
-          <div>
+          <div className="selected_sample_anchor">
             <MediumTitle>{currentSample}</MediumTitle>
+
+            <div
+              className="selected_sample_play_button relative_anchor"
+              onClick={togglePlaySample}
+            >
+              <div className="selected_sample_play_button_icon">
+                {isPlaying ? (
+                  <i
+                    style={{
+                      verticalAlign: "middle",
+                      textAlign: "center",
+                      fontSize: "50px",
+                    }}
+                    className="material-icons"
+                  >
+                    stop_circle
+                  </i>
+                ) : (
+                  <i
+                    style={{
+                      verticalAlign: "middle",
+                      textAlign: "center",
+                      fontSize: "50px",
+                    }}
+                    className="material-icons"
+                  >
+                    play_circle
+                  </i>
+                )}
+              </div>
+            </div>
           </div>
         ) : (
           <></>
         )}
         <InlineWidthButton
           callback={() => {
+            stopSamplePreview();
             pickNewSample(samples, currentSample);
           }}
         >
           <h5>
-            NEW SAMPLE{" "}
+            NEW SAMPLE
             <i style={{ verticalAlign: "middle" }} className="material-icons">
               loop
             </i>
           </h5>
         </InlineWidthButton>
-        <InlineWidthButton callback={() => advanceView()}>
+        <InlineWidthButton
+          callback={() => {
+            stopSamplePreview();
+            advanceView();
+          }}
+        >
           <h5>CONTINUE</h5>
         </InlineWidthButton>
       </DynamicContent>

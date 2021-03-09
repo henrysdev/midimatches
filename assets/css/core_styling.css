@@ -943,3 +943,40 @@ strong {
   background-color: rgb(245, 187, 187);
   color: red;
 }
+
+.selected_sample_anchor {
+}
+
+.selected_sample_label {
+  float: right;
+}
+
+.selected_sample_player {
+  top: -14px;
+  float: left;
+}
+
+.selected_sample_play_button {
+  margin-top: 8px;
+  width: 50px;
+  height: 50px;
+  left: calc(50% - 25px);
+  cursor: pointer;
+  color: #666;
+  opacity: 0.7;
+  -webkit-transition: 0.2s;
+  transition: opacity 0.2s;
+}
+
+.selected_sample_play_button:hover {
+  opacity: 0.85;
+}
+
+.selected_sample_play_button:active {
+  opacity: 1;
+}
+
+.selected_sample_play_button_icon {
+  width: 50px;
+  height: 50px;
+}
