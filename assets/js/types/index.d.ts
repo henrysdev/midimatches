@@ -190,6 +190,11 @@ export interface ScoresContextType {
   scores: ScoreTuple[];
 }
 
+export interface KeyboardInputContextType {
+  setDisableKeyboardInput: Function;
+  disableKeyboardInput: boolean;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // Player Data                                                               //
 ///////////////////////////////////////////////////////////////////////////////

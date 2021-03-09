@@ -12,6 +12,7 @@ import {
   ViewDeadlineContext,
   GameRulesContext,
   ScoresContext,
+  KeyboardInputContext,
 } from "../contexts";
 
 import {
@@ -26,6 +27,7 @@ import {
   ViewDeadlineContextType,
   GameRulesContextType,
   ScoresContextType,
+  KeyboardInputContextType,
 } from "../types";
 import { Player } from "tone";
 
@@ -71,4 +73,8 @@ export function useGameRulesContext() {
 
 export function useScoresContext() {
   return useContext(ScoresContext) as ScoresContextType;
+}
+
+export function useKeyboardInputContext() {
+  return useContext(KeyboardInputContext) as KeyboardInputContextType;
 }

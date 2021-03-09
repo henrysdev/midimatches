@@ -4,7 +4,11 @@ import { Input } from "webmidi";
 
 import { Keyboard } from ".";
 import { MIDINoteEvent, GameRules } from "../../types";
-import { useToneAudioContext, useNoteRecorder } from "../../hooks";
+import {
+  useToneAudioContext,
+  useNoteRecorder,
+  useKeyboardInputContext,
+} from "../../hooks";
 import * as Tone from "tone";
 
 interface RecordMidiProps {
@@ -29,6 +33,7 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
   hideKeyboard = false,
 }) => {
   const { midiInputs, synth } = useToneAudioContext();
+  const { disableKeyboardInput } = useKeyboardInputContext();
 
   const {
     activeMidiList,
@@ -90,6 +95,7 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
           }
         }}
         hideKeyboard={hideKeyboard}
+        disableKeyboardInput={disableKeyboardInput}
       />
     </div>
   );
