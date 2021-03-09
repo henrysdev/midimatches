@@ -14,7 +14,10 @@ import {
   MIN_NUM_ROUNDS,
   MAX_NUM_ROUNDS,
   DEFAULT_NUM_ROUNDS,
+  MIN_ROOM_NAME_LENGTH,
+  MAX_ROOM_NAME_LENGTH,
 } from "../../../constants";
+import { min, max } from "lodash";
 
 const CreateRoomForm: React.FC = () => {
   const [roomName, setRoomName] = useState<string>("");
@@ -29,12 +32,18 @@ const CreateRoomForm: React.FC = () => {
   }, [roomName]);
 
   const handleMaxPlayersChange = (e: any) => {
-    const targetVal = e.target.value.trim();
-    setMaxPlayers(parseInt(targetVal));
+    const targetVal = max([
+      min([parseInt(e.target.value.trim()), MAX_ROOM_SIZE]),
+      MIN_ROOM_SIZE,
+    ]);
+    setMaxPlayers(!!targetVal ? targetVal : MAX_ROOM_SIZE);
   };
   const handleNumRoundsChange = (e: any) => {
-    const targetVal = e.target.value.trim();
-    setNumRounds(parseInt(targetVal));
+    const targetVal = max([
+      min([parseInt(e.target.value.trim()), MAX_NUM_ROUNDS]),
+      MIN_NUM_ROUNDS,
+    ]);
+    setNumRounds(!!targetVal ? targetVal : MAX_NUM_ROUNDS);
   };
   const requestBody = useMemo((): CreateRoomPayload => {
     return {
@@ -52,35 +61,50 @@ const CreateRoomForm: React.FC = () => {
     submitRequest,
   } = useLoadCreateRoom();
 
+  const [badRequest, setBadRequest] = useState<boolean>(false);
+
   useEffect(() => {
-    if (!!loaded && !!data && !!data.linkToRoom) {
+    if (!!loaded && !!data && !!data.error) {
+      setBadRequest(true);
+    } else if (!!loaded && !!data && !!data.linkToRoom) {
       window.location.href = data.linkToRoom;
     }
   }, [loaded]);
 
+  const submitDisabled = useMemo(() => {
+    return !trimmedRoomName || trimmedRoomName.length < MIN_ROOM_NAME_LENGTH;
+  }, [trimmedRoomName]);
+
+  const handleSubmitForm = (e: any) => {
+    e.preventDefault();
+    if (!submitDisabled) {
+      submitRequest(requestBody);
+    }
+  };
+
   return (
     <div className="create_room_wrapper inset_3d_border_shallow inline_screen">
       <MediumTitle centered={false}>NEW ROOM</MediumTitle>
-      {loading || loaded ? (
+      {loading ? (
         <div className="relative_anchor">
           <VinylLoadingSpinner />
         </div>
       ) : loadError ? (
-        <div>FAILED</div>
+        <div className="warning_alert roboto_font">
+          Failed to get response from server
+        </div>
       ) : (
         <form
           className="create_room_form"
           autoComplete="off"
           onKeyDown={(e: any) => {
             if (e.key === "Enter") {
-              e.preventDefault();
-              submitRequest(requestBody);
+              handleSubmitForm(e);
             }
           }}
           onSubmit={(e: any) => {
-            e.preventDefault();
             e.stopPropagation();
-            submitRequest(requestBody);
+            handleSubmitForm(e);
           }}
         >
           <fieldset>
@@ -92,7 +116,7 @@ const CreateRoomForm: React.FC = () => {
               name="room_name"
               placeholder="Enter room name..."
               value={roomName}
-              maxLength={20}
+              maxLength={MAX_ROOM_NAME_LENGTH}
               onChange={handleRoomNameChange}
             />
             <div className="form_input_label roboto_font">Max Players </div>
@@ -106,7 +130,6 @@ const CreateRoomForm: React.FC = () => {
               name="max_players"
               placeholder={`${DEFAULT_ROOM_SIZE}`}
               value={maxPlayers}
-              maxLength={20}
               onChange={handleMaxPlayersChange}
             />
             <div className="form_input_label roboto_font"># Rounds</div>
@@ -120,20 +143,20 @@ const CreateRoomForm: React.FC = () => {
               name="num_rounds"
               placeholder={`${DEFAULT_NUM_ROUNDS}`}
               value={numRounds}
-              maxLength={20}
               onChange={handleNumRoundsChange}
             />
-            {loading ? (
-              <div className="relative_anchor">
-                <VinylLoadingSpinner />
-              </div>
-            ) : (
-              <InlineWidthInputSubmit
-                label="CREATE AND JOIN"
-                disabled={!trimmedRoomName || trimmedRoomName.length < 3}
-              />
-            )}
+            <InlineWidthInputSubmit
+              label="CREATE AND JOIN"
+              disabled={submitDisabled}
+            />
           </fieldset>
+          {loaded && badRequest ? (
+            <div className="warning_alert roboto_font">
+              Room creation failed: {data.error}
+            </div>
+          ) : (
+            <></>
+          )}
         </form>
       )}
     </div>

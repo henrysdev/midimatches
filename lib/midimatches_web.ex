@@ -24,6 +24,9 @@ defmodule MidimatchesWeb do
       import Plug.Conn
       import MidimatchesWeb.Gettext
       alias MidimatchesWeb.Router.Helpers, as: Routes
+
+      @spec invalid_value_error(String.t()) :: String.t()
+      defp invalid_value_error(field), do: "Invalid value for #{field}"
     end
   end
 

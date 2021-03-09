@@ -2,7 +2,7 @@ import { Channel, Socket } from "phoenix";
 import React, { useEffect, useState, useMemo } from "react";
 
 import { unmarshalBody } from "../../../utils";
-import { ServerlistUpdatePayload, RoomState } from "../../../types";
+import { UpdateUserPayload, RoomState } from "../../../types";
 import {
   SERVERLIST_UPDATE_EVENT,
   MAX_PLAYER_ALIAS_LENGTH,
@@ -13,7 +13,9 @@ import {
   MediumLargeTitle,
   ComputerButton,
   InlineWidthInputSubmit,
+  VinylLoadingSpinner,
 } from "../../common";
+import { useLoadUpdateUser } from "../../../hooks/useLoadUpdateUser";
 
 const RegisterPlayerPage: React.FC = () => {
   const [alias, setAlias] = useState<string>("");
@@ -32,43 +34,103 @@ const RegisterPlayerPage: React.FC = () => {
     return alias.trim();
   }, [alias]);
 
+  const requestBody = useMemo((): UpdateUserPayload => {
+    return {
+      user_alias: trimmedAlias,
+    };
+  }, [trimmedAlias]);
+
+  const {
+    data,
+    loading = false,
+    loaded = false,
+    loadError = false,
+    submitRequest,
+  } = useLoadUpdateUser();
+
+  const [badRequest, setBadRequest] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!!loaded && !!data && !!data.error) {
+      setBadRequest(true);
+    } else if (!!loaded) {
+      window.location.href = urlDestination;
+    }
+  }, [loaded]);
+
+  const submitDisabled = useMemo(() => {
+    return !!trimmedAlias && trimmedAlias.length < MIN_PLAYER_ALIAS_LENGTH;
+  }, [trimmedAlias]);
+
+  const handleSubmitForm = (e: any) => {
+    e.preventDefault();
+    if (!submitDisabled) {
+      submitRequest(requestBody);
+    }
+  };
+
   return (
     <div className="narrow_center_container computer_frame outset_3d_border_deep">
       <br />
       <MediumLargeTitle>///PLAYER NAME</MediumLargeTitle>
       <div className="register_content_wrapper inset_3d_border_deep inline_screen">
-        <form className="register_player_form" autoComplete="off">
-          <fieldset>
-            <input
-              className="inline_width_text_input roboto_font"
-              type="text"
-              id="user_alias"
-              name="user_alias"
-              placeholder="Enter player name..."
-              maxLength={MAX_PLAYER_ALIAS_LENGTH}
-              onChange={handleChange}
-            />
-            {!!trimmedAlias && trimmedAlias.length < MIN_PLAYER_ALIAS_LENGTH ? (
-              <div className="alias_length_warning roboto_font">
-                Alias must be at least 3 characters long
+        {loading ? (
+          <VinylLoadingSpinner />
+        ) : loadError ? (
+          <div className="warning_alert roboto_font">
+            Failed to get response from server
+          </div>
+        ) : (
+          <form
+            className="register_player_form"
+            autoComplete="off"
+            onKeyDown={(e: any) => {
+              if (e.key === "Enter") {
+                handleSubmitForm(e);
+              }
+            }}
+            onSubmit={(e: any) => {
+              e.stopPropagation();
+              handleSubmitForm(e);
+            }}
+          >
+            <fieldset>
+              <input
+                className="inline_width_text_input roboto_font"
+                type="text"
+                id="user_alias"
+                name="user_alias"
+                placeholder="Enter player name..."
+                maxLength={MAX_PLAYER_ALIAS_LENGTH}
+                onChange={handleChange}
+              />
+              {submitDisabled ? (
+                <div className="alias_length_warning roboto_font">
+                  Alias must be at least 3 characters long
+                </div>
+              ) : (
+                <></>
+              )}
+              <input
+                hidden={true}
+                onChange={() => {}}
+                value={urlDestination}
+                name="url_destination"
+              />
+              <InlineWidthInputSubmit
+                label="SUBMIT"
+                disabled={submitDisabled}
+              />
+            </fieldset>
+            {loaded && badRequest ? (
+              <div className="warning_alert roboto_font">
+                Update user failed: {data.error}
               </div>
             ) : (
               <></>
             )}
-            <input
-              hidden={true}
-              onChange={() => {}}
-              value={urlDestination}
-              name="url_destination"
-            />
-            <InlineWidthInputSubmit
-              label="SUBMIT"
-              disabled={
-                !trimmedAlias || trimmedAlias.length < MIN_PLAYER_ALIAS_LENGTH
-              }
-            />
-          </fieldset>
-        </form>
+          </form>
+        )}
       </div>
     </div>
   );

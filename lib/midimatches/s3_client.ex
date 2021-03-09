@@ -8,6 +8,7 @@ defmodule Midimatches.S3ClientProxy do
 end
 
 defmodule Midimatches.S3Client do
+  @moduledoc false
   @spec random_sample_beats(number()) :: any()
   @doc """
   Returns a list of random audio files from the sample beats bucket
@@ -30,6 +31,7 @@ defmodule Midimatches.S3Client do
 end
 
 defmodule Midimatches.S3Client.Mock do
+  @moduledoc false
   def random_sample_beats(count) do
     Enum.to_list(1..count)
   end

@@ -15,6 +15,10 @@ config :midimatches, MidimatchesWeb.Endpoint,
   pubsub_server: Midimatches.PubSub,
   live_view: [signing_salt: "p7k9h6tJ"]
 
+# Configures custom application env vars
+config :midimatches,
+  rooms_config: "config/app_scheme/config.json"
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
@@ -22,10 +26,6 @@ config :logger, :console,
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
-
-# Configures custom application env vars
-config :midimatches,
-  rooms_config: "config/app_scheme/config.json"
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

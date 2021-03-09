@@ -116,7 +116,8 @@ defmodule Midimatches.UtilsTest do
       room_name: "flight of the concords",
       num_curr_players: 4,
       game_rules: game_config,
-      in_game: true
+      in_game: true,
+      room_players: ["22", "33", "44", "55"]
     }
 
     actual_client_room_state = Utils.server_to_client_room_state(server_room_state)
