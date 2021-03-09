@@ -100,6 +100,8 @@ const PracticePage: React.FC<PracticePageProps> = ({ children }) => {
                           pickNewSample={pickNewSample}
                           currentSample={currentSample}
                           loadSample={toneAudioContext.loadSample}
+                          stopSample={toneAudioContext.stopSample}
+                          samplePlayer={toneAudioContext.samplePlayer}
                           advanceView={() => {
                             setRoundRecordingStartTime(msToMicros(Date.now()));
                             setCurrentView(PRACTICE_GAME_VIEW.RECORDING);
