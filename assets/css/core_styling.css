@@ -875,6 +875,13 @@ strong {
   box-shadow: none;
 }
 
+.styled_button:disabled {
+  background-color: rgb(247, 247, 247);
+  color: rgb(201, 201, 201);
+  cursor: default;
+  border: 2px solid rgb(193, 193, 193);
+}
+
 .settings_item_label {
   color: #666;
 }
