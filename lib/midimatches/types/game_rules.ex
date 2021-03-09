@@ -12,7 +12,7 @@ defmodule Midimatches.Types.GameRules do
   @default_rounds_to_win 3
   @default_min_players 3
   @default_max_players 4
-  @default_solo_time_limit 30_000
+  @default_solo_time_limit 15_000
   @default_view_timeouts %ViewTimeouts{}
   @default_pregame_countdown 10_000
   @default_permanent_room false

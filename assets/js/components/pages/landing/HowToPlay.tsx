@@ -6,26 +6,26 @@ const HowToPlay: React.FC = () => {
       <dl>
         <dd>
           <p>
-            Midi Matches is a multiplayer improvisational piano game that aims
+            MIDI Matches is a multiplayer improvisational piano game that aims
             to combine the joy of playing electronic keyboard with the thrill of
             friendly competition.
           </p>
         </dd>
         <br />
         <dt>
-          <h5>MIDI FIRST</h5>
+          <h4>MIDI FIRST</h4>
         </dt>
         <dd>
           <p>
-            Midi Matches is intended to be played with a MIDI keyboard. For the
-            best experience, you'll want to have a MIDI keyboard plugged into
+            MIDI Matches is intended to be played with a MIDI-capable piano. For
+            the best experience, you'll want to have a MIDI piano plugged into
             your computer. Alternatively, you can play with your computer
-            keyboard or click on notes.
+            keyboard.
           </p>
         </dd>
         <br />
         <dt>
-          <h5>HOW DO I PLAY?</h5>
+          <h4>HOW DO I PLAY?</h4>
         </dt>
         <dd>
           <p>

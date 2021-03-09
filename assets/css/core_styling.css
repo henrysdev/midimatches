@@ -914,3 +914,22 @@ strong {
   cursor: pointer;
   border-radius: 5px;
 }
+
+.mobile_placeholder {
+  height: 100%;
+  margin: 8px;
+  padding: 8px;
+  border-radius: 10px;
+  background-color: #ebdfce;
+}
+
+.mobile_title {
+  padding: 8px;
+}
+
+.warning_alert {
+  margin: 8px;
+  padding: 8px;
+  background-color: rgb(245, 187, 187);
+  color: red;
+}

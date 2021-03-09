@@ -57,7 +57,8 @@ const RegisterPlayerPage: React.FC = () => {
             )}
             <input
               hidden={true}
-              defaultValue={urlDestination}
+              onChange={() => {}}
+              value={urlDestination}
               name="url_destination"
             />
             <InlineWidthInputSubmit

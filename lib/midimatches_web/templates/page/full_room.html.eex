@@ -15,7 +15,7 @@
     <div class="error_page relative_anchor">
       <div class="error_page_content centered_div centered_title">
         <h1>Room Is Full</h1>
-        <p>Try using the <a href="/rooms"><strong>server list</strong></a> to find other rooms</p>
+        <p>Try using the <a href="/rooms"><strong>room list</strong></a> to find other rooms</p>
       </div>
     </div>
   </body>
