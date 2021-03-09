@@ -12,10 +12,10 @@ defmodule MidimatchesWeb.RoomController do
 
   require Logger
 
-  @max_players Application.get_env(:midimatches, :max_room_size)
-  @min_players Application.get_env(:midimatches, :min_room_size)
-  @max_num_rounds Application.get_env(:midimatches, :max_num_rounds)
-  @min_num_rounds Application.get_env(:midimatches, :min_num_rounds)
+  @max_players 6
+  @min_players 3
+  @max_num_rounds 10
+  @min_num_rounds 1
 
   @spec create(Plug.Conn.t(), map) :: Plug.Conn.t()
   @doc """
@@ -78,7 +78,4 @@ defmodule MidimatchesWeb.RoomController do
   end
 
   defp parse_num_rounds(num_rounds), do: {:ok, num_rounds}
-
-  @spec invalid_value_error(String.t()) :: String.t()
-  defp invalid_value_error(field), do: "Invalid value for #{field}"
 end

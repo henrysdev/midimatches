@@ -17,11 +17,7 @@ config :midimatches, MidimatchesWeb.Endpoint,
 
 # Configures custom application env vars
 config :midimatches,
-  rooms_config: "config/app_scheme/config.json",
-  min_room_size: 3,
-  max_room_size: 6,
-  min_num_rounds: 1,
-  max_num_rounds: 10
+  rooms_config: "config/app_scheme/config.json"
 
 # Configures Elixir's Logger
 config :logger, :console,

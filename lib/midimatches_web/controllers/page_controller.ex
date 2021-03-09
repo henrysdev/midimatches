@@ -66,39 +66,6 @@ defmodule MidimatchesWeb.PageController do
     render(conn, "register_player.html", destination: destination)
   end
 
-  def register_player(conn, %{"user_alias" => user_alias, "url_destination" => url_destination}) do
-    conn =
-      if is_nil(get_session(conn, :user)) do
-        new_user = %{user_alias: user_alias, user_id: Utils.gen_uuid()}
-        put_session(conn, :user, new_user)
-      else
-        existing_user = get_session(conn, :user)
-        put_session(conn, :user, %{existing_user | user_alias: user_alias})
-      end
-
-    case url_destination do
-      "/room/" <> room_id ->
-        redirect(conn,
-          to: Routes.page_path(conn, :room, room_id)
-        )
-
-      "/rooms" ->
-        redirect(conn,
-          to: Routes.page_path(conn, :serverlist)
-        )
-
-      "/practice" ->
-        redirect(conn,
-          to: Routes.page_path(conn, :practice)
-        )
-
-      _ ->
-        redirect(conn,
-          to: Routes.page_path(conn, :menu)
-        )
-    end
-  end
-
   def register_player(conn, _params) do
     render(conn, "register_player.html", destination: "/menu")
   end

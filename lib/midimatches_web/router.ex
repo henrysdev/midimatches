@@ -33,6 +33,7 @@ defmodule MidimatchesWeb.Router do
     get "/user/self", UserController, :self
     # TODO remove (or only allow in dev)
     get "/user/reset", UserController, :reset
+    post "/user", UserController, :upsert
 
     get "/samples/random", SampleController, :random
 
