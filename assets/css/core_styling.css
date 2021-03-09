@@ -82,7 +82,6 @@
 }
 
 .serverlist_create_room_wrapper {
-  max-height: calc(100% - 136px);
   overflow-x: hidden;
   overflow-y: auto;
   flex: 8;
@@ -90,8 +89,12 @@
 }
 
 .create_room_wrapper {
+  background-color: #fff;
   padding: 8px;
-  /* width: 100%; */
+  border-radius: 10px;
+  /* height: 280px; */
+  max-height: calc(100% - 40px);
+  overflow: auto;
 }
 
 .create_room_form {
