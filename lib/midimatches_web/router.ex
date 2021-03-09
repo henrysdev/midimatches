@@ -31,8 +31,6 @@ defmodule MidimatchesWeb.Router do
     pipe_through :api
 
     get "/user/self", UserController, :self
-    # TODO remove (or only allow in dev)
-    get "/user/reset", UserController, :reset
     post "/user", UserController, :upsert
 
     get "/samples/random", SampleController, :random
@@ -49,6 +47,11 @@ defmodule MidimatchesWeb.Router do
   # as long as you are also using SSL (which you should anyway).
   if Mix.env() in [:dev, :test] do
     import Phoenix.LiveDashboard.Router
+
+    scope "/api", MidimatchesWeb do
+      pipe_through :api
+      get "/user/reset", UserController, :reset
+    end
 
     scope "/" do
       pipe_through :browser
