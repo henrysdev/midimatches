@@ -15,6 +15,7 @@ import {
   MAX_NUM_ROUNDS,
   DEFAULT_NUM_ROUNDS,
 } from "../../../constants";
+import { min, max } from "lodash";
 
 const CreateRoomForm: React.FC = () => {
   const [roomName, setRoomName] = useState<string>("");
@@ -29,12 +30,18 @@ const CreateRoomForm: React.FC = () => {
   }, [roomName]);
 
   const handleMaxPlayersChange = (e: any) => {
-    const targetVal = e.target.value.trim();
-    setMaxPlayers(parseInt(targetVal));
+    const targetVal = max([
+      min([parseInt(e.target.value.trim()), MAX_ROOM_SIZE]),
+      MIN_ROOM_SIZE,
+    ]);
+    setMaxPlayers(!!targetVal ? targetVal : MAX_ROOM_SIZE);
   };
   const handleNumRoundsChange = (e: any) => {
-    const targetVal = e.target.value.trim();
-    setNumRounds(parseInt(targetVal));
+    const targetVal = max([
+      min([parseInt(e.target.value.trim()), MAX_NUM_ROUNDS]),
+      MIN_NUM_ROUNDS,
+    ]);
+    setNumRounds(!!targetVal ? targetVal : MAX_NUM_ROUNDS);
   };
   const requestBody = useMemo((): CreateRoomPayload => {
     return {
@@ -52,8 +59,12 @@ const CreateRoomForm: React.FC = () => {
     submitRequest,
   } = useLoadCreateRoom();
 
+  const [badRequest, setBadRequest] = useState<boolean>(false);
+
   useEffect(() => {
-    if (!!loaded && !!data && !!data.linkToRoom) {
+    if (!!loaded && !!data && !!data.error) {
+      setBadRequest(true);
+    } else if (!!loaded && !!data && !!data.linkToRoom) {
       window.location.href = data.linkToRoom;
     }
   }, [loaded]);
@@ -61,12 +72,14 @@ const CreateRoomForm: React.FC = () => {
   return (
     <div className="create_room_wrapper inset_3d_border_shallow inline_screen">
       <MediumTitle centered={false}>NEW ROOM</MediumTitle>
-      {loading || loaded ? (
+      {loading ? (
         <div className="relative_anchor">
           <VinylLoadingSpinner />
         </div>
       ) : loadError ? (
-        <div>FAILED</div>
+        <div className="warning_alert roboto_font">
+          Failed to get response from server
+        </div>
       ) : (
         <form
           className="create_room_form"
@@ -123,17 +136,18 @@ const CreateRoomForm: React.FC = () => {
               maxLength={20}
               onChange={handleNumRoundsChange}
             />
-            {loading ? (
-              <div className="relative_anchor">
-                <VinylLoadingSpinner />
-              </div>
-            ) : (
-              <InlineWidthInputSubmit
-                label="CREATE AND JOIN"
-                disabled={!trimmedRoomName || trimmedRoomName.length < 3}
-              />
-            )}
+            <InlineWidthInputSubmit
+              label="CREATE AND JOIN"
+              disabled={!trimmedRoomName || trimmedRoomName.length < 3}
+            />
           </fieldset>
+          {loaded && badRequest ? (
+            <div className="warning_alert roboto_font">
+              Room creation failed: {data.error}
+            </div>
+          ) : (
+            <></>
+          )}
         </form>
       )}
     </div>
