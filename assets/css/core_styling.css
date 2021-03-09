@@ -109,7 +109,7 @@
 
 .serverlist_details_pane_wrapper {
   overflow: auto;
-  flex: 6;
+  flex: 8;
   margin-left: 16px;
 }
 
