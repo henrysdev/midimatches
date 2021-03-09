@@ -7,11 +7,19 @@ import {
   VinylLoadingSpinner,
 } from "../../common";
 import { CreateRoomPayload } from "../../../types";
+import {
+  MIN_ROOM_SIZE,
+  MAX_ROOM_SIZE,
+  DEFAULT_ROOM_SIZE,
+  MIN_NUM_ROUNDS,
+  MAX_NUM_ROUNDS,
+  DEFAULT_NUM_ROUNDS,
+} from "../../../constants";
 
 const CreateRoomForm: React.FC = () => {
   const [roomName, setRoomName] = useState<string>("");
-  const [maxPlayers, setMaxPlayers] = useState<number>(4);
-  const [numRounds, setNumRounds] = useState<number>(3);
+  const [maxPlayers, setMaxPlayers] = useState<number>(DEFAULT_ROOM_SIZE);
+  const [numRounds, setNumRounds] = useState<number>(DEFAULT_NUM_ROUNDS);
 
   const handleRoomNameChange = (e: any) => {
     setRoomName(e.target.value);
@@ -92,11 +100,11 @@ const CreateRoomForm: React.FC = () => {
               style={{ marginBottom: "8px" }}
               className="form_number_input roboto_font"
               type="number"
-              min="3" // TODO have actual min constant
-              max="8" // TODO have actual max constant
+              min={`${MIN_ROOM_SIZE}`}
+              max={`${MAX_ROOM_SIZE}`}
               id="max_players"
               name="max_players"
-              placeholder="4"
+              placeholder={`${DEFAULT_ROOM_SIZE}`}
               value={maxPlayers}
               maxLength={20}
               onChange={handleMaxPlayersChange}
@@ -106,17 +114,19 @@ const CreateRoomForm: React.FC = () => {
               style={{ marginBottom: "8px" }}
               className="form_number_input roboto_font"
               type="number"
-              min="1" // TODO have actual min constant
-              max="10" // TODO have actual max constant
+              min={`${MIN_NUM_ROUNDS}`}
+              max={`${MAX_NUM_ROUNDS}`}
               id="num_rounds"
               name="num_rounds"
-              placeholder="3"
+              placeholder={`${DEFAULT_NUM_ROUNDS}`}
               value={numRounds}
               maxLength={20}
               onChange={handleNumRoundsChange}
             />
             {loading ? (
-              <>LOADING</>
+              <div className="relative_anchor">
+                <VinylLoadingSpinner />
+              </div>
             ) : (
               <InlineWidthInputSubmit
                 label="CREATE AND JOIN"

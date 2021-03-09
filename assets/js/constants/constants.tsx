@@ -130,6 +130,15 @@ export const DEFAULT_FM_SYNTH_CONFIG = {
 
 export const DEFAULT_MANUAL_NOTE_VELOCITY = 65;
 
+// room creation parameters
+export const MIN_ROOM_SIZE = 3;
+export const MAX_ROOM_SIZE = 6;
+export const DEFAULT_ROOM_SIZE = 4;
+
+export const MIN_NUM_ROUNDS = 1;
+export const MAX_NUM_ROUNDS = 10;
+export const DEFAULT_NUM_ROUNDS = 3;
+
 // const newSynth = new Tone.Sampler({
 //   urls: {
 //     C4: "funk_daddy_c4.mp3",
