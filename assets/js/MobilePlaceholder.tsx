@@ -1,26 +1,21 @@
 import React from "react";
 
 import { HowToPlay } from "./components/pages/landing";
+import { ComputerFrame } from "./components/common";
 
 const MobilePlaceholder: React.FC = () => {
   return (
-    <div
-      style={{
-        maxWidth: "100%",
-        margin: "auto",
-        marginTop: "16px",
-        padding: "24px",
-        boxShadow: "0 5px 15px rgb(0 0 0 / 8%)",
-        color: "#666",
-      }}
-    >
-      <div>
-        <h1 className="uk-text-center">Midi Matches</h1>
-        <div>
-          <strong>Note: </strong>Midi Matches is not currently supported on
-          mobile.
-        </div>
+    <div>
+      <div
+        className="mobile_placeholder outset_3d_border_deep"
+        style={{ borderRadius: "10px", backgroundColor: "#ebdfce" }}
+      >
+        <h1 className="mobile_title centered_title">///WELCOME</h1>
         <HowToPlay />
+        <div className="warning_alert roboto_font">
+          <strong>Note: </strong> MIDI Matches is not supported on mobile
+          browsers. Please switch to a desktop browser to continue to game.
+        </div>
       </div>
     </div>
   );
