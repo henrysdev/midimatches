@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo } from "react";
+import React, { useState, useEffect, useMemo, memo } from "react";
 
 import { ChatMessage, Player } from "../../types";
 import { useChatContext, useKeyboardInputContext } from "../../hooks";
@@ -18,9 +18,13 @@ const ChatBox: React.FC<ChatBoxProps> = memo(({ players }) => {
     setMessageTextBuffer(e.target.value);
   };
 
+  const trimmedTextBuffer = useMemo(() => {
+    return messageTextBuffer.trim();
+  }, [messageTextBuffer]);
+
   const handleSubmitTextBuffer = () => {
-    if (!!messageTextBuffer && messageTextBuffer.length > 0) {
-      submitChatMessageEvent(messageTextBuffer.trim());
+    if (!!trimmedTextBuffer && trimmedTextBuffer.length > 0) {
+      submitChatMessageEvent(trimmedTextBuffer);
       setMessageTextBuffer("");
     }
   };
