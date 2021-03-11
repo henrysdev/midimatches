@@ -38,7 +38,7 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
   } = useGameContext();
 
   const { player: currPlayer } = usePlayerContext();
-  const [voteSubmitted, setVoteSubmiited] = useState<boolean>(false);
+  const [voteSubmitted, setVoteSubmitted] = useState<boolean>(false);
   const [activePlaybackTrack, setActivePlaybackTrack] = useState<string>();
   const [listenCompleteTracks, setListenCompleteTracks] = useState<Set<string>>(
     new Set<string>()
@@ -121,7 +121,7 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
       sentMessage
         .receive("ok", (_reply: any) => {
           console.log("vote submission successful");
-          setVoteSubmiited(true);
+          setVoteSubmitted(true);
         })
         .receive("vote submission error", (err: any) => {
           console.error(err);
