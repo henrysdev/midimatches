@@ -1,23 +1,23 @@
 .vynil {
-  width: 380px;
-  height: 380px;
+  width: calc(380px / 2);
+  height: calc(380px / 2);
   border-radius: 50%;
   margin: 0 auto;
 }
 .label {
-  width: 100px;
-  height: 100px;
+  width: calc(100px / 2);
+  height: calc(100px / 2);
   background-color: #d7d3fe;
   position: absolute;
   top: 36%;
   left: 36%;
-  border: 5px solid #000;
+  border: calc(5px / 2) solid #000;
 }
 .hole {
-  width: 25px;
-  height: 25px;
+  width: calc(25px / 2);
+  height: calc(25px / 2);
   background-color: rgb(205, 205, 205);
-  border: 5px solid black;
+  border: calc(5px / 2) solid black;
   z-index: 1;
   position: absolute;
   top: 46%;
@@ -25,7 +25,7 @@
 }
 .label__content {
   text-align: center;
-  font-size: 4em;
+  font-size: calc(4em / 2);
   line-height: 2;
   text-transform: uppercase;
   z-index: 1;
@@ -33,11 +33,11 @@
 }
 .vynil__round {
   background-color: #696769;
-  border: 10px solid black;
+  border: calc(10px / 2) solid black;
   position: relative;
 }
 .vynil__border {
-  border: 5px solid #b4b3b4;
+  border: calc(5px / 2) solid #b4b3b4;
   position: absolute;
   border-style: inset;
   transform: rotate(-65deg);
@@ -70,12 +70,12 @@
   content: "";
   position: absolute;
   top: 6%;
-  width: 185px;
-  height: 380px;
+  width: calc(185px / 2);
+  height: calc(380px / 2);
   display: inline-block;
   background: rgba(26, 26, 26, 0.5);
-  border-top-left-radius: 200px;
-  border-bottom-left-radius: 200px;
+  border-top-left-radius: calc(200px / 2);
+  border-bottom-left-radius: calc(200px / 2);
   transform: rotate(-20deg);
   z-index: 1;
 }
