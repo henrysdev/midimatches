@@ -43,7 +43,9 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
             <div className="pregame_content_pane">
               <div className="inline_screen inset_3d_border_shallow rounded_border">
                 <p>
-                  {`${roomPlayers.length}/${maxPlayers} Players.`}
+                  {!!maxPlayers && !!roomPlayers
+                    ? `${roomPlayers.length}/${maxPlayers} Players.`
+                    : ""}
                   {numPlayersToStart - roomPlayers.length > 0 ? (
                     <strong>
                       {` Need at least ${
