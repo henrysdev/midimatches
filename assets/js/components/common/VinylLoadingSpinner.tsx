@@ -2,7 +2,7 @@ import React from "react";
 
 const VinylLoadingSpinner: React.FC = () => {
   return (
-    <div style={{ transform: "scale(0.4" }}>
+    <div>
       <div className="vynil vynil__round">
         <div className="shade">
           <div className="vynil vynil__border vynil__border-1"></div>

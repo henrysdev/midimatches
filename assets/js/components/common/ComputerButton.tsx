@@ -1,4 +1,6 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
+
+import * as Tone from "tone";
 
 const defaultClasses = [
   "banner_button",
@@ -26,7 +28,11 @@ const ComputerButton: React.FC<ComputerButtonProps> = ({
     <div
       onMouseEnter={() => setLightBulbAnimClass("led-green bulb-on-green")}
       onMouseLeave={() => setLightBulbAnimClass("led-green bulb-off-green")}
-      onClick={() => callback()}
+      onClick={() => {
+        const audioNode = new Audio("../soundeffects/button_click.mp3");
+        audioNode.play();
+        callback();
+      }}
       className={className}
     >
       <div className="led-box" style={{ float: "left" }}>

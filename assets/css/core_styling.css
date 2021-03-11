@@ -537,11 +537,9 @@ strong {
 @import url(https://fonts.googleapis.com/css?family=Roboto:300);
 
 .loading_keys_container {
-  margin: 200px;
   display: flex;
   align-items: center;
   height: 90%;
-  left: 200px;
 }
 .loading_keys {
   margin: 1em auto;
@@ -550,28 +548,36 @@ strong {
 }
 .loading_keys span {
   font-size: 3em;
-  color: #f0e7db;
+  color: #ffffff;
   background: rgb(113, 112, 112);
   display: table-cell;
-  /* box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3), 0 5px 0 #ccc; */
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3), 0 5px 0 #ccc;
   padding: 0 15px;
   line-height: 100px;
   animation: jumb 1s infinite;
+  border-radius: 8px;
+  text-align: center;
+  width: 32px;
 }
 @keyframes jumb {
   0% {
     transform: translateY(0px);
+    box-shadow: 0 15px 0 #ffffff;
   }
-  50% {
-    transform: translateY(-30px);
-    box-shadow: 0 15px 0 #f0e7db;
+  25% {
+    transform: translateY(30px);
+    box-shadow: 0 0px 0 #ffffff;
+  }
+  75% {
+    transform: translateY(0px);
+    box-shadow: 0 15px 0 #ffffff;
   }
   100% {
     transform: translateY(0px);
+    box-shadow: 0 15px 0 #ffffff;
   }
 }
 .loading_keys span:nth-child(1) {
-  border-radius: 10px 0 0 10px;
   animation-delay: 0s;
 }
 .loading_keys span:nth-child(2) {
@@ -584,16 +590,13 @@ strong {
   animation-delay: 0.3s;
 }
 .loading_keys span:nth-child(5) {
-  animation-delay: 0.4s;
+  animation-delay: 0.2s;
 }
 .loading_keys span:nth-child(6) {
-  animation-delay: 0.5s;
+  animation-delay: 0.1s;
 }
 .loading_keys span:nth-child(7) {
-  animation-delay: 0.6s;
-}
-.loading_keys span:last-child {
-  border-radius: 0 10px 10px 0;
+  animation-delay: 0s;
 }
 
 .header_nav {
