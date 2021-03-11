@@ -48,11 +48,7 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
   );
 
   const recordings = useMemo(() => {
-    return !!allRecordings && !!currPlayer
-      ? allRecordings.filter(
-          ([playerId, _recording]) => playerId !== currPlayer.playerId
-        )
-      : [];
+    return !!allRecordings ? allRecordings : [];
   }, []);
 
   const randomColors: Array<Color> = useMemo(() => {
@@ -158,6 +154,9 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
                 <div key={`playback-${playerId}`}>
                   <PlaybackAudio
                     key={`player-${playerId}`}
+                    isCurrPlayer={
+                      !!currPlayer && currPlayer.playerId === playerId
+                    }
                     recording={recording}
                     playerId={playerId}
                     stopSample={stopSample}
