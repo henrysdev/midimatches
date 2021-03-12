@@ -67,8 +67,9 @@ defmodule Midimatches.Utils do
     recordings_list =
       server_state.recordings
       |> Map.to_list()
-      |> Enum.map(&Tuple.to_list(&1))
       |> Enum.shuffle()
+      |> Enum.sort_by(&(elem(&1, 1).timestep_slices |> length() == 0), :asc)
+      |> Enum.map(&Tuple.to_list(&1))
 
     scores_list =
       server_state.scores
