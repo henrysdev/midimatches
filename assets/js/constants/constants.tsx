@@ -142,6 +142,9 @@ export const DEFAULT_NUM_ROUNDS = 3;
 export const MIN_ROOM_NAME_LENGTH = 3;
 export const MAX_ROOM_NAME_LENGTH = 20;
 
+export const MIN_SOUND_VOLUME = -250;
+export const MAX_SOUND_VOLUME = 15;
+
 // const newSynth = new Tone.Sampler({
 //   urls: {
 //     C4: "funk_daddy_c4.mp3",

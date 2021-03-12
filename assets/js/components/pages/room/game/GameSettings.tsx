@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 
 import { useToneAudioContext } from "../../../../hooks";
 import { MidiConfiguration } from "../../../audio";
+import { MIN_SOUND_VOLUME, MAX_SOUND_VOLUME } from "../../../../constants";
 
 interface GameSettingsProps {}
 
@@ -23,11 +24,11 @@ const GameSettings: React.FC<GameSettingsProps> = ({}) => {
   useEffect(() => {
     const volume = parseFloat(currVolume);
     Tone.Master.volume.value = volume / 10.0;
-    Tone.Master.mute = volume === -100;
+    Tone.Master.mute = volume === MIN_SOUND_VOLUME;
   }, [currVolume]);
 
   const soundIsOn = useMemo(() => {
-    return currVolume === "-100";
+    return currVolume === `${MIN_SOUND_VOLUME}`;
   }, [currVolume]);
 
   return (
@@ -57,8 +58,8 @@ const GameSettings: React.FC<GameSettingsProps> = ({}) => {
             )}
             <input
               type="range"
-              min="-100"
-              max="10"
+              min={`${MIN_SOUND_VOLUME}`}
+              max={`${MAX_SOUND_VOLUME}`}
               value={currVolume}
               onChange={handleVolumeChange}
               className="volume_slider"
