@@ -48,8 +48,7 @@ export function scheduleRecordingDeadlines(
   sampleStartPlayCallback: Function,
   startRecording: Function,
   stopRecording: Function,
-  samplePlayer: any,
-  clockOffset: Milliseconds
+  samplePlayer: any
 ): void {
   // get deadlines
   const deadlines = calcRecordingDeadlines(
@@ -57,8 +56,7 @@ export function scheduleRecordingDeadlines(
     DEFAULT_SAMPLE_PLAY_BUFFER_LENGTH,
     DEFAULT_SAMPLE_LENGTH,
     DEFAULT_RECORDING_LENGTH,
-    Date,
-    clockOffset
+    Date
   );
 
   // schedule deadlines
@@ -72,8 +70,7 @@ export function scheduleRecordingDeadlines(
 }
 
 export function getRecordingStartTimestamp(
-  serverSendTimestamp: Milliseconds,
-  clockOffset: Milliseconds
+  serverSendTimestamp: Milliseconds
 ): Milliseconds {
   const bufferTime = secToMs(DEFAULT_SAMPLE_PLAY_BUFFER_LENGTH);
   const sampleIntro = secToMs(DEFAULT_WARMUP_LENGTH);
@@ -134,8 +131,7 @@ export function calcRecordingDeadlines(
   bufferTime: Seconds, // ex: 5
   sampleTime: Seconds, // ex: 10
   recordingTime: Seconds, // ex: 30
-  date: any,
-  clockOffset: Milliseconds
+  date: any
 ): ScheduleDeadlines {
   const nowUtc: Milliseconds = currUtcTimestamp();
 

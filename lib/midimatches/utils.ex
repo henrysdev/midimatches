@@ -142,12 +142,20 @@ defmodule Midimatches.Utils do
     }
   end
 
+  @spec curr_utc_timestamp() :: integer()
+  @doc """
+  Calculate the current utc millisecond timestamp
+  """
+  def curr_utc_timestamp do
+    :os.system_time(:millisecond)
+  end
+
   @spec calc_future_timestamp(integer(), integer()) :: integer()
   @doc """
   Calculate the correct utc millisecond timestamp. Uses milliseconds after current
   timestamp by default.
   """
-  def calc_future_timestamp(millis_in_future, curr \\ :os.system_time(:millisecond))
+  def calc_future_timestamp(millis_in_future, curr \\ curr_utc_timestamp())
       when is_nil(millis_in_future) == false do
     curr + millis_in_future
   end

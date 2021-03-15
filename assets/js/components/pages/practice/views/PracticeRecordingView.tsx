@@ -97,7 +97,6 @@ const PracticeRecordingView: React.FC<PracticeRecordingViewProps> = ({
             gameRules={gameRules}
             roundRecordingStartTime={roundRecordingStartTime}
             shouldRecord={true}
-            clockOffset={clockOffset}
           />
         ) : (
           <></>

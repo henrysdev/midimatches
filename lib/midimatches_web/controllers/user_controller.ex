@@ -71,7 +71,7 @@ defmodule MidimatchesWeb.UserController do
   """
   def sync(conn, %{"client_start_time" => client_start_time}) do
     client_start_time = String.to_integer(client_start_time)
-    server_time = :os.system_time(:millisecond)
+    server_time = Utils.curr_utc_timestamp()
     first_hop_delta_time = server_time - client_start_time
 
     conn

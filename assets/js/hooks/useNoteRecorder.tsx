@@ -27,7 +27,6 @@ interface NoteRecorderProps {
   roundRecordingStartTime: number;
   gameRules: GameRules;
   shouldRecord: boolean;
-  clockOffset: Milliseconds;
 }
 
 interface InternalState {
@@ -56,7 +55,6 @@ export function useNoteRecorder({
   roundRecordingStartTime,
   gameRules,
   shouldRecord,
-  clockOffset,
 }: NoteRecorderProps): NoteRecorder {
   const { samplePlayer } = useToneAudioContext();
 
@@ -84,8 +82,7 @@ export function useNoteRecorder({
     setIsRecording(true);
     if (!!roundRecordingStartTime) {
       const recordingStartTime = getRecordingStartTimestamp(
-        roundRecordingStartTime,
-        clockOffset
+        roundRecordingStartTime
       );
       setInternalState({
         isRecording: true,
@@ -184,8 +181,7 @@ export function useNoteRecorder({
         sampleStartPlayCallback,
         startRecord,
         stopRecord,
-        samplePlayer,
-        clockOffset
+        samplePlayer
       );
     }
   }, [roundRecordingStartTime]);

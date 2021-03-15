@@ -51,7 +51,7 @@ defmodule Midimatches.Rooms.RoomServer do
        room_id: room_id,
        room_name: room_name,
        game_config: game_config,
-       created_at: :os.system_time(:millisecond)
+       created_at: Utils.curr_utc_timestamp()
      }}
   end
 

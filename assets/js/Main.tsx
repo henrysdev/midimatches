@@ -33,7 +33,6 @@ const Main: React.FC = () => {
       const msOffset = Math.floor(
         -1 * ((firstHopDeltaTime + (serverTime - clientEndTime)) / 2)
       );
-      console.log(msOffset);
       return msOffset;
     } else {
       return 0;
