@@ -19,13 +19,6 @@ export function currUtcTimestamp(): Milliseconds {
   return Date.now();
 }
 
-export function applyClockOffset(
-  baseTime: Milliseconds,
-  clockOffset: Milliseconds
-): Milliseconds {
-  return baseTime + clockOffset;
-}
-
 export function calcMsUntilMsTimestamp(futureTime: Milliseconds): Milliseconds {
   return futureTime - currUtcTimestamp();
 }

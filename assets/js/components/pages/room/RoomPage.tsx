@@ -34,6 +34,7 @@ import {
   useChat,
   useCurrentUserContext,
   useSocketContext,
+  useClockOffsetContext,
 } from "../../../hooks";
 import { PregameDebug } from "../../debug";
 
@@ -52,7 +53,8 @@ const RoomPage: React.FC = () => {
     numPlayersToStart: 0,
     roomName: "",
   });
-  const { user: currentUser, clockOffset } = useCurrentUserContext();
+  const { user: currentUser } = useCurrentUserContext();
+  const { clockOffset } = useClockOffsetContext();
   const { socket } = useSocketContext();
 
   const resetRoom = () => {

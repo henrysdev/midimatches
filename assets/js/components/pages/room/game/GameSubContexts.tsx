@@ -5,6 +5,7 @@ import {
   ViewDeadlineContext,
   GameRulesContext,
   ScoresContext,
+  RoundRecordingStartTimeContext,
 } from "../../../../contexts";
 import { GameContextType } from "../../../../types";
 
@@ -23,6 +24,7 @@ const GameSubContexts: React.FC<GameSubContextsProps> = ({
     viewDeadline,
     gameView,
     scores,
+    roundRecordingStartTime,
   } = gameContext;
 
   return (
@@ -31,7 +33,13 @@ const GameSubContexts: React.FC<GameSubContextsProps> = ({
         <ViewDeadlineContext.Provider value={{ viewDeadline }}>
           <GameRulesContext.Provider value={{ gameRules }}>
             <ScoresContext.Provider value={{ scores }}>
-              {children}
+              <RoundRecordingStartTimeContext.Provider
+                value={{
+                  roundRecordingStartTime,
+                }}
+              >
+                {children}
+              </RoundRecordingStartTimeContext.Provider>
             </ScoresContext.Provider>
           </GameRulesContext.Provider>
         </ViewDeadlineContext.Provider>

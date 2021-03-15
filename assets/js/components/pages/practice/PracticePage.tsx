@@ -28,13 +28,15 @@ const PracticePage: React.FC<PracticePageProps> = ({ children }) => {
     setRoundRecordingStartTime,
   ] = useState<number>();
   const toneAudioContext = useAudioContextProvider();
-  const gameContext = {
-    gameRules: {
-      timestepSize: 50,
-      quantizationThreshold: 0.5,
-    },
-    ...{ roundRecordingStartTime },
-  };
+  const gameContext = useMemo(() => {
+    return {
+      gameRules: {
+        timestepSize: 50,
+        quantizationThreshold: 0.5,
+      },
+      ...{ roundRecordingStartTime },
+    };
+  }, [roundRecordingStartTime]);
 
   const [currentView, setCurrentView] = useState<PRACTICE_GAME_VIEW>(
     PRACTICE_GAME_VIEW.SAMPLE_SELECTION
@@ -103,9 +105,7 @@ const PracticePage: React.FC<PracticePageProps> = ({ children }) => {
                           stopSample={toneAudioContext.stopSample}
                           samplePlayer={toneAudioContext.samplePlayer}
                           advanceView={() => {
-                            setRoundRecordingStartTime(
-                              msToMicros(currUtcTimestamp())
-                            );
+                            setRoundRecordingStartTime(currUtcTimestamp());
                             setCurrentView(PRACTICE_GAME_VIEW.RECORDING);
                           }}
                         />

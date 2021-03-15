@@ -13,6 +13,8 @@ import {
   GameRulesContext,
   ScoresContext,
   KeyboardInputContext,
+  RoundRecordingStartTimeContext,
+  ClockOffsetContext,
 } from "../contexts";
 
 import {
@@ -28,6 +30,8 @@ import {
   GameRulesContextType,
   ScoresContextType,
   KeyboardInputContextType,
+  RoundRecordingStartTimeContextType,
+  ClockOffsetContextType,
 } from "../types";
 import { Player } from "tone";
 
@@ -75,6 +79,16 @@ export function useScoresContext() {
   return useContext(ScoresContext) as ScoresContextType;
 }
 
+export function useRoundRecordingStartTimeContext() {
+  return useContext(
+    RoundRecordingStartTimeContext
+  ) as RoundRecordingStartTimeContextType;
+}
+
 export function useKeyboardInputContext() {
   return useContext(KeyboardInputContext) as KeyboardInputContextType;
+}
+
+export function useClockOffsetContext() {
+  return useContext(ClockOffsetContext) as ClockOffsetContextType;
 }

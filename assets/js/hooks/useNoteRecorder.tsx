@@ -1,7 +1,13 @@
 import { useEffect, useState, useRef } from "react";
 import _ from "lodash";
 
-import { MIDINoteEvent, TimestepSlice, Note, GameRules } from "../types";
+import {
+  MIDINoteEvent,
+  TimestepSlice,
+  Note,
+  GameRules,
+  Milliseconds,
+} from "../types";
 import { useToneAudioContext } from ".";
 import {
   scheduleRecordingDeadlines,
@@ -21,6 +27,7 @@ interface NoteRecorderProps {
   roundRecordingStartTime: number;
   gameRules: GameRules;
   shouldRecord: boolean;
+  clockOffset: Milliseconds;
 }
 
 interface InternalState {
@@ -49,6 +56,7 @@ export function useNoteRecorder({
   roundRecordingStartTime,
   gameRules,
   shouldRecord,
+  clockOffset,
 }: NoteRecorderProps): NoteRecorder {
   const { samplePlayer } = useToneAudioContext();
 
@@ -76,7 +84,8 @@ export function useNoteRecorder({
     setIsRecording(true);
     if (!!roundRecordingStartTime) {
       const recordingStartTime = getRecordingStartTimestamp(
-        roundRecordingStartTime
+        roundRecordingStartTime,
+        clockOffset
       );
       setInternalState({
         isRecording: true,
@@ -175,7 +184,8 @@ export function useNoteRecorder({
         sampleStartPlayCallback,
         startRecord,
         stopRecord,
-        samplePlayer
+        samplePlayer,
+        clockOffset
       );
     }
   }, [roundRecordingStartTime]);

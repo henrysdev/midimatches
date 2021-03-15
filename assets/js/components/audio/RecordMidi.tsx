@@ -20,6 +20,7 @@ interface RecordMidiProps {
   gameRules: GameRules;
   shouldRecord: boolean;
   hideKeyboard?: boolean;
+  clockOffset: Milliseconds;
 }
 
 const RecordMidi: React.FC<RecordMidiProps> = ({
@@ -31,6 +32,7 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
   gameRules,
   shouldRecord,
   hideKeyboard = false,
+  clockOffset,
 }) => {
   const { midiInputs, synth } = useToneAudioContext();
   const { disableKeyboardInput } = useKeyboardInputContext();
@@ -48,6 +50,7 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
     roundRecordingStartTime,
     gameRules,
     shouldRecord,
+    clockOffset,
   });
 
   // init on load

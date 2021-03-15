@@ -3,7 +3,12 @@ import { Channel, Push } from "phoenix";
 
 import { GAME_VIEW, GAME_UPDATE_EVENT } from "../constants";
 import { GameContextType, GameUpdatePayload, Milliseconds } from "../types";
-import { gameViewAtomToEnum, unmarshalBody, msToMicros } from "../utils";
+import {
+  gameViewAtomToEnum,
+  unmarshalBody,
+  msToMicros,
+  currUtcTimestamp,
+} from "../utils";
 
 type GameServerStateTuple = [
   GAME_VIEW,
@@ -22,11 +27,10 @@ export function useGameServerState(
   useEffect(() => {
     gameChannel.on(GAME_UPDATE_EVENT, (body) => {
       const { gameState } = unmarshalBody(body) as GameUpdatePayload;
-      gameState.viewDeadline += clockOffset;
+      const gameView = gameViewAtomToEnum(gameState.gameView);
       if (!!gameState.roundRecordingStartTime) {
         gameState.roundRecordingStartTime += clockOffset;
       }
-      const gameView = gameViewAtomToEnum(gameState.gameView);
       setGameContext(gameState);
       setCurrentView(gameView);
     });

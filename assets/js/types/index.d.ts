@@ -161,7 +161,6 @@ export interface PlayerContextType {
 
 export interface CurrentUserContextType {
   user: User;
-  clockOffset: number;
 }
 
 export interface SocketContextType {
@@ -184,7 +183,15 @@ export interface PlayersContextType {
 }
 
 export interface ViewDeadlineContextType {
-  viewDeadline: number;
+  viewDeadline: Milliseconds;
+}
+
+export interface RoundRecordingStartTimeContextType {
+  roundRecordingStartTime: number;
+}
+
+export interface ClockOffsetContextType {
+  clockOffset: Milliseconds;
 }
 
 export interface GameRulesContextType {
