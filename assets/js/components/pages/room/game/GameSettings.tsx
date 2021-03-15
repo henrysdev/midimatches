@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 
-import { useToneAudioContext } from "../../../../hooks";
+import { useToneAudioContext, useCookie } from "../../../../hooks";
 import { MidiConfiguration } from "../../../audio";
 import {
   MIN_SOUND_VOLUME,
@@ -20,7 +20,7 @@ const GameSettings: React.FC<GameSettingsProps> = ({}) => {
     originalMidiInputs,
   } = useToneAudioContext();
 
-  const cookies = useMemo(() => new Cookies(), []);
+  const [hasCookie, getCookie, setCookie] = useCookie();
   const [currVolume, setCurrVolume] = useState<string>("-1");
   const handleVolumeChange = (e: any) => {
     const volume = e.target.value;
@@ -28,9 +28,8 @@ const GameSettings: React.FC<GameSettingsProps> = ({}) => {
   };
 
   useEffect(() => {
-    const storedSoundVolume = cookies.get(SOUND_VOLUME_COOKIE);
-    if (!!storedSoundVolume) {
-      setCurrVolume(storedSoundVolume);
+    if (hasCookie(SOUND_VOLUME_COOKIE)) {
+      setCurrVolume(getCookie(SOUND_VOLUME_COOKIE));
     }
   }, []);
 
@@ -38,7 +37,7 @@ const GameSettings: React.FC<GameSettingsProps> = ({}) => {
     const volume = parseFloat(currVolume);
     Tone.Master.volume.value = volume;
     Tone.Master.mute = volume === MIN_SOUND_VOLUME;
-    cookies.set(SOUND_VOLUME_COOKIE, currVolume, { path: "/", maxAge: 86400 });
+    setCookie(SOUND_VOLUME_COOKIE, currVolume);
   }, [currVolume]);
 
   const soundIsOn = useMemo(() => {
