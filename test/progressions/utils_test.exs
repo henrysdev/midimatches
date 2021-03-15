@@ -67,7 +67,9 @@ defmodule Midimatches.UtilsTest do
         num_points: 1
       },
       recordings: %{
-        "1" => %{}
+        "1" => %{
+          timestep_slices: []
+        }
       },
       sample_beats: ["track_1", "track2", "track3"]
     }
@@ -85,7 +87,14 @@ defmodule Midimatches.UtilsTest do
         winners: ["4"],
         num_points: 2
       },
-      recordings: [["1", %{}]],
+      recordings: [
+        [
+          "1",
+          %{
+            timestep_slices: []
+          }
+        ]
+      ],
       round_recording_start_time: server_state.round_recording_start_time,
       round_num: server_state.round_num,
       contestants: server_state.contestants,

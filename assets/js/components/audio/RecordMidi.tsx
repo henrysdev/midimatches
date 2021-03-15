@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { Input } from "webmidi";
 
 import { Keyboard } from ".";
-import { MIDINoteEvent, GameRules } from "../../types";
+import { MIDINoteEvent, GameRules, Milliseconds } from "../../types";
 import {
   useToneAudioContext,
   useNoteRecorder,
@@ -16,7 +16,7 @@ interface RecordMidiProps {
   sampleStartPlayCallback: Function;
   stopSample: Function;
   setIsRecording: Function;
-  roundRecordingStartTime: number;
+  roundRecordingStartTime: Milliseconds;
   gameRules: GameRules;
   shouldRecord: boolean;
   hideKeyboard?: boolean;

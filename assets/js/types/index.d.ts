@@ -82,13 +82,13 @@ export interface GameState {
   numVotesCast?: number;
   readyUps?: any;
   recordings?: RecordingTuple[];
-  roundRecordingStartTime?: number;
+  roundRecordingStartTime?: Milliseconds;
   gameWinners?: WinResult;
   contestants?: string[];
   roundNum: number;
   scores: ScoreTuple[];
   roundWinners?: WinResult;
-  viewDeadline: number;
+  viewDeadline: Milliseconds;
 }
 
 export interface ViewTimeouts {

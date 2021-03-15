@@ -52,7 +52,7 @@ export function scheduleRecordingDeadlines(
 ): void {
   // get deadlines
   const deadlines = calcRecordingDeadlines(
-    serverSendTimestamp / 1000,
+    serverSendTimestamp,
     DEFAULT_SAMPLE_PLAY_BUFFER_LENGTH,
     DEFAULT_SAMPLE_LENGTH,
     DEFAULT_RECORDING_LENGTH,

@@ -10,7 +10,7 @@ defmodule Midimatches.Rooms.Room.Game.Views.RoundStart do
     %GameServer{
       state
       | game_view: :recording,
-        round_recording_start_time: :os.system_time(:microsecond)
+        round_recording_start_time: :os.system_time(:millisecond)
     }
   end
 end

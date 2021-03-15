@@ -10,7 +10,6 @@ import {
 import { DEFAULT_MANUAL_NOTE_VELOCITY } from "../constants";
 import {
   msToMicros,
-  microsToMs,
   midiVelocityToToneVelocity,
   currUtcTimestamp,
 } from "../utils";
@@ -77,7 +76,7 @@ export function useNoteRecorder({
     setIsRecording(true);
     if (!!roundRecordingStartTime) {
       const recordingStartTime = getRecordingStartTimestamp(
-        microsToMs(roundRecordingStartTime)
+        roundRecordingStartTime
       );
       setInternalState({
         isRecording: true,

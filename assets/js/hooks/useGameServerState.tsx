@@ -22,7 +22,10 @@ export function useGameServerState(
   useEffect(() => {
     gameChannel.on(GAME_UPDATE_EVENT, (body) => {
       const { gameState } = unmarshalBody(body) as GameUpdatePayload;
-      gameState.viewDeadline = gameState.viewDeadline + clockOffset;
+      gameState.viewDeadline += clockOffset;
+      if (!!gameState.roundRecordingStartTime) {
+        gameState.roundRecordingStartTime += clockOffset;
+      }
       const gameView = gameViewAtomToEnum(gameState.gameView);
       setGameContext(gameState);
       setCurrentView(gameView);
