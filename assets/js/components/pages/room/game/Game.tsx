@@ -19,23 +19,26 @@ import {
   useToneAudioContext,
 } from "../../../../hooks";
 import { InGameFrame, GameSubContexts } from ".";
-import { GameContextType } from "../../../../types";
+import { GameContextType, Milliseconds } from "../../../../types";
 import { GameLeftPane, GameRightPane } from ".";
 
 interface GameProps {
   gameChannel: Channel;
   initGameState: GameContextType;
   roomName: string;
+  clockOffset: Milliseconds;
 }
 
 const Game: React.FC<GameProps> = ({
   gameChannel,
   initGameState,
   roomName,
+  clockOffset,
 }) => {
   const [currentView, gameContext, pushMessage] = useGameServerState(
     gameChannel,
-    initGameState
+    initGameState,
+    clockOffset
   );
 
   const {

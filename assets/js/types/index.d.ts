@@ -161,6 +161,7 @@ export interface PlayerContextType {
 
 export interface CurrentUserContextType {
   user: User;
+  clockOffset: number;
 }
 
 export interface SocketContextType {

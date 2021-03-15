@@ -65,6 +65,22 @@ defmodule MidimatchesWeb.UserController do
     end
   end
 
+  @spec sync(Plug.Conn.t(), map) :: Plug.Conn.t()
+  @doc """
+  Sync server with client via NTP round-trip
+  """
+  def sync(conn, %{"client_start_time" => client_start_time}) do
+    client_start_time = String.to_integer(client_start_time)
+    server_time = :os.system_time(:millisecond)
+    first_hop_delta_time = server_time - client_start_time
+
+    conn
+    |> json(%{
+      first_hop_delta_time: first_hop_delta_time,
+      server_time: server_time
+    })
+  end
+
   @spec parse_user_alias(String.t()) :: {:error, String.t()} | {:ok, String.t()}
   def parse_user_alias(user_alias) do
     user_alias_len = String.length(user_alias)

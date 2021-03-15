@@ -1,17 +1,45 @@
-import React from "react";
+import React, { useMemo } from "react";
 
 import { HeaderNav, ComputerFrame } from "./components/common/index";
-import { useCurrentUser, useSocket } from "./hooks";
+import { useCurrentUser, useSocket, useSyncUser } from "./hooks";
 import { CurrentUserContext, SocketContext } from "./contexts";
 import { LoadingSpinner, PageContent } from "./components/common";
+import { unmarshalBody, currUtcTimestamp } from "./utils";
 import PageRouter from "./PageRouter";
 
 const Main: React.FC = () => {
-  const { data: currUserData, loading, loaded } = useCurrentUser();
+  const {
+    data: currUserData,
+    loading: userLoading,
+    loaded: userLoaded,
+    loadError: userLoadError,
+  } = useCurrentUser();
+  const {
+    data: syncData,
+    loading: syncLoading,
+    loaded: syncLoaded,
+    loadError: syncLoadError,
+  } = useSyncUser();
   const socket = useSocket();
 
-  return loaded ? (
-    <CurrentUserContext.Provider value={{ user: currUserData.user }}>
+  const clockOffset = useMemo(() => {
+    if (syncLoaded && !!syncData) {
+      const { firstHopDeltaTime, serverTime } = unmarshalBody(syncData) as any;
+      const clientEndTime = currUtcTimestamp();
+      const msOffset = Math.floor(
+        (firstHopDeltaTime + (serverTime - clientEndTime)) / 2
+      );
+      console.log(msOffset);
+      return msOffset;
+    } else {
+      return 0;
+    }
+  }, [syncData, syncLoaded]);
+
+  return userLoaded && syncLoaded ? (
+    <CurrentUserContext.Provider
+      value={{ user: currUserData.user, clockOffset }}
+    >
       <SocketContext.Provider value={{ socket: socket }}>
         <HeaderNav
           playerAlias={
@@ -25,12 +53,12 @@ const Main: React.FC = () => {
         </PageContent>
       </SocketContext.Provider>
     </CurrentUserContext.Provider>
-  ) : loading ? (
+  ) : userLoadError || syncLoadError ? (
+    <>FAILED</>
+  ) : (
     <ComputerFrame>
       <LoadingSpinner />
     </ComputerFrame>
-  ) : (
-    <></>
   );
 };
 

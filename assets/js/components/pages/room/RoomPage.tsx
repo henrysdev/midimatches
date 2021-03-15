@@ -52,7 +52,7 @@ const RoomPage: React.FC = () => {
     numPlayersToStart: 0,
     roomName: "",
   });
-  const { user: currentUser } = useCurrentUserContext();
+  const { user: currentUser, clockOffset } = useCurrentUserContext();
   const { socket } = useSocketContext();
 
   const resetRoom = () => {
@@ -206,6 +206,7 @@ const RoomPage: React.FC = () => {
                   gameChannel={gameChannel}
                   initGameState={initGameState}
                   roomName={lobbyState.roomName}
+                  clockOffset={clockOffset}
                 />
               </PlayerContext.Provider>
             ) : !!gameChannel ? (

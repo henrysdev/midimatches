@@ -11,6 +11,7 @@ import {
 import { PregameDebug } from "../../../debug";
 import { PregameCenterPane, WarmUp } from ".";
 import { User, Player } from "../../../../types";
+import { currUtcTimestamp } from "../../../../utils";
 
 interface PregameLobbyProps {
   gameInProgress: boolean;
@@ -103,7 +104,7 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
         {!!startGameDeadline && startGameDeadline > -1 ? (
           <Timer
             descriptionText={"Intermission - Next game in "}
-            duration={startGameDeadline - Date.now()}
+            duration={startGameDeadline - currUtcTimestamp()}
             timesUpText={"Game will start as soon as there are enough players"}
           />
         ) : (

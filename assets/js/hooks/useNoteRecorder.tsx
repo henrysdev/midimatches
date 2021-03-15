@@ -8,7 +8,12 @@ import {
   getRecordingStartTimestamp,
 } from "../helpers";
 import { DEFAULT_MANUAL_NOTE_VELOCITY } from "../constants";
-import { msToMicros, microsToMs, midiVelocityToToneVelocity } from "../utils";
+import {
+  msToMicros,
+  microsToMs,
+  midiVelocityToToneVelocity,
+  currUtcTimestamp,
+} from "../utils";
 
 interface NoteRecorderProps {
   submitRecording: Function;
@@ -102,7 +107,7 @@ export function useNoteRecorder({
                 getCurrentTimestep(internalStateRef.current as InternalState),
                 {
                   note: { number: noteNumber },
-                  receivedTimestep: Date.now(),
+                  receivedTimestep: currUtcTimestamp(),
                 }
               );
               return updatedAcc;
@@ -190,7 +195,7 @@ export function useNoteRecorder({
       handleNoteOn({
         note: { number: noteNumber },
         rawVelocity: DEFAULT_MANUAL_NOTE_VELOCITY,
-        receivedTimestep: Date.now(),
+        receivedTimestep: currUtcTimestamp(),
       });
       return {
         noteNumber,
@@ -203,7 +208,7 @@ export function useNoteRecorder({
     if (internalState.activeNotes.has(noteNumber)) {
       handleNoteOff({
         note: { number: noteNumber },
-        receivedTimestep: Date.now(),
+        receivedTimestep: currUtcTimestamp(),
       });
     }
     return { noteNumber };
@@ -222,7 +227,7 @@ function getCurrentTimestep({
   gameRules: { timestepSize, quantizationThreshold },
   recordingStartTime,
 }: InternalState): number {
-  const nowMicros = msToMicros(Date.now());
+  const nowMicros = msToMicros(currUtcTimestamp());
   return calculateTimestep(
     nowMicros,
     msToMicros(recordingStartTime),

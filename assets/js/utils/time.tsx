@@ -15,7 +15,17 @@ export function microsToMs(time: Microseconds): Milliseconds {
   return time * 0.001;
 }
 
+export function currUtcTimestamp(): Milliseconds {
+  return Date.now();
+}
+
+export function applyClockOffset(
+  baseTime: Milliseconds,
+  clockOffset: Milliseconds
+): Milliseconds {
+  return baseTime + clockOffset;
+}
+
 export function calcMsUntilMsTimestamp(futureTime: Milliseconds): Milliseconds {
-  const now = Date.now();
-  return futureTime - now;
+  return futureTime - currUtcTimestamp();
 }

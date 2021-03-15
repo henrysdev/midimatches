@@ -1,7 +1,7 @@
 import { Channel, Socket } from "phoenix";
 import React, { useEffect, useState, useRef } from "react";
 
-import { unmarshalBody } from "../../../utils";
+import { unmarshalBody, currUtcTimestamp } from "../../../utils";
 import { ServerlistUpdatePayload, RoomState } from "../../../types";
 import { SERVERLIST_UPDATE_EVENT } from "../../../constants";
 import { Serverlist } from ".";
@@ -35,11 +35,11 @@ const ServerlistPage: React.FC = () => {
     channel.on(SERVERLIST_UPDATE_EVENT, (body) => {
       const { rooms } = unmarshalBody(body) as ServerlistUpdatePayload;
       setRoomStates(rooms);
-      setLastRefresh(Date.now());
+      setLastRefresh(currUtcTimestamp());
     });
 
     const refreshInterval = setInterval(() => {
-      const now = Date.now();
+      const now = currUtcTimestamp();
       const last = lastRefreshRef.current as number;
       setTimeSinceRefresh(now - last);
     }, 500);

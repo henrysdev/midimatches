@@ -10,4 +10,5 @@ export { useLoadRandomSamples } from "./useLoadRandomSamples";
 export { useLoadCreateRoom } from "./useLoadCreateRoom";
 export { useChat } from "./useChat";
 export { useCookies } from "./useCookies";
+export { useSyncUser } from "./useSyncUser";
 export * from "./context";

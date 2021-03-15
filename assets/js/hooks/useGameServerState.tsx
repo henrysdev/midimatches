@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { Channel, Push } from "phoenix";
 
 import { GAME_VIEW, GAME_UPDATE_EVENT } from "../constants";
-import { GameContextType, GameUpdatePayload } from "../types";
-import { gameViewAtomToEnum, unmarshalBody } from "../utils";
+import { GameContextType, GameUpdatePayload, Milliseconds } from "../types";
+import { gameViewAtomToEnum, unmarshalBody, msToMicros } from "../utils";
 
 type GameServerStateTuple = [
   GAME_VIEW,
@@ -13,7 +13,8 @@ type GameServerStateTuple = [
 
 export function useGameServerState(
   gameChannel: Channel,
-  initGameState: GameContextType
+  initGameState: GameContextType,
+  clockOffset: Milliseconds
 ): GameServerStateTuple {
   const [currentView, setCurrentView] = useState(GAME_VIEW.GAME_START);
   const [gameContext, setGameContext] = useState(initGameState);
@@ -21,6 +22,7 @@ export function useGameServerState(
   useEffect(() => {
     gameChannel.on(GAME_UPDATE_EVENT, (body) => {
       const { gameState } = unmarshalBody(body) as GameUpdatePayload;
+      gameState.viewDeadline = gameState.viewDeadline + clockOffset;
       const gameView = gameViewAtomToEnum(gameState.gameView);
       setGameContext(gameState);
       setCurrentView(gameView);
