@@ -7,7 +7,9 @@ defmodule MidimatchesWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_midimatches_key",
-    signing_salt: "5ZjS55tN"
+    signing_salt: "5ZjS55tN",
+    # 1000 year session cookie
+    max_age: 24 * 60 * 60 * 365 * 1000
   ]
 
   socket "/socket", MidimatchesWeb.UserSocket,

@@ -9,5 +9,5 @@ export { useAudioContextProvider } from "./useAudioContextProvider";
 export { useLoadRandomSamples } from "./useLoadRandomSamples";
 export { useLoadCreateRoom } from "./useLoadCreateRoom";
 export { useChat } from "./useChat";
-export { useCookie } from "./useCookie";
+export { useCookies } from "./useCookies";
 export * from "./context";

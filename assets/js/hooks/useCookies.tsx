@@ -1,17 +1,21 @@
 import { useMemo } from "react";
 import Cookies from "universal-cookie";
 
-type CookieTuple = [
-  (cookieName: string) => boolean,
-  (cookieName: string) => any,
-  (cookieName: string, cookieVal: any, extraOptions?: Object) => void
-];
+type CookieMethods = {
+  hasCookie: (cookieName: string) => boolean;
+  getCookie: (cookieName: string) => any;
+  setCookie: (
+    cookieName: string,
+    cookieVal: any,
+    extraOptions?: Object
+  ) => void;
+};
 
-export function useCookie(): CookieTuple {
+export function useCookies(): CookieMethods {
   const cookies = useMemo(() => new Cookies(), []);
 
   const hasCookie = (cookieName: string): boolean => {
-    return cookies.get(cookieName) === undefined;
+    return cookies.get(cookieName) !== undefined;
   };
 
   const getCookie = (cookieName: string): any => {
@@ -25,11 +29,11 @@ export function useCookie(): CookieTuple {
   ): void => {
     cookies.set(cookieName, cookieVal, {
       path: "/",
-      maxAge: 86400,
-      secure: true,
+      // 1000 year session cookie
+      maxAge: 24 * 60 * 60 * 365 * 1000,
       ...extraOptions,
     });
   };
 
-  return [hasCookie, getCookie, setCookie];
+  return { hasCookie, getCookie, setCookie };
 }

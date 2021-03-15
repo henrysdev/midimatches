@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 
-import { useToneAudioContext, useCookie } from "../../../../hooks";
+import { useToneAudioContext, useCookies } from "../../../../hooks";
 import { MidiConfiguration } from "../../../audio";
 import {
   MIN_SOUND_VOLUME,
@@ -20,7 +20,7 @@ const GameSettings: React.FC<GameSettingsProps> = ({}) => {
     originalMidiInputs,
   } = useToneAudioContext();
 
-  const [hasCookie, getCookie, setCookie] = useCookie();
+  const { hasCookie, getCookie, setCookie } = useCookies();
   const [currVolume, setCurrVolume] = useState<string>("-1");
   const handleVolumeChange = (e: any) => {
     const volume = e.target.value;
