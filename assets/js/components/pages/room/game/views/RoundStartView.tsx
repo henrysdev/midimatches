@@ -7,7 +7,7 @@ import {
   DynamicContent,
 } from "../../../../common";
 import { useViewDeadlineContext } from "../../../../../hooks";
-import { calcMsUntilMsTimestamp } from "../../../../../utils";
+import { calcMsUntilMsTimestamp, currUtcTimestamp } from "../../../../../utils";
 
 interface RoundStartViewProps {
   pushMessageToChannel: Function;

@@ -71,6 +71,7 @@ const PracticePlaybackView: React.FC<PracticePlaybackViewProps> = ({
         {!!recording ? (
           <div>
             <PlaybackAudio
+              isCurrPlayer={false}
               recording={recording}
               playerId={playerId}
               stopSample={stopSample}

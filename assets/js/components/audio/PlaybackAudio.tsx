@@ -15,6 +15,7 @@ import { RecordingVisual } from "./";
 interface PlaybackAudioProps {
   recording: Loop;
   playerId: string;
+  isCurrPlayer: boolean;
   stopSample: Function;
   color: Color;
   submitVote: Function;
@@ -31,6 +32,7 @@ interface PlaybackAudioProps {
 const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
   recording,
   playerId,
+  isCurrPlayer,
   stopSample,
   color,
   submitVote,
@@ -43,6 +45,8 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
   autoPlayingId,
   practiceMode = false,
 }) => {
+  canVote = canVote && !isCurrPlayer;
+
   const {
     gameRules: { timestepSize },
   } = useGameRulesContext();
@@ -138,7 +142,17 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
 
   return (
     <div style={{ padding: "8px" }}>
-      {!practiceMode ? <div className="roboto_font">Anonymous</div> : <></>}
+      {!practiceMode ? (
+        isCurrPlayer ? (
+          <div className="roboto_font">
+            <strong>You</strong>
+          </div>
+        ) : (
+          <div className="roboto_font">Anonymous</div>
+        )
+      ) : (
+        <></>
+      )}
       <div style={{ display: "flex" }}>
         <div className={cssClasses} onClick={() => startManualPlayback()}>
           <div

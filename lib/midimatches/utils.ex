@@ -67,8 +67,9 @@ defmodule Midimatches.Utils do
     recordings_list =
       server_state.recordings
       |> Map.to_list()
-      |> Enum.map(&Tuple.to_list(&1))
       |> Enum.shuffle()
+      |> Enum.sort_by(&(elem(&1, 1).timestep_slices |> length() == 0), :asc)
+      |> Enum.map(&Tuple.to_list(&1))
 
     scores_list =
       server_state.scores
@@ -141,12 +142,20 @@ defmodule Midimatches.Utils do
     }
   end
 
+  @spec curr_utc_timestamp() :: integer()
+  @doc """
+  Calculate the current utc millisecond timestamp
+  """
+  def curr_utc_timestamp do
+    :os.system_time(:millisecond)
+  end
+
   @spec calc_future_timestamp(integer(), integer()) :: integer()
   @doc """
   Calculate the correct utc millisecond timestamp. Uses milliseconds after current
   timestamp by default.
   """
-  def calc_future_timestamp(millis_in_future, curr \\ :os.system_time(:millisecond))
+  def calc_future_timestamp(millis_in_future, curr \\ curr_utc_timestamp())
       when is_nil(millis_in_future) == false do
     curr + millis_in_future
   end

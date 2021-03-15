@@ -5,7 +5,8 @@ defmodule Midimatches.RoomsGarbageCollector do
   alias Midimatches.{
     Matchmaking,
     Rooms,
-    Rooms.RoomServer
+    Rooms.RoomServer,
+    Utils
   }
 
   alias __MODULE__
@@ -39,7 +40,7 @@ defmodule Midimatches.RoomsGarbageCollector do
   end
 
   defp collect_rooms_garbage(gc_cadence) do
-    garbage_before = :os.system_time(:millisecond) - gc_cadence
+    garbage_before = Utils.curr_utc_timestamp() - gc_cadence
 
     Matchmaking.get_rooms_pid_list()
     |> Enum.filter(&RoomServer.stale?(&1, garbage_before))

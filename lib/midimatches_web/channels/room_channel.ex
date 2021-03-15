@@ -144,7 +144,7 @@ defmodule MidimatchesWeb.RoomChannel do
     chat_message = %ChatMessage{
       player_id: player_id,
       message_text: message_text,
-      timestamp: :os.system_time(:millisecond)
+      timestamp: Utils.curr_utc_timestamp()
     }
 
     broadcast!(socket, "new_chat_message", chat_message)

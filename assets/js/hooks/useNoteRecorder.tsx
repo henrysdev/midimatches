@@ -1,14 +1,24 @@
 import { useEffect, useState, useRef } from "react";
 import _ from "lodash";
 
-import { MIDINoteEvent, TimestepSlice, Note, GameRules } from "../types";
+import {
+  MIDINoteEvent,
+  TimestepSlice,
+  Note,
+  GameRules,
+  Milliseconds,
+} from "../types";
 import { useToneAudioContext } from ".";
 import {
   scheduleRecordingDeadlines,
   getRecordingStartTimestamp,
 } from "../helpers";
 import { DEFAULT_MANUAL_NOTE_VELOCITY } from "../constants";
-import { msToMicros, microsToMs, midiVelocityToToneVelocity } from "../utils";
+import {
+  msToMicros,
+  midiVelocityToToneVelocity,
+  currUtcTimestamp,
+} from "../utils";
 
 interface NoteRecorderProps {
   submitRecording: Function;
@@ -72,7 +82,7 @@ export function useNoteRecorder({
     setIsRecording(true);
     if (!!roundRecordingStartTime) {
       const recordingStartTime = getRecordingStartTimestamp(
-        microsToMs(roundRecordingStartTime)
+        roundRecordingStartTime
       );
       setInternalState({
         isRecording: true,
@@ -102,7 +112,7 @@ export function useNoteRecorder({
                 getCurrentTimestep(internalStateRef.current as InternalState),
                 {
                   note: { number: noteNumber },
-                  receivedTimestep: Date.now(),
+                  receivedTimestep: currUtcTimestamp(),
                 }
               );
               return updatedAcc;
@@ -190,7 +200,7 @@ export function useNoteRecorder({
       handleNoteOn({
         note: { number: noteNumber },
         rawVelocity: DEFAULT_MANUAL_NOTE_VELOCITY,
-        receivedTimestep: Date.now(),
+        receivedTimestep: currUtcTimestamp(),
       });
       return {
         noteNumber,
@@ -203,7 +213,7 @@ export function useNoteRecorder({
     if (internalState.activeNotes.has(noteNumber)) {
       handleNoteOff({
         note: { number: noteNumber },
-        receivedTimestep: Date.now(),
+        receivedTimestep: currUtcTimestamp(),
       });
     }
     return { noteNumber };
@@ -222,7 +232,7 @@ function getCurrentTimestep({
   gameRules: { timestepSize, quantizationThreshold },
   recordingStartTime,
 }: InternalState): number {
-  const nowMicros = msToMicros(Date.now());
+  const nowMicros = msToMicros(currUtcTimestamp());
   return calculateTimestep(
     nowMicros,
     msToMicros(recordingStartTime),

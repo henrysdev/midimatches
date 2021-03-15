@@ -2,6 +2,7 @@ import React, { memo } from "react";
 import Countdown from "react-countdown";
 import { Milliseconds } from "../../types";
 import { MediumTitle } from "../common";
+import { currUtcTimestamp } from "../../utils";
 
 interface TimerProps {
   duration: Milliseconds;
@@ -39,7 +40,7 @@ const Timer: React.FC<TimerProps> = memo(
     return (
       <div className="gameplay_timer">
         <MediumTitle>
-          <Countdown date={Date.now() + duration} renderer={renderer} />
+          <Countdown date={currUtcTimestamp() + duration} renderer={renderer} />
         </MediumTitle>
       </div>
     );

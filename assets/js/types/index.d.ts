@@ -82,13 +82,13 @@ export interface GameState {
   numVotesCast?: number;
   readyUps?: any;
   recordings?: RecordingTuple[];
-  roundRecordingStartTime?: number;
+  roundRecordingStartTime?: Milliseconds;
   gameWinners?: WinResult;
   contestants?: string[];
   roundNum: number;
   scores: ScoreTuple[];
   roundWinners?: WinResult;
-  viewDeadline: number;
+  viewDeadline: Milliseconds;
 }
 
 export interface ViewTimeouts {
@@ -183,7 +183,15 @@ export interface PlayersContextType {
 }
 
 export interface ViewDeadlineContextType {
-  viewDeadline: number;
+  viewDeadline: Milliseconds;
+}
+
+export interface RoundRecordingStartTimeContextType {
+  roundRecordingStartTime: number;
+}
+
+export interface ClockOffsetContextType {
+  clockOffset: Milliseconds;
 }
 
 export interface GameRulesContextType {

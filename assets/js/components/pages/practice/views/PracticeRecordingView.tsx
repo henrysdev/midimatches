@@ -16,7 +16,7 @@ import {
   TimerBox,
 } from "../../../common";
 import { secToMs, unmarshalBody } from "../../../../utils";
-import { useGameContext } from "../../../../hooks";
+import { useGameContext, useClockOffsetContext } from "../../../../hooks";
 
 enum RecordingState {
   INIT,
@@ -55,6 +55,7 @@ const PracticeRecordingView: React.FC<PracticeRecordingViewProps> = ({
   };
 
   const { gameRules, roundRecordingStartTime } = useGameContext();
+  const { clockOffset } = useClockOffsetContext();
 
   const recordingState: RecordingState = useMemo(() => {
     if (isSamplePlaying && !isRecording && !isFinishedRecording) {
@@ -106,9 +107,8 @@ const PracticeRecordingView: React.FC<PracticeRecordingViewProps> = ({
           <></>
         ) : recordingState === RecordingState.WARMUP ? (
           <Timer
-            key={`sample-timer-${isSamplePlaying}`}
             descriptionText={"Recording starts in "}
-            duration={secToMs(DEFAULT_WARMUP_LENGTH)}
+            duration={secToMs(DEFAULT_WARMUP_LENGTH) - clockOffset}
           />
         ) : recordingState === RecordingState.RECORDING ? (
           <div
@@ -125,9 +125,8 @@ const PracticeRecordingView: React.FC<PracticeRecordingViewProps> = ({
               radio_button_checked
             </i>
             <Timer
-              key={`record-timer-${isRecording}`}
               descriptionText={"Recording ends in "}
-              duration={secToMs(DEFAULT_RECORDING_LENGTH)}
+              duration={secToMs(DEFAULT_RECORDING_LENGTH) - clockOffset}
               style={{ color: "red" }}
             />
           </div>

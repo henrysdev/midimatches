@@ -15,7 +15,12 @@ import {
   TimerBox,
 } from "../../../../common";
 import { secToMs, calcMsUntilMsTimestamp } from "../../../../../utils";
-import { useGameContext } from "../../../../../hooks";
+import {
+  useGameRulesContext,
+  useViewDeadlineContext,
+  useRoundRecordingStartTimeContext,
+  useClockOffsetContext,
+} from "../../../../../hooks";
 
 enum RecordingState {
   INIT,
@@ -52,7 +57,10 @@ const RecordingView: React.FC<RecordingViewProps> = ({
     setIsSamplePlaying(true);
   };
 
-  const { gameRules, roundRecordingStartTime, viewDeadline } = useGameContext();
+  const { gameRules } = useGameRulesContext();
+  const { viewDeadline } = useViewDeadlineContext();
+  const { roundRecordingStartTime } = useRoundRecordingStartTimeContext();
+  const { clockOffset } = useClockOffsetContext();
 
   const recordingState: RecordingState = useMemo(() => {
     if (isSamplePlaying && !isRecording && !isFinishedRecording) {
@@ -107,9 +115,8 @@ const RecordingView: React.FC<RecordingViewProps> = ({
               <></>
             ) : recordingState === RecordingState.WARMUP ? (
               <Timer
-                key={`sample-timer-${isSamplePlaying}`}
                 descriptionText={"Recording starts in "}
-                duration={secToMs(DEFAULT_WARMUP_LENGTH)}
+                duration={secToMs(DEFAULT_WARMUP_LENGTH) - clockOffset}
               />
             ) : recordingState === RecordingState.RECORDING ? (
               <div>
@@ -127,9 +134,8 @@ const RecordingView: React.FC<RecordingViewProps> = ({
                     radio_button_checked
                   </i>
                   <Timer
-                    key={`record-timer-${isRecording}`}
                     descriptionText={"Recording ends in "}
-                    duration={secToMs(DEFAULT_RECORDING_LENGTH)}
+                    duration={secToMs(DEFAULT_RECORDING_LENGTH) - clockOffset}
                     style={{ color: "red" }}
                   />
                 </div>
@@ -151,7 +157,6 @@ const RecordingView: React.FC<RecordingViewProps> = ({
           </DynamicContent>
           <TimerBox>
             <Timer
-              key={`record-timer-${isRecording}`}
               descriptionText={"Recording ends in "}
               duration={calcMsUntilMsTimestamp(viewDeadline)}
             />

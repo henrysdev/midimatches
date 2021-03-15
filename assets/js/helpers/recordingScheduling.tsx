@@ -8,7 +8,7 @@ import {
   DEFAULT_NUM_WARMUP_LOOPS,
 } from "../constants";
 import { Milliseconds, Seconds } from "../types";
-import { msToSec, secToMs } from "../utils";
+import { msToSec, secToMs, currUtcTimestamp } from "../utils";
 
 interface ScheduleDeadlines {
   sampleStartTime: Seconds;
@@ -52,7 +52,7 @@ export function scheduleRecordingDeadlines(
 ): void {
   // get deadlines
   const deadlines = calcRecordingDeadlines(
-    serverSendTimestamp / 1000,
+    serverSendTimestamp,
     DEFAULT_SAMPLE_PLAY_BUFFER_LENGTH,
     DEFAULT_SAMPLE_LENGTH,
     DEFAULT_RECORDING_LENGTH,
@@ -133,14 +133,13 @@ export function calcRecordingDeadlines(
   recordingTime: Seconds, // ex: 30
   date: any
 ): ScheduleDeadlines {
-  const nowUtc: Milliseconds = date.now();
-  const nowTone: Seconds = 0;
+  const nowUtc: Milliseconds = currUtcTimestamp();
 
   const timeTilSampleStart = msToSec(
     Math.abs(serverSendTimestamp + secToMs(bufferTime) - nowUtc)
   );
 
-  const sampleStartTime = nowTone + timeTilSampleStart;
+  const sampleStartTime = timeTilSampleStart;
   const recordingStartTime = sampleStartTime + DEFAULT_WARMUP_LENGTH;
   const recordingEndTime = recordingStartTime + recordingTime;
 

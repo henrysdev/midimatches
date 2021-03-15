@@ -10,7 +10,7 @@ import {
   useLoadRandomSamples,
   useCurrentUserContext,
 } from "../../../hooks";
-import { msToMicros, randomElement } from "../../../utils";
+import { msToMicros, randomElement, currUtcTimestamp } from "../../../utils";
 import { InGameFrame, GameSettings, GameSubContexts } from "../room/game";
 import { WarmUp } from "../room/pregame";
 import { PRACTICE_GAME_VIEW } from "../../../constants";
@@ -28,13 +28,15 @@ const PracticePage: React.FC<PracticePageProps> = ({ children }) => {
     setRoundRecordingStartTime,
   ] = useState<number>();
   const toneAudioContext = useAudioContextProvider();
-  const gameContext = {
-    gameRules: {
-      timestepSize: 50,
-      quantizationThreshold: 0.5,
-    },
-    ...{ roundRecordingStartTime },
-  };
+  const gameContext = useMemo(() => {
+    return {
+      gameRules: {
+        timestepSize: 50,
+        quantizationThreshold: 0.5,
+      },
+      ...{ roundRecordingStartTime },
+    };
+  }, [roundRecordingStartTime]);
 
   const [currentView, setCurrentView] = useState<PRACTICE_GAME_VIEW>(
     PRACTICE_GAME_VIEW.SAMPLE_SELECTION
@@ -103,7 +105,7 @@ const PracticePage: React.FC<PracticePageProps> = ({ children }) => {
                           stopSample={toneAudioContext.stopSample}
                           samplePlayer={toneAudioContext.samplePlayer}
                           advanceView={() => {
-                            setRoundRecordingStartTime(msToMicros(Date.now()));
+                            setRoundRecordingStartTime(currUtcTimestamp());
                             setCurrentView(PRACTICE_GAME_VIEW.RECORDING);
                           }}
                         />
