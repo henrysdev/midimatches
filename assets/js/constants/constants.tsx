@@ -142,8 +142,10 @@ export const DEFAULT_NUM_ROUNDS = 3;
 export const MIN_ROOM_NAME_LENGTH = 3;
 export const MAX_ROOM_NAME_LENGTH = 20;
 
-export const MIN_SOUND_VOLUME = -250;
-export const MAX_SOUND_VOLUME = 15;
+export const MIN_SOUND_VOLUME = -25.0;
+export const MAX_SOUND_VOLUME = 1.5;
+
+export const SOUND_VOLUME_COOKIE = "midimatches_soundvolume";
 
 // const newSynth = new Tone.Sampler({
 //   urls: {

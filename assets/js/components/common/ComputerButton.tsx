@@ -30,6 +30,7 @@ const ComputerButton: React.FC<ComputerButtonProps> = ({
       onMouseLeave={() => setLightBulbAnimClass("led-green bulb-off-green")}
       onClick={() => {
         const audioNode = new Audio("../soundeffects/button_click.mp3");
+        audioNode.volume = 0.4;
         audioNode.play();
         callback();
       }}
