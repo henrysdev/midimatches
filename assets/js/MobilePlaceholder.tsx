@@ -15,7 +15,7 @@ const MobilePlaceholder: React.FC = () => {
         </h1>
         <HowToPlay />
         <div className="warning_alert roboto_font">
-          <strong>Note: </strong> MIDI Matches is not supported on mobile
+          <strong>Note: </strong> Midi Matches is not supported on mobile
           browsers. Please switch to a desktop browser to continue to game.
         </div>
       </div>
