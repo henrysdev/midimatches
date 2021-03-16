@@ -62,9 +62,11 @@ const Main: React.FC = () => {
   ) : userLoadError || syncLoadError ? (
     <>FAILED</>
   ) : (
-    <ComputerFrame>
-      <LoadingSpinner />
-    </ComputerFrame>
+    <div className="full_height relative_anchor">
+      <div className="centered_div">
+        <LoadingSpinner />
+      </div>
+    </div>
   );
 };
 
