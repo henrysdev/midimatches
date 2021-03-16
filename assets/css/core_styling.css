@@ -1,21 +1,152 @@
+:root {
+  --base_color_red: 74;
+  --base_color_green: 74;
+  --base_color_blue: 84;
+  --main_theme_color: rgb(
+    calc(var(--base_color_red)),
+    calc(var(--base_color_green)),
+    calc(var(--base_color_blue))
+  );
+
+  --lightness_increment: 18;
+
+  --main_theme_shade_1: rgb(
+    calc(var(--base_color_red) + var(--lightness_increment)),
+    calc(var(--base_color_green) + var(--lightness_increment)),
+    calc(var(--base_color_blue) + var(--lightness_increment))
+  );
+  --main_theme_shade_2: rgb(
+    calc(var(--base_color_red) + var(--lightness_increment) * 1.5),
+    calc(var(--base_color_green) + var(--lightness_increment) * 1.5),
+    calc(var(--base_color_blue) + var(--lightness_increment) * 1.5)
+  );
+  --main_theme_shade_3: rgb(
+    calc(var(--base_color_red) + var(--lightness_increment) * 2.2),
+    calc(var(--base_color_green) + var(--lightness_increment) * 2.2),
+    calc(var(--base_color_blue) + var(--lightness_increment) * 2.2)
+  );
+  --main_theme_shade_4: rgb(
+    calc(var(--base_color_red) + var(--lightness_increment) * 3),
+    calc(var(--base_color_green) + var(--lightness_increment) * 3),
+    calc(var(--base_color_blue) + var(--lightness_increment) * 3)
+  );
+
+  /*
+  --main_theme_color: #ebdfce;
+  --main_theme_shade_1: #c2b6a4;
+  --main_theme_shade_2: #cdc2b3;
+  --main_theme_shade_3: #e9dbc9;
+  --main_theme_shade_4: #f0e7db;
+
+  --inline_screen_color: rgb(249, 248, 244);
+  */
+
+  --text_light: rgb(232, 232, 232);
+  --border_color_1: rgb(211, 211, 211);
+  --border_color_2: rgb(211, 211, 211);
+  --dark_gray: rgb(211, 211, 211);
+  --accent_color_1: #429888;
+  --screen_color: rgb(38, 38, 38);
+}
+
+p {
+  padding: 8px;
+  line-height: 1.4;
+  font-family: "Roboto", sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Audiowide", cursive;
+}
+h1 {
+  font-size: 2em;
+  color: var(--accent_color_1);
+}
+h2 {
+  font-size: 1.5em;
+  color: var(--accent_color_1);
+}
+h3 {
+  font-size: 1.17em;
+  color: var(--text_light);
+}
+h4 {
+  font-size: 1.12em;
+  color: var(--text_light);
+}
+h5 {
+  font-size: 0.83em;
+  color: var(--text_light);
+}
+h6 {
+  font-size: 0.75em;
+  color: var(--text_light);
+}
+
+table {
+  font-family: "Roboto", sans-serif;
+  background-color: transparent;
+}
+
+td,
+th {
+  text-align: left;
+  padding: 8px;
+}
+
+tr {
+  border-bottom: 1px var(--border_color_1) solid;
+}
+tr:last-child {
+  border-bottom: none;
+}
+tr:first-child {
+  border-bottom: 1px var(--border_color_1) solid;
+}
+
+html {
+  background: radial-gradient(
+    circle,
+    rgba(2, 0, 36, 1) 0%,
+    rgba(41, 41, 52, 1) 43%,
+    rgba(81, 83, 85, 1) 100%
+  );
+  /* background-color: #101010; */
+}
+
+strong {
+  font-weight: bold;
+}
+html {
+  height: 100%;
+}
+body {
+  margin: 0;
+}
+
 .computer_frame {
   height: calc(100vh - 88px);
   margin: 8px;
   border-radius: 10px;
-  background-color: #ebdfce;
+  background-color: var(--main_theme_color);
 }
 
 .computer_frame .frame_bevel {
   height: 100%;
   padding: 8px;
   border-radius: 10px;
-  background-color: #ebdfce;
+  background-color: var(--main_theme_color);
 }
 
 .banner_button {
   box-shadow: 0 5px 13px rgb(0 0 0 / 8%);
   padding: 8px;
-  background-color: #ebdfce;
+  background-color: var(--main_theme_color);
   width: 50%;
   cursor: pointer;
   min-height: 48px;
@@ -35,7 +166,7 @@
   cursor: pointer;
   min-height: 48px;
   max-height: 96px;
-  border: 2px solid #666;
+  border: 2px solid var(--border_color_2);
   font-family: "Roboto", sans-serif;
   background-image: linear-gradient(
     to bottom right,
@@ -56,16 +187,15 @@
   max-width: 100%;
   margin: auto;
   padding: 16px;
-  color: #666;
+  color: var(--text_light);
 }
 
 .serverlist_page_content {
   height: calc(100% - 88px);
-  /* overflow: hidden; */
   max-width: 100%;
   margin: auto;
   padding: 16px;
-  color: #666;
+  color: var(--text_light);
 }
 
 .serverlist_flex_anchor {
@@ -142,7 +272,7 @@
 
 .serverlist_table th {
   font-family: "Audiowide", cursive;
-  color: #666;
+  color: var(--text_light);
 }
 
 .serverlist_table table,
@@ -194,7 +324,7 @@
   margin: auto;
   margin-top: 16px;
   padding: 16px;
-  color: #666;
+  color: var(--text_light);
   border-radius: 10px;
 }
 
@@ -221,36 +351,36 @@
   max-width: 100%;
   margin: auto;
   padding: 16px;
-  color: #666;
+  color: var(--text_light);
 }
 
 .outset_3d_border_deep {
-  border-bottom: 16px solid #c2b6a4;
-  border-right: 16px solid #cdc2b3;
-  border-top: 16px solid #f0e7db;
-  border-left: 16px solid #e9dbc9;
+  border-bottom: 16px solid var(--main_theme_shade_1);
+  border-right: 16px solid var(--main_theme_shade_2);
+  border-top: 16px solid var(--main_theme_shade_4);
+  border-left: 16px solid var(--main_theme_shade_3);
 }
 
 .outset_3d_border_shallow {
-  border-bottom: 8px solid #c2b6a4;
-  border-right: 8px solid #cdc2b3;
-  border-top: 8px solid #f0e7db;
-  border-left: 8px solid #e9dbc9;
+  border-bottom: 8px solid var(--main_theme_shade_1);
+  border-right: 8px solid var(--main_theme_shade_2);
+  border-top: 8px solid var(--main_theme_shade_4);
+  border-left: 8px solid var(--main_theme_shade_3);
 }
 
 .inset_3d_border_deep {
-  border-top: 16px solid #c2b6a4;
-  border-left: 16px solid #cdc2b3;
-  border-bottom: 16px solid #f0e7db;
-  border-right: 16px solid #e9dbc9;
+  border-top: 16px solid var(--main_theme_shade_1);
+  border-left: 16px solid var(--main_theme_shade_2);
+  border-bottom: 16px solid var(--main_theme_shade_4);
+  border-right: 16px solid var(--main_theme_shade_3);
   border-radius: 10px;
 }
 
 .inset_3d_border_shallow {
-  border-top: 12px solid #c2b6a4;
-  border-left: 12px solid #cdc2b3;
-  border-bottom: 12px solid #f0e7db;
-  border-right: 12px solid #e9dbc9;
+  border-top: 12px solid var(--main_theme_shade_1);
+  border-left: 12px solid var(--main_theme_shade_2);
+  border-bottom: 12px solid var(--main_theme_shade_4);
+  border-right: 12px solid var(--main_theme_shade_3);
   /* border-radius: 10px; */
 }
 
@@ -259,8 +389,16 @@
 }
 
 .inline_screen {
-  background-color: rgb(249, 248, 244);
-  box-shadow: inset 0 -3em 3em rgba(0, 0, 0, 0.1);
+  /* background: rgb(2, 0, 36);
+  background: radial-gradient(
+    circle,
+    rgba(2, 0, 36, 1) 0%,
+    rgba(41, 41, 52, 1) 43%,
+    rgba(81, 83, 85, 1) 100%
+  ); */
+  background-color: var(--screen_color);
+  /* box-shadow: inset 0 -3em 3em rgba(0, 0, 0, 0.1); */
+  box-shadow: inset 0 0 20px 10px rgb(7, 7, 7);
 }
 
 .pregame_lobby_flex_anchor {
@@ -428,11 +566,12 @@ input:checked + .slider:before {
 
 .scoreboard_table {
   width: 100%;
+  color: var(--text_light);
 }
 
 .scoreboard_table th {
   font-family: "Audiowide", cursive;
-  color: #666;
+  color: var(--text_light);
 }
 
 .scoreboard_player_row {
@@ -688,9 +827,9 @@ strong {
   padding: 8px;
   margin: auto;
   margin-top: 4px;
-  border: 1px solid #666;
+  border: 1px solid var(--border_color_2);
   box-shadow: 0 5px 5px rgb(0 0 0 / 8%);
-  color: #666;
+  color: var(--dark_gray);
   overflow: hidden;
 }
 
@@ -736,7 +875,7 @@ strong {
   cursor: pointer;
   height: 32px;
   font-size: 1em;
-  border: 2px solid #999;
+  border: 2px solid var(--border_color_1);
   border-radius: 6px;
 }
 
@@ -766,7 +905,7 @@ strong {
 
 .form_number_input {
   border-radius: 10px;
-  border: 2px solid #999;
+  border: 2px solid var(--border_color_1);
   border-radius: 6px;
   width: 32px;
   height: 32px;
@@ -836,8 +975,8 @@ strong {
   cursor: pointer;
   border: none;
   font-family: "Audiowide", cursive;
-  color: #666;
-  border: 2px solid #999; */
+  color: var(--dark_gray);
+  border: 2px solid var(--border_color_1); */
 }
 
 .chat_send_button:hover {
@@ -868,8 +1007,8 @@ strong {
   background-color: rgb(245, 245, 245);
   cursor: pointer;
   font-family: "Audiowide", cursive;
-  color: #666;
-  border: 2px solid #999;
+  color: var(--text_light);
+  border: 2px solid var(--border_color_1);
 }
 
 .styled_button:hover {
@@ -889,7 +1028,7 @@ strong {
 }
 
 .settings_item_label {
-  color: #666;
+  color: var(--text_light);
 }
 
 .volume_slider_container {
@@ -933,7 +1072,7 @@ strong {
   margin: 8px;
   padding: 8px;
   border-radius: 10px;
-  background-color: #ebdfce;
+  background-color: var(--main_theme_color);
 }
 
 .mobile_title {
@@ -965,7 +1104,7 @@ strong {
   height: 50px;
   left: calc(50% - 25px);
   cursor: pointer;
-  color: #666;
+  color: var(--text_light);
   opacity: 0.7;
   -webkit-transition: 0.2s;
   transition: opacity 0.2s;
