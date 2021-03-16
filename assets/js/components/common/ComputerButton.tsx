@@ -39,7 +39,9 @@ const ComputerButton: React.FC<ComputerButtonProps> = ({
       <div className="led-box" style={{ float: "left" }}>
         <div className={lightBulbAnimClass}></div>
       </div>
-      <div className="centered_div">{children}</div>
+      <div className="centered_div">
+        <div className="computer_button_text">{children}</div>
+      </div>
     </div>
   );
 };

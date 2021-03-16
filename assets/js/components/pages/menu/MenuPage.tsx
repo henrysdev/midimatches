@@ -27,7 +27,7 @@ const MenuPage: React.FC = () => {
             callback={() => (window.location.href = "/rooms")}
             extraClasses={["register_button"]}
           >
-            <h5>PLAY ONLINE</h5>
+            PLAY ONLINE
           </ComputerButton>
         </div>
         <div className="main_menu_btn">
@@ -35,7 +35,7 @@ const MenuPage: React.FC = () => {
             callback={() => (window.location.href = "/practice")}
             extraClasses={["register_button"]}
           >
-            <h5>SOLO PRACTICE</h5>
+            SOLO PRACTICE
           </ComputerButton>
         </div>
         <div className="main_menu_btn">
@@ -43,7 +43,7 @@ const MenuPage: React.FC = () => {
             callback={() => (window.location.href = "/register")}
             extraClasses={["register_button"]}
           >
-            <h5>CHANGE NAME</h5>
+            CHANGE NAME
           </ComputerButton>
         </div>
         <div className="main_menu_btn">
@@ -51,7 +51,7 @@ const MenuPage: React.FC = () => {
             callback={() => (window.location.href = "/")}
             extraClasses={["register_button"]}
           >
-            <h5>ABOUT</h5>
+            ABOUT
           </ComputerButton>
         </div>
       </div>

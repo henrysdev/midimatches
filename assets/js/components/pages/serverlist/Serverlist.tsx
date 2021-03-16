@@ -112,7 +112,7 @@ const Serverlist: React.FC<ServerlistProps> = ({
               }
               extraClasses={["server_details_connect_button"]}
             >
-              <h5>CONNECT</h5>
+              CONNECT
             </ComputerButton>
           </div>
         ) : (

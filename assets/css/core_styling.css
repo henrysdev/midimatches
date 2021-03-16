@@ -1040,6 +1040,7 @@ strong {
 
 .volume_slider_container {
   width: 100%;
+  color: var(--text_light);
 }
 
 .volume_slider {
@@ -1132,4 +1133,10 @@ strong {
 
 .accent_bars {
   color: var(--accent_color_2);
+}
+
+.computer_button_text {
+  font-family: "Audiowide", cursive;
+  font-size: 1em;
+  color: var(--text_light);
 }

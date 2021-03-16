@@ -68,34 +68,32 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
                   setCopySuccess(true);
                 }}
               >
-                <h5>
-                  COPY INVITE
-                  {copySuccess ? (
-                    <i
-                      style={{
-                        color: "green",
-                        verticalAlign: "middle",
-                        marginLeft: "4px",
-                        marginBottom: "4px",
-                      }}
-                      className="material-icons"
-                    >
-                      done
-                    </i>
-                  ) : (
-                    <i
-                      style={{
-                        color: "black",
-                        verticalAlign: "middle",
-                        marginLeft: "4px",
-                        marginBottom: "4px",
-                      }}
-                      className="material-icons"
-                    >
-                      content_copy
-                    </i>
-                  )}
-                </h5>
+                COPY INVITE
+                {copySuccess ? (
+                  <i
+                    style={{
+                      color: "green",
+                      verticalAlign: "middle",
+                      marginLeft: "4px",
+                      marginBottom: "4px",
+                    }}
+                    className="material-icons"
+                  >
+                    done
+                  </i>
+                ) : (
+                  <i
+                    style={{
+                      color: "black",
+                      verticalAlign: "middle",
+                      marginLeft: "4px",
+                      marginBottom: "4px",
+                    }}
+                    className="material-icons"
+                  >
+                    content_copy
+                  </i>
+                )}
               </ComputerButton>
               {/* <ChatBox players={roomPlayers} /> */}
             </div>

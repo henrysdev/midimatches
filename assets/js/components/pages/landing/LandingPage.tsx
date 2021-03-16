@@ -12,7 +12,7 @@ const LandingPage: React.FC = () => {
           </MediumLargeTitle>
           <HowToPlay />
           <ComputerButton callback={() => (window.location.href = "/menu")}>
-            <h5>LET'S PLAY!</h5>
+            LET'S PLAY!
           </ComputerButton>
         </div>
       </div>
