@@ -56,8 +56,15 @@
   );
   --inside_content_hover: rgb(87, 87, 87);
   --inside_content_selected: rgb(87, 87, 87);
+  --inside_content_active: rgb(131, 131, 131);
   --inside_content_disabled: rgba(60, 60, 60, 0.482);
   --inside_content_text_disabled: rgb(97, 97, 97);
+  --outside_content_active: rgb(
+    calc(var(--base_color_red) + var(--lightness_increment) * -3),
+    calc(var(--base_color_green) + var(--lightness_increment) * -3),
+    calc(var(--base_color_blue) + var(--lightness_increment) * -3)
+  );
+  --practice_play_button_icon_size: 100px;
 }
 
 p {
@@ -160,14 +167,24 @@ body {
   background-color: var(--main_theme_color);
   width: 50%;
   cursor: pointer;
-  min-height: 48px;
-  max-height: 96px;
+  height: 48px;
+  /* max-height: 96px; */
   margin-top: 16px;
   margin-left: 25%;
   border-radius: 10px;
+
+  border-bottom: 8px solid var(--main_theme_shade_1);
+  border-right: 8px solid var(--main_theme_shade_2);
+  border-top: 8px solid var(--main_theme_shade_4);
+  border-left: 8px solid var(--main_theme_shade_3);
 }
 
 .banner_button:active {
+  /* background-color: var(--outside_content_active); */
+  border-bottom: 5px solid var(--main_theme_shade_1);
+  border-right: 5px solid var(--main_theme_shade_2);
+  border-top: 5px solid var(--main_theme_shade_4);
+  border-left: 5px solid var(--main_theme_shade_3);
   box-shadow: none;
 }
 
@@ -516,6 +533,7 @@ input:checked + .slider:before {
 .alias_length_warning {
   margin-top: 4px;
   color: red;
+  text-shadow: none;
 }
 
 .alias_input:focus {
@@ -876,6 +894,7 @@ strong {
 }
 
 .main_menu_btn_group .main_menu_btn {
+  height: 80px;
   padding-top: 8px;
 }
 .main_menu_btn_group:first-child .main_menu_btn {
@@ -1003,9 +1022,10 @@ strong {
 
 .error_page {
   position: relative;
-  background-color: white;
+  /* background-color: white; */
   width: 100%;
   height: 100vh;
+  color: var(--text_light);
 }
 
 .register_content_wrapper {
@@ -1029,7 +1049,7 @@ strong {
 }
 
 .styled_button:active {
-  background-color: var(--inside_content_selected);
+  background-color: var(--inside_content_active);
 }
 
 .styled_button:disabled {
@@ -1097,6 +1117,7 @@ strong {
   padding: 8px;
   background-color: rgb(245, 187, 187);
   color: red;
+  text-shadow: none;
 }
 
 .selected_sample_anchor {
@@ -1113,9 +1134,9 @@ strong {
 
 .selected_sample_play_button {
   margin-top: 8px;
-  width: 50px;
-  height: 50px;
-  left: calc(50% - 25px);
+  width: var(--practice_play_button_icon_size);
+  height: var(--practice_play_button_icon_size);
+  left: calc(50% - (var(--practice_play_button_icon_size) / 2));
   cursor: pointer;
   color: var(--text_light);
   opacity: 0.7;
@@ -1132,8 +1153,8 @@ strong {
 }
 
 .selected_sample_play_button_icon {
-  width: 50px;
-  height: 50px;
+  width: var(--practice_play_button_icon_size);
+  height: var(--practice_play_button_icon_size);
 }
 
 .accent_bars {

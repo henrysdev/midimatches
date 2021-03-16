@@ -5,7 +5,7 @@ import * as Tone from "tone";
 const defaultClasses = [
   "banner_button",
   "relative_anchor",
-  "outset_3d_border_shallow",
+  // "outset_3d_border_shallow",
 ];
 
 interface ComputerButtonProps {

@@ -65,7 +65,7 @@ const PracticeSampleSelectionView: React.FC<PracticeSampleSelectionViewProps> = 
       <DynamicContent>
         {!!currentSample ? (
           <div className="selected_sample_anchor">
-            <MediumTitle>{currentSample}</MediumTitle>
+            <h2 style={{ textAlign: "center" }}>{currentSample}</h2>
 
             <div
               className="selected_sample_play_button relative_anchor"
@@ -77,7 +77,7 @@ const PracticeSampleSelectionView: React.FC<PracticeSampleSelectionViewProps> = 
                     style={{
                       verticalAlign: "middle",
                       textAlign: "center",
-                      fontSize: "50px",
+                      fontSize: "100px",
                     }}
                     className="material-icons"
                   >
@@ -88,7 +88,7 @@ const PracticeSampleSelectionView: React.FC<PracticeSampleSelectionViewProps> = 
                     style={{
                       verticalAlign: "middle",
                       textAlign: "center",
-                      fontSize: "50px",
+                      fontSize: "100px",
                     }}
                     className="material-icons"
                   >

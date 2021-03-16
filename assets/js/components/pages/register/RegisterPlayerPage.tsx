@@ -58,9 +58,15 @@ const RegisterPlayerPage: React.FC = () => {
     }
   }, [loaded]);
 
-  const submitDisabled = useMemo(() => {
-    return !!trimmedAlias && trimmedAlias.length < MIN_PLAYER_ALIAS_LENGTH;
+  const { submitDisabled, showAliasLengthRule } = useMemo(() => {
+    const submitDisabled =
+      !trimmedAlias || trimmedAlias.length < MIN_PLAYER_ALIAS_LENGTH;
+    const showAliasLengthRule =
+      submitDisabled && !!trimmedAlias && trimmedAlias.length > 0;
+    return { submitDisabled, showAliasLengthRule };
   }, [trimmedAlias]);
+
+  console.log({ submitDisabled });
 
   const handleSubmitForm = (e: any) => {
     e.preventDefault();
@@ -106,7 +112,7 @@ const RegisterPlayerPage: React.FC = () => {
                 maxLength={MAX_PLAYER_ALIAS_LENGTH}
                 onChange={handleChange}
               />
-              {submitDisabled ? (
+              {showAliasLengthRule ? (
                 <div className="alias_length_warning roboto_font">
                   Alias must be at least 3 characters long
                 </div>

@@ -84,7 +84,7 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
                 ) : (
                   <i
                     style={{
-                      color: "black",
+                      color: "var(--text_light)",
                       verticalAlign: "middle",
                       marginLeft: "4px",
                       marginBottom: "4px",
