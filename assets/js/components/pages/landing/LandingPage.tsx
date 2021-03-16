@@ -7,7 +7,9 @@ const LandingPage: React.FC = () => {
     <ComputerFrame>
       <div className="landing_page_content">
         <div>
-          <MediumLargeTitle centered={false}>///WELCOME</MediumLargeTitle>
+          <MediumLargeTitle centered={false}>
+            <span className="accent_bars">///</span>WELCOME
+          </MediumLargeTitle>
           <HowToPlay />
           <ComputerButton callback={() => (window.location.href = "/menu")}>
             <h5>LET'S PLAY!</h5>

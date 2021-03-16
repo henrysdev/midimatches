@@ -1,3 +1,11 @@
+:root {
+  --green_led_box_shadow_off: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px,
+    inset #181818 0 -1px 9px, #919191 0 2px 12px;
+  --green_led_box_shadow_on: 0 0 30px 12px #1aeb13;
+  /* rgba(0, 0, 0, 0.2) 0 -1px 7px 1px,
+    inset #181818 0 -1px 9px, #1aeb13 0 2px 12px; */
+}
+
 .container {
   background-size: cover;
   background: rgb(226, 226, 226); /* Old browsers */
@@ -75,8 +83,7 @@
   height: 24px;
   background-color: #919191;
   border-radius: 50%;
-  box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #304701 0 -1px 9px,
-    #919191 0 2px 12px;
+  box-shadow: var(--green_led_box_shadow_off);
 }
 
 .bulb-off-green {
@@ -87,6 +94,7 @@
   -moz-animation: bulbOffGreen 0.3s;
   -ms-animation: bulbOffGreen 0.3s;
   -o-animation: bulbOffGreen 0.3s;
+  box-shadow: var(--green_led_box_shadow_off);
 }
 
 .bulb-on-green {
@@ -97,6 +105,7 @@
   -moz-animation: bulbOnGreen 0.3s;
   -ms-animation: bulbOnGreen 0.3s;
   -o-animation: bulbOnGreen 0.3s;
+  box-shadow: var(--green_led_box_shadow_on);
 }
 
 .bulb-off-red {
@@ -273,41 +282,51 @@
 @-webkit-keyframes bulbOnGreen {
   from {
     background-color: #919191;
+    box-shadow: var(--green_led_box_shadow_off);
   }
   to {
     background-color: #1aeb13;
+    box-shadow: var(--green_led_box_shadow_on);
   }
 }
 @-moz-keyframes bulbOnGreen {
   from {
     background-color: #919191;
+    box-shadow: var(--green_led_box_shadow_off);
   }
   to {
     background-color: #1aeb13;
+    box-shadow: var(--green_led_box_shadow_on);
   }
 }
 @-ms-keyframes bulbOnGreen {
   from {
     background-color: #919191;
+    box-shadow: var(--green_led_box_shadow_off);
   }
   to {
     background-color: #1aeb13;
+    box-shadow: var(--green_led_box_shadow_on);
   }
 }
 @-o-keyframes bulbOnGreen {
   from {
     background-color: #919191;
+    box-shadow: var(--green_led_box_shadow_off);
   }
   to {
     background-color: #1aeb13;
+    box-shadow: var(--green_led_box_shadow_on);
   }
 }
 @keyframes bulbOnGreen {
   from {
     background-color: #919191;
+    box-shadow: var(--green_led_box_shadow_off);
   }
   to {
     background-color: #1aeb13;
+    box-shadow: var(--green_led_box_shadow_on);
   }
 }
 
@@ -315,41 +334,51 @@
 @-webkit-keyframes bulbOffGreen {
   from {
     background-color: #1aeb13;
+    box-shadow: var(--green_led_box_shadow_on);
   }
   to {
     background-color: #919191;
+    box-shadow: var(--green_led_box_shadow_off);
   }
 }
 @-moz-keyframes bulbOffGreen {
   from {
     background-color: #1aeb13;
+    box-shadow: var(--green_led_box_shadow_on);
   }
   to {
     background-color: #919191;
+    box-shadow: var(--green_led_box_shadow_off);
   }
 }
 @-ms-keyframes bulbOffGreen {
   from {
     background-color: #1aeb13;
+    box-shadow: var(--green_led_box_shadow_on);
   }
   to {
     background-color: #919191;
+    box-shadow: var(--green_led_box_shadow_off);
   }
 }
 @-o-keyframes bulbOffGreen {
   from {
     background-color: #1aeb13;
+    box-shadow: var(--green_led_box_shadow_on);
   }
   to {
     background-color: #919191;
+    box-shadow: var(--green_led_box_shadow_off);
   }
 }
 @keyframes bulbOffGreen {
   from {
     background-color: #1aeb13;
+    box-shadow: var(--green_led_box_shadow_on);
   }
   to {
     background-color: #919191;
+    box-shadow: var(--green_led_box_shadow_off);
   }
 }
 

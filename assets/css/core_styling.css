@@ -45,8 +45,15 @@
   --border_color_1: rgb(211, 211, 211);
   --border_color_2: rgb(211, 211, 211);
   --dark_gray: rgb(211, 211, 211);
-  --accent_color_1: #429888;
-  --screen_color: rgb(38, 38, 38);
+  --accent_color_1: rgb(232, 232, 232);
+  --accent_color_2: #ef5757;
+  --screen_color: rgb(50, 50, 50);
+  --header_nav_color: radial-gradient(
+    circle,
+    rgba(2, 0, 36, 1) 0%,
+    rgba(41, 41, 52, 1) 43%,
+    rgba(81, 83, 85, 1) 100%
+  );
 }
 
 p {
@@ -652,7 +659,7 @@ input:checked + .slider:before {
 
 .midi_button {
   background-color: rgb(238, 238, 238);
-  color: black;
+  color: rgb(80, 73, 73);
   cursor: pointer;
   display: block;
   padding: 4px;
@@ -739,10 +746,10 @@ strong {
 }
 
 .header_nav {
-  background-color: rgb(227, 227, 227);
+  background-color: var(--header_nav_color);
   display: flex;
   align-items: center;
-  padding: 4px;
+  padding: 8px;
   overflow: scroll;
   overflow-x: hidden;
   overflow-y: hidden;
@@ -785,7 +792,7 @@ strong {
 
 .navbar_icon {
   vertical-align: "middle";
-  color: rgb(69, 69, 69);
+  color: var(--text_light);
   border-radius: 4px;
 }
 
@@ -1121,4 +1128,8 @@ strong {
 .selected_sample_play_button_icon {
   width: 50px;
   height: 50px;
+}
+
+.accent_bars {
+  color: var(--accent_color_2);
 }

@@ -85,7 +85,7 @@ const Game: React.FC<GameProps> = ({
     <GameContext.Provider value={gameContext}>
       <GameSubContexts gameContext={gameContext}>
         <InGameFrame
-          title="///GAME"
+          title="GAME"
           subtitle={`${roomName} / FREE-FOR-ALL / ROUND ${gameContext.roundNum}`}
         >
           <GameLeftPane />

@@ -77,7 +77,7 @@ const PracticePage: React.FC<PracticePageProps> = ({ children }) => {
     <ToneAudioContext.Provider value={toneAudioContext}>
       <GameContext.Provider value={gameContext}>
         <GameRulesContext.Provider value={{ gameRules: gameContext.gameRules }}>
-          <InGameFrame title="///PRACTICE">
+          <InGameFrame title="PRACTICE">
             <div className="left_game_content_pane">
               <div className="left_game_content_pane_flex_anchor">
                 <div className="settings_flex_wrapper inset_3d_border_deep">

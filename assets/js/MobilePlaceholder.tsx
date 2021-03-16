@@ -10,7 +10,9 @@ const MobilePlaceholder: React.FC = () => {
         className="mobile_placeholder outset_3d_border_deep"
         style={{ borderRadius: "10px", backgroundColor: "#ebdfce" }}
       >
-        <h1 className="mobile_title centered_title">///WELCOME</h1>
+        <h1 className="mobile_title centered_title">
+          <span className="accent_bars">///</span>WELCOME
+        </h1>
         <HowToPlay />
         <div className="warning_alert roboto_font">
           <strong>Note: </strong> MIDI Matches is not supported on mobile

@@ -40,7 +40,9 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
     <div>
       <ComputerFrame>
         <div className="pregame_lobby_page_content">
-          <MediumLargeTitle centered={false}>///PREGAME LOBBY</MediumLargeTitle>
+          <MediumLargeTitle centered={false}>
+            <span className="accent_bars">///</span>PREGAME LOBBY
+          </MediumLargeTitle>
           <MediumTitle centered={false}>{roomName}</MediumTitle>
           <div className="pregame_lobby_flex_anchor">
             <div className="pregame_content_pane">

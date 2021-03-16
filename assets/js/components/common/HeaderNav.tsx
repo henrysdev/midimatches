@@ -1,4 +1,5 @@
 import * as React from "react";
+import { MidiMatchesLogoSvg } from "./MidiMatchesLogoSvg";
 
 interface HeaderNavProps {
   playerAlias?: string;
@@ -9,7 +10,7 @@ const HeaderNav: React.FC<HeaderNavProps> = ({ playerAlias }) => {
     <div className="header_nav sticky">
       <div className="navbar_actions_group roboto_font">
         <a href="/menu" className="navbar_action">
-          <i className="material-icons navbar_icon">home</i>
+          <i className="material-icons navbar_icon">menu</i>
         </a>
       </div>
       <div
@@ -19,14 +20,7 @@ const HeaderNav: React.FC<HeaderNavProps> = ({ playerAlias }) => {
       >
         <div className="relative_anchor">
           <a href="/menu" className="nav_header_logo centered_div">
-            <svg style={{ marginTop: "6px" }} viewBox="0 0 100 8" width="200px">
-              <text x="0" y="8" className="logo_keys">
-                ///
-              </text>
-              <text x="17" y="8" className="logo_text">
-                MIDIMATCHES
-              </text>
-            </svg>
+            <MidiMatchesLogoSvg />
           </a>
         </div>
       </div>
