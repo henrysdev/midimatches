@@ -12,6 +12,7 @@ import { PregameDebug } from "../../../debug";
 import { PregameCenterPane, WarmUp } from ".";
 import { User, Player } from "../../../../types";
 import { currUtcTimestamp } from "../../../../utils";
+import { useClockOffsetContext } from "../../../../hooks";
 
 interface PregameLobbyProps {
   gameInProgress: boolean;
@@ -33,6 +34,7 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
   startGameDeadline,
 }) => {
   const [copySuccess, setCopySuccess] = useState<boolean>(false);
+  const { clockOffset } = useClockOffsetContext();
 
   return (
     <div>
@@ -104,7 +106,7 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
         {!!startGameDeadline && startGameDeadline > -1 ? (
           <Timer
             descriptionText={"Intermission - Next game in "}
-            duration={startGameDeadline - currUtcTimestamp()}
+            duration={startGameDeadline - currUtcTimestamp() + clockOffset}
             timesUpText={"Game will start as soon as there are enough players"}
           />
         ) : (

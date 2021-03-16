@@ -6,7 +6,7 @@ import {
   MediumLargeTitle,
   DynamicContent,
 } from "../../../../common";
-import { useGameContext } from "../../../../../hooks";
+import { useGameContext, useClockOffsetContext } from "../../../../../hooks";
 import { calcMsUntilMsTimestamp } from "../../../../../utils";
 import { WinResult, Player } from "../../../../../types";
 import { WinResultText } from "../";
@@ -25,6 +25,8 @@ const RoundEndView: React.FC<RoundEndViewProps> = () => {
   } = useGameContext();
 
   const [winningPlayers, setWinningPlayers] = useState<Player[]>();
+
+  const { clockOffset } = useClockOffsetContext();
 
   useEffect(() => {
     if (!!roundWinners && roundWinners.winners.length && !!players) {
@@ -55,7 +57,7 @@ const RoundEndView: React.FC<RoundEndViewProps> = () => {
         <TimerBox>
           <Timer
             descriptionText={"Next round starting in "}
-            duration={calcMsUntilMsTimestamp(viewDeadline)}
+            duration={calcMsUntilMsTimestamp(viewDeadline) + clockOffset}
           />
         </TimerBox>
       </div>

@@ -4,7 +4,11 @@ import {
   SUBMIT_VOTE_EVENT,
   DEFAULT_RECORDING_LENGTH,
 } from "../../../../../constants";
-import { useGameContext, usePlayerContext } from "../../../../../hooks";
+import {
+  useGameContext,
+  usePlayerContext,
+  useClockOffsetContext,
+} from "../../../../../hooks";
 import { PlaybackAudio } from "../../../../audio";
 import {
   SimpleButton,
@@ -36,6 +40,7 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
     },
     viewDeadline,
   } = useGameContext();
+  const { clockOffset } = useClockOffsetContext();
 
   const { player: currPlayer } = usePlayerContext();
   const [voteSubmitted, setVoteSubmitted] = useState<boolean>(false);
@@ -181,7 +186,7 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
         {!!playbackVotingTimeout ? (
           <Timer
             descriptionText={"Voting ends in "}
-            duration={calcMsUntilMsTimestamp(viewDeadline)}
+            duration={calcMsUntilMsTimestamp(viewDeadline) + clockOffset}
           />
         ) : (
           <></>
