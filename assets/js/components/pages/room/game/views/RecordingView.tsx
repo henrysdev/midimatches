@@ -116,7 +116,7 @@ const RecordingView: React.FC<RecordingViewProps> = ({
             ) : recordingState === RecordingState.WARMUP ? (
               <Timer
                 descriptionText={"Recording starts in "}
-                duration={secToMs(DEFAULT_WARMUP_LENGTH) - clockOffset}
+                duration={secToMs(DEFAULT_WARMUP_LENGTH)}
               />
             ) : recordingState === RecordingState.RECORDING ? (
               <div>
@@ -135,7 +135,7 @@ const RecordingView: React.FC<RecordingViewProps> = ({
                   </i>
                   <Timer
                     descriptionText={"Recording ends in "}
-                    duration={secToMs(DEFAULT_RECORDING_LENGTH) - clockOffset}
+                    duration={secToMs(DEFAULT_RECORDING_LENGTH)}
                     style={{ color: "red" }}
                   />
                 </div>
