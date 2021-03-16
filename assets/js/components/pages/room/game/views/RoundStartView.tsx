@@ -6,7 +6,10 @@ import {
   MediumLargeTitle,
   DynamicContent,
 } from "../../../../common";
-import { useViewDeadlineContext } from "../../../../../hooks";
+import {
+  useViewDeadlineContext,
+  useClockOffsetContext,
+} from "../../../../../hooks";
 import { calcMsUntilMsTimestamp, currUtcTimestamp } from "../../../../../utils";
 
 interface RoundStartViewProps {
@@ -23,6 +26,7 @@ const RoundStartView: React.FC<RoundStartViewProps> = ({
   roundNum,
 }) => {
   const { viewDeadline } = useViewDeadlineContext();
+  const { clockOffset } = useClockOffsetContext();
   return (
     <div className="view_container">
       <MediumLargeTitle title={`STARTING ROUND ${roundNum}`} />
@@ -33,7 +37,7 @@ const RoundStartView: React.FC<RoundStartViewProps> = ({
       <TimerBox>
         <Timer
           descriptionText={"Play starting in "}
-          duration={calcMsUntilMsTimestamp(viewDeadline)}
+          duration={calcMsUntilMsTimestamp(viewDeadline) + clockOffset}
         />
       </TimerBox>
     </div>

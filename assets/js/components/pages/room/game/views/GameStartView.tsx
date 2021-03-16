@@ -12,6 +12,7 @@ import { MidiConfiguration } from "../../../../audio";
 import {
   useGameRulesContext,
   useViewDeadlineContext,
+  useClockOffsetContext,
 } from "../../../../../hooks";
 import { calcMsUntilMsTimestamp } from "../../../../../utils";
 
@@ -29,6 +30,7 @@ const GameStartView: React.FC<GameStartViewProps> = ({
   } = useGameRulesContext();
 
   const { viewDeadline } = useViewDeadlineContext();
+  const { clockOffset } = useClockOffsetContext();
 
   return (
     <div className="view_container">
@@ -46,7 +48,7 @@ keyboard and mouse as well."
         {!!gameStartTimeout ? (
           <Timer
             descriptionText={"First round starts in "}
-            duration={calcMsUntilMsTimestamp(viewDeadline)}
+            duration={calcMsUntilMsTimestamp(viewDeadline) + clockOffset}
           />
         ) : (
           <></>
