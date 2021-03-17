@@ -2,7 +2,7 @@ defmodule MidimatchesWeb.MatchmakingChannel do
   @moduledoc """
   Exposes API for all websocket communication on servers page
   """
-  alias Midimatches.Matchmaking
+  alias Midimatches.Rooms
   use MidimatchesWeb, :channel
 
   require Logger
@@ -19,7 +19,7 @@ defmodule MidimatchesWeb.MatchmakingChannel do
   end
 
   def handle_info({:init_serverlist}, socket) do
-    room_states = Matchmaking.get_rooms_list()
+    room_states = Rooms.get_rooms_list()
 
     push(socket, "serverlist_update", %{
       rooms: room_states

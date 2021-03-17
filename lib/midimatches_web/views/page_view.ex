@@ -1,10 +1,13 @@
 defmodule MidimatchesWeb.PageView do
   use MidimatchesWeb, :view
 
-  alias Midimatches.Types.ClientRoomState
+  alias Midimatches.{
+    Rooms,
+    Types.ClientRoomState
+  }
 
   def rooms_list do
-    Midimatches.Matchmaking.get_rooms_list()
+    Rooms.get_rooms_list()
     |> Enum.map(fn %ClientRoomState{
                      room_id: room_id,
                      room_name: room_name

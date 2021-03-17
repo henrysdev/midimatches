@@ -16,7 +16,7 @@ defmodule Midimatches.AdminTest do
     assert_receive %Phoenix.Socket.Broadcast{
       topic: "meta:common",
       event: "admin_alert",
-      payload: %AdminMessage{message_text: "ahem. Hellooooo enjoy the gameeee"}
+      payload: %{admin_message: %AdminMessage{message_text: "ahem. Hellooooo enjoy the gameeee"}}
     }
   end
 end

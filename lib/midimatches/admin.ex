@@ -6,6 +6,9 @@ defmodule Midimatches.Admin do
   alias Midimatches.Types.AdminMessage
 
   @spec broadcast_admin_message(String.t()) :: :ok
+  @doc """
+  Broadcast an alert message to all connected players
+  """
   def broadcast_admin_message(message) do
     MidimatchesWeb.Endpoint.broadcast(
       "meta:common",

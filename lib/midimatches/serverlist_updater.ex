@@ -1,8 +1,8 @@
-defmodule Midimatches.Matchmaking.ServerlistUpdater do
+defmodule Midimatches.ServerlistUpdater do
   @moduledoc """
   Provides an actor-based timer for pushing out updates to the serverlist state
   """
-  alias Midimatches.Matchmaking
+  alias Midimatches.Rooms
 
   alias __MODULE__
 
@@ -30,7 +30,7 @@ defmodule Midimatches.Matchmaking.ServerlistUpdater do
   Triggers update of serverlist state to all listening clients
   """
   def broadcast_serverlist_update do
-    room_states = Matchmaking.get_rooms_list()
+    room_states = Rooms.get_rooms_list()
 
     MidimatchesWeb.Endpoint.broadcast("matchmaking:serverlist", "serverlist_update", %{
       rooms: room_states
