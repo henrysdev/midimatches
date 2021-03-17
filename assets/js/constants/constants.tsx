@@ -143,14 +143,6 @@ export const MIN_ROOM_NAME_LENGTH = 3;
 export const MAX_ROOM_NAME_LENGTH = 20;
 
 export const MIN_SOUND_VOLUME = -25.0;
-export const MAX_SOUND_VOLUME = 1.5;
+export const MAX_SOUND_VOLUME = 2.5;
 
 export const SOUND_VOLUME_COOKIE = "midimatches_soundvolume";
-
-// const newSynth = new Tone.Sampler({
-//   urls: {
-//     C4: "funk_daddy_c4.mp3",
-//     C5: "funk_daddy_c5.mp3",
-//   },
-//   baseUrl: "https://progressions-game.s3.amazonaws.com/synths/funk_daddy/",
-// }).toDestination();
