@@ -5,8 +5,9 @@ import { unmarshalBody, currUtcTimestamp } from "../../../utils";
 import { ServerlistUpdatePayload, RoomState } from "../../../types";
 import { SERVERLIST_UPDATE_EVENT } from "../../../constants";
 import { Serverlist } from ".";
-import { useSocketContext } from "../../../hooks";
+import { useSocketContext, useCurrentUserContext } from "../../../hooks";
 import { ComputerFrame } from "../../common";
+import { PageWrapper } from "../";
 
 const ServerlistPage: React.FC = () => {
   const [roomStates, setRoomStates] = useState<Array<RoomState>>([]);
@@ -17,6 +18,7 @@ const ServerlistPage: React.FC = () => {
     lastRefreshRef.current = data;
     _setLastRefresh(data);
   };
+  const { user: currentUser } = useCurrentUserContext();
   const { socket } = useSocketContext();
 
   useEffect(() => {
@@ -51,14 +53,16 @@ const ServerlistPage: React.FC = () => {
   }, []);
 
   return (
-    <ComputerFrame>
-      <div className="serverlist_page_content">
-        <Serverlist
-          roomStates={roomStates}
-          timeSinceRefresh={timeSinceRefresh}
-        />
-      </div>
-    </ComputerFrame>
+    <PageWrapper socket={socket} currentUser={currentUser}>
+      <ComputerFrame>
+        <div className="serverlist_page_content">
+          <Serverlist
+            roomStates={roomStates}
+            timeSinceRefresh={timeSinceRefresh}
+          />
+        </div>
+      </ComputerFrame>
+    </PageWrapper>
   );
 };
 export { ServerlistPage };

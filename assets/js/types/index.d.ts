@@ -121,6 +121,10 @@ export interface ChatMessage {
   timestamp: number;
 }
 
+export interface AdminMessage {
+  messageText: string;
+}
+
 type RecordingTuple = [string, any];
 type ScoreTuple = [string, number];
 

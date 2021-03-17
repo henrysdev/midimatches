@@ -4,6 +4,7 @@ defmodule MidimatchesWeb.UserSocket do
   ## Channels
   channel "room:*", MidimatchesWeb.RoomChannel
   channel "matchmaking:*", MidimatchesWeb.MatchmakingChannel
+  channel "meta:*", MidimatchesWeb.MetaChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
