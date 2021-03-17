@@ -1,8 +1,8 @@
-defmodule MidimatchesWeb.MetaChannelTest do
+defmodule MidimatchesWeb.UserChannelTest do
   use MidimatchesWeb.ChannelCase, async: true
 
   alias MidimatchesWeb.{
-    MetaChannel,
+    UserChannel,
     UserSocket
   }
 
@@ -15,7 +15,7 @@ defmodule MidimatchesWeb.MetaChannelTest do
     {:ok, _, socket} =
       UserSocket
       |> socket()
-      |> subscribe_and_join(MetaChannel, "meta:common")
+      |> subscribe_and_join(UserChannel, "user:all")
 
     %{socket: socket}
   end

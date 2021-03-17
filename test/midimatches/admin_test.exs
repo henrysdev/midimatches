@@ -6,17 +6,81 @@ defmodule Midimatches.AdminTest do
     Types.AdminMessage
   }
 
-  test "broadcasts admin message to all connected users" do
-    message_text = "ahem. Hellooooo enjoy the gameeee"
-    MidimatchesWeb.Endpoint.subscribe("meta:common")
-    resp = Admin.broadcast_admin_message(message_text)
+  describe "alert all users" do
+    test "with just a message to all connected users" do
+      message_text = "ahem. Hellooooo enjoy the gameeee"
+      MidimatchesWeb.Endpoint.subscribe("user:all")
+      resp = Admin.alert_all_users(message_text)
 
-    assert resp == :ok
+      assert resp == :ok
 
-    assert_receive %Phoenix.Socket.Broadcast{
-      topic: "meta:common",
-      event: "admin_alert",
-      payload: %{admin_message: %AdminMessage{message_text: "ahem. Hellooooo enjoy the gameeee"}}
-    }
+      assert_receive %Phoenix.Socket.Broadcast{
+        topic: "user:all",
+        event: "admin_alert",
+        payload: %{
+          admin_message: %AdminMessage{message_text: "ahem. Hellooooo enjoy the gameeee"}
+        }
+      }
+    end
+
+    test "with a message and alert lifetime to all connected users" do
+      message_text = "ahem. Hellooooo enjoy the gameeee"
+      alert_lifetime = 10_000
+
+      MidimatchesWeb.Endpoint.subscribe("user:all")
+      resp = Admin.alert_all_users(message_text, alert_lifetime)
+
+      assert resp == :ok
+
+      assert_receive %Phoenix.Socket.Broadcast{
+        topic: "user:all",
+        event: "admin_alert",
+        payload: %{
+          admin_message: %AdminMessage{
+            message_text: "ahem. Hellooooo enjoy the gameeee",
+            alert_lifetime: 10_000
+          }
+        }
+      }
+    end
+  end
+
+  describe "alert user" do
+    test "with just a message to the single connected user" do
+      message_text = "ahem. Hellooooo enjoy the gameeee"
+      MidimatchesWeb.Endpoint.subscribe("user:abc123")
+      resp = Admin.alert_user("abc123", message_text)
+
+      assert resp == :ok
+
+      assert_receive %Phoenix.Socket.Broadcast{
+        topic: "user:abc123",
+        event: "admin_alert",
+        payload: %{
+          admin_message: %AdminMessage{message_text: "ahem. Hellooooo enjoy the gameeee"}
+        }
+      }
+    end
+
+    test "with a message and alert lifetime to the single connected user" do
+      message_text = "ahem. Hellooooo enjoy the gameeee"
+      alert_lifetime = 10_000
+
+      MidimatchesWeb.Endpoint.subscribe("user:abc123")
+      resp = Admin.alert_user("abc123", message_text, alert_lifetime)
+
+      assert resp == :ok
+
+      assert_receive %Phoenix.Socket.Broadcast{
+        topic: "user:abc123",
+        event: "admin_alert",
+        payload: %{
+          admin_message: %AdminMessage{
+            message_text: "ahem. Hellooooo enjoy the gameeee",
+            alert_lifetime: 10_000
+          }
+        }
+      }
+    end
   end
 end

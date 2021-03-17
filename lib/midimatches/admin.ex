@@ -5,23 +5,36 @@ defmodule Midimatches.Admin do
 
   alias Midimatches.Types.AdminMessage
 
-  @spec broadcast_admin_message(String.t()) :: :ok
+  @type id() :: String.t()
+
+  @spec alert_all_users(any, any) :: :ok | {:error, any}
   @doc """
   Broadcast an alert message to all connected players
   """
-  def broadcast_admin_message(message, alert_lifetime) do
-    MidimatchesWeb.Endpoint.broadcast(
-      "meta:common",
-      "admin_alert",
-      %{admin_message: %AdminMessage{message_text: message, alert_lifetime: alert_lifetime}}
-    )
+  def alert_all_users(message, alert_lifetime \\ nil) do
+    handle_alert_broadcast("user:all", message, alert_lifetime)
   end
 
-  def broadcast_admin_message(message) do
+  @spec alert_user(any, any, any) :: :ok | {:error, any}
+  @doc """
+  Send an alert message to a specific user
+  """
+  def alert_user(user_id, message, alert_lifetime \\ nil) do
+    handle_alert_broadcast("user:#{user_id}", message, alert_lifetime)
+  end
+
+  defp handle_alert_broadcast(topic, message, alert_lifetime) do
+    admin_message =
+      if is_nil(alert_lifetime) do
+        %AdminMessage{message_text: message}
+      else
+        %AdminMessage{message_text: message, alert_lifetime: alert_lifetime}
+      end
+
     MidimatchesWeb.Endpoint.broadcast(
-      "meta:common",
+      topic,
       "admin_alert",
-      %{admin_message: %AdminMessage{message_text: message}}
+      %{admin_message: admin_message}
     )
   end
 end
