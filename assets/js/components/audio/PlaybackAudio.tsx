@@ -3,7 +3,12 @@ import * as Tone from "tone";
 
 import { Loop, Color } from "../../types";
 import { loopToEvents } from "../../utils";
-import { Button, ContentButton, InlineWidthButton } from "../common";
+import {
+  Button,
+  ContentButton,
+  InlineWidthButton,
+  MaterialIcon,
+} from "../common";
 import {
   DEFAULT_NUM_RECORDED_LOOPS,
   DEFAULT_RECORDING_LENGTH,
@@ -166,26 +171,17 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
                 }}
               >
                 {isPlaying ? (
-                  <i
-                    style={{ verticalAlign: "middle", color: "blue" }}
-                    className="material-icons"
-                  >
-                    hearing
-                  </i>
+                  <MaterialIcon iconName="hearing" style={{ color: "blue" }} />
                 ) : listenComplete ? (
-                  <i
-                    style={{ verticalAlign: "middle", color: "green" }}
-                    className="material-icons"
-                  >
-                    check_circle_outline
-                  </i>
+                  <MaterialIcon
+                    iconName="check_circle_outline"
+                    style={{ color: "green" }}
+                  />
                 ) : (
-                  <i
-                    style={{ verticalAlign: "middle", color: "red" }}
-                    className="material-icons"
-                  >
-                    hearing_disabled
-                  </i>
+                  <MaterialIcon
+                    iconName="hearing_disabled"
+                    style={{ color: "red" }}
+                  />
                 )}
               </div>
             ) : (

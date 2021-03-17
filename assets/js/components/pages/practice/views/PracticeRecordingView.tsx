@@ -14,6 +14,7 @@ import {
   MediumTitle,
   DynamicContent,
   TimerBox,
+  MaterialIcon,
 } from "../../../common";
 import { secToMs, unmarshalBody } from "../../../../utils";
 import { useGameContext, useClockOffsetContext } from "../../../../hooks";
@@ -124,12 +125,10 @@ const PracticeRecordingView: React.FC<PracticeRecordingViewProps> = ({
               alignItems: "center",
             }}
           >
-            <i
-              style={{ verticalAlign: "middle", color: "red" }}
-              className="material-icons"
-            >
-              radio_button_checked
-            </i>
+            <MaterialIcon
+              iconName="radio_button_checked"
+              style={{ color: "red" }}
+            />
             <Timer
               descriptionText={"Recording ends in "}
               duration={secToMs(DEFAULT_RECORDING_LENGTH)}

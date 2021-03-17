@@ -8,6 +8,7 @@ import {
   SOUND_VOLUME_COOKIE,
 } from "../../../../constants";
 import Cookies from "universal-cookie";
+import { MaterialIcon } from "../../../common";
 
 interface GameSettingsProps {}
 
@@ -58,16 +59,9 @@ const GameSettings: React.FC<GameSettingsProps> = ({}) => {
         <li style={{ padding: 0 }}>
           <div className="volume_slider_container">
             {soundIsOn ? (
-              <i
-                style={{ verticalAlign: "middle", color: "red" }}
-                className="material-icons"
-              >
-                volume_off
-              </i>
+              <MaterialIcon iconName="volume_off" style={{ color: "red" }} />
             ) : (
-              <i style={{ verticalAlign: "middle" }} className="material-icons">
-                volume_up
-              </i>
+              <MaterialIcon iconName="volume_up" />
             )}
             <input
               type="range"

@@ -13,6 +13,7 @@ import {
   MediumLargeTitle,
   DynamicContent,
   TimerBox,
+  MaterialIcon,
 } from "../../../../common";
 import { secToMs, calcMsUntilMsTimestamp } from "../../../../../utils";
 import {
@@ -126,12 +127,10 @@ const RecordingView: React.FC<RecordingViewProps> = ({
                     alignItems: "center",
                   }}
                 >
-                  <i
-                    style={{ verticalAlign: "middle", color: "red" }}
-                    className="material-icons"
-                  >
-                    radio_button_checked
-                  </i>
+                  <MaterialIcon
+                    iconName="radio_button_checked"
+                    style={{ color: "red" }}
+                  />
                   <Timer
                     descriptionText={"Recording ends in "}
                     duration={secToMs(DEFAULT_RECORDING_LENGTH)}

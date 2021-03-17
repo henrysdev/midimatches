@@ -16,6 +16,7 @@ import {
   TimerBox,
   ComputerButton,
   InlineWidthButton,
+  MaterialIcon,
 } from "../../../common";
 import { randomElement } from "../../../../utils";
 import { useToneAudioContext } from "../../../../hooks";
@@ -74,27 +75,21 @@ const PracticeSampleSelectionView: React.FC<PracticeSampleSelectionViewProps> = 
             >
               <div className="selected_sample_play_button_icon">
                 {isPlaying ? (
-                  <i
+                  <MaterialIcon
+                    iconName="stop_circle"
                     style={{
-                      verticalAlign: "middle",
                       textAlign: "center",
                       fontSize: "100px",
                     }}
-                    className="material-icons"
-                  >
-                    stop_circle
-                  </i>
+                  />
                 ) : (
-                  <i
+                  <MaterialIcon
+                    iconName="play_circle"
                     style={{
-                      verticalAlign: "middle",
                       textAlign: "center",
                       fontSize: "100px",
                     }}
-                    className="material-icons"
-                  >
-                    play_circle
-                  </i>
+                  />
                 )}
               </div>
             </div>
@@ -111,9 +106,7 @@ const PracticeSampleSelectionView: React.FC<PracticeSampleSelectionViewProps> = 
         >
           <h5>
             NEW SAMPLE
-            <i style={{ verticalAlign: "middle" }} className="material-icons">
-              loop
-            </i>
+            <MaterialIcon iconName="loop" />
           </h5>
         </InlineWidthButton>
         <InlineWidthButton
