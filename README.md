@@ -1,4 +1,4 @@
-# Midi Matches (Beta)
+# Midi Matches (Alpha)
 
 [Midi Matches](https://midimatches.onrender.com/) is a browser-based online multiplayer game that aims to combine the joy of improvisational keyboard with the thrill of friendly competition.
 
