@@ -3,7 +3,6 @@ defmodule Midimatches.RoomsGarbageCollector do
   Provides an actor-based cron job for removing stale rooms
   """
   alias Midimatches.{
-    Matchmaking,
     Rooms,
     Rooms.RoomServer,
     Utils
@@ -42,7 +41,7 @@ defmodule Midimatches.RoomsGarbageCollector do
   defp collect_rooms_garbage(gc_cadence) do
     garbage_before = Utils.curr_utc_timestamp() - gc_cadence
 
-    Matchmaking.get_rooms_pid_list()
+    Rooms.get_rooms_pid_list()
     |> Enum.filter(&RoomServer.stale?(&1, garbage_before))
     |> Enum.map(&:sys.get_state(&1).room_id)
     |> Enum.map(fn room_id ->

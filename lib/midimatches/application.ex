@@ -6,7 +6,7 @@ defmodule Midimatches.Application do
   use Application
 
   alias Midimatches.{
-    Matchmaking.ServerlistUpdater,
+    ServerlistUpdater,
     RoomsGarbageCollector,
     Types.Configs
   }

@@ -4,7 +4,7 @@ import { isMobile } from "react-device-detect";
 import { MobilePlaceholder } from "./MobilePlaceholder";
 
 import {
-  LandingPage,
+  AboutPage,
   PracticePage,
   RoomPage,
   RegisterPlayerPage,
@@ -18,7 +18,7 @@ const PageRouter: React.FC = () => {
   ) : (
     <BrowserRouter>
       <Switch>
-        <Route exact path="/" component={LandingPage} />
+        <Route exact path="/about" component={AboutPage} />
         <Route path="/menu" component={MenuPage} />
         <Route path="/rooms" component={ServerlistPage} />
         <Route path="/room" component={RoomPage} />

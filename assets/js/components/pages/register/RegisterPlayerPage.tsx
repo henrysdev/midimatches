@@ -15,11 +15,19 @@ import {
   InlineWidthInputSubmit,
   VinylLoadingSpinner,
 } from "../../common";
-import { useLoadUpdateUser } from "../../../hooks/useLoadUpdateUser";
+import {
+  useLoadUpdateUser,
+  useCurrentUserContext,
+  useSocketContext,
+} from "../../../hooks";
+import { PageWrapper } from "../";
 
 const RegisterPlayerPage: React.FC = () => {
   const [alias, setAlias] = useState<string>("");
   const [urlDestination, setUrlDestination] = useState<string>("/menu");
+
+  const { user: currentUser } = useCurrentUserContext();
+  const { socket } = useSocketContext();
 
   useEffect(() => {
     const windowRef = window as any;
@@ -76,71 +84,73 @@ const RegisterPlayerPage: React.FC = () => {
   };
 
   return (
-    <div className="narrow_center_container computer_frame outset_3d_border_deep">
-      <br />
-      <MediumLargeTitle>
-        <span className="accent_bars">///</span>PLAYER NAME
-      </MediumLargeTitle>
-      <div className="register_content_wrapper inset_3d_border_deep inline_screen">
-        {loading ? (
-          <VinylLoadingSpinner />
-        ) : loadError ? (
-          <div className="warning_alert roboto_font">
-            Failed to get response from server
-          </div>
-        ) : (
-          <form
-            className="register_player_form"
-            autoComplete="off"
-            onKeyDown={(e: any) => {
-              if (e.key === "Enter") {
+    <PageWrapper socket={socket} currentUser={currentUser}>
+      <div className="narrow_center_container computer_frame outset_3d_border_deep">
+        <br />
+        <MediumLargeTitle>
+          <span className="accent_bars">///</span>PLAYER NAME
+        </MediumLargeTitle>
+        <div className="register_content_wrapper inset_3d_border_deep inline_screen">
+          {loading ? (
+            <VinylLoadingSpinner />
+          ) : loadError ? (
+            <div className="warning_alert roboto_font">
+              Failed to get response from server
+            </div>
+          ) : (
+            <form
+              className="register_player_form"
+              autoComplete="off"
+              onKeyDown={(e: any) => {
+                if (e.key === "Enter") {
+                  handleSubmitForm(e);
+                }
+              }}
+              onSubmit={(e: any) => {
+                e.stopPropagation();
                 handleSubmitForm(e);
-              }
-            }}
-            onSubmit={(e: any) => {
-              e.stopPropagation();
-              handleSubmitForm(e);
-            }}
-          >
-            <fieldset>
-              <input
-                className="inline_width_text_input roboto_font"
-                type="text"
-                id="user_alias"
-                name="user_alias"
-                placeholder="Enter player name..."
-                maxLength={MAX_PLAYER_ALIAS_LENGTH}
-                onChange={handleChange}
-              />
-              {showAliasLengthRule ? (
-                <div className="alias_length_warning roboto_font">
-                  Alias must be at least 3 characters long
+              }}
+            >
+              <fieldset>
+                <input
+                  className="inline_width_text_input roboto_font"
+                  type="text"
+                  id="user_alias"
+                  name="user_alias"
+                  placeholder="Enter player name..."
+                  maxLength={MAX_PLAYER_ALIAS_LENGTH}
+                  onChange={handleChange}
+                />
+                {showAliasLengthRule ? (
+                  <div className="alias_length_warning roboto_font">
+                    Alias must be at least 3 characters long
+                  </div>
+                ) : (
+                  <></>
+                )}
+                <input
+                  hidden={true}
+                  onChange={() => {}}
+                  value={urlDestination}
+                  name="url_destination"
+                />
+                <InlineWidthInputSubmit
+                  label="SUBMIT"
+                  disabled={submitDisabled}
+                />
+              </fieldset>
+              {loaded && badRequest ? (
+                <div className="warning_alert roboto_font">
+                  Update user failed: {data.error}
                 </div>
               ) : (
                 <></>
               )}
-              <input
-                hidden={true}
-                onChange={() => {}}
-                value={urlDestination}
-                name="url_destination"
-              />
-              <InlineWidthInputSubmit
-                label="SUBMIT"
-                disabled={submitDisabled}
-              />
-            </fieldset>
-            {loaded && badRequest ? (
-              <div className="warning_alert roboto_font">
-                Update user failed: {data.error}
-              </div>
-            ) : (
-              <></>
-            )}
-          </form>
-        )}
+            </form>
+          )}
+        </div>
       </div>
-    </div>
+    </PageWrapper>
   );
 };
 export { RegisterPlayerPage };

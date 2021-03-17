@@ -30,6 +30,7 @@ export const START_GAME_EVENT = "start_game";
 export const RESET_ROOM_EVENT = "reset_room";
 export const LOBBY_UPDATE_EVENT = "lobby_update";
 export const NEW_CHAT_MESSAGE_EVENT = "new_chat_message";
+export const ADMIN_ALERT_MESSAGE_EVENT = "admin_alert";
 
 export const SUBMIT_REGISTERED_JOIN = "user_enter_room";
 export const SUBMIT_JOIN = "player_join";
@@ -143,14 +144,8 @@ export const MIN_ROOM_NAME_LENGTH = 3;
 export const MAX_ROOM_NAME_LENGTH = 20;
 
 export const MIN_SOUND_VOLUME = -25.0;
-export const MAX_SOUND_VOLUME = 1.5;
+export const MAX_SOUND_VOLUME = 2.5;
+
+export const DEFAULT_ALERT_LIFETIME = 5_000;
 
 export const SOUND_VOLUME_COOKIE = "midimatches_soundvolume";
-
-// const newSynth = new Tone.Sampler({
-//   urls: {
-//     C4: "funk_daddy_c4.mp3",
-//     C5: "funk_daddy_c5.mp3",
-//   },
-//   baseUrl: "https://progressions-game.s3.amazonaws.com/synths/funk_daddy/",
-// }).toDestination();

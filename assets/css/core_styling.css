@@ -214,7 +214,7 @@ body {
   );
 }
 
-.landing_page_content {
+.about_page_content {
   max-width: 100%;
   margin: auto;
   padding: 16px;
@@ -351,7 +351,7 @@ body {
   padding-left: 8px;
 }
 
-.landing_page_info {
+.about_page_info {
   margin: auto;
   margin-top: 16px;
   padding: 16px;
@@ -359,7 +359,7 @@ body {
   border-radius: 10px;
 }
 
-.landing_page_info dt {
+.about_page_info dt {
   padding-left: 8px;
 }
 
@@ -1261,4 +1261,49 @@ strong {
   100% {
     background-color: none;
   }
+}
+
+.alert_modal {
+  backdrop-filter: blur(10px);
+  display: block;
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.alert_modal_content {
+  margin: auto;
+  padding: 16px;
+  border: 1px solid #888;
+  width: 40%;
+  height: 40%;
+  color: black;
+  background-color: rgb(222, 222, 222);
+}
+
+/* The Close Button */
+.alert_modal_close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.alert_modal_close:hover,
+.alert_modal_close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.alert_title {
+  font-size: 2em;
+  color: black;
 }

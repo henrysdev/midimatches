@@ -20,6 +20,7 @@ defmodule MidimatchesWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    get "/about", PageController, :about
     get "/menu", PageController, :menu
     get "/rooms", PageController, :serverlist
     get "/room/:room_id", PageController, :room

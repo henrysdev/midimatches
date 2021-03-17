@@ -2,7 +2,7 @@ import React from "react";
 
 const HowToPlay: React.FC = () => {
   return (
-    <div className="landing_page_info inset_3d_border_shallow inline_screen">
+    <div className="about_page_info inset_3d_border_shallow inline_screen">
       <dl>
         <dd>
           <p>

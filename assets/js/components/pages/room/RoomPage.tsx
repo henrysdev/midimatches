@@ -37,6 +37,7 @@ import {
   useClockOffsetContext,
 } from "../../../hooks";
 import { PregameDebug } from "../../debug";
+import { PageWrapper } from "../";
 
 const RoomPage: React.FC = () => {
   const toneAudioContext = useAudioContextProvider();
@@ -53,8 +54,8 @@ const RoomPage: React.FC = () => {
     numPlayersToStart: 0,
     roomName: "",
   });
-  const { user: currentUser } = useCurrentUserContext();
   const { clockOffset } = useClockOffsetContext();
+  const { user: currentUser } = useCurrentUserContext();
   const { socket } = useSocketContext();
 
   const resetRoom = () => {
@@ -196,7 +197,7 @@ const RoomPage: React.FC = () => {
   }, []);
 
   return (
-    <div>
+    <PageWrapper socket={socket} currentUser={currentUser}>
       <ToneAudioContext.Provider value={toneAudioContext}>
         <KeyboardInputContext.Provider
           value={{ setDisableKeyboardInput, disableKeyboardInput }}
@@ -228,7 +229,7 @@ const RoomPage: React.FC = () => {
         </KeyboardInputContext.Provider>
       </ToneAudioContext.Provider>
       {/* <PregameDebug /> */}
-    </div>
+    </PageWrapper>
   );
 };
 export { RoomPage };

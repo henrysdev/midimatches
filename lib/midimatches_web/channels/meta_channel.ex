@@ -1,39 +1,28 @@
-defmodule MidimatchesWeb.MatchmakingChannel do
+defmodule MidimatchesWeb.MetaChannel do
   @moduledoc """
-  Exposes API for all websocket communication on servers page
+  Channel for meta/site admin events that is available on every dynamic page of the application.
+  This channel allows communication with any/all online users regardless of their url location.
   """
-  alias Midimatches.Rooms
   use MidimatchesWeb, :channel
 
   require Logger
 
-  intercept ["serverlist_update"]
+  intercept ["admin_message"]
 
   #################################################################################################
   ## Join Messages                                                                               ##
   #################################################################################################
 
-  def join("matchmaking:serverlist", _params, socket) do
-    send(self(), {:init_serverlist})
+  def join("meta:common", _params, socket) do
     {:ok, socket}
-  end
-
-  def handle_info({:init_serverlist}, socket) do
-    room_states = Rooms.get_rooms_list()
-
-    push(socket, "serverlist_update", %{
-      rooms: room_states
-    })
-
-    {:noreply, socket}
   end
 
   #################################################################################################
   ## Outgoing Messages                                                                           ##
   #################################################################################################
 
-  def handle_out("serverlist_update", msg, socket) do
-    push(socket, "serverlist_update", msg)
+  def handle_out("admin_message", msg, socket) do
+    push(socket, "admin_message", msg)
     {:noreply, socket}
   end
 end

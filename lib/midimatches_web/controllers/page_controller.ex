@@ -9,7 +9,20 @@ defmodule MidimatchesWeb.PageController do
 
   @spec index(Plug.Conn.t(), any) :: Plug.Conn.t()
   def index(conn, _params) do
-    render(conn, "index.html")
+    if conn |> get_session(:user) |> is_nil() do
+      redirect(conn,
+        to: Routes.page_path(conn, :about)
+      )
+    else
+      redirect(conn,
+        to: Routes.page_path(conn, :menu)
+      )
+    end
+  end
+
+  @spec about(Plug.Conn.t(), any) :: Plug.Conn.t()
+  def about(conn, _params) do
+    render(conn, "about.html")
   end
 
   @spec menu(Plug.Conn.t(), any) :: Plug.Conn.t()

@@ -3,7 +3,7 @@ defmodule MidimatchesWeb.PageControllerTest do
 
   test "GET /", %{conn: conn} do
     conn = get(conn, "/")
-    assert html_response(conn, 200) =~ "react-app"
+    assert html_response(conn, 302) =~ "/about"
   end
 
   # test "GET /practice", %{conn: conn} do

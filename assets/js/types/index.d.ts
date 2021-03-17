@@ -61,6 +61,10 @@ export interface ServerlistUpdatePayload {
   rooms: any[];
 }
 
+export interface AdminAlertPayload {
+  adminMessage: AdminMessage;
+}
+
 export type StartGamePayload = GameUpdatePayload;
 
 export interface RoomState {
@@ -119,6 +123,11 @@ export interface ChatMessage {
   playerId: string;
   messageText: string;
   timestamp: number;
+}
+
+export interface AdminMessage {
+  messageText: string;
+  alertLifetime: number;
 }
 
 type RecordingTuple = [string, any];
