@@ -30,6 +30,7 @@ export const START_GAME_EVENT = "start_game";
 export const RESET_ROOM_EVENT = "reset_room";
 export const LOBBY_UPDATE_EVENT = "lobby_update";
 export const NEW_CHAT_MESSAGE_EVENT = "new_chat_message";
+export const ADMIN_ALERT_MESSAGE_EVENT = "admin_alert";
 
 export const SUBMIT_REGISTERED_JOIN = "user_enter_room";
 export const SUBMIT_JOIN = "player_join";
@@ -144,5 +145,7 @@ export const MAX_ROOM_NAME_LENGTH = 20;
 
 export const MIN_SOUND_VOLUME = -25.0;
 export const MAX_SOUND_VOLUME = 2.5;
+
+export const DEFAULT_ALERT_LIFETIME = 5_000;
 
 export const SOUND_VOLUME_COOKIE = "midimatches_soundvolume";

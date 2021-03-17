@@ -127,6 +127,7 @@ export interface ChatMessage {
 
 export interface AdminMessage {
   messageText: string;
+  alertLifetime: number;
 }
 
 type RecordingTuple = [string, any];

@@ -1264,10 +1264,10 @@ strong {
 }
 
 .alert_modal {
+  backdrop-filter: blur(10px);
   display: block;
   position: fixed; /* Stay in place */
   z-index: 1; /* Sit on top */
-  padding-top: 100px; /* Location of the box */
   left: 0;
   top: 0;
   width: 100%; /* Full width */
@@ -1279,11 +1279,13 @@ strong {
 
 /* Modal Content */
 .alert_modal_content {
-  background-color: #fefefe;
   margin: auto;
-  padding: 20px;
+  padding: 16px;
   border: 1px solid #888;
-  width: 80%;
+  width: 40%;
+  height: 40%;
+  color: black;
+  background-color: rgb(222, 222, 222);
 }
 
 /* The Close Button */
@@ -1299,4 +1301,9 @@ strong {
   color: #000;
   text-decoration: none;
   cursor: pointer;
+}
+
+.alert_title {
+  font-size: 2em;
+  color: black;
 }

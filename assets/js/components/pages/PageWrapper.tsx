@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { Channel, Socket, Push } from "phoenix";
+import React from "react";
+import { Socket } from "phoenix";
 import { useMetaChannel } from "../../hooks";
-import { User, AdminMessage, AdminAlertPayload } from "../../types";
-import { unmarshalBody } from "../../utils";
-import { AlertModal } from "../common/AlertModal";
+import { User } from "../../types";
+import { AdminAlert } from ".";
 
 interface PageWrapperProps {
   socket: Socket;
@@ -16,41 +15,9 @@ const PageWrapper: React.FC<PageWrapperProps> = ({
   children,
 }) => {
   const metaChannel = useMetaChannel(socket, currentUser);
-
-  const [adminMessage, setAdminMessage] = useState<string>();
-  const [showAlertModal, setShowAlertModal] = useState<boolean>(false);
-
-  const handleAdminMessage = (adminMessage: AdminMessage): void => {
-    setAdminMessage(adminMessage.messageText);
-    setShowAlertModal(true);
-  };
-
-  useEffect(() => {
-    if (!!metaChannel) {
-      metaChannel.on("admin_alert", (body) => {
-        const { adminMessage } = unmarshalBody(body) as AdminAlertPayload;
-        handleAdminMessage(adminMessage);
-      });
-    }
-  }, [metaChannel]);
-
-  useEffect(() => {
-    if (showAlertModal) {
-      const timer = setTimeout(() => {
-        setShowAlertModal(false);
-      }, 10_000);
-      return () => clearTimeout(timer);
-    }
-  }, [showAlertModal]);
-
   return (
     <div>
-      {showAlertModal ? (
-        <AlertModal messageText={!!adminMessage ? adminMessage : ""} />
-      ) : (
-        <></>
-      )}
-
+      <AdminAlert metaChannel={metaChannel} />
       {children}
     </div>
   );
