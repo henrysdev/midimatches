@@ -22,7 +22,6 @@ defmodule MidimatchesWeb.MetaChannel do
   #################################################################################################
 
   def handle_out("admin_message", msg, socket) do
-    IO.inspect({:GOING_OUT, msg})
     push(socket, "admin_message", msg)
     {:noreply, socket}
   end

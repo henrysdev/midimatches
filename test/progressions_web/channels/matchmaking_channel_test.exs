@@ -15,7 +15,7 @@ defmodule MidimatchesWeb.MatchmakingChannelTest do
     {:ok, _, socket} =
       UserSocket
       |> socket()
-      |> subscribe_and_join(MatchmakingChannel, "landing_page:serverlist")
+      |> subscribe_and_join(MatchmakingChannel, "matchmaking:serverlist")
 
     %{socket: socket}
   end

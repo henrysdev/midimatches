@@ -1,6 +1,6 @@
 import React from "react";
 
-import { HowToPlay } from "./components/pages/landing";
+import { HowToPlay } from "./components/pages/about";
 import { ComputerFrame } from "./components/common";
 
 const MobilePlaceholder: React.FC = () => {

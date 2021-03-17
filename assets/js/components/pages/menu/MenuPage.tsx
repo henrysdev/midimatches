@@ -53,7 +53,7 @@ const MenuPage: React.FC = () => {
           </div>
           <div className="main_menu_btn">
             <ComputerButton
-              callback={() => (window.location.href = "/")}
+              callback={() => (window.location.href = "/about")}
               extraClasses={["register_button"]}
             >
               ABOUT
