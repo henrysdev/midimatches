@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { InGameFrame } from "../pages/room/game";
+import { InGameFrame, GameSubContexts } from "../pages/room/game";
 import { GameContext, ToneAudioContext, PlayerContext } from "../../contexts";
 import { Keyboard } from "../audio";
 import {
@@ -9,7 +9,7 @@ import {
   PlaybackVotingView,
   RoundEndView,
 } from "../pages/room/game/views";
-import { Loop } from "../../types";
+import { Loop, GameContextType } from "../../types";
 import { useWebMidi } from "../../hooks";
 import { DynamicContent, ComputerFrame } from "../common";
 import Tone from "tone";
@@ -35,6 +35,13 @@ const mockTone: FakeTone = {
     };
   },
   toDestination: () => {},
+};
+
+const mockSamplePlayer: any = {
+  loop: (_p: any) => {},
+  stop: (_p?: any) => {},
+  start: (_p?: any) => {},
+  seek: (_p: any) => {},
 };
 
 const mockedPlayers = [
@@ -71,143 +78,151 @@ const mockedRecordings = {
   } as Loop,
 };
 
+const gameContext = {
+  players: mockedPlayers,
+  gameRules: {
+    viewTimeouts: {
+      gameStart: 10_000,
+      playbackVoting: 10_000,
+    },
+    timestepSize: 10_000,
+  },
+  scores: [
+    ["fearz123", 0],
+    ["xb4z", 2],
+  ],
+  readyUps: [],
+  roundWinners: {
+    winners: ["1199"],
+    numPoints: 2,
+  },
+  roundNum: 2,
+  roundRecordingStartTime: 100,
+  recordings: [
+    [
+      "xb4z",
+      {
+        timestepSlices: [
+          {
+            timestep: 4,
+            notes: [
+              {
+                key: 54,
+                duration: 14,
+              },
+              {
+                key: 64,
+                duration: 12,
+              },
+            ],
+          },
+          {
+            timestep: 41,
+            notes: [
+              {
+                key: 14,
+                duration: 20,
+              },
+              {
+                key: 4,
+                duration: 14,
+              },
+            ],
+          },
+          {
+            timestep: 200,
+            notes: [
+              {
+                key: 88,
+                duration: 4,
+              },
+              {
+                key: 65,
+                duration: 40,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "fearz123",
+      {
+        timestepSlices: [
+          {
+            timestep: 4,
+            notes: [
+              {
+                key: 54,
+                duration: 14,
+              },
+              {
+                key: 64,
+                duration: 12,
+              },
+            ],
+          },
+          {
+            timestep: 41,
+            notes: [
+              {
+                key: 14,
+                duration: 20,
+              },
+              {
+                key: 4,
+                duration: 14,
+              },
+            ],
+          },
+          {
+            timestep: 200,
+            notes: [
+              {
+                key: 88,
+                duration: 4,
+              },
+              {
+                key: 65,
+                duration: 40,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  ],
+} as GameContextType;
+
 const PregameDebug: React.FC = () => {
   const [midiInputs] = useWebMidi();
   return (
     <div>
-      <GameContext.Provider
-        value={{
-          players: mockedPlayers,
-          gameRules: {
-            viewTimeouts: {
-              gameStart: 10_000,
-              playbackVoting: 10_000,
-            },
-            timestepSize: 10_000,
-          },
-          scores: [
-            ["fearz123", 0],
-            ["xb4z", 2],
-          ],
-          readyUps: [],
-          roundWinners: {
-            winners: ["1199"],
-            numPoints: 2,
-          },
-          roundNum: 2,
-          roundRecordingStartTime: 100,
-          recordings: [
-            [
-              "xb4z",
-              {
-                timestepSlices: [
-                  {
-                    timestep: 4,
-                    notes: [
-                      {
-                        key: 54,
-                        duration: 14,
-                      },
-                      {
-                        key: 64,
-                        duration: 12,
-                      },
-                    ],
-                  },
-                  {
-                    timestep: 41,
-                    notes: [
-                      {
-                        key: 14,
-                        duration: 20,
-                      },
-                      {
-                        key: 4,
-                        duration: 14,
-                      },
-                    ],
-                  },
-                  {
-                    timestep: 200,
-                    notes: [
-                      {
-                        key: 88,
-                        duration: 4,
-                      },
-                      {
-                        key: 65,
-                        duration: 40,
-                      },
-                    ],
-                  },
-                ],
-              },
-            ],
-            [
-              "fearz123",
-              {
-                timestepSlices: [
-                  {
-                    timestep: 4,
-                    notes: [
-                      {
-                        key: 54,
-                        duration: 14,
-                      },
-                      {
-                        key: 64,
-                        duration: 12,
-                      },
-                    ],
-                  },
-                  {
-                    timestep: 41,
-                    notes: [
-                      {
-                        key: 14,
-                        duration: 20,
-                      },
-                      {
-                        key: 4,
-                        duration: 14,
-                      },
-                    ],
-                  },
-                  {
-                    timestep: 200,
-                    notes: [
-                      {
-                        key: 88,
-                        duration: 4,
-                      },
-                      {
-                        key: 65,
-                        duration: 40,
-                      },
-                    ],
-                  },
-                ],
-              },
-            ],
-          ],
-        }}
-      >
-        <PlayerContext.Provider value={{ player: mockedPlayers[0] }}>
-          <ToneAudioContext.Provider value={{ midiInputs, Tone: mockTone }}>
-            <InGameFrame title="AAA">
-              <GameStartView pushMessageToChannel={() => {}} />
-              {/* <RecordingView
+      <GameContext.Provider value={{ ...gameContext }}>
+        <GameSubContexts gameContext={gameContext}>
+          <PlayerContext.Provider value={{ player: mockedPlayers[0] }}>
+            <ToneAudioContext.Provider
+              value={{
+                midiInputs,
+                Tone: mockTone,
+                samplePlayer: mockSamplePlayer,
+              }}
+            >
+              <InGameFrame title="AAA">
+                <div></div>
+                <PlaybackVotingView
+                  pushMessageToChannel={() => {}}
+                  stopSample={() => {}}
+                  isSamplePlayerLoaded={true}
+                />
+                <div></div>
+                {/* <RecordingView
                 isContestant={true}
                 pushMessageToChannel={() => {}}
                 stopSample={() => {}}
               /> */}
-              {/* <PlaybackVotingView
-                pushMessageToChannel={() => {}}
-                stopSample={() => {}}
-                isSamplePlayerLoaded={true}
-              /> */}
-            </InGameFrame>
-            {/* <DynamicContent>
+              </InGameFrame>
+              {/* <DynamicContent>
               <div>
                 <Keyboard
                   activeMidiList={[50]}
@@ -218,8 +233,9 @@ const PregameDebug: React.FC = () => {
                 />
               </div>
             </DynamicContent> */}
-          </ToneAudioContext.Provider>
-        </PlayerContext.Provider>
+            </ToneAudioContext.Provider>
+          </PlayerContext.Provider>
+        </GameSubContexts>
       </GameContext.Provider>
     </div>
   );

@@ -3,7 +3,7 @@ import * as Tone from "tone";
 
 import { Loop, Color } from "../../types";
 import { loopToEvents } from "../../utils";
-import { Button } from "../common";
+import { Button, ContentButton } from "../common";
 import {
   DEFAULT_NUM_RECORDED_LOOPS,
   DEFAULT_RECORDING_LENGTH,
@@ -141,7 +141,7 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
   }, [isPlaying, listenComplete, canVote]);
 
   return (
-    <div style={{ padding: "8px" }}>
+    <div className="recording_playback_wrapper">
       {!practiceMode ? (
         isCurrPlayer ? (
           <div className="roboto_font">
@@ -212,23 +212,16 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
         </div>
 
         {!practiceMode && canVote ? (
-          <div
-            style={{
-              flex: "1",
-              padding: "8px",
-              margin: "auto",
-              marginTop: "4px",
-              height: "100%",
-              width: "100%",
-            }}
-          >
-            <Button
-              label="Vote"
+          <div className="playback_vote_button_wrapper" style={{ flex: "1" }}>
+            <ContentButton
               callback={() => {
                 submitVote(playerId);
                 stopSample();
               }}
-            />
+              styles={{ marginTop: 0, padding: 0 }}
+            >
+              VOTE
+            </ContentButton>
           </div>
         ) : (
           <></>

@@ -1,3 +1,8 @@
+:root {
+  --selected_player_color: #296cff;
+  --recording_color: #ef5757;
+}
+
 .ReactPiano__Keyboard {
   /* Used for absolute positioning of .ReactPiano__Key--accidental elements */
   position: relative;
@@ -60,12 +65,53 @@
  * Styles of "active" or pressed-down keys
  */
 .ReactPiano__Key--active {
-  background: #ccdcff;
+  background: var(--selected_player_color);
+  animation: pressed_anim_active 0.15s linear infinite;
+}
+
+@keyframes pressed_anim_active {
+  0% {
+    box-shadow: 0 0 2px var(--selected_player_color),
+      0 0 10px var(--selected_player_color),
+      0 0 20px var(--selected_player_color),
+      0 0 100px var(--selected_player_color);
+  }
+  50% {
+    box-shadow: 0 0 1px var(--selected_player_color),
+      0 0 2px var(--selected_player_color), 0 0 6px var(--selected_player_color),
+      0 0 30px var(--selected_player_color);
+  }
+  100% {
+    box-shadow: 0 0 2px var(--selected_player_color),
+      0 0 10px var(--selected_player_color),
+      0 0 20px var(--selected_player_color),
+      0 0 100px var(--selected_player_color);
+  }
+}
+
+.ReactPiano__Key--recording {
+  background: var(--recording_color);
+  animation: pressed_anim_recording 0.15s linear infinite;
+}
+
+@keyframes pressed_anim_recording {
+  0% {
+    box-shadow: 0 0 2px var(--recording_color), 0 0 10px var(--recording_color),
+      0 0 20px var(--recording_color), 0 0 100px var(--recording_color);
+  }
+  50% {
+    box-shadow: 0 0 1px var(--recording_color), 0 0 2px var(--recording_color),
+      0 0 6px var(--recording_color), 0 0 30px var(--recording_color);
+  }
+  100% {
+    box-shadow: 0 0 2px var(--recording_color), 0 0 10px var(--recording_color),
+      0 0 20px var(--recording_color), 0 0 100px var(--recording_color);
+  }
 }
 
 .ReactPiano__Key--active.ReactPiano__Key--accidental {
   border: 1px solid #fff;
-  border-top: 1px solid #ccdcff;
+  border-top: 1px solid var(--selected_player_color);
   /* Slight height reduction for "pushed-down" effect */
   height: 65%;
 }

@@ -19,7 +19,6 @@ import {
   useGameRulesContext,
   useViewDeadlineContext,
   useRoundRecordingStartTimeContext,
-  useClockOffsetContext,
 } from "../../../../../hooks";
 
 enum RecordingState {
@@ -60,7 +59,6 @@ const RecordingView: React.FC<RecordingViewProps> = ({
   const { gameRules } = useGameRulesContext();
   const { viewDeadline } = useViewDeadlineContext();
   const { roundRecordingStartTime } = useRoundRecordingStartTimeContext();
-  const { clockOffset } = useClockOffsetContext();
 
   const recordingState: RecordingState = useMemo(() => {
     if (isSamplePlaying && !isRecording && !isFinishedRecording) {
@@ -75,13 +73,13 @@ const RecordingView: React.FC<RecordingViewProps> = ({
   }, [isSamplePlaying, isRecording, isFinishedRecording]);
 
   return (
-    <div className="view_container">
+    <div
+      className={isRecording ? "view_container neon_border" : "view_container "}
+    >
       <MediumLargeTitle title="PLAY AND RECORD" />
       {isContestant ? (
         <div style={{ height: "100%" }}>
-          <DynamicContent
-            style={isRecording ? { backgroundColor: "#ffd9db" } : {}}
-          >
+          <DynamicContent>
             {recordingState === RecordingState.INIT ? (
               <Instructions description="Loading sample and syncing clients..." />
             ) : recordingState === RecordingState.WARMUP ? (
@@ -105,6 +103,7 @@ const RecordingView: React.FC<RecordingViewProps> = ({
                 gameRules={gameRules}
                 roundRecordingStartTime={roundRecordingStartTime}
                 shouldRecord={true}
+                isRecording={isRecording}
               />
             ) : (
               <></>
@@ -147,9 +146,7 @@ const RecordingView: React.FC<RecordingViewProps> = ({
         </div>
       ) : (
         <div>
-          <DynamicContent
-            style={isRecording ? { backgroundColor: "#ffd9db" } : {}}
-          >
+          <DynamicContent>
             <Instructions
               description="Recording for this round has already begun. You will be able to record
           next round. Waiting for other players to finish recording..."

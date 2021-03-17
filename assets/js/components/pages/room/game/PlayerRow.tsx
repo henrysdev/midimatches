@@ -19,32 +19,16 @@ const PlayerRow: React.FC<PlayerRowProps> = ({
 }) => {
   return (
     <tr
-      className="scoreboard_player_row"
-      style={isCurrPlayer ? { backgroundColor: "rgb(204, 220, 255)" } : {}}
+      className={
+        isCurrPlayer
+          ? "scoreboard_player_row selected_player"
+          : "scoreboard_player_row"
+      }
     >
       <td>{rank}</td>
       <td>{playerAlias}</td>
       <td>{playerScore}</td>
     </tr>
   );
-  // return isCurrPlayer ? (
-  //   <tr style={{ ...tdStyle, backgroundColor: "#ccdcff" }}>
-  //     <td style={{ ...tdStyle, textAlign: "center" }}>
-  //       <strong>{rank}</strong>
-  //     </td>
-  //     <td style={tdStyle}>
-  //       <strong>{playerAlias}</strong>
-  //     </td>
-  //     <td style={{ ...tdStyle, textAlign: "center" }}>
-  //       <strong>{playerScore}</strong>
-  //     </td>
-  //   </tr>
-  // ) : (
-  //   <tr>
-  //     <td style={{ ...tdStyle, textAlign: "center" }}>{rank}</td>
-  //     <td style={tdStyle}>{playerAlias}</td>
-  //     <td style={{ ...tdStyle, textAlign: "center" }}>{playerScore}</td>
-  //   </tr>
-  // );
 };
 export { PlayerRow };

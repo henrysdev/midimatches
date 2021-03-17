@@ -42,6 +42,7 @@
   */
 
   --text_light: rgb(232, 232, 232);
+  --text_light_outline: rgb(216, 205, 139);
   --border_color_1: rgb(211, 211, 211);
   --border_color_2: rgb(211, 211, 211);
   --dark_gray: rgb(211, 211, 211);
@@ -65,6 +66,8 @@
     calc(var(--base_color_blue) + var(--lightness_increment) * -3)
   );
   --practice_play_button_icon_size: 100px;
+  --current_player_color: #296cff;
+  --text_dark: rgb(36, 36, 36);
 }
 
 p {
@@ -424,10 +427,12 @@ body {
     rgba(41, 41, 52, 1) 43%,
     rgba(81, 83, 85, 1) 100%
   ); */
+  /* text-shadow: 0 0 10px var(--text_light_outline); */
+
   background-color: var(--screen_color);
-  /* box-shadow: inset 0 -3em 3em rgba(0, 0, 0, 0.1); */
+
   box-shadow: inset 0 0 20px 10px rgb(7, 7, 7);
-  text-shadow: 0 0 10px var(--text_light);
+
   color: var(--text_light);
 }
 
@@ -656,8 +661,14 @@ input:checked + .slider:before {
 
 .timer_box_inner {
   height: 36px;
-  background-color: #fff;
+  /* background-color: #fff; */
   box-shadow: inset -1em -1em 1em rgba(0, 0, 0, 0.1);
+
+  background-color: var(--screen_color);
+
+  box-shadow: inset 0 0 20px 10px rgb(7, 7, 7);
+
+  color: var(--text_light);
 }
 
 .dynamic_content_container {
@@ -849,24 +860,9 @@ strong {
 }
 
 .cloaked_recording_fill {
-  background-color: black;
-  opacity: 0.5;
-}
-
-.recording_playback {
-  flex: 5;
-  padding: 8px;
-  margin: auto;
-  margin-top: 4px;
-  border: 1px solid var(--border_color_2);
-  box-shadow: 0 5px 5px rgb(0 0 0 / 8%);
-  color: var(--dark_gray);
-  overflow: hidden;
-}
-
-.highlight_on_hover:hover {
-  background-color: #f8f8f8;
-  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.5);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(3px);
 }
 
 .piano_roll_container {
@@ -874,7 +870,62 @@ strong {
   width: 100%;
   min-height: 50px;
   height: 100%;
-  border: 1px solid black;
+  border: 1px solid var(--text_dark);
+  z-index: 11;
+  overflow: hidden;
+}
+
+.empty_recording_roll {
+  /* background-color: rgb(184, 184, 184); */
+}
+
+.empty_recording_label {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--text_dark);
+}
+
+.recording_playback {
+  flex: 5;
+  padding: 8px;
+  margin: auto;
+  margin-top: 4px;
+  background-color: var(--text_light);
+  overflow: hidden;
+}
+
+.recording_playback_wrapper {
+  padding: 8px;
+  margin: 4px;
+}
+
+.highlight_on_hover {
+  position: relative;
+  cursor: pointer;
+}
+
+.highlight_on_hover:hover:after {
+  content: " ";
+  z-index: 10;
+  display: block;
+  position: absolute;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  opacity: 0.4;
+  background-color: gray;
+}
+
+.playback_vote_button_wrapper {
+  padding: 8px;
+  margin: auto;
+  margin-top: 4px;
+  height: 100%;
+  width: 100%;
 }
 
 .rounded_border {
@@ -1169,4 +1220,37 @@ strong {
 
 .full_height {
   height: 100vh;
+}
+
+.selected_player {
+  background-color: var(--current_player_color);
+}
+
+.current_player_badge {
+  float: right;
+  padding: 4px;
+  margin-right: 8px;
+  background-color: var(--current_player_color);
+  border-radius: 3px;
+  color: var(--text_light);
+}
+
+.recording_bg {
+  box-shadow: inset 0 0 40px 10px red;
+  animation: recording_bg_anim 3s infinite;
+}
+
+@keyframes recording_bg_anim {
+  0% {
+    background-color: none;
+  }
+  33% {
+    background-color: rgb(187, 87, 0);
+  }
+  66% {
+    background-color: red;
+  }
+  100% {
+    background-color: none;
+  }
 }

@@ -19,6 +19,7 @@ class ControlledPiano extends React.Component {
     disableKeyboardInput: PropTypes.bool.isRequired,
     width: PropTypes.number,
     keyWidthToHeight: PropTypes.number,
+    recording: PropTypes.bool,
     keyboardShortcuts: PropTypes.arrayOf(
       PropTypes.shape({
         key: PropTypes.string.isRequired,
@@ -198,6 +199,7 @@ class ControlledPiano extends React.Component {
           gliss={this.state.isMouseDown}
           useTouchEvents={this.state.useTouchEvents}
           renderNoteLabel={this.renderNoteLabel}
+          recording={this.props.recording}
         />
       </div>
     );

@@ -40,29 +40,8 @@ const RecordingVisual: React.FC<RecordingVisualProps> = ({
   );
 
   return emptyRecording ? (
-    <div
-      style={{
-        position: "relative",
-        width: "100%",
-        minHeight: "50px",
-        height: "100%",
-        border: "1px solid black",
-        zIndex: 11,
-        overflow: "hidden",
-      }}
-    >
-      <div
-        className="roboto_font"
-        style={{
-          margin: "0",
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-        }}
-      >
-        (Empty Recording)
-      </div>
+    <div className="piano_roll_container empty_recording_roll">
+      <div className="roboto_font empty_recording_label">(Empty Recording)</div>
       {isPlaying ? (
         drawProgress(progress, firstPlayback)
       ) : listenComplete ? (
@@ -73,15 +52,9 @@ const RecordingVisual: React.FC<RecordingVisualProps> = ({
     </div>
   ) : (
     <div
+      className="piano_roll_container"
       style={{
-        position: "relative",
-        width: "100%",
-        minHeight: "50px",
-        height: "100%",
-        border: "1px solid black",
-        zIndex: 11,
         backgroundColor: color,
-        overflow: "hidden",
       }}
     >
       <div>
@@ -90,7 +63,7 @@ const RecordingVisual: React.FC<RecordingVisualProps> = ({
             notePoint,
             percentagePerTimestep,
             percentagePerKey,
-            "black"
+            "var(--text_dark)"
           )
         )}
         {isPlaying ? (

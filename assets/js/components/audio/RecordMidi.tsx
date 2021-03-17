@@ -20,6 +20,7 @@ interface RecordMidiProps {
   gameRules: GameRules;
   shouldRecord: boolean;
   hideKeyboard?: boolean;
+  isRecording: boolean;
 }
 
 const RecordMidi: React.FC<RecordMidiProps> = ({
@@ -31,6 +32,7 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
   gameRules,
   shouldRecord,
   hideKeyboard = false,
+  isRecording,
 }) => {
   const { midiInputs, synth } = useToneAudioContext();
   const { disableKeyboardInput } = useKeyboardInputContext();
@@ -96,6 +98,7 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
         }}
         hideKeyboard={hideKeyboard}
         disableKeyboardInput={disableKeyboardInput}
+        isRecording={isRecording}
       />
     </div>
   );

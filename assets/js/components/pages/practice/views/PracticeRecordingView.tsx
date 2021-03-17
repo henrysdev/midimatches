@@ -70,10 +70,16 @@ const PracticeRecordingView: React.FC<PracticeRecordingViewProps> = ({
   }, [isSamplePlaying, isRecording, isFinishedRecording]);
 
   return (
-    <div className="view_container">
+    <div
+      className={isRecording ? "view_container neon_border" : "view_container "}
+    >
+      <span className="anim_line" />
+      <span className="anim_line" />
+      <span className="anim_line" />
+      <span className="anim_line" />
       <MediumLargeTitle>PRACTICE - RECORDING</MediumLargeTitle>
       <MediumTitle>{sampleName}</MediumTitle>
-      <DynamicContent style={isRecording ? { backgroundColor: "#ffd9db" } : {}}>
+      <DynamicContent>
         {recordingState === RecordingState.INIT ? (
           <Instructions description="Loading sample..." />
         ) : recordingState === RecordingState.WARMUP ? (
@@ -97,6 +103,7 @@ const PracticeRecordingView: React.FC<PracticeRecordingViewProps> = ({
             gameRules={gameRules}
             roundRecordingStartTime={roundRecordingStartTime}
             shouldRecord={true}
+            isRecording={isRecording}
           />
         ) : (
           <></>
