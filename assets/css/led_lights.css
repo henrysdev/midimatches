@@ -1,6 +1,14 @@
+:root {
+  --green_off_color: #919191;
+  --green_on_color: #1aeb13;
+  --green_led_box_shadow_off: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px,
+    inset #181818 0 -1px 9px, var(--green_off_color) 0 2px 12px;
+  --green_led_box_shadow_on: 0 0 30px 12px var(--green_on_color);
+}
+
 .container {
   background-size: cover;
-  background: rgb(226, 226, 226); /* Old browsers */
+  background: rgb(226, 226, 226);
   background: -moz-linear-gradient(
     top,
     rgba(226, 226, 226, 1) 0%,
@@ -73,30 +81,31 @@
   margin: 0 auto;
   width: 24px;
   height: 24px;
-  background-color: #919191;
+  background-color: var(--green_off_color);
   border-radius: 50%;
-  box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #304701 0 -1px 9px,
-    #919191 0 2px 12px;
+  box-shadow: var(--green_led_box_shadow_off);
 }
 
 .bulb-off-green {
-  background-color: #919191;
+  background-color: var(--green_off_color);
   animation-fill-mode: forwards;
   animation: bulbOffGreen 0.3s;
   -webkit-animation: bulbOffGreen 0.3s;
   -moz-animation: bulbOffGreen 0.3s;
   -ms-animation: bulbOffGreen 0.3s;
   -o-animation: bulbOffGreen 0.3s;
+  box-shadow: var(--green_led_box_shadow_off);
 }
 
 .bulb-on-green {
-  background-color: #1aeb13;
+  background-color: var(--green_on_color);
   animation-fill-mode: forwards;
   animation: bulbOnGreen 0.3s;
   -webkit-animation: bulbOnGreen 0.3s;
   -moz-animation: bulbOnGreen 0.3s;
   -ms-animation: bulbOnGreen 0.3s;
   -o-animation: bulbOnGreen 0.3s;
+  box-shadow: var(--green_led_box_shadow_on);
 }
 
 .bulb-off-red {
@@ -272,84 +281,104 @@
 /* Bulb On Green */
 @-webkit-keyframes bulbOnGreen {
   from {
-    background-color: #919191;
+    background-color: var(--green_off_color);
+    box-shadow: var(--green_led_box_shadow_off);
   }
   to {
-    background-color: #1aeb13;
+    background-color: var(--green_on_color);
+    box-shadow: var(--green_led_box_shadow_on);
   }
 }
 @-moz-keyframes bulbOnGreen {
   from {
-    background-color: #919191;
+    background-color: var(--green_off_color);
+    box-shadow: var(--green_led_box_shadow_off);
   }
   to {
-    background-color: #1aeb13;
+    background-color: var(--green_on_color);
+    box-shadow: var(--green_led_box_shadow_on);
   }
 }
 @-ms-keyframes bulbOnGreen {
   from {
-    background-color: #919191;
+    background-color: var(--green_off_color);
+    box-shadow: var(--green_led_box_shadow_off);
   }
   to {
-    background-color: #1aeb13;
+    background-color: var(--green_on_color);
+    box-shadow: var(--green_led_box_shadow_on);
   }
 }
 @-o-keyframes bulbOnGreen {
   from {
-    background-color: #919191;
+    background-color: var(--green_off_color);
+    box-shadow: var(--green_led_box_shadow_off);
   }
   to {
-    background-color: #1aeb13;
+    background-color: var(--green_on_color);
+    box-shadow: var(--green_led_box_shadow_on);
   }
 }
 @keyframes bulbOnGreen {
   from {
-    background-color: #919191;
+    background-color: var(--green_off_color);
+    box-shadow: var(--green_led_box_shadow_off);
   }
   to {
-    background-color: #1aeb13;
+    background-color: var(--green_on_color);
+    box-shadow: var(--green_led_box_shadow_on);
   }
 }
 
 /* Bulb Off Green */
 @-webkit-keyframes bulbOffGreen {
   from {
-    background-color: #1aeb13;
+    background-color: var(--green_on_color);
+    box-shadow: var(--green_led_box_shadow_on);
   }
   to {
-    background-color: #919191;
+    background-color: var(--green_off_color);
+    box-shadow: var(--green_led_box_shadow_off);
   }
 }
 @-moz-keyframes bulbOffGreen {
   from {
-    background-color: #1aeb13;
+    background-color: var(--green_on_color);
+    box-shadow: var(--green_led_box_shadow_on);
   }
   to {
-    background-color: #919191;
+    background-color: var(--green_off_color);
+    box-shadow: var(--green_led_box_shadow_off);
   }
 }
 @-ms-keyframes bulbOffGreen {
   from {
-    background-color: #1aeb13;
+    background-color: var(--green_on_color);
+    box-shadow: var(--green_led_box_shadow_on);
   }
   to {
-    background-color: #919191;
+    background-color: var(--green_off_color);
+    box-shadow: var(--green_led_box_shadow_off);
   }
 }
 @-o-keyframes bulbOffGreen {
   from {
-    background-color: #1aeb13;
+    background-color: var(--green_on_color);
+    box-shadow: var(--green_led_box_shadow_on);
   }
   to {
-    background-color: #919191;
+    background-color: var(--green_off_color);
+    box-shadow: var(--green_led_box_shadow_off);
   }
 }
 @keyframes bulbOffGreen {
   from {
-    background-color: #1aeb13;
+    background-color: var(--green_on_color);
+    box-shadow: var(--green_led_box_shadow_on);
   }
   to {
-    background-color: #919191;
+    background-color: var(--green_off_color);
+    box-shadow: var(--green_led_box_shadow_off);
   }
 }
 
@@ -439,7 +468,7 @@
   margin: 0 auto;
   width: 24px;
   height: 24px;
-  background-color: #1aeb13;
+  background-color: var(--green_on_color);
   border-radius: 50%;
   box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #304701 0 -1px 9px,
     #89ff00 0 2px 12px;

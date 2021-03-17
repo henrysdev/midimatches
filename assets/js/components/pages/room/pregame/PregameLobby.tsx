@@ -40,7 +40,9 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
     <div>
       <ComputerFrame>
         <div className="pregame_lobby_page_content">
-          <MediumLargeTitle centered={false}>///PREGAME LOBBY</MediumLargeTitle>
+          <MediumLargeTitle centered={false}>
+            <span className="accent_bars">///</span>PREGAME LOBBY
+          </MediumLargeTitle>
           <MediumTitle centered={false}>{roomName}</MediumTitle>
           <div className="pregame_lobby_flex_anchor">
             <div className="pregame_content_pane">
@@ -66,34 +68,32 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
                   setCopySuccess(true);
                 }}
               >
-                <h5>
-                  COPY INVITE
-                  {copySuccess ? (
-                    <i
-                      style={{
-                        color: "green",
-                        verticalAlign: "middle",
-                        marginLeft: "4px",
-                        marginBottom: "4px",
-                      }}
-                      className="material-icons"
-                    >
-                      done
-                    </i>
-                  ) : (
-                    <i
-                      style={{
-                        color: "black",
-                        verticalAlign: "middle",
-                        marginLeft: "4px",
-                        marginBottom: "4px",
-                      }}
-                      className="material-icons"
-                    >
-                      content_copy
-                    </i>
-                  )}
-                </h5>
+                COPY INVITE
+                {copySuccess ? (
+                  <i
+                    style={{
+                      color: "green",
+                      verticalAlign: "middle",
+                      marginLeft: "4px",
+                      marginBottom: "4px",
+                    }}
+                    className="material-icons"
+                  >
+                    done
+                  </i>
+                ) : (
+                  <i
+                    style={{
+                      color: "var(--text_light)",
+                      verticalAlign: "middle",
+                      marginLeft: "4px",
+                      marginBottom: "4px",
+                    }}
+                    className="material-icons"
+                  >
+                    content_copy
+                  </i>
+                )}
               </ComputerButton>
               {/* <ChatBox players={roomPlayers} /> */}
             </div>

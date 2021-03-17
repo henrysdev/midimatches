@@ -6,9 +6,10 @@ import { MAX_CHARS_PER_CHAT_MESSAGE } from "../../constants";
 
 interface ChatBoxProps {
   players: Array<Player>;
+  currPlayer: Player;
 }
 
-const ChatBox: React.FC<ChatBoxProps> = memo(({ players }) => {
+const ChatBox: React.FC<ChatBoxProps> = memo(({ players, currPlayer }) => {
   const { setDisableKeyboardInput } = useKeyboardInputContext();
   const { chatHistory, submitChatMessageEvent } = useChatContext();
 
@@ -49,7 +50,14 @@ const ChatBox: React.FC<ChatBoxProps> = memo(({ players }) => {
           ): JSX.Element => {
             return (
               <div key={index} className="chat_message_item">
-                <span className="chat_message_author_label roboto_font">
+                <span
+                  className="chat_message_author_label roboto_font"
+                  style={
+                    !!currPlayer && playerId === currPlayer.playerId
+                      ? { color: "var(--current_player_color)" }
+                      : {}
+                  }
+                >
                   {playerId in allSeenPlayers
                     ? allSeenPlayers[playerId].playerAlias
                     : playerId}

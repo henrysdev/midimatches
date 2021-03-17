@@ -19,6 +19,7 @@ import {
 } from "../../../common";
 import { randomElement } from "../../../../utils";
 import { useToneAudioContext } from "../../../../hooks";
+import { WarmUp } from "../../room/pregame";
 
 interface PracticeSampleSelectionViewProps {
   samples: string[];
@@ -65,7 +66,7 @@ const PracticeSampleSelectionView: React.FC<PracticeSampleSelectionViewProps> = 
       <DynamicContent>
         {!!currentSample ? (
           <div className="selected_sample_anchor">
-            <MediumTitle>{currentSample}</MediumTitle>
+            <h2 style={{ textAlign: "center" }}>{currentSample}</h2>
 
             <div
               className="selected_sample_play_button relative_anchor"
@@ -77,7 +78,7 @@ const PracticeSampleSelectionView: React.FC<PracticeSampleSelectionViewProps> = 
                     style={{
                       verticalAlign: "middle",
                       textAlign: "center",
-                      fontSize: "50px",
+                      fontSize: "100px",
                     }}
                     className="material-icons"
                   >
@@ -88,7 +89,7 @@ const PracticeSampleSelectionView: React.FC<PracticeSampleSelectionViewProps> = 
                     style={{
                       verticalAlign: "middle",
                       textAlign: "center",
-                      fontSize: "50px",
+                      fontSize: "100px",
                     }}
                     className="material-icons"
                   >
@@ -101,6 +102,7 @@ const PracticeSampleSelectionView: React.FC<PracticeSampleSelectionViewProps> = 
         ) : (
           <></>
         )}
+        <WarmUp />
         <InlineWidthButton
           callback={() => {
             stopSamplePreview();
@@ -120,7 +122,7 @@ const PracticeSampleSelectionView: React.FC<PracticeSampleSelectionViewProps> = 
             advanceView();
           }}
         >
-          <h5>CONTINUE</h5>
+          <h5>PRACTICE ROUND</h5>
         </InlineWidthButton>
       </DynamicContent>
     </div>

@@ -1,35 +1,48 @@
 @import url("https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap");
 
+:root {
+  --neon_color: #ef5757;
+  --sample_length: 10.66667s;
+}
+
 .neon_border {
   position: relative;
-  color: #67f403;
+  color: var(--neon_color);
   text-decoration: none;
-  text-transform: uppercase;
   transition: 0.5s;
-  letter-spacing: 4px;
   overflow: hidden;
-  box-shadow: 0 0 5px #67f403, 0 0 25px #67f403, 0 0 50px #67f403,
-    0 0 200px #67f403;
+  box-shadow: 0 0 5px var(--neon_color), 0 0 25px var(--neon_color),
+    0 0 50px var(--neon_color), 0 0 200px var(--neon_color);
   -webkit-box-reflect: below 1px linear-gradient(transparent, #0005);
+  animation: smooth_border_transition 2s linear infinite;
 }
-/* .neon_border:hover {
-  background: #67f403;
-  color: #050801;
-  box-shadow: 0 0 5px #67f403, 0 0 25px #67f403, 0 0 50px #67f403,
-    0 0 200px #67f403;
-  -webkit-box-reflect: below 1px linear-gradient(transparent, #0005);
-} */
-.neon_border span {
+
+@keyframes smooth_border_transition {
+  0% {
+    box-shadow: 0 0 5px var(--neon_color), 0 0 25px var(--neon_color),
+      0 0 50px var(--neon_color), 0 0 200px var(--neon_color);
+  }
+  50% {
+    box-shadow: 0 0 5px var(--neon_color), 0 0 10px var(--neon_color),
+      0 0 20px var(--neon_color), 0 0 100px var(--neon_color);
+  }
+  100% {
+    box-shadow: 0 0 5px var(--neon_color), 0 0 25px var(--neon_color),
+      0 0 50px var(--neon_color), 0 0 200px var(--neon_color);
+  }
+}
+
+.neon_border .anim_line {
   position: absolute;
   display: block;
 }
-.neon_border span:nth-child(1) {
+.neon_border .anim_line:nth-child(1) {
   top: 0;
   left: -100%;
   width: 100%;
   height: 4px;
-  background: linear-gradient(90deg, transparent, #67f403);
-  animation: animate1 4s linear infinite;
+  background: linear-gradient(90deg, transparent, var(--neon_color));
+  animation: animate1 var(--sample_length) linear infinite;
 }
 @keyframes animate1 {
   0% {
@@ -40,14 +53,14 @@
     left: 100%;
   }
 }
-.neon_border span:nth-child(2) {
+.neon_border .anim_line:nth-child(2) {
   top: -100%;
   right: 0;
   width: 4px;
   height: 100%;
-  background: linear-gradient(180deg, transparent, #67f403);
-  animation: animate2 4s linear infinite;
-  animation-delay: 1s;
+  background: linear-gradient(180deg, transparent, var(--neon_color));
+  animation: animate2 var(--sample_length) linear infinite;
+  animation-delay: calc(var(--sample_length) / 4);
 }
 @keyframes animate2 {
   0% {
@@ -58,14 +71,14 @@
     top: 100%;
   }
 }
-.neon_border span:nth-child(3) {
+.neon_border .anim_line:nth-child(3) {
   bottom: 0;
   right: -100%;
   width: 100%;
   height: 4px;
-  background: linear-gradient(270deg, transparent, #67f403);
-  animation: animate3 4s linear infinite;
-  animation-delay: 2s;
+  background: linear-gradient(270deg, transparent, var(--neon_color));
+  animation: animate3 var(--sample_length) linear infinite;
+  animation-delay: calc((var(--sample_length) / 4) * 2);
 }
 @keyframes animate3 {
   0% {
@@ -77,14 +90,14 @@
   }
 }
 
-.neon_border span:nth-child(4) {
+.neon_border .anim_line:nth-child(4) {
   bottom: -100%;
   left: 0;
   width: 4px;
   height: 100%;
-  background: linear-gradient(360deg, transparent, #67f403);
-  animation: animate4 4s linear infinite;
-  animation-delay: 3s;
+  background: linear-gradient(360deg, transparent, var(--neon_color));
+  animation: animate4 var(--sample_length) linear infinite;
+  animation-delay: calc((var(--sample_length) / 4) * 3);
 }
 @keyframes animate4 {
   0% {

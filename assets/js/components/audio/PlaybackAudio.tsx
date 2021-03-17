@@ -3,7 +3,7 @@ import * as Tone from "tone";
 
 import { Loop, Color } from "../../types";
 import { loopToEvents } from "../../utils";
-import { Button } from "../common";
+import { Button, ContentButton, InlineWidthButton } from "../common";
 import {
   DEFAULT_NUM_RECORDED_LOOPS,
   DEFAULT_RECORDING_LENGTH,
@@ -45,8 +45,6 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
   autoPlayingId,
   practiceMode = false,
 }) => {
-  canVote = canVote && !isCurrPlayer;
-
   const {
     gameRules: { timestepSize },
   } = useGameRulesContext();
@@ -100,8 +98,8 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
     samplePlayer.stop(`+0`);
     samplePlayer.seek(0);
 
-    samplePlayer.start(`+0.1`);
-    part.start(`+0.1`);
+    samplePlayer.start(`+0.05`);
+    part.start(`+0.05`);
   };
 
   const startPlayheadProgress = (startTime: number): void => {
@@ -132,16 +130,17 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
 
   const cssClasses = useMemo(() => {
     let classes = ["recording_playback"];
-    if (!canVote) {
-      classes.push("frozen");
-    } else {
+    if (canVote) {
       classes.push("highlight_on_hover");
+    }
+    if (isCurrPlayer) {
+      classes.push("frozen");
     }
     return [...classes].join(" ");
   }, [isPlaying, listenComplete, canVote]);
 
   return (
-    <div style={{ padding: "8px" }}>
+    <div className="recording_playback_wrapper">
       {!practiceMode ? (
         isCurrPlayer ? (
           <div className="roboto_font">
@@ -200,7 +199,7 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
             >
               <RecordingVisual
                 recording={recording}
-                color={color}
+                color={isCurrPlayer ? "var(--current_player_color)" : color}
                 progress={progress}
                 isPlaying={isPlaying}
                 emptyRecording={emptyRecording}
@@ -212,23 +211,16 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
         </div>
 
         {!practiceMode && canVote ? (
-          <div
-            style={{
-              flex: "1",
-              padding: "8px",
-              margin: "auto",
-              marginTop: "4px",
-              height: "100%",
-              width: "100%",
-            }}
-          >
-            <Button
-              label="Vote"
+          <div style={{ flex: "1" }}>
+            <InlineWidthButton
               callback={() => {
                 submitVote(playerId);
                 stopSample();
               }}
-            />
+              disabled={isCurrPlayer}
+            >
+              VOTE
+            </InlineWidthButton>
           </div>
         ) : (
           <></>

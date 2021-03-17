@@ -18,6 +18,7 @@ class Key extends React.Component {
     onStopNoteInput: PropTypes.func.isRequired,
     accidentalWidthRatio: PropTypes.number.isRequired,
     pitchPositions: PropTypes.object.isRequired,
+    recording: PropTypes.bool,
     children: PropTypes.node,
   };
 
@@ -75,7 +76,10 @@ class Key extends React.Component {
       disabled,
       frozen,
       children,
+      recording,
     } = this.props;
+
+    const recording = active && recording;
 
     // Need to conditionally include/exclude handlers based on useTouchEvents,
     // because otherwise mobile taps double fire events.
@@ -86,6 +90,7 @@ class Key extends React.Component {
           "ReactPiano__Key--natural": !accidental,
           "ReactPiano__Key--disabled": frozen,
           "ReactPiano__Key--active": active,
+          "ReactPiano__Key--recording": recording,
         })}
         style={{
           left: ratioToPercentage(

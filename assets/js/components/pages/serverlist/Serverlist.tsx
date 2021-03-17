@@ -28,7 +28,9 @@ const Serverlist: React.FC<ServerlistProps> = ({
 
   return (
     <div style={{ height: "100%" }}>
-      <MediumLargeTitle centered={false}>///ROOM LIST</MediumLargeTitle>
+      <MediumLargeTitle centered={false}>
+        <span className="accent_bars">///</span>ROOM LIST
+      </MediumLargeTitle>
       <div className="serverlist_flex_anchor">
         <div className="serverlist_create_room_wrapper ">
           <CreateRoomForm />
@@ -110,7 +112,7 @@ const Serverlist: React.FC<ServerlistProps> = ({
               }
               extraClasses={["server_details_connect_button"]}
             >
-              <h5>CONNECT</h5>
+              CONNECT
             </ComputerButton>
           </div>
         ) : (

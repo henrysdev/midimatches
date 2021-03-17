@@ -18,14 +18,16 @@ const MenuPage: React.FC = () => {
   return (
     <div className="narrow_center_container computer_frame outset_3d_border_deep">
       <br />
-      <MediumLargeTitle>///PLAYER MENU</MediumLargeTitle>
+      <MediumLargeTitle>
+        <span className="accent_bars">///</span>PLAYER MENU
+      </MediumLargeTitle>
       <div className="main_menu_btn_group">
         <div className="main_menu_btn">
           <ComputerButton
             callback={() => (window.location.href = "/rooms")}
             extraClasses={["register_button"]}
           >
-            <h5>PLAY ONLINE</h5>
+            PLAY ONLINE
           </ComputerButton>
         </div>
         <div className="main_menu_btn">
@@ -33,7 +35,7 @@ const MenuPage: React.FC = () => {
             callback={() => (window.location.href = "/practice")}
             extraClasses={["register_button"]}
           >
-            <h5>SOLO PRACTICE</h5>
+            SOLO PRACTICE
           </ComputerButton>
         </div>
         <div className="main_menu_btn">
@@ -41,7 +43,7 @@ const MenuPage: React.FC = () => {
             callback={() => (window.location.href = "/register")}
             extraClasses={["register_button"]}
           >
-            <h5>CHANGE NAME</h5>
+            CHANGE NAME
           </ComputerButton>
         </div>
         <div className="main_menu_btn">
@@ -49,7 +51,7 @@ const MenuPage: React.FC = () => {
             callback={() => (window.location.href = "/")}
             extraClasses={["register_button"]}
           >
-            <h5>ABOUT</h5>
+            ABOUT
           </ComputerButton>
         </div>
       </div>

@@ -19,6 +19,7 @@ class Keyboard extends React.Component {
     frozen: PropTypes.bool,
     gliss: PropTypes.bool,
     useTouchEvents: PropTypes.bool,
+    isRecording: PropTypes.bool,
     // If width is not provided, must have fixed width and height in parent container
     width: PropTypes.number,
   };
@@ -85,6 +86,7 @@ class Keyboard extends React.Component {
               gliss={this.props.gliss}
               useTouchEvents={this.props.useTouchEvents}
               key={midiNumber}
+              recording={this.props.recording}
             >
               {this.props.frozen
                 ? null
