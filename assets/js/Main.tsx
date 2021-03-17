@@ -26,6 +26,7 @@ const Main: React.FC = () => {
   } = useSyncUser();
   const socket = useSocket();
 
+  // TODO pull into hook
   const clockOffset = useMemo(() => {
     if (syncLoaded && !!syncData) {
       const { firstHopDeltaTime, serverTime } = unmarshalBody(syncData) as any;
@@ -33,9 +34,7 @@ const Main: React.FC = () => {
       const msOffset = Math.floor(
         -1 * ((firstHopDeltaTime + (serverTime - clientEndTime)) / 2)
       );
-      console.log({
-        clockOffset: msOffset,
-      });
+      console.log("local clock offset ", msOffset);
       return msOffset;
     } else {
       return 0;

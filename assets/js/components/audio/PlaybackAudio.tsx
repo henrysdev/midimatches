@@ -3,7 +3,7 @@ import * as Tone from "tone";
 
 import { Loop, Color } from "../../types";
 import { loopToEvents } from "../../utils";
-import { Button, ContentButton } from "../common";
+import { Button, ContentButton, InlineWidthButton } from "../common";
 import {
   DEFAULT_NUM_RECORDED_LOOPS,
   DEFAULT_RECORDING_LENGTH,
@@ -45,8 +45,6 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
   autoPlayingId,
   practiceMode = false,
 }) => {
-  canVote = canVote && !isCurrPlayer;
-
   const {
     gameRules: { timestepSize },
   } = useGameRulesContext();
@@ -100,8 +98,8 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
     samplePlayer.stop(`+0`);
     samplePlayer.seek(0);
 
-    samplePlayer.start(`+0.1`);
-    part.start(`+0.1`);
+    samplePlayer.start(`+0.05`);
+    part.start(`+0.05`);
   };
 
   const startPlayheadProgress = (startTime: number): void => {
@@ -132,10 +130,11 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
 
   const cssClasses = useMemo(() => {
     let classes = ["recording_playback"];
-    if (!canVote) {
-      classes.push("frozen");
-    } else {
+    if (canVote) {
       classes.push("highlight_on_hover");
+    }
+    if (isCurrPlayer) {
+      classes.push("frozen");
     }
     return [...classes].join(" ");
   }, [isPlaying, listenComplete, canVote]);
@@ -200,7 +199,7 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
             >
               <RecordingVisual
                 recording={recording}
-                color={color}
+                color={isCurrPlayer ? "var(--current_player_color)" : color}
                 progress={progress}
                 isPlaying={isPlaying}
                 emptyRecording={emptyRecording}
@@ -212,16 +211,16 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
         </div>
 
         {!practiceMode && canVote ? (
-          <div className="playback_vote_button_wrapper" style={{ flex: "1" }}>
-            <ContentButton
+          <div style={{ flex: "1" }}>
+            <InlineWidthButton
               callback={() => {
                 submitVote(playerId);
                 stopSample();
               }}
-              styles={{ marginTop: 0, padding: 0 }}
+              disabled={isCurrPlayer}
             >
               VOTE
-            </ContentButton>
+            </InlineWidthButton>
           </div>
         ) : (
           <></>

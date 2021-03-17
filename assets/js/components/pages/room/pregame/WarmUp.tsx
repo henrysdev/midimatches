@@ -18,6 +18,7 @@ const WarmUp: React.FC<WarmUpProps> = ({}) => {
       gameRules={{} as GameRules}
       roundRecordingStartTime={0}
       shouldRecord={true}
+      isRecording={false}
     />
   ) : (
     <></>

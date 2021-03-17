@@ -47,7 +47,7 @@ keyboard and mouse as well."
       <TimerBox>
         {!!gameStartTimeout ? (
           <Timer
-            descriptionText={"First round starts in "}
+            descriptionText={"First round in "}
             duration={calcMsUntilMsTimestamp(viewDeadline) + clockOffset}
           />
         ) : (

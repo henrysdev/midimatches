@@ -3,7 +3,7 @@ import { Piano, MidiNumbers, KeyboardShortcuts } from "../reactpiano";
 
 const noteRange = {
   first: MidiNumbers.fromNote("c3"),
-  last: MidiNumbers.fromNote("c6"),
+  last: MidiNumbers.fromNote("c5"),
 };
 const keyboardShortcuts = KeyboardShortcuts.create({
   firstNote: noteRange.first,
@@ -52,7 +52,7 @@ const Keyboard: React.FC<KeyboardProps> = ({
           recording={!!isRecording}
           playNote={(midiNumber: number) => playNote(midiNumber)}
           stopNote={(midiNumber: number) => stopNote(midiNumber)}
-          width={600}
+          width={512}
         />
       </div>
     </div>

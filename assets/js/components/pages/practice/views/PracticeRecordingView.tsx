@@ -78,7 +78,6 @@ const PracticeRecordingView: React.FC<PracticeRecordingViewProps> = ({
       <span className="anim_line" />
       <span className="anim_line" />
       <MediumLargeTitle>PRACTICE - RECORDING</MediumLargeTitle>
-      <MediumTitle>{sampleName}</MediumTitle>
       <DynamicContent>
         {recordingState === RecordingState.INIT ? (
           <Instructions description="Loading sample..." />

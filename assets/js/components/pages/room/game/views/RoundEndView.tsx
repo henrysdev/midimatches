@@ -56,7 +56,7 @@ const RoundEndView: React.FC<RoundEndViewProps> = () => {
         </DynamicContent>
         <TimerBox>
           <Timer
-            descriptionText={"Next round starting in "}
+            descriptionText={"Next round in "}
             duration={calcMsUntilMsTimestamp(viewDeadline) + clockOffset}
           />
         </TimerBox>

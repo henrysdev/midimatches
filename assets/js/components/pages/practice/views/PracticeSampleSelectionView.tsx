@@ -19,6 +19,7 @@ import {
 } from "../../../common";
 import { randomElement } from "../../../../utils";
 import { useToneAudioContext } from "../../../../hooks";
+import { WarmUp } from "../../room/pregame";
 
 interface PracticeSampleSelectionViewProps {
   samples: string[];
@@ -101,6 +102,7 @@ const PracticeSampleSelectionView: React.FC<PracticeSampleSelectionViewProps> = 
         ) : (
           <></>
         )}
+        <WarmUp />
         <InlineWidthButton
           callback={() => {
             stopSamplePreview();
@@ -120,7 +122,7 @@ const PracticeSampleSelectionView: React.FC<PracticeSampleSelectionViewProps> = 
             advanceView();
           }}
         >
-          <h5>CONTINUE</h5>
+          <h5>PRACTICE ROUND</h5>
         </InlineWidthButton>
       </DynamicContent>
     </div>

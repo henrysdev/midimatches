@@ -66,7 +66,6 @@ const PracticePlaybackView: React.FC<PracticePlaybackViewProps> = ({
   return (
     <div className="view_container">
       <MediumLargeTitle>PRACTICE - PLAYBACK</MediumLargeTitle>
-      <MediumTitle>{sampleName}</MediumTitle>
       <DynamicContent>
         {!!recording ? (
           <div>

@@ -1110,6 +1110,14 @@ strong {
   cursor: default;
 }
 
+.styled_button_disabled {
+  font-family: "Audiowide", cursive;
+  border: 2px solid var(--inside_content_text_disabled);
+  background-color: var(--inside_content_disabled);
+  color: var(--inside_content_text_disabled);
+  cursor: default;
+}
+
 .settings_item_label {
   color: var(--text_light);
 }
