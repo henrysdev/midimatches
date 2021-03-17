@@ -7,6 +7,7 @@ import {
   ComputerButton,
   Timer,
   ChatBox,
+  MaterialIcon,
 } from "../../../common";
 import { PregameDebug } from "../../../debug";
 import { PregameCenterPane, WarmUp } from ".";
@@ -70,29 +71,24 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
               >
                 COPY INVITE
                 {copySuccess ? (
-                  <i
+                  <MaterialIcon
+                    iconName="done"
                     style={{
                       color: "green",
-                      verticalAlign: "middle",
                       marginLeft: "4px",
                       marginBottom: "4px",
                     }}
-                    className="material-icons"
-                  >
-                    done
-                  </i>
+                  />
                 ) : (
-                  <i
+                  <MaterialIcon
+                    iconName="content_copy"
                     style={{
                       color: "var(--text_light)",
                       verticalAlign: "middle",
                       marginLeft: "4px",
                       marginBottom: "4px",
                     }}
-                    className="material-icons"
-                  >
-                    content_copy
-                  </i>
+                  />
                 )}
               </ComputerButton>
               {/* <ChatBox players={roomPlayers} /> */}

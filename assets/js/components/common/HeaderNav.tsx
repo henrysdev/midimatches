@@ -1,5 +1,6 @@
 import * as React from "react";
 import { MidiMatchesLogoSvg } from "./MidiMatchesLogoSvg";
+import { MaterialIcon } from ".";
 
 interface HeaderNavProps {
   playerAlias?: string;
@@ -10,7 +11,7 @@ const HeaderNav: React.FC<HeaderNavProps> = ({ playerAlias }) => {
     <div className="header_nav sticky">
       <div className="navbar_actions_group roboto_font">
         <a href="/menu" className="navbar_action">
-          <i className="material-icons navbar_icon">menu</i>
+          <MaterialIcon iconName="menu" className="navbar_icon" />
         </a>
       </div>
       <div

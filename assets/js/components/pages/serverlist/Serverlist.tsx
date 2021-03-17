@@ -5,6 +5,7 @@ import {
   ContentButton,
   ComputerButton,
   MediumTitle,
+  MaterialIcon,
 } from "../../common";
 import { RoomState } from "../../../types";
 import { CreateRoomForm } from "./CreateRoomForm";
@@ -13,6 +14,71 @@ interface ServerlistProps {
   roomStates: RoomState[];
   timeSinceRefresh: number;
 }
+
+const enum SortKey {
+  ROOM_NAME,
+  STATUS,
+  NUM_CURR_PLAYERS,
+  NUM_ROUNDS,
+}
+
+const enum RoomStatus {
+  PREGAME,
+  IN_GAME,
+  FULL,
+}
+
+const statusEval = (room: RoomState): RoomStatus => {
+  const full = room.numCurrPlayers === room.gameRules.maxPlayers;
+  const inGame = room.inGame;
+
+  if (full) {
+    return RoomStatus.FULL;
+  } else if (inGame) {
+    return RoomStatus.IN_GAME;
+  } else {
+    return RoomStatus.PREGAME;
+  }
+};
+
+const sortBehaviorsMap = {
+  [SortKey.ROOM_NAME]: (a: RoomState, b: RoomState, desc: boolean): number => {
+    [a, b] = desc ? [a, b] : [b, a];
+    return a.roomName.localeCompare(b.roomName);
+  },
+  [SortKey.STATUS]: (a: RoomState, b: RoomState, desc: boolean): number => {
+    const alphabeticOrder = a.roomName.localeCompare(b.roomName);
+    [a, b] = desc ? [a, b] : [b, a];
+
+    const statusA = statusEval(a);
+    const statusB = statusEval(b);
+    return statusA === statusB ? alphabeticOrder : statusA - statusB;
+  },
+  [SortKey.NUM_CURR_PLAYERS]: (
+    a: RoomState,
+    b: RoomState,
+    desc: boolean
+  ): number => {
+    const alphabeticOrder = a.roomName.localeCompare(b.roomName);
+    [a, b] = desc ? [a, b] : [b, a];
+
+    const numPlayersA = a.numCurrPlayers;
+    const numPlayersB = b.numCurrPlayers;
+    return numPlayersA === numPlayersB
+      ? alphabeticOrder
+      : b.numCurrPlayers - a.numCurrPlayers;
+  },
+  [SortKey.NUM_ROUNDS]: (a: RoomState, b: RoomState, desc: boolean): number => {
+    const alphabeticOrder = a.roomName.localeCompare(b.roomName);
+    [a, b] = desc ? [a, b] : [b, a];
+
+    const numRoundsA = a.gameRules.roundsToWin;
+    const numRoundsB = b.gameRules.roundsToWin;
+    return numRoundsA === numRoundsB
+      ? alphabeticOrder
+      : numRoundsB - numRoundsA;
+  },
+};
 
 const Serverlist: React.FC<ServerlistProps> = ({
   roomStates,
@@ -25,6 +91,22 @@ const Serverlist: React.FC<ServerlistProps> = ({
   }, [timeSinceRefresh]);
 
   const [selectedRoom, setSelectedRoom] = useState<RoomState>();
+
+  const [sortKey, setSortKey] = useState<SortKey>(SortKey.NUM_CURR_PLAYERS);
+  const [sortDesc, setSortDesc] = useState<boolean>(true);
+  const toggleSort = (currSortKey: SortKey) => {
+    if (currSortKey === sortKey) {
+      setSortDesc((prevOrder) => !prevOrder);
+    } else {
+      setSortDesc(true);
+    }
+    setSortKey(currSortKey);
+  };
+  const comparator = useMemo<
+    (a: RoomState, b: RoomState, desc: boolean) => number
+  >(() => {
+    return sortBehaviorsMap[sortKey];
+  }, [sortKey, sortDesc]);
 
   return (
     <div style={{ height: "100%" }}>
@@ -39,18 +121,80 @@ const Serverlist: React.FC<ServerlistProps> = ({
           <table className="serverlist_table">
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Status</th>
-                <th>Players</th>
-                <th># Rounds</th>
+                <th
+                  onClick={() => {
+                    toggleSort(SortKey.ROOM_NAME);
+                  }}
+                >
+                  Name
+                  {sortKey === SortKey.ROOM_NAME ? (
+                    sortDesc ? (
+                      <MaterialIcon iconName="keyboard_arrow_down" />
+                    ) : (
+                      <MaterialIcon iconName="keyboard_arrow_up" />
+                    )
+                  ) : (
+                    <></>
+                  )}
+                </th>
+                <th
+                  onClick={() => {
+                    toggleSort(SortKey.STATUS);
+                  }}
+                >
+                  Status
+                  {sortKey === SortKey.STATUS ? (
+                    sortDesc ? (
+                      <MaterialIcon iconName="keyboard_arrow_down" />
+                    ) : (
+                      <MaterialIcon iconName="keyboard_arrow_up" />
+                    )
+                  ) : (
+                    <></>
+                  )}
+                </th>
+                <th
+                  onClick={() => {
+                    toggleSort(SortKey.NUM_CURR_PLAYERS);
+                  }}
+                >
+                  Players
+                  {sortKey === SortKey.NUM_CURR_PLAYERS ? (
+                    sortDesc ? (
+                      <MaterialIcon iconName="keyboard_arrow_down" />
+                    ) : (
+                      <MaterialIcon iconName="keyboard_arrow_up" />
+                    )
+                  ) : (
+                    <></>
+                  )}
+                </th>
+                <th
+                  onClick={() => {
+                    toggleSort(SortKey.NUM_ROUNDS);
+                  }}
+                >
+                  # Rounds
+                  {sortKey === SortKey.NUM_ROUNDS ? (
+                    sortDesc ? (
+                      <MaterialIcon iconName="keyboard_arrow_down" />
+                    ) : (
+                      <MaterialIcon iconName="keyboard_arrow_up" />
+                    )
+                  ) : (
+                    <></>
+                  )}
+                </th>
               </tr>
             </thead>
             <tbody>
               {roomStates
                 .sort((a, b) => {
-                  return b.numCurrPlayers - a.numCurrPlayers;
+                  const resp = comparator(a, b, sortDesc);
+                  return resp;
                 })
                 .map((room) => {
+                  const status = statusEval(room);
                   return (
                     <tr
                       key={room.roomId}
@@ -63,9 +207,9 @@ const Serverlist: React.FC<ServerlistProps> = ({
                     >
                       <td>{room.roomName}</td>
                       <td>
-                        {room.numCurrPlayers === room.gameRules.maxPlayers ? (
+                        {status === RoomStatus.FULL ? (
                           <div style={{ color: "red" }}>Full</div>
-                        ) : room.inGame ? (
+                        ) : status === RoomStatus.IN_GAME ? (
                           <div style={{ color: "blue" }}>In Game</div>
                         ) : (
                           <div style={{ color: "#1aeb13" }}>Pregame</div>

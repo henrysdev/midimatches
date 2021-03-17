@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useToneAudioContext } from "../../hooks";
+import { MaterialIcon } from "../common";
 import { Input } from "webmidi";
 
 interface MidiInputProps {
@@ -25,19 +26,9 @@ const MidiInput: React.FC<MidiInputProps> = ({
       }}
     >
       {enabled ? (
-        <i
-          style={{ verticalAlign: "middle", color: "green" }}
-          className="material-icons"
-        >
-          usb
-        </i>
+        <MaterialIcon iconName="usb" style={{ color: "green" }} />
       ) : (
-        <i
-          style={{ verticalAlign: "middle", color: "red" }}
-          className="material-icons"
-        >
-          usb_off
-        </i>
+        <MaterialIcon iconName="usb_off" style={{ color: "red" }} />
       )}
       {input.name}
     </div>
