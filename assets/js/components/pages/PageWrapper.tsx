@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Channel, Socket, Push } from "phoenix";
 import { useMetaChannel } from "../../hooks";
-import { User, AdminMessage } from "../../types";
+import { User, AdminMessage, AdminAlertPayload } from "../../types";
 import { unmarshalBody } from "../../utils";
 import { AlertModal } from "../common/AlertModal";
 
@@ -28,7 +28,7 @@ const PageWrapper: React.FC<PageWrapperProps> = ({
   useEffect(() => {
     if (!!metaChannel) {
       metaChannel.on("admin_alert", (body) => {
-        const adminMessage = unmarshalBody(body) as AdminMessage;
+        const { adminMessage } = unmarshalBody(body) as AdminAlertPayload;
         handleAdminMessage(adminMessage);
       });
     }

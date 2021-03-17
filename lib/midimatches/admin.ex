@@ -10,7 +10,7 @@ defmodule Midimatches.Admin do
     MidimatchesWeb.Endpoint.broadcast(
       "meta:common",
       "admin_alert",
-      %AdminMessage{message_text: message}
+      %{admin_message: %AdminMessage{message_text: message}}
     )
   end
 end

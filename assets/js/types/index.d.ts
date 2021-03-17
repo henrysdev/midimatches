@@ -61,6 +61,10 @@ export interface ServerlistUpdatePayload {
   rooms: any[];
 }
 
+export interface AdminAlertPayload {
+  adminMessage: AdminMessage;
+}
+
 export type StartGamePayload = GameUpdatePayload;
 
 export interface RoomState {
