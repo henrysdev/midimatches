@@ -1,9 +1,11 @@
-defmodule MidimatchesWeb.MetaChannel do
+defmodule MidimatchesWeb.UserChannel do
   @moduledoc """
   Channel for meta/site admin events that is available on every dynamic page of the application.
   This channel allows communication with any/all online users regardless of their url location.
   """
   use MidimatchesWeb, :channel
+
+  alias MidimatchesWeb.PresenceTracker
 
   require Logger
 
@@ -13,7 +15,12 @@ defmodule MidimatchesWeb.MetaChannel do
   ## Join Messages                                                                               ##
   #################################################################################################
 
-  def join("meta:common", _params, socket) do
+  def join("user:all", _params, socket) do
+    {:ok, socket}
+  end
+
+  def join("user:" <> user_id, _params, socket) do
+    PresenceTracker.track_conn(self(), user_id, %{user_id: user_id})
     {:ok, socket}
   end
 

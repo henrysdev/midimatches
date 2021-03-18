@@ -9,17 +9,27 @@ import {
 import { MediumLargeTitle } from "../common";
 
 interface AdminAlertProps {
-  metaChannel?: Channel;
+  userChannel?: Channel;
+  allUsersChannel?: Channel;
 }
-const AdminAlert: React.FC<AdminAlertProps> = ({ metaChannel }) => {
+const AdminAlert: React.FC<AdminAlertProps> = ({
+  userChannel,
+  allUsersChannel,
+}) => {
   useEffect(() => {
-    if (!!metaChannel) {
-      metaChannel.on(ADMIN_ALERT_MESSAGE_EVENT, (body) => {
+    if (!!userChannel) {
+      userChannel.on(ADMIN_ALERT_MESSAGE_EVENT, (body) => {
         const { adminMessage } = unmarshalBody(body) as AdminAlertPayload;
         handleAdminAlertMessage(adminMessage);
       });
     }
-  }, [metaChannel]);
+    if (!!allUsersChannel) {
+      allUsersChannel.on(ADMIN_ALERT_MESSAGE_EVENT, (body) => {
+        const { adminMessage } = unmarshalBody(body) as AdminAlertPayload;
+        handleAdminAlertMessage(adminMessage);
+      });
+    }
+  }, [userChannel, allUsersChannel]);
 
   const [adminMessage, setAdminMessage] = useState<AdminMessage>();
   const [showAdminAlert, setShowAdminAlert] = useState<boolean>(false);

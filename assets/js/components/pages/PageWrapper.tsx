@@ -1,6 +1,6 @@
 import React from "react";
 import { Socket } from "phoenix";
-import { useMetaChannel } from "../../hooks";
+import { useUserChannel } from "../../hooks";
 import { User } from "../../types";
 import { AdminAlert } from ".";
 
@@ -14,10 +14,15 @@ const PageWrapper: React.FC<PageWrapperProps> = ({
   currentUser,
   children,
 }) => {
-  const metaChannel = useMetaChannel(socket, currentUser);
+  const allUsersChannel = useUserChannel(socket, "all");
+  const userChannel = useUserChannel(
+    socket,
+    !!currentUser && !!currentUser.userId ? currentUser.userId : "nosession"
+  );
+
   return (
     <div>
-      <AdminAlert metaChannel={metaChannel} />
+      <AdminAlert allUsersChannel={allUsersChannel} userChannel={userChannel} />
       {children}
     </div>
   );

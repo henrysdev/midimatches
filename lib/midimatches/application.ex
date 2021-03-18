@@ -6,8 +6,8 @@ defmodule Midimatches.Application do
   use Application
 
   alias Midimatches.{
-    ServerlistUpdater,
     RoomsGarbageCollector,
+    ServerlistUpdater,
     Types.Configs
   }
 
