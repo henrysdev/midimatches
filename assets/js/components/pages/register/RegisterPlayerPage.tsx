@@ -88,7 +88,7 @@ const RegisterPlayerPage: React.FC = () => {
       <div className="narrow_center_container computer_frame outset_3d_border_deep">
         <br />
         <MediumLargeTitle>
-          <span className="accent_bars">///</span>PLAYER NAME
+          <span className="accent_bars">///</span>PICK A NAME
         </MediumLargeTitle>
         <div className="register_content_wrapper inset_3d_border_deep inline_screen">
           {loading ? (

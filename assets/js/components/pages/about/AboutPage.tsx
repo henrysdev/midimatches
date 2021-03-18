@@ -13,7 +13,7 @@ const AboutPage: React.FC = () => {
         <div className="about_page_content">
           <div>
             <MediumLargeTitle centered={false}>
-              <span className="accent_bars">///</span>WELCOME
+              <span className="accent_bars">///</span>ABOUT
             </MediumLargeTitle>
             <HowToPlay />
             <div className="about_page_play_button_container">
@@ -34,7 +34,15 @@ const AboutPage: React.FC = () => {
                 <a className="resource_link" href="https://elixir-lang.org/">
                   Elixir
                 </a>
-                .
+                . <br />
+                <br /> If you enjoy this game, please consider
+                <a
+                  className="resource_link"
+                  href="https://www.patreon.com/midimatches"
+                >
+                  {" "}
+                  becoming a patron ❤️{" "}
+                </a>
               </div>
             </div>
           </div>
