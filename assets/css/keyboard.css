@@ -1,6 +1,8 @@
 :root {
   --selected_player_color: #296cff;
   --recording_color: #ef5757;
+  --note_label_for_black_keys: #f8e8d5;
+  --note_label_for_white_keys: #888;
 }
 
 .ReactPiano__Keyboard {
@@ -19,7 +21,7 @@
  * Styles of accidental notes (flat or sharp)
  */
 .ReactPiano__Key--accidental {
-  background: #555;
+  background: rgb(33, 32, 32);
   border: 1px solid #fff;
   border-top: 1px solid transparent;
   border-radius: 0 0 4px 4px;
@@ -36,7 +38,7 @@
  * Styles of natural notes (white keys)
  */
 .ReactPiano__Key--natural {
-  background: #f6f5f3;
+  background: #f8f6f1;
   border: 1px solid #888;
   border-radius: 0 0 4px 4px;
   cursor: pointer;
@@ -157,15 +159,15 @@
 }
 
 .ReactPiano__NoteLabel--accidental {
-  color: #f8e8d5;
+  color: var(--note_label_for_black_keys);
   margin-bottom: 3px;
 }
 
 .ReactPiano__NoteLabel--natural {
-  color: #888;
+  color: var(--note_label_for_white_keys);
   margin-bottom: 3px;
 }
 
 .ReactPiano__NoteLabel--natural.ReactPiano__NoteLabel--active {
-  color: #f8e8d5;
+  color: var(--note_label_for_black_keys);
 }
