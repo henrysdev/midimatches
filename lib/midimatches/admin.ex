@@ -3,7 +3,12 @@ defmodule Midimatches.Admin do
   Provides set of convenience functions for administration of the application
   """
 
-  alias Midimatches.Types.AdminMessage
+  alias Midimatches.{
+    Types.AdminMessage,
+    Types.User
+  }
+
+  alias MidimatchesWeb.PresenceTracker
 
   @type id() :: String.t()
 
@@ -21,6 +26,15 @@ defmodule Midimatches.Admin do
   """
   def alert_user(user_id, message, alert_lifetime \\ nil) do
     handle_alert_broadcast("user:#{user_id}", message, alert_lifetime)
+  end
+
+  @spec list_user_sessions() :: list(User)
+  def list_user_sessions do
+    PresenceTracker.get_tracked_conns()
+
+    # TODO call ETS to get full user object for given user_id
+
+    []
   end
 
   defp handle_alert_broadcast(topic, message, alert_lifetime) do

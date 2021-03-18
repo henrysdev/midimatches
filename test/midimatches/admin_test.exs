@@ -83,4 +83,11 @@ defmodule Midimatches.AdminTest do
       }
     end
   end
+
+  describe "list user sessions" do
+    test "returns empty list (not implemented yet)" do
+      res = Admin.list_user_sessions()
+      assert res == []
+    end
+  end
 end

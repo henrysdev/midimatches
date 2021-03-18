@@ -53,9 +53,23 @@ defmodule MidimatchesWeb.PresenceTracker do
   end
 
   @doc """
+  Get all tracked user session conns
+  """
+  def get_tracked_conns do
+    Phoenix.Tracker.list(PresenceTracker, "all_users")
+  end
+
+  @doc """
   Track a websocket connection
   """
-  def track_conn(pid, user_id, topic) do
-    Phoenix.Tracker.track(PresenceTracker, pid, topic, user_id, %{topic: topic, stat: "away"})
+  def track_conn(pid, user_id, meta \\ %{}) when is_map(meta) do
+    {:ok, _ref} =
+      Phoenix.Tracker.track(
+        PresenceTracker,
+        pid,
+        "all_users",
+        user_id,
+        meta
+      )
   end
 end

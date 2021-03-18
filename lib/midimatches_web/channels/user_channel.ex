@@ -5,6 +5,8 @@ defmodule MidimatchesWeb.UserChannel do
   """
   use MidimatchesWeb, :channel
 
+  alias MidimatchesWeb.PresenceTracker
+
   require Logger
 
   intercept ["admin_message"]
@@ -18,6 +20,7 @@ defmodule MidimatchesWeb.UserChannel do
   end
 
   def join("user:" <> user_id, _params, socket) do
+    PresenceTracker.track_conn(self(), user_id, %{user_id: user_id})
     {:ok, socket}
   end
 
