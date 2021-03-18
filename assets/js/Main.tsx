@@ -7,7 +7,7 @@ import {
   SocketContext,
   ClockOffsetContext,
 } from "./contexts";
-import { LoadingSpinner, PageContent } from "./components/common";
+import { LoadingSpinner, PageContent, FooterBar } from "./components/common";
 import { unmarshalBody, currUtcTimestamp } from "./utils";
 import PageRouter from "./PageRouter";
 
@@ -55,6 +55,7 @@ const Main: React.FC = () => {
           <PageContent>
             <PageRouter />
           </PageContent>
+          <FooterBar />
         </SocketContext.Provider>
       </ClockOffsetContext.Provider>
     </CurrentUserContext.Provider>

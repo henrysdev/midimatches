@@ -22,3 +22,4 @@ export { InlineWidthInputSubmit } from "./InlineWidthInputSubmit";
 export { VinylLoadingSpinner } from "./VinylLoadingSpinner";
 export { MidiMatchesLogoSvg } from "./MidiMatchesLogoSvg";
 export { MaterialIcon } from "./MaterialIcon";
+export { FooterBar } from "./FooterBar";

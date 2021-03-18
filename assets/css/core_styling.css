@@ -31,16 +31,6 @@
     calc(var(--base_color_blue) + var(--lightness_increment) * 3)
   );
 
-  /*
-  --main_theme_color: #ebdfce;
-  --main_theme_shade_1: #c2b6a4;
-  --main_theme_shade_2: #cdc2b3;
-  --main_theme_shade_3: #e9dbc9;
-  --main_theme_shade_4: #f0e7db;
-
-  --inline_screen_color: rgb(249, 248, 244);
-  */
-
   --text_light: rgb(232, 232, 232);
   --text_light_outline: rgb(216, 205, 139);
   --border_color_1: rgb(211, 211, 211);
@@ -68,6 +58,10 @@
   --practice_play_button_icon_size: 100px;
   --current_player_color: #296cff;
   --text_dark: rgb(36, 36, 36);
+
+  --header_bar_height: 40px;
+  --footer_bar_height: 20px;
+  --footer_background: var(--dark_gray);
 }
 
 p {
@@ -151,7 +145,9 @@ body {
 }
 
 .computer_frame {
-  height: calc(100vh - 88px);
+  height: calc(
+    100vh - (var(--header_bar_height) * 2 + 24px + var(--footer_bar_height))
+  );
   margin: 8px;
   border-radius: 10px;
   background-color: var(--main_theme_color);
@@ -805,7 +801,7 @@ strong {
 }
 
 .page_content {
-  margin-top: 48px;
+  margin-top: calc(var(--header_bar_height) + 8px);
 }
 
 .sticky {
@@ -1306,4 +1302,64 @@ strong {
 .alert_title {
   font-size: 2em;
   color: black;
+}
+
+.developer_about_tagline_flex_wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+.developer_about_tagline {
+  flex: 1;
+  text-align: center;
+  font-family: "Roboto", sans-serif;
+  /* bottom: 16px; */
+  padding: 16px;
+}
+
+.footer_bar {
+  padding: 8px;
+  height: var(--footer_bar_height);
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: rgb(35, 35, 38);
+  text-align: center;
+  font-family: "Audiowide", cursive;
+  font-size: 0.8em;
+}
+
+.footer_bar_flex_wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.footer_bar_flex_item {
+  flex: 1;
+  color: var(--text_light);
+}
+
+.resource_link:link {
+  font-weight: 600;
+  color: white;
+  font-style: normal;
+  text-decoration: none;
+}
+
+.resource_link:visited {
+  color: var(--text_light);
+  font-style: normal;
+  text-decoration: none;
+}
+
+.about_page_play_button_container {
+  height: 80px;
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
 }
