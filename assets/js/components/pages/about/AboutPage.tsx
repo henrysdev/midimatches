@@ -16,9 +16,27 @@ const AboutPage: React.FC = () => {
               <span className="accent_bars">///</span>WELCOME
             </MediumLargeTitle>
             <HowToPlay />
-            <ComputerButton callback={() => (window.location.href = "/menu")}>
-              LET'S PLAY!
-            </ComputerButton>
+            <div className="about_page_play_button_container">
+              <ComputerButton callback={() => (window.location.href = "/menu")}>
+                LET'S PLAY!
+              </ComputerButton>
+            </div>
+            <div className="developer_about_tagline_flex_wrapper">
+              <div className="developer_about_tagline">
+                Created by{" "}
+                <a
+                  className="resource_link"
+                  href="https://github.com/henrysdev"
+                >
+                  @henrysdev
+                </a>
+                . Proudly running on{" "}
+                <a className="resource_link" href="https://elixir-lang.org/">
+                  Elixir
+                </a>
+                .
+              </div>
+            </div>
           </div>
         </div>
       </ComputerFrame>
