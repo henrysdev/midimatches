@@ -12,7 +12,8 @@ use Mix.Config
 config :midimatches, MidimatchesWeb.Endpoint,
   url: [
     host:
-      System.get_env("RENDER_EXTERNAL_HOSTNAME") || "midimatches.com" || "www.midimatches.com" ||
+      System.get_env("RENDER_EXTERNAL_HOSTNAME") || "216.24.57.1" || "midimatches.com" ||
+        "www.midimatches.com" ||
         "localhost",
     port: 80
   ],
