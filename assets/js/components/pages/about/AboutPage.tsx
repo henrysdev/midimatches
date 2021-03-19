@@ -30,11 +30,30 @@ const AboutPage: React.FC = () => {
                 >
                   @henrysdev
                 </a>
-                . Proudly running on{" "}
-                <a className="resource_link" href="https://elixir-lang.org/">
+                . Feedback and bug reports welcome via{" "}
+                <a className="resource_link" href="https://discord.gg/CjKD7G3C">
+                  Discord
+                </a>{" "}
+                or{" "}
+                <a className="resource_link" href="mailto:henrysdev@gmail.com">
+                  email
+                </a>
+                . <br /> <br />
+                <a
+                  className="resource_link"
+                  href="https://github.com/henrysdev/midimatches"
+                >
+                  Open source
+                </a>{" "}
+                and proudly built with{" "}
+                <a
+                  className="resource_link elixir_accent"
+                  href="https://elixir-lang.org/"
+                >
                   Elixir
                 </a>
-                . <br />
+                .
+                {/* <br />
                 <br /> If you enjoy this game, please consider
                 <a
                   className="resource_link"
@@ -42,7 +61,7 @@ const AboutPage: React.FC = () => {
                 >
                   {" "}
                   becoming a patron ❤️{" "}
-                </a>
+                </a> */}
               </div>
             </div>
           </div>

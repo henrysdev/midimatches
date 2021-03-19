@@ -1363,3 +1363,10 @@ strong {
 * {
   -webkit-font-smoothing: antialiased;
 }
+
+.elixir_accent:link {
+  color: rgb(185, 181, 255);
+}
+.elixir_accent:visited {
+  color: rgb(185, 181, 255);
+}
