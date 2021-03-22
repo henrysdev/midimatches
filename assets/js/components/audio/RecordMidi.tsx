@@ -11,7 +11,13 @@ import {
 } from "../../hooks";
 import * as Tone from "tone";
 import { ArrowButton } from "../common";
-import { MIN_C_OCTAVE, MIDDLE_C_OCTAVE, MAX_C_OCTAVE } from "../../constants";
+import {
+  MIN_C_OCTAVE,
+  MIDDLE_C_OCTAVE,
+  MAX_C_OCTAVE,
+  MIN_NOTE_NUMBER,
+  MAX_NOTE_NUMBER,
+} from "../../constants";
 import { MidiNumbers, KeyboardShortcuts } from "../reactpiano";
 
 interface RecordMidiProps {
@@ -163,7 +169,11 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
           <Keyboard
             activeMidiList={activeMidiList}
             playNote={(midiNumber: number) => {
-              if (!!synth) {
+              if (
+                midiNumber >= MIN_NOTE_NUMBER &&
+                midiNumber <= MAX_NOTE_NUMBER &&
+                !!synth
+              ) {
                 const { noteNumber, noteVelocity } = playRecordedNote(
                   midiNumber
                 );

@@ -49,6 +49,8 @@ export const MAX_PLAYER_ALIAS_LENGTH = 10;
 export const MIN_C_OCTAVE = 1;
 export const MAX_C_OCTAVE = 7;
 export const MIDDLE_C_OCTAVE = 3;
+export const MIN_NOTE_NUMBER = 24;
+export const MAX_NOTE_NUMBER = 108;
 
 export const DEFAULT_SAMPLE_COLORS = [
   "rgba(255, 127, 0, 0.15)",
