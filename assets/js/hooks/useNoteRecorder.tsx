@@ -46,6 +46,7 @@ interface NoteRecorder {
     noteNumber: number
   ) => { noteNumber: number; noteVelocity: number };
   stopRecordedNote: (noteNumber: number) => { noteNumber: number };
+  stopAllActiveNotes: () => void;
 }
 
 export function useNoteRecorder({
@@ -219,12 +220,22 @@ export function useNoteRecorder({
     return { noteNumber };
   };
 
+  const stopAllActiveNotes = () => {
+    if (!!internalState && !!internalState.activeNotes) {
+      Array.from(internalState.activeNotes.keys()).forEach((midiNum) => {
+        console.log("AAA");
+        stopRecordedNote(midiNum);
+      });
+    }
+  };
+
   return {
     activeMidiList,
     handleNoteOn,
     handleNoteOff,
     playRecordedNote,
     stopRecordedNote,
+    stopAllActiveNotes,
   };
 }
 

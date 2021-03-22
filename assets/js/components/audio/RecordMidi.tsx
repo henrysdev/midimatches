@@ -49,6 +49,7 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
     handleNoteOff,
     playRecordedNote,
     stopRecordedNote,
+    stopAllActiveNotes,
   } = useNoteRecorder({
     submitRecording,
     sampleStartPlayCallback,
@@ -58,16 +59,22 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
     shouldRecord,
   });
 
+  const stopNotes = () => {
+    [...Array(200).keys()].forEach((midiNumber) => {
+      const noteName = noteNumberToNoteName(midiNumber);
+      synth.triggerRelease(noteName);
+    });
+    stopAllActiveNotes();
+  };
+
   // init on load
   useEffect(() => {
-    window.addEventListener("keydown", onKeyDown);
+    // TODO use ref so left arrow and right arrow event listeners work as desired
+    // window.addEventListener("keydown", onKeyDown);
     Tone.start();
     return () => {
       stopSample();
-      [...Array(200).keys()].forEach((midiNumber) => {
-        const noteName = noteNumberToNoteName(midiNumber);
-        synth.triggerRelease(noteName);
-      });
+      stopNotes();
     };
   }, []);
 
@@ -87,19 +94,12 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
 
   const [currOctave, setCurrOctave] = useState<number>(MIDDLE_C_OCTAVE);
 
-  // TODO must stop midi notes as well
-  const stopAllActiveNotes = () => {
-    for (var i = 0; i <= 112; i++) {
-      stopNote(i);
-    }
-  };
-
   const decrOctave = () => {
-    // stopAllActiveNotes();
+    stopNotes();
     setCurrOctave((prev) => (prev > MIN_C_OCTAVE ? prev - 1 : prev));
   };
   const incrOctave = () => {
-    // stopAllActiveNotes();
+    stopNotes();
     setCurrOctave((prev) => (prev < MAX_C_OCTAVE ? prev + 1 : prev));
   };
 
