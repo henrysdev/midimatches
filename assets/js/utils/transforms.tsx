@@ -140,3 +140,7 @@ export function loopToEvents(
 export function genRandomColors(count: number): Array<Color> {
   return shuffleArray(DEFAULT_SAMPLE_COLORS).slice(0, count);
 }
+
+export function mod(n: number, m: number) {
+  return ((n % m) + m) % m;
+}
