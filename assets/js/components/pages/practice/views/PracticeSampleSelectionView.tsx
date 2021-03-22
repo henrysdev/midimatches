@@ -17,6 +17,7 @@ import {
   ComputerButton,
   InlineWidthButton,
   MaterialIcon,
+  ArrowButton,
 } from "../../../common";
 import { randomElement } from "../../../../utils";
 import { useToneAudioContext } from "../../../../hooks";
@@ -67,41 +68,25 @@ const PracticeSampleSelectionView: React.FC<PracticeSampleSelectionViewProps> = 
           <div className="selected_sample_anchor">
             <div style={{ display: "flex" }}>
               <div style={{ flex: 1, float: "right", textAlign: "right" }}>
-                <div
-                  className="sample_selection_button"
-                  onClick={() => {
+                <ArrowButton
+                  callback={() => {
                     stopSamplePreview();
                     prevSample();
                   }}
-                >
-                  <MaterialIcon
-                    iconName="keyboard_arrow_left"
-                    style={{
-                      textAlign: "center",
-                      fontSize: "26px",
-                    }}
-                  />
-                </div>
+                  left={true}
+                />
               </div>
               <div style={{ flex: 1 }}>
                 <h2 style={{ textAlign: "center" }}>{currentSample}</h2>
               </div>
               <div style={{ flex: 1, float: "left", textAlign: "left" }}>
-                <div
-                  className="sample_selection_button"
-                  onClick={() => {
+                <ArrowButton
+                  callback={() => {
                     stopSamplePreview();
                     nextSample();
                   }}
-                >
-                  <MaterialIcon
-                    iconName="keyboard_arrow_right"
-                    style={{
-                      textAlign: "center",
-                      fontSize: "26px",
-                    }}
-                  />
-                </div>
+                  left={false}
+                />
               </div>
             </div>
             <div
@@ -133,28 +118,6 @@ const PracticeSampleSelectionView: React.FC<PracticeSampleSelectionViewProps> = 
           <></>
         )}
         <WarmUp />
-        {/* <InlineWidthButton
-          callback={() => {
-            stopSamplePreview();
-            nextSample();
-          }}
-        >
-          <h5>
-            NEXT SAMPLE
-            <MaterialIcon iconName="loop" />
-          </h5>
-        </InlineWidthButton>
-        <InlineWidthButton
-          callback={() => {
-            stopSamplePreview();
-            prevSample();
-          }}
-        >
-          <h5>
-            PREV SAMPLE
-            <MaterialIcon iconName="loop" />
-          </h5>
-        </InlineWidthButton> */}
         <InlineWidthButton
           callback={() => {
             stopSamplePreview();

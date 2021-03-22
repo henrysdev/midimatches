@@ -1175,6 +1175,10 @@ strong {
   text-shadow: none;
 }
 
+.hidden_div {
+  visibility: hidden;
+}
+
 .selected_sample_anchor {
 }
 

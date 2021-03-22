@@ -46,6 +46,10 @@ export const MAX_CHARS_PER_CHAT_MESSAGE = 80;
 export const MIN_PLAYER_ALIAS_LENGTH = 3;
 export const MAX_PLAYER_ALIAS_LENGTH = 10;
 
+export const MIN_C_OCTAVE = 1;
+export const MAX_C_OCTAVE = 7;
+export const MIDDLE_C_OCTAVE = 3;
+
 export const DEFAULT_SAMPLE_COLORS = [
   "rgba(255, 127, 0, 0.15)",
   "rgba(255, 213, 0, 0.15)",

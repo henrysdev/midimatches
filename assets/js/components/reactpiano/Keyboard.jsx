@@ -57,7 +57,7 @@ class Keyboard extends React.Component {
     if (!this.props.width) {
       return "100%";
     }
-    const keyWidth = this.props.width * this.getNaturalKeyWidth();
+    const keyWidth = this.props.width * this.getNaturalKeyWidth() * 2;
     return `${keyWidth / this.props.keyWidthToHeight}px`;
   }
 
