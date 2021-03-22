@@ -45,6 +45,7 @@ const RoomPage: React.FC = () => {
   const [disableKeyboardInput, setDisableKeyboardInput] = useState<boolean>(
     false
   );
+  const [showKeyboardLabels, setShowKeyboardLabels] = useState<boolean>(true);
 
   const [gameChannel, setGameChannel] = useState<Channel>();
   const [gameInProgress, setGameInProgress] = useState<boolean>(false);
@@ -200,7 +201,12 @@ const RoomPage: React.FC = () => {
     <PageWrapper socket={socket} currentUser={currentUser}>
       <ToneAudioContext.Provider value={toneAudioContext}>
         <KeyboardInputContext.Provider
-          value={{ setDisableKeyboardInput, disableKeyboardInput }}
+          value={{
+            setDisableKeyboardInput,
+            disableKeyboardInput,
+            setShowKeyboardLabels,
+            showKeyboardLabels,
+          }}
         >
           <ChatContext.Provider value={{ chatHistory, submitChatMessageEvent }}>
             {!!gameChannel && !!currPlayer && !!initGameState ? (

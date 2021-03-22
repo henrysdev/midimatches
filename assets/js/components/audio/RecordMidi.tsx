@@ -38,7 +38,10 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
   isRecording,
 }) => {
   const { midiInputs, synth } = useToneAudioContext();
-  const { disableKeyboardInput } = useKeyboardInputContext();
+  const {
+    disableKeyboardInput,
+    showKeyboardLabels,
+  } = useKeyboardInputContext();
 
   const {
     activeMidiList,
@@ -57,6 +60,7 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
 
   // init on load
   useEffect(() => {
+    window.addEventListener("keydown", onKeyDown);
     Tone.start();
     return () => {
       stopSample();
@@ -91,11 +95,11 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
   };
 
   const decrOctave = () => {
-    stopAllActiveNotes();
+    // stopAllActiveNotes();
     setCurrOctave((prev) => (prev > MIN_C_OCTAVE ? prev - 1 : prev));
   };
   const incrOctave = () => {
-    stopAllActiveNotes();
+    // stopAllActiveNotes();
     setCurrOctave((prev) => (prev < MAX_C_OCTAVE ? prev + 1 : prev));
   };
 
@@ -115,6 +119,19 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
     }
   };
 
+  const onKeyDown = (event: KeyboardEvent) => {
+    switch (event.key) {
+      case "ArrowLeft":
+        decrOctave();
+        return;
+      case "ArrowRight":
+        incrOctave();
+        return;
+      default:
+        return;
+    }
+  };
+
   return (
     <div>
       <div
@@ -129,7 +146,10 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
           left={true}
           callback={() => decrOctave()}
           hidden={
-            disableKeyboardInput || hideKeyboard || currOctave === MIN_C_OCTAVE
+            disableKeyboardInput ||
+            hideKeyboard ||
+            currOctave === MIN_C_OCTAVE ||
+            !showKeyboardLabels
           }
           styles={{ color: "yellow" }}
         />
@@ -156,13 +176,17 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
             disableKeyboardInput={disableKeyboardInput}
             isRecording={isRecording}
             keyboardShortcuts={keyboardShortcuts}
+            showKeyboardLabels={showKeyboardLabels}
           />
         </div>
         <ArrowButton
           left={false}
           callback={() => incrOctave()}
           hidden={
-            disableKeyboardInput || hideKeyboard || currOctave === MAX_C_OCTAVE
+            disableKeyboardInput ||
+            hideKeyboard ||
+            currOctave === MAX_C_OCTAVE ||
+            !showKeyboardLabels
           }
           styles={{ color: "yellow" }}
         />

@@ -15,6 +15,7 @@ interface KeyboardProps {
   disableKeyboardInput?: boolean;
   isRecording: boolean;
   keyboardShortcuts: any;
+  showKeyboardLabels: boolean;
 }
 
 const Keyboard: React.FC<KeyboardProps> = ({
@@ -22,6 +23,7 @@ const Keyboard: React.FC<KeyboardProps> = ({
   playNote,
   stopNote,
   keyboardShortcuts,
+  showKeyboardLabels,
   hideKeyboard = false,
   disableKeyboardInput = false,
   isRecording = false,
@@ -37,6 +39,7 @@ const Keyboard: React.FC<KeyboardProps> = ({
       recording={!!isRecording}
       playNote={(midiNumber: number) => playNote(midiNumber)}
       stopNote={(midiNumber: number) => stopNote(midiNumber)}
+      showNoteLabels={showKeyboardLabels}
       width={512}
     />
   );

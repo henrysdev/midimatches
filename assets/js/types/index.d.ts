@@ -212,8 +212,10 @@ export interface ScoresContextType {
 }
 
 export interface KeyboardInputContextType {
-  setDisableKeyboardInput: Function;
   disableKeyboardInput: boolean;
+  setDisableKeyboardInput: Function;
+  showKeyboardLabels: boolean;
+  setShowKeyboardLabels: Function;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

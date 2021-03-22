@@ -153,3 +153,4 @@ export const MAX_SOUND_VOLUME = 2.5;
 export const DEFAULT_ALERT_LIFETIME = 5_000;
 
 export const SOUND_VOLUME_COOKIE = "midimatches_soundvolume";
+export const SHOW_KEYBOARD_LABELS_COOKIE = "midimatches_keyboardlabels";

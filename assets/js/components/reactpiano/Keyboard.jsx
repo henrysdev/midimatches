@@ -14,6 +14,7 @@ class Keyboard extends React.Component {
     onStopNoteInput: PropTypes.func.isRequired,
     renderNoteLabel: PropTypes.func.isRequired,
     keyWidthToHeight: PropTypes.number.isRequired,
+    showNoteLabels: PropTypes.bool.isRequired,
     className: PropTypes.string,
     disabled: PropTypes.bool,
     frozen: PropTypes.bool,
@@ -90,7 +91,7 @@ class Keyboard extends React.Component {
               key={midiNumber}
               recording={this.props.recording}
             >
-              {this.props.frozen
+              {this.props.frozen || !this.props.showNoteLabels
                 ? null
                 : this.props.renderNoteLabel({
                     isActive,
