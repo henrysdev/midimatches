@@ -2,7 +2,7 @@
   --selected_player_color: #296cff;
   --recording_color: #ef5757;
   --note_label_for_black_keys: yellow;
-  --note_label_for_white_keys: yellow;
+  --note_label_for_white_keys: black;
   --corner_border_radius: 0px;
   --key_border_radius: 0 0 var(--corner_border_radius)
     var(--corner_border_radius);
@@ -118,13 +118,13 @@
   border: 1px solid #fff;
   border-top: 1px solid var(--selected_player_color);
   /* Slight height reduction for "pushed-down" effect */
-  height: 65%;
+  /* height: 65%; */
 }
 
 .ReactPiano__Key--active.ReactPiano__Key--natural {
   border: 1px solid #fff;
   /* Slight height reduction for "pushed-down" effect */
-  height: 98%;
+  /* height: 98%; */
 }
 
 /*
@@ -169,7 +169,7 @@
 
 .ReactPiano__NoteLabel--natural {
   color: var(--note_label_for_white_keys);
-  text-shadow: 0 0 4px black;
+  text-shadow: 0 0 4px yellow;
   margin-bottom: 3px;
 }
 
