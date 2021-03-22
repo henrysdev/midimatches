@@ -92,7 +92,7 @@ const GameSettings: React.FC<GameSettingsProps> = ({}) => {
           </div>
         </li>
       </ul>
-      <h5 className="settings_item_label">Computer Keyboard Hints</h5>
+      <h5 className="settings_item_label">Type-to-Play Hints</h5>
       <label className="switch">
         <input
           type="checkbox"

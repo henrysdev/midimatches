@@ -98,7 +98,7 @@ export const DEFAULT_SYNTH_CONFIG = {
 } as Tone.SynthOptions;
 
 export const DEFAULT_FM_SYNTH_CONFIG = {
-  volume: -3,
+  volume: -4.5,
   detune: 0,
   portamento: 0,
   harmonicity: 1,
@@ -135,7 +135,7 @@ export const DEFAULT_FM_SYNTH_CONFIG = {
   modulationIndex: 12.22,
 } as any;
 
-export const DEFAULT_MANUAL_NOTE_VELOCITY = 65;
+export const DEFAULT_MANUAL_NOTE_VELOCITY = 100;
 
 // room creation parameters
 export const MIN_ROOM_SIZE = 3;

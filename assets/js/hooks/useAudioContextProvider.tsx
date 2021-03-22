@@ -29,7 +29,7 @@ export function useAudioContextProvider(): ToneAudioContextType {
   const [synth, setSynth] = useState<any>();
   useEffect(() => {
     Tone.context.lookAhead = 0;
-    Tone.Master.volume.value = -1;
+    Tone.Master.volume.value = -0.5;
 
     const autoWah = new Tone.AutoWah(60, 6, -30).toDestination();
     const chorus = new Tone.Chorus(3, 0.5, 0.5).start();
