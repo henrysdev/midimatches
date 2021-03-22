@@ -1178,6 +1178,10 @@ strong {
 .selected_sample_anchor {
 }
 
+.sample_selection_button:hover {
+  cursor: pointer;
+}
+
 .selected_sample_label {
   float: right;
 }

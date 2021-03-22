@@ -11,7 +11,12 @@ import {
   useCurrentUserContext,
   useSocketContext,
 } from "../../../hooks";
-import { msToMicros, randomElement, currUtcTimestamp } from "../../../utils";
+import {
+  msToMicros,
+  randomElement,
+  currUtcTimestamp,
+  mod,
+} from "../../../utils";
 import { InGameFrame, GameSettings, GameSubContexts } from "../room/game";
 import { WarmUp } from "../room/pregame";
 import { PRACTICE_GAME_VIEW } from "../../../constants";
@@ -42,31 +47,43 @@ const PracticePage: React.FC<PracticePageProps> = ({ children }) => {
     };
   }, [roundRecordingStartTime]);
 
-  const [currentView, setCurrentView] = useState<PRACTICE_GAME_VIEW>(
-    PRACTICE_GAME_VIEW.SAMPLE_SELECTION
-  );
-
-  const [currentSample, setCurrentSample] = useState<string>();
-
-  const [currentRecording, setCurrentRecording] = useState<any>();
-
   const {
-    data: { samples = [] } = {},
+    data: { samples: sampleNames = [] } = {},
     loading,
     loaded,
     loadError,
   } = useLoadRandomSamples([], 200);
 
-  const pickNewSample = (samples: string[], currentSample?: string) => {
-    const eligibleSamples = !!currentSample
-      ? samples.filter((x) => x != currentSample)
-      : samples;
-    const newSample = randomElement(eligibleSamples);
+  const [currentView, setCurrentView] = useState<PRACTICE_GAME_VIEW>(
+    PRACTICE_GAME_VIEW.SAMPLE_SELECTION
+  );
+
+  const [currentSample, setCurrentSample] = useState<string>();
+  const [currSampleIdx, setCurrSampleIdx] = useState<number>(-2);
+
+  const incrCurrSampleIdx = () => {
+    setCurrSampleIdx((prev) => prev + 1);
+  };
+
+  const decrCurrSampleIdx = () => {
+    setCurrSampleIdx((prev) => prev - 1);
+  };
+
+  useEffect(() => {
+    const newSample = samples[mod(currSampleIdx, samples.length)];
     toneAudioContext.loadSample(newSample);
     setCurrentSample(newSample);
-  };
+  }, [currSampleIdx]);
+
+  const [currentRecording, setCurrentRecording] = useState<any>();
+
+  const samples = useMemo(() => {
+    sampleNames.sort();
+    return sampleNames;
+  }, [sampleNames.length]);
+
   useEffect(() => {
-    pickNewSample(samples, currentSample);
+    incrCurrSampleIdx();
   }, [samples]);
 
   useEffect(() => {
@@ -105,10 +122,9 @@ const PracticePage: React.FC<PracticePageProps> = ({ children }) => {
                       case PRACTICE_GAME_VIEW.SAMPLE_SELECTION:
                         return (
                           <PracticeSampleSelectionView
-                            samples={samples}
-                            pickNewSample={pickNewSample}
+                            nextSample={incrCurrSampleIdx}
+                            prevSample={decrCurrSampleIdx}
                             currentSample={currentSample}
-                            loadSample={toneAudioContext.loadSample}
                             stopSample={toneAudioContext.stopSample}
                             samplePlayer={toneAudioContext.samplePlayer}
                             advanceView={() => {

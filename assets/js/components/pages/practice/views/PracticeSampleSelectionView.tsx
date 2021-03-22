@@ -23,9 +23,8 @@ import { useToneAudioContext } from "../../../../hooks";
 import { WarmUp } from "../../room/pregame";
 
 interface PracticeSampleSelectionViewProps {
-  samples: string[];
-  loadSample: Function;
-  pickNewSample: Function;
+  nextSample: Function;
+  prevSample: Function;
   stopSample: Function;
   samplePlayer: any;
   advanceView: Function;
@@ -33,11 +32,10 @@ interface PracticeSampleSelectionViewProps {
 }
 
 const PracticeSampleSelectionView: React.FC<PracticeSampleSelectionViewProps> = ({
-  samples,
-  loadSample,
   stopSample,
   samplePlayer,
-  pickNewSample,
+  nextSample,
+  prevSample,
   currentSample,
   advanceView,
 }) => {
@@ -67,8 +65,45 @@ const PracticeSampleSelectionView: React.FC<PracticeSampleSelectionViewProps> = 
       <DynamicContent>
         {!!currentSample ? (
           <div className="selected_sample_anchor">
-            <h2 style={{ textAlign: "center" }}>{currentSample}</h2>
-
+            <div style={{ display: "flex" }}>
+              <div style={{ flex: 1, float: "right", textAlign: "right" }}>
+                <div
+                  className="sample_selection_button"
+                  onClick={() => {
+                    stopSamplePreview();
+                    prevSample();
+                  }}
+                >
+                  <MaterialIcon
+                    iconName="keyboard_arrow_left"
+                    style={{
+                      textAlign: "center",
+                      fontSize: "26px",
+                    }}
+                  />
+                </div>
+              </div>
+              <div style={{ flex: 1 }}>
+                <h2 style={{ textAlign: "center" }}>{currentSample}</h2>
+              </div>
+              <div style={{ flex: 1, float: "left", textAlign: "left" }}>
+                <div
+                  className="sample_selection_button"
+                  onClick={() => {
+                    stopSamplePreview();
+                    nextSample();
+                  }}
+                >
+                  <MaterialIcon
+                    iconName="keyboard_arrow_right"
+                    style={{
+                      textAlign: "center",
+                      fontSize: "26px",
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
             <div
               className="selected_sample_play_button relative_anchor"
               onClick={togglePlaySample}
@@ -98,17 +133,28 @@ const PracticeSampleSelectionView: React.FC<PracticeSampleSelectionViewProps> = 
           <></>
         )}
         <WarmUp />
-        <InlineWidthButton
+        {/* <InlineWidthButton
           callback={() => {
             stopSamplePreview();
-            pickNewSample(samples, currentSample);
+            nextSample();
           }}
         >
           <h5>
-            NEW SAMPLE
+            NEXT SAMPLE
             <MaterialIcon iconName="loop" />
           </h5>
         </InlineWidthButton>
+        <InlineWidthButton
+          callback={() => {
+            stopSamplePreview();
+            prevSample();
+          }}
+        >
+          <h5>
+            PREV SAMPLE
+            <MaterialIcon iconName="loop" />
+          </h5>
+        </InlineWidthButton> */}
         <InlineWidthButton
           callback={() => {
             stopSamplePreview();
