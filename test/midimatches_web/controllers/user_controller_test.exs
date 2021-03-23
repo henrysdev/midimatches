@@ -31,7 +31,7 @@ defmodule MidimatchesWeb.UserControllerTest do
     user_id = "b4rt"
     user = %User{user_id: user_id, user_alias: "chumbawumba"}
     UserCache.upsert_user(user)
-    assert !is_nil(UserCache.get_user(user_id))
+    assert !is_nil(UserCache.get_user_by_id(user_id))
 
     conn =
       session_conn()
@@ -40,7 +40,7 @@ defmodule MidimatchesWeb.UserControllerTest do
 
     assert json_response(conn, 200) == %{}
     assert is_nil(get_session(conn, :user))
-    assert is_nil(UserCache.get_user(user_id))
+    assert is_nil(UserCache.get_user_by_id(user_id))
   end
 
   describe "POST /api/user" do
@@ -61,7 +61,7 @@ defmodule MidimatchesWeb.UserControllerTest do
         user_alias: user_alias
       }
 
-      assert UserCache.get_user(user_id) == expected_user
+      assert UserCache.get_user_by_id(user_id) == expected_user
       assert json_response(conn, 200) == %{}
     end
 
@@ -83,7 +83,7 @@ defmodule MidimatchesWeb.UserControllerTest do
 
       assert json_response(conn, 200) == %{}
       assert get_session(conn, :user) |> (& &1.user_id).() == user_id
-      assert UserCache.get_user(user_id).user_alias == "helloworld"
+      assert UserCache.get_user_by_id(user_id).user_alias == "helloworld"
     end
 
     test "invalid user_alias", %{conn: conn} do

@@ -39,7 +39,7 @@ defmodule MidimatchesWeb.UserController do
     conn
     |> get_session(:user)
     |> (& &1.user_id).()
-    |> UserCache.delete_user()
+    |> UserCache.delete_user_by_id()
 
     conn
     |> delete_session(:user)
@@ -68,7 +68,7 @@ defmodule MidimatchesWeb.UserController do
         existing_user =
           get_session(conn, :user)
           |> (& &1.user_id).()
-          |> UserCache.get_user()
+          |> UserCache.get_user_by_id()
 
         updated_user =
           %User{existing_user | user_alias: user_alias}

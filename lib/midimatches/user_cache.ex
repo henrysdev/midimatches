@@ -34,30 +34,30 @@ defmodule Midimatches.UserCache do
     user
   end
 
-  @spec get_user(id()) :: %User{} | nil
+  @spec get_user_by_id(id()) :: %User{} | nil
   @doc """
   Get the user value for the provided user_id
   """
-  def get_user(user_id) do
+  def get_user_by_id(user_id) do
     case :ets.lookup(:user_cache, user_id) do
       [] -> nil
       [{found_user_id, user}] when found_user_id == user_id -> user
     end
   end
 
-  @spec delete_user(id()) :: boolean()
+  @spec delete_user_by_id(id()) :: boolean()
   @doc """
   Delete the user with the given user_id
   """
-  def delete_user(user_id) do
+  def delete_user_by_id(user_id) do
     :ets.delete(:user_cache, user_id)
   end
 
-  @spec user_exists?(id()) :: boolean()
+  @spec user_id_exists?(id()) :: boolean()
   @doc """
   Returns truthy whether or not a user exists in the cache for a given user_id
   """
-  def user_exists?(user_id) do
+  def user_id_exists?(user_id) do
     :ets.member(:user_cache, user_id)
   end
 
@@ -67,8 +67,8 @@ defmodule Midimatches.UserCache do
   provided user and return it.
   """
   def get_or_insert_user(%User{user_id: user_id} = user) do
-    if user_exists?(user_id) do
-      get_user(user_id)
+    if user_id_exists?(user_id) do
+      get_user_by_id(user_id)
     else
       upsert_user(user)
       user

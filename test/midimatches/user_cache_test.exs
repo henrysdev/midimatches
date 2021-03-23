@@ -60,16 +60,16 @@ defmodule Midimatches.UserCacheTest do
         user_alias: "foobarzoo"
       }
 
-      found_user_before = UserCache.get_user("abc123")
+      found_user_before = UserCache.get_user_by_id("abc123")
       assert(is_nil(found_user_before))
       UserCache.upsert_user(user)
 
-      found_user_after = UserCache.get_user("abc123")
+      found_user_after = UserCache.get_user_by_id("abc123")
       assert(!is_nil(found_user_after))
     end
 
     test "that does not exist in the user cache" do
-      assert(is_nil(UserCache.get_user("abc123")))
+      assert(is_nil(UserCache.get_user_by_id("abc123")))
     end
   end
 
@@ -83,12 +83,12 @@ defmodule Midimatches.UserCacheTest do
 
     UserCache.upsert_user(user)
 
-    found_user_before = UserCache.get_user("abc123")
+    found_user_before = UserCache.get_user_by_id("abc123")
     assert(!is_nil(found_user_before))
 
-    UserCache.delete_user(user_id)
+    UserCache.delete_user_by_id(user_id)
 
-    found_user_after = UserCache.get_user("abc123")
+    found_user_after = UserCache.get_user_by_id("abc123")
     assert(is_nil(found_user_after))
   end
 
@@ -100,9 +100,9 @@ defmodule Midimatches.UserCacheTest do
       user_alias: "foobarzoo"
     }
 
-    assert UserCache.user_exists?(user_id) == false
+    assert UserCache.user_id_exists?(user_id) == false
     UserCache.upsert_user(user)
-    assert UserCache.user_exists?(user_id) == true
+    assert UserCache.user_id_exists?(user_id) == true
   end
 
   describe "get or insert" do
