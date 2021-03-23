@@ -30,6 +30,7 @@ interface PracticeSampleSelectionViewProps {
   samplePlayer: any;
   advanceView: Function;
   currentSample?: string;
+  isSamplePlayerLoaded: boolean;
 }
 
 const PracticeSampleSelectionView: React.FC<PracticeSampleSelectionViewProps> = ({
@@ -39,6 +40,7 @@ const PracticeSampleSelectionView: React.FC<PracticeSampleSelectionViewProps> = 
   prevSample,
   currentSample,
   advanceView,
+  isSamplePlayerLoaded,
 }) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
@@ -53,12 +55,17 @@ const PracticeSampleSelectionView: React.FC<PracticeSampleSelectionViewProps> = 
   };
 
   const togglePlaySample = () => {
+    stopSamplePreview();
     if (isPlaying) {
       stopSamplePreview();
     } else {
       startSamplePreview();
     }
   };
+
+  useEffect(() => {
+    console.log("SAMPLE PLAYER LOADED: ", isSamplePlayerLoaded);
+  }, [isSamplePlayerLoaded]);
 
   return (
     <div className="view_container">
@@ -91,7 +98,11 @@ const PracticeSampleSelectionView: React.FC<PracticeSampleSelectionViewProps> = 
             </div>
             <div
               className="selected_sample_play_button relative_anchor"
-              onClick={togglePlaySample}
+              onClick={
+                isSamplePlayerLoaded
+                  ? togglePlaySample
+                  : () => console.log("NOTE LOADED YET!")
+              }
             >
               <div className="selected_sample_play_button_icon">
                 {isPlaying ? (

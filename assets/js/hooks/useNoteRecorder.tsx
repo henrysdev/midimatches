@@ -221,7 +221,8 @@ export function useNoteRecorder({
   };
 
   const stopRecordedNote = (noteNumber: number): { noteNumber: number } => {
-    if (internalState.activeNotes.has(noteNumber)) {
+    const { activeNotes } = internalStateRef.current as InternalState;
+    if (activeNotes.has(noteNumber)) {
       handleNoteOff({
         note: { number: noteNumber },
         receivedTimestep: currUtcTimestamp(),
@@ -231,10 +232,11 @@ export function useNoteRecorder({
   };
 
   const stopAllActiveNotes = () => {
-    if (!!internalState && !!internalState.activeNotes) {
-      Array.from(internalState.activeNotes.keys()).forEach((midiNum) => {
-        console.log("AAA");
-        stopRecordedNote(midiNum);
+    const { activeNotes } = internalStateRef.current as InternalState;
+    if (!!activeNotes) {
+      const currActiveNotes = Array.from(activeNotes.keys());
+      currActiveNotes.forEach((midiNum) => {
+        stopRecordedNote(midiNum as any);
       });
     }
   };
