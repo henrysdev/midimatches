@@ -38,6 +38,7 @@ import {
 } from "../../../hooks";
 import { PregameDebug } from "../../debug";
 import { PageWrapper } from "../";
+import { BrowserWarning } from "../../pages";
 
 const RoomPage: React.FC = () => {
   const toneAudioContext = useAudioContextProvider();
@@ -231,6 +232,7 @@ const RoomPage: React.FC = () => {
             ) : (
               <></>
             )}
+            <BrowserWarning />
           </ChatContext.Provider>
         </KeyboardInputContext.Provider>
       </ToneAudioContext.Provider>

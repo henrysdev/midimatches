@@ -63,10 +63,6 @@ const PracticeSampleSelectionView: React.FC<PracticeSampleSelectionViewProps> = 
     }
   };
 
-  useEffect(() => {
-    console.log("SAMPLE PLAYER LOADED: ", isSamplePlayerLoaded);
-  }, [isSamplePlayerLoaded]);
-
   return (
     <div className="view_container">
       <MediumLargeTitle>PRACTICE - SAMPLE SELECTION</MediumLargeTitle>
@@ -101,7 +97,7 @@ const PracticeSampleSelectionView: React.FC<PracticeSampleSelectionViewProps> = 
               onClick={
                 isSamplePlayerLoaded
                   ? togglePlaySample
-                  : () => console.log("NOTE LOADED YET!")
+                  : () => console.log("sample has not loaded yet")
               }
             >
               <div className="selected_sample_play_button_icon">
