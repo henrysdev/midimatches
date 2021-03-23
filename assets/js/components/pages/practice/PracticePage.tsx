@@ -112,10 +112,19 @@ const PracticePage: React.FC<PracticePageProps> = ({ children }) => {
               value={{ gameRules: gameContext.gameRules }}
             >
               <InGameFrame title="PRACTICE">
-                <div className="left_game_content_pane">
-                  <div className="left_game_content_pane_flex_anchor">
-                    <div className="settings_flex_wrapper inset_3d_border_deep">
-                      <GameSettings />
+                <div className="left_game_multi_container">
+                  <div className="multi_use_items_container">
+                    <div className="multi_use_item_wrapper">
+                      <div className="multi_use_item selected_multi_use_item">
+                        <h5 style={{ textAlign: "center" }}>Settings</h5>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="left_game_content_pane">
+                    <div className="left_game_content_pane_flex_anchor">
+                      <div className="settings_flex_wrapper inset_3d_border_deep">
+                        <GameSettings />
+                      </div>
                     </div>
                   </div>
                 </div>
