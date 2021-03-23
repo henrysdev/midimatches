@@ -15,6 +15,7 @@ defmodule MidimatchesWeb.RoomChannel do
     Types.Note,
     Types.Player,
     Types.TimestepSlice,
+    UserCache,
     Utils
   }
 
@@ -45,21 +46,30 @@ defmodule MidimatchesWeb.RoomChannel do
 
   def join(
         "room:" <> room_id,
-        %{"player_id" => player_id},
+        %{"user_id" => user_id},
         socket
       ) do
     if Rooms.room_exists?(room_id) do
       send(self(), {:init_conn, room_id})
       room_server = Pids.fetch!({:room_server, room_id})
 
-      {:ok,
-       socket
-       |> assign(room_id: room_id)
-       |> assign(room_server: room_server)
-       |> assign(player_id: player_id)
-       |> assign_game_server()}
+      if UserCache.user_id_exists?(user_id) do
+        player =
+          user_id
+          |> UserCache.get_user_by_id()
+          |> Utils.user_to_player()
+
+        {:ok,
+         socket
+         |> assign(room_id: room_id)
+         |> assign(room_server: room_server)
+         |> assign(player_id: player.player_id)
+         |> assign_game_server()}
+      else
+        {:error, "cannot join, no user found for user_id=#{user_id}"}
+      end
     else
-      {:error, "room #{room_id} does not exist"}
+      {:error, "cannot join, room does not exist for room_id=#{room_id}"}
     end
   end
 
@@ -139,8 +149,14 @@ defmodule MidimatchesWeb.RoomChannel do
         %{"message_text" => message_text},
         %Phoenix.Socket{assigns: %{player_id: player_id}} = socket
       ) do
+    player =
+      player_id
+      |> UserCache.get_user_by_id()
+      |> Utils.user_to_player()
+
     chat_message = %ChatMessage{
-      player_id: player_id,
+      sender_id: player_id,
+      sender_alias: player.player_alias,
       message_text: message_text,
       timestamp: Utils.curr_utc_timestamp()
     }

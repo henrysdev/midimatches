@@ -587,9 +587,7 @@ input:checked + .slider:before {
 }
 
 .game_right_content_pane_wrapper {
-  /* width: 20%; */
-  height: 100%;
-  /* height: calc(100% - 200px); */
+  height: calc(100% - 40px);
 }
 
 .left_game_multi_container {
@@ -662,6 +660,7 @@ input:checked + .slider:before {
 }
 
 .gameplay_timer {
+  padding-top: 4px;
   text-align: center;
   vertical-align: top;
   bottom: 10px;
@@ -669,9 +668,10 @@ input:checked + .slider:before {
 
 .timer_box_anchor {
   position: absolute;
-  bottom: 48px;
-  width: 256px;
-  left: calc(50% - 100px);
+  width: 300px;
+  left: calc(50% - 150px);
+  bottom: -8px;
+  overflow: hidden;
 }
 
 .timer_box_wrapper {
@@ -682,11 +682,11 @@ input:checked + .slider:before {
 }
 
 .timer_box {
-  height: 36px;
+  height: 160px;
 }
 
 .timer_box_inner {
-  height: 36px;
+  height: 100%;
   /* background-color: #fff; */
   box-shadow: inset -1em -1em 1em rgba(0, 0, 0, 0.1);
 
@@ -1111,6 +1111,7 @@ strong {
 
 .view_container {
   height: 100%;
+  position: relative;
 }
 
 .styled_button {

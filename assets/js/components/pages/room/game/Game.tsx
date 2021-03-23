@@ -127,7 +127,6 @@ const Game: React.FC<GameProps> = ({
                 return <GameEndView />;
             }
           })()}
-          {/* <GameRightPane /> */}
         </InGameFrame>
       </GameSubContexts>
     </GameContext.Provider>

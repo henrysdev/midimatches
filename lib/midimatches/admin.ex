@@ -5,7 +5,8 @@ defmodule Midimatches.Admin do
 
   alias Midimatches.{
     Types.AdminMessage,
-    Types.User
+    Types.User,
+    UserCache
   }
 
   alias MidimatchesWeb.PresenceTracker
@@ -28,13 +29,14 @@ defmodule Midimatches.Admin do
     handle_alert_broadcast("user:#{user_id}", message, alert_lifetime)
   end
 
-  @spec list_user_sessions() :: list(User)
-  def list_user_sessions do
+  @spec list_active_users() :: list(User)
+  @doc """
+  Get a list of all currently active users
+  """
+  def list_active_users do
     PresenceTracker.get_tracked_conns()
-
-    # TODO call ETS to get full user object for given user_id
-
-    []
+    |> Enum.map(fn {user_id, _meta} -> UserCache.get_user_by_id(user_id) end)
+    |> Enum.reject(&is_nil(&1))
   end
 
   defp handle_alert_broadcast(topic, message, alert_lifetime) do

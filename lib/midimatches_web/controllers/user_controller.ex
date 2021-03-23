@@ -4,7 +4,11 @@ defmodule MidimatchesWeb.UserController do
   """
   use MidimatchesWeb, :controller
 
-  alias Midimatches.Utils
+  alias Midimatches.{
+    Types.User,
+    UserCache,
+    Utils
+  }
 
   require Logger
 
@@ -16,14 +20,35 @@ defmodule MidimatchesWeb.UserController do
   Get current session user
   """
   def self(conn, _params) do
-    curr_user =
-      conn
-      |> get_session(:user)
+    session_user = get_session(conn, :user)
 
-    conn
-    |> json(%{
-      user: curr_user
-    })
+    if is_nil(session_user) do
+      json(conn, %{
+        user: nil
+      })
+    else
+      curr_user =
+        session_user
+        |> handle_user_session(conn)
+        |> Utils.server_to_client_user()
+
+      conn
+      |> json(%{
+        user: curr_user
+      })
+    end
+  end
+
+  defp handle_user_session(session_user, conn) when is_struct(session_user) do
+    session_user
+    |> Map.from_struct()
+    |> handle_user_session(conn)
+  end
+
+  defp handle_user_session(session_user, conn) when is_map(session_user) do
+    struct(User, session_user)
+    |> update_remote_ip(conn)
+    |> UserCache.get_or_insert_user()
   end
 
   @spec reset(Plug.Conn.t(), map) :: Plug.Conn.t()
@@ -31,6 +56,11 @@ defmodule MidimatchesWeb.UserController do
   Reset user session
   """
   def reset(conn, _params) do
+    conn
+    |> get_session(:user)
+    |> (& &1.user_id).()
+    |> UserCache.delete_user_by_id()
+
     conn
     |> delete_session(:user)
     |> json(%{})
@@ -42,20 +72,35 @@ defmodule MidimatchesWeb.UserController do
   """
   def upsert(conn, %{"user_alias" => user_alias}) do
     with {:ok, user_alias} <- parse_user_alias(user_alias) do
-      if is_nil(get_session(conn, :user)) do
-        # TODO persist new user
-        new_user = %{user_alias: user_alias, user_id: Utils.gen_uuid()}
+      if conn |> get_session(:user) |> is_nil() do
+        # create and insert new user
+        user_id = Utils.gen_uuid()
 
-        put_session(conn, :user, new_user)
+        new_user =
+          %User{user_alias: user_alias, user_id: user_id}
+          |> update_remote_ip(conn)
+          |> UserCache.upsert_user()
+
+        conn
+        |> put_session(:user, new_user)
         |> json(%{})
       else
-        existing_user = get_session(conn, :user)
+        # update an existing user
+        existing_user =
+          get_session(conn, :user)
+          |> (& &1.user_id).()
+          |> UserCache.get_user_by_id()
 
-        put_session(conn, :user, %{existing_user | user_alias: user_alias})
+        updated_user =
+          %User{existing_user | user_alias: user_alias}
+          |> update_remote_ip(conn)
+          |> UserCache.upsert_user()
+
+        conn
+        |> put_session(:user, updated_user)
         |> json(%{})
       end
     else
-      # TODO persist updated user
       {:error, reason} ->
         Logger.warn("update user failed with error reason #{reason}")
 
@@ -90,5 +135,10 @@ defmodule MidimatchesWeb.UserController do
     else
       {:ok, user_alias}
     end
+  end
+
+  defp update_remote_ip(%User{} = user, conn) do
+    remote_ip = to_string(:inet_parse.ntoa(conn.remote_ip))
+    %User{user | remote_ip: remote_ip}
   end
 end
