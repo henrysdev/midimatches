@@ -20,15 +20,29 @@ defmodule MidimatchesWeb.UserController do
   Get current session user
   """
   def self(conn, _params) do
-    curr_user =
-      conn
-      |> get_session(:user)
-      |> UserCache.get_or_insert_user()
+    session_user = get_session(conn, :user)
 
-    conn
-    |> json(%{
-      user: curr_user
-    })
+    if is_nil(session_user) do
+      json(conn, %{
+        user: nil
+      })
+    else
+      curr_user = deserialize_user_session(session_user)
+
+      conn
+      |> json(%{
+        user: curr_user
+      })
+    end
+  end
+
+  defp deserialize_user_session(%User{} = session_user) do
+    UserCache.get_or_insert_user(session_user)
+  end
+
+  defp deserialize_user_session(session_user) when is_map(session_user) do
+    struct(User, session_user)
+    |> UserCache.get_or_insert_user()
   end
 
   @spec reset(Plug.Conn.t(), map) :: Plug.Conn.t()

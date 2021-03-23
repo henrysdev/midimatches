@@ -8,6 +8,7 @@ defmodule Midimatches.UtilsTest do
     Types.ClientRoomState,
     Types.GameRules,
     Types.Player,
+    Types.User,
     Types.WinResult,
     Utils
   }
@@ -154,5 +155,19 @@ defmodule Midimatches.UtilsTest do
 
       assert actual_time == expected_time
     end
+  end
+
+  test "user to player transform" do
+    user = %User{
+      user_id: "bob123",
+      user_alias: "djdjdj"
+    }
+
+    expected_player = %Player{
+      player_id: "bob123",
+      player_alias: "djdjdj"
+    }
+
+    assert Utils.user_to_player(user) == expected_player
   end
 end

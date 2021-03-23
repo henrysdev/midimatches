@@ -83,7 +83,7 @@ const RoomPage: React.FC = () => {
     const path = window.location.pathname.split("/");
     const roomId = path[path.length - 1];
     const channel: Channel = socket.channel(`room:${roomId}`, {
-      player_id: currentUser.userId,
+      user_id: currentUser.userId,
     });
     channel
       .join()

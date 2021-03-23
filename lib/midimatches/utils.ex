@@ -10,6 +10,8 @@ defmodule Midimatches.Utils do
     Types.ClientGameState,
     Types.ClientRoomGameJoin,
     Types.ClientRoomState,
+    Types.Player,
+    Types.User,
     Types.WinResult
   }
 
@@ -158,5 +160,19 @@ defmodule Midimatches.Utils do
   def calc_future_timestamp(millis_in_future, curr \\ curr_utc_timestamp())
       when is_nil(millis_in_future) == false do
     curr + millis_in_future
+  end
+
+  @spec user_to_player(%User{}) :: %Player{}
+  @doc """
+  Transforms a user struct to a player struct
+  """
+  def user_to_player(%User{
+        user_id: user_id,
+        user_alias: user_alias
+      }) do
+    %Player{
+      player_id: user_id,
+      player_alias: user_alias
+    }
   end
 end
