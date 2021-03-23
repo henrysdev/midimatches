@@ -19,7 +19,7 @@ const GameRightPane: React.FC<GameRightPaneProps> = memo(({}) => {
   return (
     <div className="right_game_content_pane_flex_anchor">
       <div className="chatbox_flex_wrapper inset_3d_border_deep">
-        <ChatBox players={players} currPlayer={currPlayer} />
+        <ChatBox currPlayer={currPlayer} />
       </div>
     </div>
   );

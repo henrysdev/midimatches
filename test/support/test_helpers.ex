@@ -10,7 +10,7 @@ defmodule Midimatches.TestHelpers do
     Types.Loop
   }
 
-  def flush_user_cache() do
+  def flush_user_cache do
     if :ets.whereis(:user_cache) != :undefined do
       :ets.match_delete(:user_cache, {:"$1", :"$2"})
     else

@@ -2,9 +2,9 @@ defmodule Midimatches.UserCacheTest do
   use ExUnit.Case
 
   alias Midimatches.{
+    TestHelpers,
     Types.User,
-    UserCache,
-    TestHelpers
+    UserCache
   }
 
   setup do

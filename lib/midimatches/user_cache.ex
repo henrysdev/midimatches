@@ -1,4 +1,7 @@
 defmodule Midimatches.UserCache do
+  @moduledoc """
+  API wrapper around the user_cache ets table
+  """
   use GenServer
 
   alias Midimatches.Types.User
