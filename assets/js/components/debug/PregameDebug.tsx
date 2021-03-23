@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 
-import { InGameFrame, GameSubContexts } from "../pages/room/game";
-import { GameContext, ToneAudioContext, PlayerContext } from "../../contexts";
+import { InGameFrame, GameSubContexts, GameLeftPane } from "../pages/room/game";
+import {
+  GameContext,
+  ToneAudioContext,
+  PlayerContext,
+  KeyboardInputContext,
+} from "../../contexts";
 import { Keyboard } from "../audio";
 import {
   GameStartView,
@@ -22,6 +27,9 @@ interface FakeTone {
 const mockTone: FakeTone = {
   Master: {
     mute: false,
+    volume: {
+      value: 0,
+    },
   },
   PolySynth: (param: any): FakeTone => {
     return {
@@ -208,21 +216,30 @@ const PregameDebug: React.FC = () => {
                 samplePlayer: mockSamplePlayer,
               }}
             >
-              <InGameFrame title="AAA">
-                <div></div>
-                <PlaybackVotingView
-                  pushMessageToChannel={() => {}}
-                  stopSample={() => {}}
-                  isSamplePlayerLoaded={true}
-                />
-                <div></div>
-                {/* <RecordingView
+              <KeyboardInputContext.Provider
+                value={{
+                  setDisableKeyboardInput: () => {},
+                  disableKeyboardInput: false,
+                  setShowKeyboardLabels: () => {},
+                  showKeyboardLabels: true,
+                }}
+              >
+                <InGameFrame title="AAA">
+                  <GameLeftPane />
+                  {/* <PlaybackVotingView
+                    pushMessageToChannel={() => {}}
+                    stopSample={() => {}}
+                    isSamplePlayerLoaded={true}
+                  /> */}
+                  <RoundEndView />
+                  <div></div>
+                  {/* <RecordingView
                 isContestant={true}
                 pushMessageToChannel={() => {}}
                 stopSample={() => {}}
               /> */}
-              </InGameFrame>
-              {/* <DynamicContent>
+                </InGameFrame>
+                {/* <DynamicContent>
               <div>
                 <Keyboard
                   activeMidiList={[50]}
@@ -233,6 +250,7 @@ const PregameDebug: React.FC = () => {
                 />
               </div>
             </DynamicContent> */}
+              </KeyboardInputContext.Provider>
             </ToneAudioContext.Provider>
           </PlayerContext.Provider>
         </GameSubContexts>

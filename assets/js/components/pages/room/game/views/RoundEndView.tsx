@@ -40,27 +40,25 @@ const RoundEndView: React.FC<RoundEndViewProps> = () => {
 
   return (
     <div className="view_container">
-      <div>
-        <MediumLargeTitle title={`END OF ROUND ${roundNum}`} />
-        <DynamicContent>
-          {!!winningPlayers && !!roundWinners ? (
-            <WinResultText
-              winResult={roundWinners}
-              winningPlayers={winningPlayers}
-              roundNum={roundNum}
-              endOfGame={false}
-            />
-          ) : (
-            <></>
-          )}
-        </DynamicContent>
-        <TimerBox>
-          <Timer
-            descriptionText={"Next round in "}
-            duration={calcMsUntilMsTimestamp(viewDeadline) + clockOffset}
+      <MediumLargeTitle title={`END OF ROUND ${roundNum}`} />
+      <DynamicContent>
+        {!!winningPlayers && !!roundWinners ? (
+          <WinResultText
+            winResult={roundWinners}
+            winningPlayers={winningPlayers}
+            roundNum={roundNum}
+            endOfGame={false}
           />
-        </TimerBox>
-      </div>
+        ) : (
+          <></>
+        )}
+      </DynamicContent>
+      <TimerBox>
+        <Timer
+          descriptionText={"Next round in "}
+          duration={calcMsUntilMsTimestamp(viewDeadline) + clockOffset}
+        />
+      </TimerBox>
     </div>
   );
 };
