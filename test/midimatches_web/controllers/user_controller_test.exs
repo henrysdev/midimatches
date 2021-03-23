@@ -19,7 +19,7 @@ defmodule MidimatchesWeb.UserControllerTest do
 
     conn =
       session_conn()
-      |> put_session(:user_id, user_id)
+      |> put_session(:user, user)
       |> get(Routes.user_path(conn, :self))
 
     assert json_response(conn, 200) == %{
@@ -35,11 +35,11 @@ defmodule MidimatchesWeb.UserControllerTest do
 
     conn =
       session_conn()
-      |> put_session(:user_id, user_id)
+      |> put_session(:user, user)
       |> get(Routes.user_path(conn, :reset))
 
     assert json_response(conn, 200) == %{}
-    assert is_nil(get_session(conn, :user_id))
+    assert is_nil(get_session(conn, :user))
     assert is_nil(UserCache.get_user(user_id))
   end
 
@@ -51,7 +51,10 @@ defmodule MidimatchesWeb.UserControllerTest do
         session_conn()
         |> post(Routes.user_path(conn, :upsert, %{"user_alias" => user_alias}))
 
-      user_id = get_session(conn, :user_id)
+      user_id =
+        conn
+        |> get_session(:user)
+        |> (& &1.user_id).()
 
       expected_user = %User{
         user_id: user_id,
@@ -75,11 +78,11 @@ defmodule MidimatchesWeb.UserControllerTest do
 
       conn =
         session_conn()
-        |> put_session(:user_id, user_id)
+        |> put_session(:user, user)
         |> post(Routes.user_path(conn, :upsert, %{"user_alias" => "helloworld"}))
 
       assert json_response(conn, 200) == %{}
-      assert get_session(conn, :user_id) == user_id
+      assert get_session(conn, :user) |> (& &1.user_id).() == user_id
       assert UserCache.get_user(user_id).user_alias == "helloworld"
     end
 
@@ -96,7 +99,7 @@ defmodule MidimatchesWeb.UserControllerTest do
 
       conn =
         session_conn()
-        |> put_session(:user_id, user_id)
+        |> put_session(:user, user)
         |> post(Routes.user_path(conn, :upsert, %{"user_alias" => ""}))
 
       assert json_response(conn, 400)["error"] =~ "user_alias"

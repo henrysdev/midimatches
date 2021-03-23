@@ -114,7 +114,7 @@ defmodule Midimatches.UserCacheTest do
         user_alias: "foobarzoo"
       }
 
-      returned_user = UserCache.get_or_insert(user)
+      returned_user = UserCache.get_or_insert_user(user)
 
       assert returned_user == user
     end
@@ -134,7 +134,7 @@ defmodule Midimatches.UserCacheTest do
 
       UserCache.upsert_user(user)
 
-      returned_user = UserCache.get_or_insert(updated_user)
+      returned_user = UserCache.get_or_insert_user(updated_user)
 
       assert returned_user == user
     end

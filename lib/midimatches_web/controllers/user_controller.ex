@@ -22,8 +22,8 @@ defmodule MidimatchesWeb.UserController do
   def self(conn, _params) do
     curr_user =
       conn
-      |> get_session(:user_id)
-      |> UserCache.get_user()
+      |> get_session(:user)
+      |> UserCache.get_or_insert_user()
 
     conn
     |> json(%{
@@ -37,11 +37,12 @@ defmodule MidimatchesWeb.UserController do
   """
   def reset(conn, _params) do
     conn
-    |> get_session(:user_id)
+    |> get_session(:user)
+    |> (& &1.user_id).()
     |> UserCache.delete_user()
 
     conn
-    |> delete_session(:user_id)
+    |> delete_session(:user)
     |> json(%{})
   end
 
@@ -51,25 +52,31 @@ defmodule MidimatchesWeb.UserController do
   """
   def upsert(conn, %{"user_alias" => user_alias}) do
     with {:ok, user_alias} <- parse_user_alias(user_alias) do
-      if conn |> get_session(:user_id) |> is_nil() do
+      if conn |> get_session(:user) |> is_nil() do
         # create and insert new user
         user_id = Utils.gen_uuid()
-        new_user = %User{user_alias: user_alias, user_id: user_id}
-        UserCache.upsert_user(new_user)
+
+        new_user =
+          %User{user_alias: user_alias, user_id: user_id}
+          |> UserCache.upsert_user()
 
         conn
-        |> put_session(:user_id, user_id)
+        |> put_session(:user, new_user)
         |> json(%{})
       else
         # update an existing user
         existing_user =
-          get_session(conn, :user_id)
+          get_session(conn, :user)
+          |> (& &1.user_id).()
           |> UserCache.get_user()
 
-        updated_user = %User{existing_user | user_alias: user_alias}
-        UserCache.upsert_user(updated_user)
+        updated_user =
+          %User{existing_user | user_alias: user_alias}
+          |> UserCache.upsert_user()
 
-        json(conn, %{})
+        conn
+        |> put_session(:user, updated_user)
+        |> json(%{})
       end
     else
       {:error, reason} ->

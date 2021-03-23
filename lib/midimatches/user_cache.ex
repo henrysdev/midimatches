@@ -61,12 +61,12 @@ defmodule Midimatches.UserCache do
     :ets.member(:user_cache, user_id)
   end
 
-  @spec get_or_insert(%User{}) :: %User{}
+  @spec get_or_insert_user(%User{}) :: %User{}
   @doc """
   If a version of the given user already exists in the cache, returns it. Otherwise, insert the
   provided user and return it.
   """
-  def get_or_insert(%User{user_id: user_id} = user) do
+  def get_or_insert_user(%User{user_id: user_id} = user) do
     if user_exists?(user_id) do
       get_user(user_id)
     else
