@@ -1,8 +1,8 @@
 defmodule MidimatchesWeb.UserControllerTest do
   alias Midimatches.{
+    TestHelpers,
     Types.User,
-    UserCache,
-    TestHelpers
+    UserCache
   }
 
   use MidimatchesWeb.ConnCase, async: true
