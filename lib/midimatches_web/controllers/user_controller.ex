@@ -4,7 +4,11 @@ defmodule MidimatchesWeb.UserController do
   """
   use MidimatchesWeb, :controller
 
-  alias Midimatches.Utils
+  alias Midimatches.{
+    Types.User,
+    UserCache,
+    Utils
+  }
 
   require Logger
 
@@ -18,7 +22,8 @@ defmodule MidimatchesWeb.UserController do
   def self(conn, _params) do
     curr_user =
       conn
-      |> get_session(:user)
+      |> get_session(:user_id)
+      |> UserCache.get_user()
 
     conn
     |> json(%{
@@ -32,7 +37,11 @@ defmodule MidimatchesWeb.UserController do
   """
   def reset(conn, _params) do
     conn
-    |> delete_session(:user)
+    |> get_session(:user_id)
+    |> UserCache.delete_user()
+
+    conn
+    |> delete_session(:user_id)
     |> json(%{})
   end
 
@@ -42,20 +51,27 @@ defmodule MidimatchesWeb.UserController do
   """
   def upsert(conn, %{"user_alias" => user_alias}) do
     with {:ok, user_alias} <- parse_user_alias(user_alias) do
-      if is_nil(get_session(conn, :user)) do
-        # TODO persist new user
-        new_user = %{user_alias: user_alias, user_id: Utils.gen_uuid()}
+      if conn |> get_session(:user_id) |> is_nil() do
+        # create and insert new user
+        user_id = Utils.gen_uuid()
+        new_user = %User{user_alias: user_alias, user_id: user_id}
+        UserCache.upsert_user(new_user)
 
-        put_session(conn, :user, new_user)
+        conn
+        |> put_session(:user_id, user_id)
         |> json(%{})
       else
-        existing_user = get_session(conn, :user)
+        # update an existing user
+        existing_user =
+          get_session(conn, :user_id)
+          |> UserCache.get_user()
 
-        put_session(conn, :user, %{existing_user | user_alias: user_alias})
-        |> json(%{})
+        updated_user = %User{existing_user | user_alias: user_alias}
+        UserCache.upsert_user(updated_user)
+
+        json(conn, %{})
       end
     else
-      # TODO persist updated user
       {:error, reason} ->
         Logger.warn("update user failed with error reason #{reason}")
 

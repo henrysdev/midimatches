@@ -3,19 +3,12 @@ defmodule Midimatches.UserCacheTest do
 
   alias Midimatches.{
     Types.User,
-    UserCache
+    UserCache,
+    TestHelpers
   }
 
-  defp flush_ets_table() do
-    if :ets.whereis(:user_cache) != :undefined do
-      :ets.match_delete(:user_cache, {:"$1", :"$2"})
-    else
-      :ok
-    end
-  end
-
   setup do
-    on_exit(fn -> flush_ets_table() end)
+    on_exit(fn -> TestHelpers.flush_user_cache() end)
     :ok
   end
 
