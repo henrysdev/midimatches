@@ -77,6 +77,8 @@ const PracticePage: React.FC<PracticePageProps> = ({ children }) => {
     setCurrentSample(newSample);
   }, [currSampleIdx]);
 
+  useEffect(() => {}, [toneAudioContext.isSamplePlayerLoaded]);
+
   const [currentRecording, setCurrentRecording] = useState<any>();
 
   const samples = useMemo(() => {
@@ -135,6 +137,9 @@ const PracticePage: React.FC<PracticePageProps> = ({ children }) => {
                               currentSample={currentSample}
                               stopSample={toneAudioContext.stopSample}
                               samplePlayer={toneAudioContext.samplePlayer}
+                              isSamplePlayerLoaded={
+                                toneAudioContext.isSamplePlayerLoaded
+                              }
                               advanceView={() => {
                                 setRoundRecordingStartTime(currUtcTimestamp());
                                 setCurrentView(PRACTICE_GAME_VIEW.RECORDING);
