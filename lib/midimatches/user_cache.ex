@@ -51,4 +51,12 @@ defmodule Midimatches.UserCache do
   def delete_user(user_id) do
     :ets.delete(:user_cache, user_id)
   end
+
+  @spec user_exists?(id()) :: boolean()
+  @doc """
+  Returns truthy whether or not a user exists in the cache for a given user_id
+  """
+  def user_exists?(user_id) do
+    :ets.member(:user_cache, user_id)
+  end
 end

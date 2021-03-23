@@ -91,4 +91,17 @@ defmodule Midimatches.UserCacheTest do
     found_user_after = UserCache.get_user("abc123")
     assert(is_nil(found_user_after))
   end
+
+  test "checks that user exists in user cache" do
+    user_id = "abc123"
+
+    user = %User{
+      user_id: user_id,
+      user_alias: "foobarzoo"
+    }
+
+    assert UserCache.user_exists?(user_id) == false
+    UserCache.upsert_user(user)
+    assert UserCache.user_exists?(user_id) == true
+  end
 end
