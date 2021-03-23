@@ -26,6 +26,7 @@ import { PracticeSampleSelectionView } from "./views/PracticeSampleSelectionView
 import { VinylLoadingSpinner, DynamicContent } from "../../common";
 import { PracticePlaybackView } from "./views/PracticePlaybackView";
 import { PageWrapper } from "../";
+import { BrowserWarning } from "../../pages";
 
 interface PracticePageProps {
   children?: any;
@@ -197,6 +198,7 @@ const PracticePage: React.FC<PracticePageProps> = ({ children }) => {
                   <></>
                 )}
               </InGameFrame>
+              <BrowserWarning />
             </GameRulesContext.Provider>
           </GameContext.Provider>
         </KeyboardInputContext.Provider>

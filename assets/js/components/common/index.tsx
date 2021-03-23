@@ -24,3 +24,4 @@ export { MidiMatchesLogoSvg } from "./MidiMatchesLogoSvg";
 export { MaterialIcon } from "./MaterialIcon";
 export { FooterBar } from "./FooterBar";
 export { ArrowButton } from "./ArrowButton";
+export { Modal } from "./Modal";
