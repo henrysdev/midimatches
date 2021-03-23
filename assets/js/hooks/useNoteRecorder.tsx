@@ -13,12 +13,17 @@ import {
   scheduleRecordingDeadlines,
   getRecordingStartTimestamp,
 } from "../helpers";
-import { DEFAULT_MANUAL_NOTE_VELOCITY } from "../constants";
+import {
+  DEFAULT_MANUAL_NOTE_VELOCITY,
+  MIN_NOTE_NUMBER,
+  MAX_NOTE_NUMBER,
+} from "../constants";
 import {
   msToMicros,
   midiVelocityToToneVelocity,
   currUtcTimestamp,
 } from "../utils";
+import { MidiNumbers } from "../components/reactpiano";
 
 interface NoteRecorderProps {
   submitRecording: Function;
@@ -46,6 +51,7 @@ interface NoteRecorder {
     noteNumber: number
   ) => { noteNumber: number; noteVelocity: number };
   stopRecordedNote: (noteNumber: number) => { noteNumber: number };
+  stopAllActiveNotes: () => void;
 }
 
 export function useNoteRecorder({
@@ -142,6 +148,11 @@ export function useNoteRecorder({
       internalStateRef.current as InternalState
     );
     const noteOnEvent = webMidiEventToMidiNoteEvent(midiEvent, currTimestep);
+    if (
+      noteOnEvent.value >= MIN_NOTE_NUMBER &&
+      noteOnEvent.value <= MAX_NOTE_NUMBER
+    ) {
+    }
     const activeNotesCopy = _.cloneDeep(activeNotes);
     activeNotesCopy.set(noteOnEvent.value, noteOnEvent);
     setInternalState({ activeNotes: activeNotesCopy });
@@ -219,12 +230,22 @@ export function useNoteRecorder({
     return { noteNumber };
   };
 
+  const stopAllActiveNotes = () => {
+    if (!!internalState && !!internalState.activeNotes) {
+      Array.from(internalState.activeNotes.keys()).forEach((midiNum) => {
+        console.log("AAA");
+        stopRecordedNote(midiNum);
+      });
+    }
+  };
+
   return {
     activeMidiList,
     handleNoteOn,
     handleNoteOff,
     playRecordedNote,
     stopRecordedNote,
+    stopAllActiveNotes,
   };
 }
 

@@ -1,15 +1,11 @@
 import React from "react";
-import { Piano, MidiNumbers, KeyboardShortcuts } from "../reactpiano";
+import { Piano, MidiNumbers } from "../reactpiano";
+import { MIN_C_OCTAVE, MAX_C_OCTAVE } from "../../constants";
 
 const noteRange = {
-  first: MidiNumbers.fromNote("c3"),
-  last: MidiNumbers.fromNote("c5"),
+  first: MidiNumbers.fromNote(`c${MIN_C_OCTAVE}`),
+  last: MidiNumbers.fromNote(`c${MAX_C_OCTAVE + 1}`),
 };
-const keyboardShortcuts = KeyboardShortcuts.create({
-  firstNote: noteRange.first,
-  lastNote: noteRange.last,
-  keyboardConfig: KeyboardShortcuts.HOME_ROW,
-});
 
 interface KeyboardProps {
   activeMidiList: number[];
@@ -18,44 +14,34 @@ interface KeyboardProps {
   hideKeyboard?: boolean;
   disableKeyboardInput?: boolean;
   isRecording: boolean;
+  keyboardShortcuts: any;
+  showKeyboardLabels: boolean;
 }
 
 const Keyboard: React.FC<KeyboardProps> = ({
   activeMidiList,
   playNote,
   stopNote,
+  keyboardShortcuts,
+  showKeyboardLabels,
   hideKeyboard = false,
   disableKeyboardInput = false,
   isRecording = false,
 }) => {
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        padding: "8px",
-      }}
-    >
-      <div
-        style={{
-          display: "inline-block",
-        }}
-      >
-        <Piano
-          frozen={hideKeyboard}
-          disabled={hideKeyboard}
-          disableKeyboardInput={disableKeyboardInput}
-          noteRange={noteRange}
-          keyboardShortcuts={keyboardShortcuts}
-          activeNotes={activeMidiList}
-          recording={!!isRecording}
-          playNote={(midiNumber: number) => playNote(midiNumber)}
-          stopNote={(midiNumber: number) => stopNote(midiNumber)}
-          width={512}
-        />
-      </div>
-    </div>
+    <Piano
+      frozen={hideKeyboard}
+      disabled={hideKeyboard}
+      disableKeyboardInput={disableKeyboardInput}
+      noteRange={noteRange}
+      keyboardShortcuts={keyboardShortcuts}
+      activeNotes={activeMidiList}
+      recording={!!isRecording}
+      playNote={(midiNumber: number) => playNote(midiNumber)}
+      stopNote={(midiNumber: number) => stopNote(midiNumber)}
+      showNoteLabels={showKeyboardLabels}
+      width={512}
+    />
   );
 };
 export { Keyboard };

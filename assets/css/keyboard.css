@@ -1,8 +1,11 @@
 :root {
   --selected_player_color: #296cff;
   --recording_color: #ef5757;
-  --note_label_for_black_keys: #f8e8d5;
-  --note_label_for_white_keys: #888;
+  --note_label_for_black_keys: yellow;
+  --note_label_for_white_keys: black;
+  --corner_border_radius: 0px;
+  --key_border_radius: 0 0 var(--corner_border_radius)
+    var(--corner_border_radius);
 }
 
 .ReactPiano__Keyboard {
@@ -24,7 +27,7 @@
   background: rgb(33, 32, 32);
   border: 1px solid #fff;
   border-top: 1px solid transparent;
-  border-radius: 0 0 4px 4px;
+  border-radius: var(--key_border_radius);
   cursor: pointer;
   height: 66%;
   /* Overlay on top of natural keys */
@@ -40,7 +43,7 @@
 .ReactPiano__Key--natural {
   background: #f8f6f1;
   border: 1px solid #888;
-  border-radius: 0 0 4px 4px;
+  border-radius: var(--key_border_radius);
   cursor: pointer;
   z-index: 0;
   /*
@@ -54,13 +57,13 @@
 .ReactPiano__Key--natural:last-child {
   /* Don't render extra margin on the last natural note */
   margin-right: 0;
-  border-top-right-radius: 4px;
+  border-top-right-radius: var(--corner_border_radius);
 }
 
 .ReactPiano__Key--natural:first-child {
   /* Don't render extra margin on the last natural note */
   margin-right: 0;
-  border-top-left-radius: 4px;
+  border-top-left-radius: var(--corner_border_radius);
 }
 
 /*
@@ -115,13 +118,13 @@
   border: 1px solid #fff;
   border-top: 1px solid var(--selected_player_color);
   /* Slight height reduction for "pushed-down" effect */
-  height: 65%;
+  /* height: 65%; */
 }
 
 .ReactPiano__Key--active.ReactPiano__Key--natural {
   border: 1px solid #fff;
   /* Slight height reduction for "pushed-down" effect */
-  height: 98%;
+  /* height: 98%; */
 }
 
 /*
@@ -148,6 +151,7 @@
 
 .ReactPiano__NoteLabel {
   font-size: 12px;
+  font-weight: 600;
   font-family: "Roboto", sans-serif;
   text-align: center;
   text-transform: capitalize;
@@ -165,6 +169,7 @@
 
 .ReactPiano__NoteLabel--natural {
   color: var(--note_label_for_white_keys);
+  /* text-shadow: 0 0 4px yellow; */
   margin-bottom: 3px;
 }
 

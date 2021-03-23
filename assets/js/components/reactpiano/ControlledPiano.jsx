@@ -16,6 +16,7 @@ class ControlledPiano extends React.Component {
     className: PropTypes.string,
     disabled: PropTypes.bool,
     frozen: PropTypes.bool,
+    showNoteLabels: PropTypes.bool,
     disableKeyboardInput: PropTypes.bool.isRequired,
     width: PropTypes.number,
     keyWidthToHeight: PropTypes.number,
@@ -197,6 +198,7 @@ class ControlledPiano extends React.Component {
           width={this.props.width}
           keyWidthToHeight={this.props.keyWidthToHeight}
           gliss={this.state.isMouseDown}
+          showNoteLabels={this.props.showNoteLabels}
           useTouchEvents={this.state.useTouchEvents}
           renderNoteLabel={this.renderNoteLabel}
           recording={this.props.recording}

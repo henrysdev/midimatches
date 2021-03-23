@@ -46,6 +46,12 @@ export const MAX_CHARS_PER_CHAT_MESSAGE = 80;
 export const MIN_PLAYER_ALIAS_LENGTH = 3;
 export const MAX_PLAYER_ALIAS_LENGTH = 10;
 
+export const MIN_C_OCTAVE = 1;
+export const MAX_C_OCTAVE = 7;
+export const MIDDLE_C_OCTAVE = 3;
+export const MIN_NOTE_NUMBER = 24;
+export const MAX_NOTE_NUMBER = 108;
+
 export const DEFAULT_SAMPLE_COLORS = [
   "rgba(255, 127, 0, 0.15)",
   "rgba(255, 213, 0, 0.15)",
@@ -92,7 +98,7 @@ export const DEFAULT_SYNTH_CONFIG = {
 } as Tone.SynthOptions;
 
 export const DEFAULT_FM_SYNTH_CONFIG = {
-  volume: -3,
+  volume: -4.5,
   detune: 0,
   portamento: 0,
   harmonicity: 1,
@@ -129,7 +135,7 @@ export const DEFAULT_FM_SYNTH_CONFIG = {
   modulationIndex: 12.22,
 } as any;
 
-export const DEFAULT_MANUAL_NOTE_VELOCITY = 65;
+export const DEFAULT_MANUAL_NOTE_VELOCITY = 100;
 
 // room creation parameters
 export const MIN_ROOM_SIZE = 3;
@@ -149,3 +155,4 @@ export const MAX_SOUND_VOLUME = 2.5;
 export const DEFAULT_ALERT_LIFETIME = 5_000;
 
 export const SOUND_VOLUME_COOKIE = "midimatches_soundvolume";
+export const SHOW_KEYBOARD_LABELS_COOKIE = "midimatches_keyboardlabels";

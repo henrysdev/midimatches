@@ -21,6 +21,7 @@ class Piano extends React.Component {
     width: PropTypes.number,
     keyWidthToHeight: PropTypes.number,
     recording: PropTypes.bool.isRequired,
+    showNoteLabels: PropTypes.bool.isRequired,
     keyboardShortcuts: PropTypes.arrayOf(
       PropTypes.shape({
         key: PropTypes.string.isRequired,

@@ -4,6 +4,7 @@ import {
   ToneAudioContext,
   GameContext,
   GameRulesContext,
+  KeyboardInputContext,
 } from "../../../contexts";
 import {
   useAudioContextProvider,
@@ -37,6 +38,7 @@ const PracticePage: React.FC<PracticePageProps> = ({ children }) => {
     setRoundRecordingStartTime,
   ] = useState<number>();
   const toneAudioContext = useAudioContextProvider();
+  const [showKeyboardLabels, setShowKeyboardLabels] = useState<boolean>(true);
   const gameContext = useMemo(() => {
     return {
       gameRules: {
@@ -97,86 +99,93 @@ const PracticePage: React.FC<PracticePageProps> = ({ children }) => {
   return (
     <PageWrapper socket={socket} currentUser={currentUser}>
       <ToneAudioContext.Provider value={toneAudioContext}>
-        <GameContext.Provider value={gameContext}>
-          <GameRulesContext.Provider
-            value={{ gameRules: gameContext.gameRules }}
-          >
-            <InGameFrame title="PRACTICE">
-              <div className="left_game_content_pane">
-                <div className="left_game_content_pane_flex_anchor">
-                  <div className="settings_flex_wrapper inset_3d_border_deep">
-                    <GameSettings />
+        <KeyboardInputContext.Provider
+          value={{
+            setShowKeyboardLabels,
+            showKeyboardLabels,
+          }}
+        >
+          <GameContext.Provider value={gameContext}>
+            <GameRulesContext.Provider
+              value={{ gameRules: gameContext.gameRules }}
+            >
+              <InGameFrame title="PRACTICE">
+                <div className="left_game_content_pane">
+                  <div className="left_game_content_pane_flex_anchor">
+                    <div className="settings_flex_wrapper inset_3d_border_deep">
+                      <GameSettings />
+                    </div>
                   </div>
                 </div>
-              </div>
-              {loading ? (
-                <DynamicContent>
-                  <div className="centered_div">
-                    <VinylLoadingSpinner />
-                  </div>
-                </DynamicContent>
-              ) : loaded ? (
-                <div style={{ height: "100%" }}>
-                  {(() => {
-                    switch (currentView) {
-                      case PRACTICE_GAME_VIEW.SAMPLE_SELECTION:
-                        return (
-                          <PracticeSampleSelectionView
-                            nextSample={incrCurrSampleIdx}
-                            prevSample={decrCurrSampleIdx}
-                            currentSample={currentSample}
-                            stopSample={toneAudioContext.stopSample}
-                            samplePlayer={toneAudioContext.samplePlayer}
-                            advanceView={() => {
-                              setRoundRecordingStartTime(currUtcTimestamp());
-                              setCurrentView(PRACTICE_GAME_VIEW.RECORDING);
-                            }}
-                          />
-                        );
-
-                      case PRACTICE_GAME_VIEW.RECORDING:
-                        return !!currentSample ? (
-                          <PracticeRecordingView
-                            setRecordingCallback={setCurrentRecording}
-                            sampleName={currentSample}
-                            stopSample={toneAudioContext.stopSample}
-                            advanceView={() => {
-                              setCurrentView(PRACTICE_GAME_VIEW.PLAYBACK);
-                            }}
-                          />
-                        ) : (
-                          <></>
-                        );
-
-                      case PRACTICE_GAME_VIEW.PLAYBACK:
-                        return !!currentSample ? (
-                          <div style={{ height: "100%" }}>
-                            <PracticePlaybackView
-                              isSamplePlayerLoaded={
-                                toneAudioContext.isSamplePlayerLoaded
-                              }
-                              sampleName={currentSample}
+                {loading ? (
+                  <DynamicContent>
+                    <div className="centered_div">
+                      <VinylLoadingSpinner />
+                    </div>
+                  </DynamicContent>
+                ) : loaded ? (
+                  <div style={{ height: "100%" }}>
+                    {(() => {
+                      switch (currentView) {
+                        case PRACTICE_GAME_VIEW.SAMPLE_SELECTION:
+                          return (
+                            <PracticeSampleSelectionView
+                              nextSample={incrCurrSampleIdx}
+                              prevSample={decrCurrSampleIdx}
+                              currentSample={currentSample}
                               stopSample={toneAudioContext.stopSample}
-                              recording={currentRecording}
+                              samplePlayer={toneAudioContext.samplePlayer}
                               advanceView={() => {
-                                setCurrentView(
-                                  PRACTICE_GAME_VIEW.SAMPLE_SELECTION
-                                );
+                                setRoundRecordingStartTime(currUtcTimestamp());
+                                setCurrentView(PRACTICE_GAME_VIEW.RECORDING);
                               }}
                             />
-                          </div>
-                        ) : (
-                          <></>
-                        );
-                    }
-                  })()}
-                </div>
-              ) : (
-                <></>
-              )}
-            </InGameFrame>
-          </GameRulesContext.Provider>
-        </GameContext.Provider>
+                          );
+
+                        case PRACTICE_GAME_VIEW.RECORDING:
+                          return !!currentSample ? (
+                            <PracticeRecordingView
+                              setRecordingCallback={setCurrentRecording}
+                              sampleName={currentSample}
+                              stopSample={toneAudioContext.stopSample}
+                              advanceView={() => {
+                                setCurrentView(PRACTICE_GAME_VIEW.PLAYBACK);
+                              }}
+                            />
+                          ) : (
+                            <></>
+                          );
+
+                        case PRACTICE_GAME_VIEW.PLAYBACK:
+                          return !!currentSample ? (
+                            <div style={{ height: "100%" }}>
+                              <PracticePlaybackView
+                                isSamplePlayerLoaded={
+                                  toneAudioContext.isSamplePlayerLoaded
+                                }
+                                sampleName={currentSample}
+                                stopSample={toneAudioContext.stopSample}
+                                recording={currentRecording}
+                                advanceView={() => {
+                                  setCurrentView(
+                                    PRACTICE_GAME_VIEW.SAMPLE_SELECTION
+                                  );
+                                }}
+                              />
+                            </div>
+                          ) : (
+                            <></>
+                          );
+                      }
+                    })()}
+                  </div>
+                ) : (
+                  <></>
+                )}
+              </InGameFrame>
+            </GameRulesContext.Provider>
+          </GameContext.Provider>
+        </KeyboardInputContext.Provider>
       </ToneAudioContext.Provider>
     </PageWrapper>
   );

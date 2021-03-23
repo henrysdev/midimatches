@@ -1,49 +1,13 @@
 {
   "rooms": [
     {
-      "room_name": "Apple",
+      "room_name": "Regular Room",
       "server": {
         "permanent_room": true,
         "timestep_size": 50,
         "quantization_threshold": 0.5,
         "rounds_to_win": 3,
         "max_players": 6,
-        "view_timeouts": {
-          "game_start": 10000,
-          "round_start": 3000,
-          "recording": 30000,
-          "playback_voting": 90000,
-          "round_end": 10000,
-          "game_end": 10000
-        }
-      }
-    },
-    {
-      "room_name": "Banana",
-      "server": {
-        "permanent_room": true,
-        "timestep_size": 50,
-        "quantization_threshold": 0.5,
-        "rounds_to_win": 3,
-        "max_players": 5,
-        "view_timeouts": {
-          "game_start": 10000,
-          "round_start": 3000,
-          "recording": 30000,
-          "playback_voting": 90000,
-          "round_end": 10000,
-          "game_end": 10000
-        }
-      }
-    },
-    {
-      "room_name": "Cherry",
-      "server": {
-        "permanent_room": true,
-        "timestep_size": 50,
-        "quantization_threshold": 0.5,
-        "rounds_to_win": 3,
-        "max_players": 4,
         "view_timeouts": {
           "game_start": 10000,
           "round_start": 3000,
