@@ -26,7 +26,7 @@ defmodule Midimatches.UserCacheTest do
         user_alias: "foobarzoo"
       }
 
-      UserCache.upsert_user(user)
+      assert user == UserCache.upsert_user(user)
       assert :ets.lookup(:user_cache, user_id) == [{user_id, user}]
     end
 
@@ -103,5 +103,40 @@ defmodule Midimatches.UserCacheTest do
     assert UserCache.user_exists?(user_id) == false
     UserCache.upsert_user(user)
     assert UserCache.user_exists?(user_id) == true
+  end
+
+  describe "get or insert" do
+    test "a new user into the user cache" do
+      user_id = "abc123"
+
+      user = %User{
+        user_id: user_id,
+        user_alias: "foobarzoo"
+      }
+
+      returned_user = UserCache.get_or_insert(user)
+
+      assert returned_user == user
+    end
+
+    test "an existing user into the user cache" do
+      user_id = "abc123"
+
+      user = %User{
+        user_id: user_id,
+        user_alias: "foobarzoo"
+      }
+
+      updated_user = %User{
+        user_id: user_id,
+        user_alias: "flabbergast"
+      }
+
+      UserCache.upsert_user(user)
+
+      returned_user = UserCache.get_or_insert(updated_user)
+
+      assert returned_user == user
+    end
   end
 end

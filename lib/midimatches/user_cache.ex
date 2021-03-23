@@ -25,12 +25,13 @@ defmodule Midimatches.UserCache do
     GenServer.start_link(__MODULE__, arg, name: __MODULE__)
   end
 
-  @spec upsert_user(%User{}) :: boolean()
+  @spec upsert_user(%User{}) :: %User{}
   @doc """
   Upserts a user in the user cache keyed by user_id
   """
   def upsert_user(%User{user_id: user_id} = user) do
     :ets.insert(:user_cache, {user_id, user})
+    user
   end
 
   @spec get_user(id()) :: %User{} | nil
@@ -58,5 +59,19 @@ defmodule Midimatches.UserCache do
   """
   def user_exists?(user_id) do
     :ets.member(:user_cache, user_id)
+  end
+
+  @spec get_or_insert(%User{}) :: %User{}
+  @doc """
+  If a version of the given user already exists in the cache, returns it. Otherwise, insert the
+  provided user and return it.
+  """
+  def get_or_insert(%User{user_id: user_id} = user) do
+    if user_exists?(user_id) do
+      get_user(user_id)
+    else
+      upsert_user(user)
+      user
+    end
   end
 end
