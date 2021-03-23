@@ -76,11 +76,12 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
   // init on load
   useEffect(() => {
     // TODO use ref so left arrow and right arrow event listeners work as desired
-    // window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("keydown", onKeyDown);
     Tone.start();
     return () => {
       stopSample();
       stopNotes();
+      window.removeEventListener("keydown", onKeyDown);
     };
   }, []);
 

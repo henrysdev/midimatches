@@ -2,7 +2,11 @@ import React, { useEffect, useState, useMemo } from "react";
 import { Loop, TimestepSlice, Note, Color } from "../../types";
 import { useGameRulesContext } from "../../hooks";
 import { microsToMs, msToSec } from "../../utils";
-import { DEFAULT_RECORDING_LENGTH } from "../../constants";
+import {
+  DEFAULT_RECORDING_LENGTH,
+  MAX_NOTE_NUMBER,
+  MIN_NOTE_NUMBER,
+} from "../../constants";
 
 interface RecordingVisualProps {
   recording: Loop;
@@ -14,7 +18,7 @@ interface RecordingVisualProps {
   listenComplete: boolean;
 }
 
-const keyboardRange = 100;
+const keyboardRange = MAX_NOTE_NUMBER - MIN_NOTE_NUMBER;
 
 const RecordingVisual: React.FC<RecordingVisualProps> = ({
   recording,
@@ -122,7 +126,9 @@ const drawNotePointByPercentages = (
   color: string
 ): JSX.Element => {
   const pixelStartX = `${notePoint.timestep * percentagePerTimestep}%`;
-  const pixelStartY = `${notePoint.key * percentagePerKey}%`;
+  const pixelStartY = `${
+    (notePoint.key - MIN_NOTE_NUMBER) * percentagePerKey
+  }%`;
   const pixelDuration = `${notePoint.duration * percentagePerTimestep}%`;
 
   return (
