@@ -10,6 +10,7 @@ defmodule Midimatches.Utils do
     Types.ClientGameState,
     Types.ClientRoomGameJoin,
     Types.ClientRoomState,
+    Types.ClientUser,
     Types.Player,
     Types.User,
     Types.WinResult
@@ -173,6 +174,20 @@ defmodule Midimatches.Utils do
     %Player{
       player_id: user_id,
       player_alias: user_alias
+    }
+  end
+
+  @spec server_to_client_user(%User{}) :: %ClientUser{}
+  @doc """
+  Transforms a user struct to a client user struct (filters out metadata fields)
+  """
+  def server_to_client_user(%User{
+        user_id: user_id,
+        user_alias: user_alias
+      }) do
+    %ClientUser{
+      user_id: user_id,
+      user_alias: user_alias
     }
   end
 end

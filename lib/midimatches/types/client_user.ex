@@ -1,4 +1,4 @@
-defmodule Midimatches.Types.User do
+defmodule Midimatches.Types.ClientUser do
   @moduledoc """
   Configurable fields for a new instance of a Musician in a room
   """
@@ -9,6 +9,5 @@ defmodule Midimatches.Types.User do
   typedstruct do
     field(:user_id, String.t(), enforce: true)
     field(:user_alias, String.t(), enforce: true)
-    field(:remote_ip, String.t())
   end
 end

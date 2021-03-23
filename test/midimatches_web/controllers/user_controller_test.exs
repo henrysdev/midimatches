@@ -56,12 +56,12 @@ defmodule MidimatchesWeb.UserControllerTest do
         |> get_session(:user)
         |> (& &1.user_id).()
 
-      expected_user = %User{
-        user_id: user_id,
-        user_alias: user_alias
-      }
+      assert %User{
+               user_id: ^user_id,
+               user_alias: ^user_alias,
+               remote_ip: _
+             } = UserCache.get_user_by_id(user_id)
 
-      assert UserCache.get_user_by_id(user_id) == expected_user
       assert json_response(conn, 200) == %{}
     end
 

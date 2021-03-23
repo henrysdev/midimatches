@@ -27,7 +27,10 @@ defmodule MidimatchesWeb.UserController do
         user: nil
       })
     else
-      curr_user = deserialize_user_session(session_user)
+      curr_user =
+        session_user
+        |> handle_user_session(conn)
+        |> Utils.server_to_client_user()
 
       conn
       |> json(%{
@@ -36,12 +39,15 @@ defmodule MidimatchesWeb.UserController do
     end
   end
 
-  defp deserialize_user_session(%User{} = session_user) do
-    UserCache.get_or_insert_user(session_user)
+  defp handle_user_session(session_user, conn) when is_struct(session_user) do
+    session_user
+    |> Map.from_struct()
+    |> handle_user_session(conn)
   end
 
-  defp deserialize_user_session(session_user) when is_map(session_user) do
+  defp handle_user_session(session_user, conn) when is_map(session_user) do
     struct(User, session_user)
+    |> update_remote_ip(conn)
     |> UserCache.get_or_insert_user()
   end
 
@@ -72,6 +78,7 @@ defmodule MidimatchesWeb.UserController do
 
         new_user =
           %User{user_alias: user_alias, user_id: user_id}
+          |> update_remote_ip(conn)
           |> UserCache.upsert_user()
 
         conn
@@ -86,6 +93,7 @@ defmodule MidimatchesWeb.UserController do
 
         updated_user =
           %User{existing_user | user_alias: user_alias}
+          |> update_remote_ip(conn)
           |> UserCache.upsert_user()
 
         conn
@@ -127,5 +135,10 @@ defmodule MidimatchesWeb.UserController do
     else
       {:ok, user_alias}
     end
+  end
+
+  defp update_remote_ip(%User{} = user, conn) do
+    remote_ip = to_string(:inet_parse.ntoa(conn.remote_ip))
+    %User{user | remote_ip: remote_ip}
   end
 end
