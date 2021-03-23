@@ -1,10 +1,23 @@
 defmodule Midimatches.AdminTest do
   use ExUnit.Case
+  use MidimatchesWeb.ChannelCase
 
   alias Midimatches.{
     Admin,
-    Types.AdminMessage
+    TestHelpers,
+    Types.AdminMessage,
+    Types.User,
+    UserCache
   }
+
+  alias MidimatchesWeb.{
+    UserChannel,
+    UserSocket
+  }
+
+  setup do
+    on_exit(fn -> TestHelpers.flush_user_cache() end)
+  end
 
   describe "alert all users" do
     test "with just a message to all connected users" do
@@ -84,9 +97,28 @@ defmodule Midimatches.AdminTest do
     end
   end
 
-  describe "list user sessions" do
-    test "returns empty list (not implemented yet)" do
-      res = Admin.list_user_sessions()
+  describe "list active users" do
+    test "returns the correct active users" do
+      user_id = "abc123"
+
+      user = %User{
+        user_id: user_id,
+        user_alias: "bronco"
+      }
+
+      UserCache.upsert_user(user)
+
+      {:ok, _, _socket} =
+        UserSocket
+        |> socket()
+        |> subscribe_and_join(UserChannel, "user:" <> user_id)
+
+      res = Admin.list_active_users()
+      assert res == [user]
+    end
+
+    test "returns empty list when no active users" do
+      res = Admin.list_active_users()
       assert res == []
     end
   end
