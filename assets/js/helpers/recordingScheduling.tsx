@@ -85,8 +85,10 @@ export function scheduleSamplePlay(
   startTime: Seconds = 0,
   loopIterations: number
 ): void {
-  samplePlayer.start(`+${startTime}`);
-  samplePlayer.stop(`+${startTime + loopIterations * DEFAULT_SAMPLE_LENGTH}`);
+  if (samplePlayer.loaded && !!samplePlayer.buffer) {
+    samplePlayer.start(`+${startTime}`);
+    samplePlayer.stop(`+${startTime + loopIterations * DEFAULT_SAMPLE_LENGTH}`);
+  }
 }
 
 function scheduleRecordingAudioTimeline(

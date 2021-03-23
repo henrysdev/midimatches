@@ -587,9 +587,7 @@ input:checked + .slider:before {
 }
 
 .game_right_content_pane_wrapper {
-  /* width: 20%; */
-  height: 100%;
-  /* height: calc(100% - 200px); */
+  height: calc(100% - 40px);
 }
 
 .left_game_multi_container {
