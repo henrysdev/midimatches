@@ -7,7 +7,8 @@ defmodule Midimatches.Types.ChatMessage do
 
   @derive Jason.Encoder
   typedstruct enforce: true do
-    field(:player_id, id())
+    field(:sender_id, id())
+    field(:sender_alias, String.t())
     field(:timestamp, integer())
     field(:message_text, String.t())
   end

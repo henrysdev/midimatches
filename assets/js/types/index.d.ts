@@ -120,7 +120,8 @@ export interface WinResult {
 }
 
 export interface ChatMessage {
-  playerId: string;
+  senderId: string;
+  senderAlias: string;
   messageText: string;
   timestamp: number;
 }

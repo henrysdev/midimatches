@@ -5,11 +5,10 @@ import { useChatContext, useKeyboardInputContext } from "../../hooks";
 import { MAX_CHARS_PER_CHAT_MESSAGE } from "../../constants";
 
 interface ChatBoxProps {
-  players: Array<Player>;
   currPlayer: Player;
 }
 
-const ChatBox: React.FC<ChatBoxProps> = memo(({ players, currPlayer }) => {
+const ChatBox: React.FC<ChatBoxProps> = memo(({ currPlayer }) => {
   const { setDisableKeyboardInput } = useKeyboardInputContext();
   const { chatHistory, submitChatMessageEvent } = useChatContext();
 
@@ -30,22 +29,12 @@ const ChatBox: React.FC<ChatBoxProps> = memo(({ players, currPlayer }) => {
     }
   };
 
-  const [allSeenPlayers, setAllSeenPlayers] = useState<any>({});
-
-  useEffect(() => {
-    const updatedSeenPlayers = players.reduce((acc, player) => {
-      acc[player.playerId] = player;
-      return acc;
-    }, allSeenPlayers);
-    setAllSeenPlayers(updatedSeenPlayers);
-  }, [players.length]);
-
   return (
     <div className="chat_box inline_screen">
       <div className="chat_messages_container">
         {chatHistory.map(
           (
-            { playerId, messageText }: ChatMessage,
+            { senderId, senderAlias, messageText }: ChatMessage,
             index: number
           ): JSX.Element => {
             return (
@@ -53,14 +42,12 @@ const ChatBox: React.FC<ChatBoxProps> = memo(({ players, currPlayer }) => {
                 <span
                   className="chat_message_author_label roboto_font"
                   style={
-                    !!currPlayer && playerId === currPlayer.playerId
+                    !!currPlayer && senderId === currPlayer.playerId
                       ? { color: "var(--current_player_color)" }
                       : {}
                   }
                 >
-                  {playerId in allSeenPlayers
-                    ? allSeenPlayers[playerId].playerAlias
-                    : playerId}
+                  {senderAlias}
                   {": "}
                 </span>
                 <span className="chat_message_text roboto_font">

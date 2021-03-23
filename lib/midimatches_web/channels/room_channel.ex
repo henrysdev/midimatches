@@ -149,8 +149,14 @@ defmodule MidimatchesWeb.RoomChannel do
         %{"message_text" => message_text},
         %Phoenix.Socket{assigns: %{player_id: player_id}} = socket
       ) do
+    player =
+      player_id
+      |> UserCache.get_user_by_id()
+      |> Utils.user_to_player()
+
     chat_message = %ChatMessage{
-      player_id: player_id,
+      sender_id: player_id,
+      sender_alias: player.player_alias,
       message_text: message_text,
       timestamp: Utils.curr_utc_timestamp()
     }
