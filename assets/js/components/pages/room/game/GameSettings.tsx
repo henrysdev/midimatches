@@ -18,11 +18,14 @@ interface GameSettingsProps {}
 
 const GameSettings: React.FC<GameSettingsProps> = ({}) => {
   const {
-    Tone,
     setMidiInputs,
     disabledMidiInputIds,
     setDisabledMidiInputIds,
     originalMidiInputs,
+    currVolume,
+    setCurrVolume,
+    soundIsOn,
+    refreshMidiInputs,
   } = useToneAudioContext();
 
   const {
@@ -30,8 +33,7 @@ const GameSettings: React.FC<GameSettingsProps> = ({}) => {
     setShowKeyboardLabels,
   } = useKeyboardInputContext();
 
-  const { hasCookie, getCookie, setCookie } = useCookies();
-  const [currVolume, setCurrVolume] = useState<string>("-1");
+  const { setCookie } = useCookies();
   const handleVolumeChange = (e: any) => {
     const volume = e.target.value;
     setCurrVolume(volume);
@@ -43,34 +45,26 @@ const GameSettings: React.FC<GameSettingsProps> = ({}) => {
     setCookie(SHOW_KEYBOARD_LABELS_COOKIE, newSetShowKeyboardLabels);
   };
 
-  useEffect(() => {
-    if (hasCookie(SOUND_VOLUME_COOKIE)) {
-      setCurrVolume(getCookie(SOUND_VOLUME_COOKIE));
-    }
-    if (hasCookie(SHOW_KEYBOARD_LABELS_COOKIE)) {
-      setShowKeyboardLabels(getCookie(SHOW_KEYBOARD_LABELS_COOKIE) === "true");
-    }
-  }, []);
-
-  useEffect(() => {
-    const volume = parseFloat(currVolume);
-    Tone.Master.volume.value = volume;
-    Tone.Master.mute = volume === MIN_SOUND_VOLUME;
-    setCookie(SOUND_VOLUME_COOKIE, currVolume);
-  }, [currVolume]);
-
-  const soundIsOn = useMemo(() => {
-    return currVolume === `${MIN_SOUND_VOLUME}`;
-  }, [currVolume]);
-
   return (
     <div className="in_game_settings_pane inline_screen">
-      <h5 className="settings_item_label">MIDI Inputs</h5>
+      <div style={{ display: "flex" }}>
+        <div style={{ flex: 2 }}>
+          <h5 className="settings_item_label">MIDI Inputs</h5>
+        </div>
+        <div
+          className="styled_button refresh_button"
+          style={{ flex: 1, float: "right" }}
+          onClick={() => refreshMidiInputs()}
+        >
+          refresh
+        </div>
+      </div>
       <MidiConfiguration
         originalMidiInputs={originalMidiInputs}
         setMidiInputs={setMidiInputs}
         disabledMidiInputIds={disabledMidiInputIds}
         setDisabledMidiInputIds={setDisabledMidiInputIds}
+        refreshMidiInputs={refreshMidiInputs}
       />
       <h5 className="settings_item_label">Volume</h5>
       <ul style={{ listStyleType: "none", paddingLeft: 0 }}>

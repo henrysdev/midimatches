@@ -33,9 +33,9 @@ const PregameCenterPane: React.FC<PregameCenterPaneProps> = ({
             <div>
               <p>
                 Joined successfully as <strong>{currentUser.userAlias}</strong>.
-                Warm up your fingers a bit! Waiting for more players...
+                Waiting for more players...
               </p>
-              <WarmUp />
+              {/* <WarmUp /> */}
             </div>
           </div>
         )}

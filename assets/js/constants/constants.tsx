@@ -151,6 +151,7 @@ export const MAX_ROOM_NAME_LENGTH = 20;
 
 export const MIN_SOUND_VOLUME = -25.0;
 export const MAX_SOUND_VOLUME = 2.5;
+export const DEFAULT_SOUND_VOLUME = -0.5;
 
 export const DEFAULT_ALERT_LIFETIME = 5_000;
 

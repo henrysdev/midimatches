@@ -214,6 +214,7 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
                 stopSample();
               }}
               disabled={isCurrPlayer}
+              styles={{ marginTop: "4px", marginLeft: "4px" }}
             >
               VOTE
             </InlineWidthButton>

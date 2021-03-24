@@ -61,6 +61,7 @@ const RoomPage: React.FC = () => {
   const { socket } = useSocketContext();
 
   const resetRoom = () => {
+    window.location.reload();
     setGameInProgress(false);
     setInitGameState(undefined);
     if (!!toneAudioContext && !!toneAudioContext.stopSample) {

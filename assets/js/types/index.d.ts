@@ -154,6 +154,7 @@ export interface ToneAudioContextType {
   Tone: any;
   originalMidiInputs: Input[];
   midiInputs: Input[];
+  refreshMidiInputs: Function;
   setMidiInputs: Function;
   disabledMidiInputIds: string[];
   setDisabledMidiInputIds: Function;
@@ -163,6 +164,9 @@ export interface ToneAudioContextType {
   stopSample: Function;
   resetTone: Function;
   isSamplePlayerLoaded: boolean;
+  setCurrVolume: Function;
+  currVolume: number;
+  soundIsOn: boolean;
 }
 
 export interface PlayerContextType {

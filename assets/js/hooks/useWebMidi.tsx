@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import WebMidi, { Input } from "webmidi";
 
-type WebMidiTuple = [Input[]];
+type WebMidiTuple = [Input[], () => void];
 
 export function useWebMidi(): WebMidiTuple {
   const [midiInputs, setMidiInputs] = useState<Input[]>([]);
+  const [refreshCounter, setRefreshCounter] = useState<number>(0);
+
+  const refreshMidiInputs = () => setRefreshCounter((prev) => prev + 1);
 
   useEffect(() => {
     WebMidi.enable((error) => {
@@ -24,7 +27,7 @@ export function useWebMidi(): WebMidiTuple {
     return () => {
       WebMidi.disable();
     };
-  }, []);
+  }, [refreshCounter]);
 
-  return [midiInputs];
+  return [midiInputs, refreshMidiInputs];
 }

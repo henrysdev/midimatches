@@ -1,7 +1,7 @@
 :root {
   --selected_player_color: #296cff;
   --recording_color: #ef5757;
-  --note_label_for_black_keys: yellow;
+  --note_label_for_black_keys: white;
   --note_label_for_white_keys: black;
   --corner_border_radius: 0px;
   --key_border_radius: 0 0 var(--corner_border_radius)

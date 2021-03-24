@@ -63,34 +63,7 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
                   )}
                 </p>
               </div>
-              <ComputerButton
-                callback={() => {
-                  navigator.clipboard.writeText(location.href);
-                  setCopySuccess(true);
-                }}
-              >
-                COPY INVITE
-                {copySuccess ? (
-                  <MaterialIcon
-                    iconName="done"
-                    style={{
-                      color: "green",
-                      marginLeft: "4px",
-                      marginBottom: "4px",
-                    }}
-                  />
-                ) : (
-                  <MaterialIcon
-                    iconName="content_copy"
-                    style={{
-                      color: "var(--text_light)",
-                      verticalAlign: "middle",
-                      marginLeft: "4px",
-                      marginBottom: "4px",
-                    }}
-                  />
-                )}
-              </ComputerButton>
+
               {/* <ChatBox players={roomPlayers} /> */}
             </div>
             <PregameCenterPane
@@ -98,13 +71,47 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
               currentUser={currentUser}
             />
           </div>
+          <div style={{ height: "48px", margin: "8px", padding: "8px" }}>
+            <ComputerButton
+              callback={() => {
+                navigator.clipboard.writeText(location.href);
+                setCopySuccess(true);
+              }}
+            >
+              COPY INVITE
+              {copySuccess ? (
+                <MaterialIcon
+                  iconName="done"
+                  style={{
+                    color: "green",
+                    marginLeft: "4px",
+                    marginBottom: "4px",
+                  }}
+                />
+              ) : (
+                <MaterialIcon
+                  iconName="content_copy"
+                  style={{
+                    color: "var(--text_light)",
+                    verticalAlign: "middle",
+                    marginLeft: "4px",
+                    marginBottom: "4px",
+                  }}
+                />
+              )}
+            </ComputerButton>
+          </div>
         </div>
         {!!startGameDeadline && startGameDeadline > -1 ? (
-          <Timer
-            descriptionText={"Intermission - Next game in "}
-            duration={startGameDeadline - currUtcTimestamp() + clockOffset}
-            timesUpText={"Game will start as soon as there are enough players"}
-          />
+          <div style={{ marginTop: "16px" }}>
+            <Timer
+              descriptionText={"Intermission - Next game in "}
+              duration={startGameDeadline - currUtcTimestamp() + clockOffset}
+              timesUpText={
+                "Game will start as soon as there are enough players"
+              }
+            />
+          </div>
         ) : (
           <></>
         )}

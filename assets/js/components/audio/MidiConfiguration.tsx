@@ -7,6 +7,7 @@ interface MidiConfigurationProps {
   disabledMidiInputIds: string[];
   setMidiInputs: Function;
   originalMidiInputs: Input[];
+  refreshMidiInputs: Function;
 }
 
 const MidiConfiguration: React.FC<MidiConfigurationProps> = ({
@@ -14,6 +15,7 @@ const MidiConfiguration: React.FC<MidiConfigurationProps> = ({
   disabledMidiInputIds,
   setMidiInputs,
   originalMidiInputs,
+  refreshMidiInputs,
 }) => {
   const toggleInputEnabled = (input: Input, turningOn: boolean): void => {
     if (turningOn) {

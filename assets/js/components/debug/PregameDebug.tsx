@@ -226,18 +226,11 @@ const PregameDebug: React.FC = () => {
               >
                 <InGameFrame title="AAA">
                   <GameLeftPane />
-                  {/* <PlaybackVotingView
+                  <PlaybackVotingView
                     pushMessageToChannel={() => {}}
                     stopSample={() => {}}
                     isSamplePlayerLoaded={true}
-                  /> */}
-                  <RoundEndView />
-                  <div></div>
-                  {/* <RecordingView
-                isContestant={true}
-                pushMessageToChannel={() => {}}
-                stopSample={() => {}}
-              /> */}
+                  />
                 </InGameFrame>
                 {/* <DynamicContent>
               <div>
