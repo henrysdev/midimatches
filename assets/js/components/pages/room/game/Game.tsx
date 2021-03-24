@@ -99,6 +99,7 @@ const Game: React.FC<GameProps> = ({
                   <RoundStartView
                     pushMessageToChannel={pushMessage}
                     roundNum={gameContext.roundNum}
+                    sampleName={currSampleBeat}
                   />
                 );
 
@@ -108,6 +109,7 @@ const Game: React.FC<GameProps> = ({
                     isContestant={!joinedMidRecording}
                     pushMessageToChannel={pushMessage}
                     stopSample={stopSample}
+                    sampleName={currSampleBeat}
                   />
                 );
 

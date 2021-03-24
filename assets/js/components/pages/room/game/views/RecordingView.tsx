@@ -33,12 +33,14 @@ interface RecordingViewProps {
   isContestant: boolean;
   pushMessageToChannel: Function;
   stopSample: Function;
+  sampleName: string;
 }
 
 const RecordingView: React.FC<RecordingViewProps> = ({
   isContestant,
   pushMessageToChannel,
   stopSample,
+  sampleName,
 }) => {
   const [isSamplePlaying, setIsSamplePlaying] = useState<boolean>(false);
   const [isRecording, setIsRecording] = useState<boolean>(false);
@@ -81,18 +83,9 @@ const RecordingView: React.FC<RecordingViewProps> = ({
       {isContestant ? (
         <div style={{ height: "100%" }}>
           <DynamicContent>
-            {recordingState === RecordingState.INIT ? (
-              <Instructions description="Loading sample and syncing clients..." />
-            ) : recordingState === RecordingState.WARMUP ? (
-              <Instructions description="Listen to the sample and get ready to record!" />
-            ) : recordingState === RecordingState.RECORDING ? (
-              <Instructions description="Recording in progress... keep playing!" />
-            ) : (
-              <Instructions
-                description="Recording submitted. Waiting for other players to finish
-            recording..."
-              />
-            )}
+            <p className="centered_text">
+              <strong>{`Sample: ${sampleName}`}</strong>
+            </p>
 
             {!!roundRecordingStartTime ? (
               <RecordMidi
@@ -109,6 +102,22 @@ const RecordingView: React.FC<RecordingViewProps> = ({
             ) : (
               <></>
             )}
+
+            {recordingState === RecordingState.INIT ? (
+              <Instructions description="Loading sample and syncing clients..." />
+            ) : recordingState === RecordingState.WARMUP ? (
+              <Instructions description="Listen to the sample and get ready to record!" />
+            ) : recordingState === RecordingState.RECORDING ? (
+              <Instructions
+                description="Recording in progress... keep playing!"
+                extreme={true}
+              />
+            ) : (
+              <Instructions
+                description="Recording submitted. Waiting for other players to finish
+            recording..."
+              />
+            )}
           </DynamicContent>
           <TimerBox>
             {recordingState === RecordingState.INIT ? (
@@ -117,6 +126,7 @@ const RecordingView: React.FC<RecordingViewProps> = ({
               <Timer
                 descriptionText={"Recording starts in "}
                 duration={secToMs(DEFAULT_WARMUP_LENGTH)}
+                extremeText={true}
               />
             ) : recordingState === RecordingState.RECORDING ? (
               <div>
@@ -135,6 +145,7 @@ const RecordingView: React.FC<RecordingViewProps> = ({
                     descriptionText={"Recording ends in "}
                     duration={secToMs(DEFAULT_RECORDING_LENGTH)}
                     style={{ color: "red" }}
+                    extremeText={true}
                   />
                 </div>
               </div>

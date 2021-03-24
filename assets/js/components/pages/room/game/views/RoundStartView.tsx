@@ -15,15 +15,13 @@ import { calcMsUntilMsTimestamp, currUtcTimestamp } from "../../../../../utils";
 interface RoundStartViewProps {
   pushMessageToChannel: Function;
   roundNum: number;
+  sampleName: string;
 }
-
-const desc = `
-You will be playing this round. A sample to play over has been picked.
-`;
 
 const RoundStartView: React.FC<RoundStartViewProps> = ({
   pushMessageToChannel,
   roundNum,
+  sampleName,
 }) => {
   const { viewDeadline } = useViewDeadlineContext();
   const { clockOffset } = useClockOffsetContext();
@@ -32,7 +30,7 @@ const RoundStartView: React.FC<RoundStartViewProps> = ({
       <MediumLargeTitle title={`STARTING ROUND ${roundNum}`} />
 
       <DynamicContent>
-        <Instructions description={desc} />
+        <Instructions description={`This round's sample: ${sampleName}`} />
       </DynamicContent>
       <TimerBox>
         <Timer

@@ -1482,3 +1482,37 @@ strong {
   flex: 1;
   text-align: center;
 }
+
+.extreme_countdown_text {
+  margin-left: 4px;
+  position: absolute;
+  animation: text_popup 1s infinite;
+  text-align: center;
+}
+@keyframes text_popup {
+  0% {
+    font-size: 2em;
+    transform: translateY(-12px);
+  }
+  100% {
+    font-size: 1em;
+    /* transform: translateY(0px); */
+  }
+}
+
+/* .extreme_instruction {
+  position: absolute;
+  top: 64px;
+  text-align: center;
+  height: 1em;
+  width: calc(100% - 72px);
+  animation: text_wave 1s infinite;
+}
+@keyframes text_wave {
+  0% {
+    font-size: 2em;
+  }
+  100% {
+    font-size: 1em;
+  }
+} */
