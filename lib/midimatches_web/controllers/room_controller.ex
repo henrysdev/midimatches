@@ -5,6 +5,7 @@ defmodule MidimatchesWeb.RoomController do
   use MidimatchesWeb, :controller
 
   alias Midimatches.{
+    ProfanityFilter,
     Rooms,
     Types.Configs.RoomConfig,
     Types.GameRules
@@ -61,11 +62,28 @@ defmodule MidimatchesWeb.RoomController do
 
   @spec parse_room_name(String.t()) :: {:error, String.t()} | {:ok, String.t()}
   defp parse_room_name(room_name) do
-    # TODO profanity filter
+    with {:ok, room_name} <- validate_room_name_length(room_name),
+         {:ok, room_name} <- validate_room_name_profanity(room_name) do
+      {:ok, room_name}
+    else
+      {:error, reason} ->
+        {:error, reason}
+    end
+  end
+
+  defp validate_room_name_length(room_name) do
     room_name_len = String.length(room_name)
 
     if room_name_len < @min_room_name_length or room_name_len > @max_room_name_length do
-      {:error, invalid_value_error("room_name")}
+      {:error, invalid_value_error("room_name", :invalid_length)}
+    else
+      {:ok, room_name}
+    end
+  end
+
+  defp validate_room_name_profanity(room_name) do
+    if ProfanityFilter.contains_profanity?(room_name) do
+      {:error, invalid_value_error("room_name", :profanity)}
     else
       {:ok, room_name}
     end
@@ -74,7 +92,7 @@ defmodule MidimatchesWeb.RoomController do
   @spec parse_max_players(integer()) :: {:error, String.t()} | {:ok, integer()}
   defp parse_max_players(max_players)
        when max_players > @max_players or max_players < @min_players do
-    {:error, invalid_value_error("max_players")}
+    {:error, invalid_value_error("max_players", :out_of_valid_range)}
   end
 
   defp parse_max_players(max_players), do: {:ok, max_players}
@@ -82,7 +100,7 @@ defmodule MidimatchesWeb.RoomController do
   @spec parse_num_rounds(integer()) :: {:error, String.t()} | {:ok, integer()}
   defp parse_num_rounds(num_rounds)
        when num_rounds > @max_num_rounds or num_rounds < @min_num_rounds do
-    {:error, invalid_value_error("num_rounds")}
+    {:error, invalid_value_error("num_rounds", :out_of_valid_range)}
   end
 
   defp parse_num_rounds(num_rounds), do: {:ok, num_rounds}

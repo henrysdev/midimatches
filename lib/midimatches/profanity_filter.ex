@@ -4,12 +4,6 @@ defmodule Midimatches.ProfanityFilter do
   """
   @profanity_config Expletive.configure(blacklist: Expletive.Blacklist.english())
 
-  # alias Midimatches.{
-  #   Types.AdminMessage,
-  #   Types.User,
-  #   UserCache
-  # }
-
   @spec contains_profanity?(String.t()) :: boolean()
   @doc """
   Returns truthy for if the give text contains a blacklisted word

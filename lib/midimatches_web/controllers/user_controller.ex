@@ -131,7 +131,7 @@ defmodule MidimatchesWeb.UserController do
     user_alias_len = String.length(user_alias)
 
     if user_alias_len < @min_user_alias_length or user_alias_len > @max_user_alias_length do
-      {:error, invalid_value_error("user_alias")}
+      {:error, invalid_value_error("user_alias", :invalid_length)}
     else
       {:ok, user_alias}
     end
