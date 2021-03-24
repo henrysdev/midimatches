@@ -163,6 +163,9 @@ export interface ToneAudioContextType {
   stopSample: Function;
   resetTone: Function;
   isSamplePlayerLoaded: boolean;
+  setCurrVolume: Function;
+  currVolume: number;
+  soundIsOn: boolean;
 }
 
 export interface PlayerContextType {

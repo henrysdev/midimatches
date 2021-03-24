@@ -18,11 +18,13 @@ interface GameSettingsProps {}
 
 const GameSettings: React.FC<GameSettingsProps> = ({}) => {
   const {
-    Tone,
     setMidiInputs,
     disabledMidiInputIds,
     setDisabledMidiInputIds,
     originalMidiInputs,
+    currVolume,
+    setCurrVolume,
+    soundIsOn,
   } = useToneAudioContext();
 
   const {
@@ -30,8 +32,7 @@ const GameSettings: React.FC<GameSettingsProps> = ({}) => {
     setShowKeyboardLabels,
   } = useKeyboardInputContext();
 
-  const { hasCookie, getCookie, setCookie } = useCookies();
-  const [currVolume, setCurrVolume] = useState<string>("-1");
+  const { setCookie } = useCookies();
   const handleVolumeChange = (e: any) => {
     const volume = e.target.value;
     setCurrVolume(volume);
@@ -42,26 +43,6 @@ const GameSettings: React.FC<GameSettingsProps> = ({}) => {
     setShowKeyboardLabels(newSetShowKeyboardLabels);
     setCookie(SHOW_KEYBOARD_LABELS_COOKIE, newSetShowKeyboardLabels);
   };
-
-  useEffect(() => {
-    if (hasCookie(SOUND_VOLUME_COOKIE)) {
-      setCurrVolume(getCookie(SOUND_VOLUME_COOKIE));
-    }
-    if (hasCookie(SHOW_KEYBOARD_LABELS_COOKIE)) {
-      setShowKeyboardLabels(getCookie(SHOW_KEYBOARD_LABELS_COOKIE) === "true");
-    }
-  }, []);
-
-  useEffect(() => {
-    const volume = parseFloat(currVolume);
-    Tone.Master.volume.value = volume;
-    Tone.Master.mute = volume === MIN_SOUND_VOLUME;
-    setCookie(SOUND_VOLUME_COOKIE, currVolume);
-  }, [currVolume]);
-
-  const soundIsOn = useMemo(() => {
-    return currVolume === `${MIN_SOUND_VOLUME}`;
-  }, [currVolume]);
 
   return (
     <div className="in_game_settings_pane inline_screen">
