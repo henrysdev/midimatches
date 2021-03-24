@@ -233,7 +233,6 @@ const RoomPage: React.FC = () => {
             ) : (
               <></>
             )}
-            <BrowserWarning />
           </ChatContext.Provider>
         </KeyboardInputContext.Provider>
       </ToneAudioContext.Provider>

@@ -13,4 +13,5 @@ export { useCookies } from "./useCookies";
 export { useSyncUser } from "./useSyncUser";
 export { useUserChannel } from "./useUserChannel";
 export { useLoadUpdateUser } from "./useLoadUpdateUser";
+export { useBrowserCompatibilityContextProvider } from "./useBrowserCompatibilityProvider";
 export * from "./context";

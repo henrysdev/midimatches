@@ -198,7 +198,6 @@ const PracticePage: React.FC<PracticePageProps> = ({ children }) => {
                   <></>
                 )}
               </InGameFrame>
-              <BrowserWarning />
             </GameRulesContext.Provider>
           </GameContext.Provider>
         </KeyboardInputContext.Provider>

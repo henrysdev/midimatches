@@ -31,6 +31,8 @@
     calc(var(--base_color_blue) + var(--lightness_increment) * 3)
   );
 
+  --danger_bg_color: rgb(245, 187, 187);
+
   --text_light: rgb(232, 232, 232);
   --text_light_outline: rgb(216, 205, 139);
   --border_color_1: rgb(211, 211, 211);
@@ -856,8 +858,10 @@ strong {
 }
 
 .navbar_icon {
+  transform: translateY(-1px);
   vertical-align: "middle";
   color: var(--text_light);
+  top: -2px;
   border-radius: 4px;
 }
 
@@ -868,6 +872,10 @@ strong {
 
 .frozen {
   position: relative;
+}
+
+.audiowide_font {
+  font-family: "Audiowide", cursive;
 }
 
 .frozen:after {
@@ -1210,7 +1218,7 @@ strong {
 .warning_alert {
   margin: 8px;
   padding: 8px;
-  background-color: rgb(245, 187, 187);
+  background-color: var(--danger_bg_color);
   color: red;
   text-shadow: none;
 }
@@ -1285,6 +1293,17 @@ strong {
   background-color: var(--current_player_color);
   border-radius: 3px;
   color: var(--text_light);
+}
+
+.browser_warning_navbar_badge {
+  float: right;
+  padding: 4px;
+  margin-right: 8px;
+  background-color: var(--danger_bg_color);
+  border-radius: 3px;
+  color: red;
+  cursor: pointer;
+  border: 1px solid red;
 }
 
 .recording_bg {

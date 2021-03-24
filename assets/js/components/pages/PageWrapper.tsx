@@ -2,7 +2,7 @@ import React from "react";
 import { Socket } from "phoenix";
 import { useUserChannel } from "../../hooks";
 import { User } from "../../types";
-import { AdminAlert } from ".";
+import { AdminAlert, BrowserWarning } from ".";
 
 interface PageWrapperProps {
   socket: Socket;
@@ -24,6 +24,7 @@ const PageWrapper: React.FC<PageWrapperProps> = ({
     <div>
       <AdminAlert allUsersChannel={allUsersChannel} userChannel={userChannel} />
       {children}
+      <BrowserWarning />
     </div>
   );
 };

@@ -1,29 +1,20 @@
-import React, { useMemo, useEffect, useState } from "react";
-import {
-  isChromium,
-  browserName,
-  isEdgeChromium,
-  isEdge,
-  isChrome,
-  isOpera,
-  isFirefox,
-  isSafari,
-  isIE,
-} from "react-device-detect";
+import React, { useEffect, useState } from "react";
+
 import { Modal } from "../common";
-import { useCookies } from "../../hooks";
+import { useCookies, useBrowserCompatibilityContext } from "../../hooks";
 import { SEEN_BROWSER_WARNING_COOKIE } from "../../constants";
 
-const BrowserWarning: React.FC = ({}) => {
-  const [supportedBrowser, setSupportedBrowser] = useState<boolean>(true);
+const BrowserWarning: React.FC = () => {
+  const {
+    supportedBrowser,
+    showCompatibilityWarning: forceShowWarning,
+    setShowCompatibilityWarning,
+  } = useBrowserCompatibilityContext();
   const [showWarningModal, setShowWarningModal] = useState<boolean>(false);
+  // const [modalCtr, setModalCtr] = useState<number>(0);
+  // const refreshModal = () => setModalCtr((prev) => prev + 1);
 
   const { hasCookie, setCookie } = useCookies();
-  useEffect(() => {
-    const supported =
-      isChromium || isChrome || isEdge || isEdgeChromium || isOpera;
-    setSupportedBrowser(supported);
-  }, [browserName]);
 
   useEffect(() => {
     if (!supportedBrowser && !hasCookie(SEEN_BROWSER_WARNING_COOKIE)) {
@@ -32,20 +23,28 @@ const BrowserWarning: React.FC = ({}) => {
     }
   }, [supportedBrowser]);
 
-  return showWarningModal ? (
-    <Modal title="Browser Warning">
+  // useEffect(() => {
+  //   console.log("aAHAhA");
+  //   refreshModal();
+  // }, [forceShowWarning]);
+
+  return showWarningModal || forceShowWarning ? (
+    <Modal
+      title="Browser Warning"
+      onCloseModal={() => setShowCompatibilityWarning(false)}
+    >
       <div className="browser_warning_content_wrapper">
         <div>
           <p className="centered_text" style={{ color: "red" }}>
             <strong>
-              Unsupported Browser Detected - Proceed at your own risk!
+              Unsupported Browser Detected - Proceed at your own risk
             </strong>
           </p>
         </div>
         <p>
-          It looks like you're using a browser that is not currently supported
-          for playing Midi Matches. For the optimal experience, try using one of
-          the following browsers:
+          It looks like you're using a browser that Midi Matches does not
+          currently support. For an optimal experience, try using one of the
+          following browsers:
         </p>
         <div className="browser_warning_flex_anchor">
           <a
@@ -74,7 +73,7 @@ const BrowserWarning: React.FC = ({}) => {
           </a>
         </div>
         <p className="centered_text">
-          (+ other modern, chromium-based desktop browsers)
+          (+ any other modern, chromium-based desktop browser)
         </p>
       </div>
     </Modal>
