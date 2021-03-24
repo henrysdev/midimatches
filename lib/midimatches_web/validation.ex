@@ -3,6 +3,6 @@ defmodule MidimatchesWeb.Validation do
 
   @spec invalid_value_error(String.t(), input_rule()) :: String.t()
   def invalid_value_error(field, violated_rule \\ :bad_value) do
-    "Invalid value for #{field} (#{violated_rule})"
+    "invalid value for #{field} (#{violated_rule})"
   end
 end
