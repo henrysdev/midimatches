@@ -27,7 +27,7 @@ defmodule Midimatches.MixProject do
   def application do
     [
       mod: {Midimatches.Application, []},
-      extra_applications: [:logger, :runtime_tools, :logger_file_backend, :gen_state_machine]
+      extra_applications: [:logger, :runtime_tools]
     ]
   end
 
@@ -49,19 +49,18 @@ defmodule Midimatches.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:micro_timer, "~> 0.1.0"},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:typed_struct, "~> 0.2.1"},
       {:credo, "~> 1.5.0-rc.2", only: [:dev, :test], runtime: false},
       {:logger_file_backend, "~> 0.0.11"},
       {:poison, "~> 3.1"},
       {:excoveralls, "~> 0.10", only: :test},
-      {:gen_state_machine, "~> 3.0"},
       {:uuid, "~> 1.1"},
       {:ex_aws, "~> 2.1"},
       {:ex_aws_s3, "~> 2.0"},
       {:hackney, "~> 1.15"},
-      {:sweet_xml, "~> 0.6"}
+      {:sweet_xml, "~> 0.6"},
+      {:recon, "~> 2.5"}
     ]
   end
 
