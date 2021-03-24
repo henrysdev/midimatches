@@ -25,6 +25,7 @@ const GameSettings: React.FC<GameSettingsProps> = ({}) => {
     currVolume,
     setCurrVolume,
     soundIsOn,
+    refreshMidiInputs,
   } = useToneAudioContext();
 
   const {
@@ -46,12 +47,24 @@ const GameSettings: React.FC<GameSettingsProps> = ({}) => {
 
   return (
     <div className="in_game_settings_pane inline_screen">
-      <h5 className="settings_item_label">MIDI Inputs</h5>
+      <div style={{ display: "flex" }}>
+        <div style={{ flex: 2 }}>
+          <h5 className="settings_item_label">MIDI Inputs</h5>
+        </div>
+        <div
+          className="styled_button refresh_button"
+          style={{ flex: 1, float: "right" }}
+          onClick={() => refreshMidiInputs()}
+        >
+          refresh
+        </div>
+      </div>
       <MidiConfiguration
         originalMidiInputs={originalMidiInputs}
         setMidiInputs={setMidiInputs}
         disabledMidiInputIds={disabledMidiInputIds}
         setDisabledMidiInputIds={setDisabledMidiInputIds}
+        refreshMidiInputs={refreshMidiInputs}
       />
       <h5 className="settings_item_label">Volume</h5>
       <ul style={{ listStyleType: "none", paddingLeft: 0 }}>

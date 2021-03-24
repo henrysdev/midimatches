@@ -38,7 +38,7 @@ export function useAudioContextProvider(): ToneAudioContextType {
   }, [currVolume]);
 
   // midi inputs init
-  const [originalMidiInputs] = useWebMidi();
+  const [originalMidiInputs, refreshMidiInputs] = useWebMidi();
   const [midiInputs, setMidiInputs] = useState<Array<Input>>([]);
   const [disabledMidiInputIds, setDisabledMidiInputIds] = useState<
     Array<string>
@@ -97,5 +97,6 @@ export function useAudioContextProvider(): ToneAudioContextType {
     currVolume,
     setCurrVolume,
     soundIsOn,
+    refreshMidiInputs,
   };
 }

@@ -154,6 +154,7 @@ export interface ToneAudioContextType {
   Tone: any;
   originalMidiInputs: Input[];
   midiInputs: Input[];
+  refreshMidiInputs: Function;
   setMidiInputs: Function;
   disabledMidiInputIds: string[];
   setDisabledMidiInputIds: Function;
