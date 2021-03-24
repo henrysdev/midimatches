@@ -27,7 +27,7 @@ defmodule Midimatches.MixProject do
   def application do
     [
       mod: {Midimatches.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :logger_file_backend]
     ]
   end
 
@@ -60,7 +60,8 @@ defmodule Midimatches.MixProject do
       {:ex_aws_s3, "~> 2.0"},
       {:hackney, "~> 1.15"},
       {:sweet_xml, "~> 0.6"},
-      {:recon, "~> 2.5"}
+      {:recon, "~> 2.5"},
+      {:expletive, "~> 0.1.0"}
     ]
   end
 
