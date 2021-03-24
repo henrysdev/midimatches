@@ -23,7 +23,9 @@ const GameLeftPane: React.FC<GameLeftPaneProps> = memo(({}) => {
   const { scores } = useScoresContext();
   const { player: currPlayer } = usePlayerContext();
 
-  const [columnView, setColumnView] = useState<ColumnView>(ColumnView.SETTINGS);
+  const [columnView, setColumnView] = useState<ColumnView>(
+    ColumnView.SCOREBOARD
+  );
 
   return (
     <div className="left_game_multi_container">
