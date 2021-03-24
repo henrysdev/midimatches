@@ -5,6 +5,7 @@ defmodule MidimatchesWeb.UserController do
   use MidimatchesWeb, :controller
 
   alias Midimatches.{
+    ProfanityFilter,
     Types.User,
     UserCache,
     Utils
@@ -14,6 +15,8 @@ defmodule MidimatchesWeb.UserController do
 
   @min_user_alias_length 3
   @max_user_alias_length 10
+
+  @type id() :: String.t()
 
   @spec self(Plug.Conn.t(), map) :: Plug.Conn.t()
   @doc """
@@ -71,7 +74,16 @@ defmodule MidimatchesWeb.UserController do
   Upsert user
   """
   def upsert(conn, %{"user_alias" => user_alias}) do
-    with {:ok, user_alias} <- parse_user_alias(user_alias) do
+    session_user = get_session(conn, :user)
+
+    user_id =
+      if is_nil(session_user) do
+        "nosession"
+      else
+        session_user.user_id
+      end
+
+    with {:ok, user_alias} <- parse_user_alias(user_alias, user_id) do
       if conn |> get_session(:user) |> is_nil() do
         # create and insert new user
         user_id = Utils.gen_uuid()
@@ -126,12 +138,34 @@ defmodule MidimatchesWeb.UserController do
     })
   end
 
-  @spec parse_user_alias(String.t()) :: {:error, String.t()} | {:ok, String.t()}
-  def parse_user_alias(user_alias) do
+  @spec parse_user_alias(String.t(), id()) :: {:error, String.t()} | {:ok, String.t()}
+  def parse_user_alias(user_alias, user_id) do
+    with {:ok, user_alias} <- validate_user_alias_length(user_alias),
+         {:ok, user_alias} <- validate_user_alias_profanity(user_alias, user_id) do
+      {:ok, user_alias}
+    else
+      {:error, reason} ->
+        {:error, reason}
+    end
+  end
+
+  defp validate_user_alias_length(user_alias) do
     user_alias_len = String.length(user_alias)
 
     if user_alias_len < @min_user_alias_length or user_alias_len > @max_user_alias_length do
-      {:error, invalid_value_error("user_alias")}
+      {:error, invalid_value_error("user_alias", :invalid_length)}
+    else
+      {:ok, user_alias}
+    end
+  end
+
+  defp validate_user_alias_profanity(user_alias, user_id) do
+    if ProfanityFilter.contains_profanity?(user_alias) do
+      Logger.warn(
+        "[PROFANITY_ALERT]: user_id=#{user_id} tried to change user to user_alias=#{user_alias}"
+      )
+
+      {:error, invalid_value_error("user_alias", :profanity)}
     else
       {:ok, user_alias}
     end

@@ -7,6 +7,7 @@ defmodule MidimatchesWeb.RoomChannel do
 
   alias Midimatches.{
     Pids,
+    ProfanityFilter,
     Rooms,
     Rooms.Room.GameServer,
     Rooms.RoomServer,
@@ -157,7 +158,7 @@ defmodule MidimatchesWeb.RoomChannel do
     chat_message = %ChatMessage{
       sender_id: player_id,
       sender_alias: player.player_alias,
-      message_text: message_text,
+      message_text: ProfanityFilter.sanitize(message_text),
       timestamp: Utils.curr_utc_timestamp()
     }
 
