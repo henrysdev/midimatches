@@ -15,6 +15,7 @@ import {
   KeyboardInputContext,
   RoundRecordingStartTimeContext,
   ClockOffsetContext,
+  BrowserCompatibilityContext,
 } from "../contexts";
 
 import {
@@ -32,6 +33,7 @@ import {
   KeyboardInputContextType,
   RoundRecordingStartTimeContextType,
   ClockOffsetContextType,
+  BrowserCompatibilityContextType,
 } from "../types";
 import { Player } from "tone";
 
@@ -91,4 +93,10 @@ export function useKeyboardInputContext() {
 
 export function useClockOffsetContext() {
   return useContext(ClockOffsetContext) as ClockOffsetContextType;
+}
+
+export function useBrowserCompatibilityContext() {
+  return useContext(
+    BrowserCompatibilityContext
+  ) as BrowserCompatibilityContextType;
 }

@@ -216,6 +216,12 @@ export interface ScoresContextType {
   scores: ScoreTuple[];
 }
 
+export interface BrowserCompatibilityContextType {
+  supportedBrowser: boolean;
+  showCompatibilityWarning: boolean;
+  setShowCompatibilityWarning: Function;
+}
+
 export interface KeyboardInputContextType {
   disableKeyboardInput: boolean;
   setDisableKeyboardInput: Function;

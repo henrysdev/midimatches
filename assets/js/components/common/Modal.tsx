@@ -12,11 +12,18 @@ interface ModalProps {
   title?: string;
   timeout?: Milliseconds;
   children?: any;
+  onCloseModal?: Function;
 }
-const Modal: React.FC<ModalProps> = ({ timeout, title, children }) => {
+const Modal: React.FC<ModalProps> = ({
+  timeout,
+  title,
+  children,
+  onCloseModal = () => {},
+}) => {
   const [showModal, setShowModal] = useState<boolean>(true);
 
   const closeModal = () => {
+    onCloseModal();
     setShowModal(false);
   };
 

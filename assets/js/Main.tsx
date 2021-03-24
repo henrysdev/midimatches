@@ -1,11 +1,17 @@
 import React, { useMemo } from "react";
 
 import { HeaderNav, ComputerFrame } from "./components/common/index";
-import { useCurrentUser, useSocket, useSyncUser } from "./hooks";
+import {
+  useCurrentUser,
+  useSocket,
+  useSyncUser,
+  useBrowserCompatibilityContextProvider,
+} from "./hooks";
 import {
   CurrentUserContext,
   SocketContext,
   ClockOffsetContext,
+  BrowserCompatibilityContext,
 } from "./contexts";
 import { LoadingSpinner, PageContent, FooterBar } from "./components/common";
 import { unmarshalBody, currUtcTimestamp } from "./utils";
@@ -41,23 +47,38 @@ const Main: React.FC = () => {
     }
   }, [syncData, syncLoaded]);
 
+  const {
+    supportedBrowser,
+    showCompatibilityWarning,
+    setShowCompatibilityWarning,
+  } = useBrowserCompatibilityContextProvider();
+
   return userLoaded && syncLoaded ? (
     <CurrentUserContext.Provider value={{ user: currUserData.user }}>
-      <ClockOffsetContext.Provider value={{ clockOffset }}>
-        <SocketContext.Provider value={{ socket: socket }}>
-          <HeaderNav
-            playerAlias={
-              !!currUserData && !!currUserData.user
-                ? currUserData.user.userAlias
-                : undefined
-            }
-          />
-          <PageContent>
-            <PageRouter />
-          </PageContent>
-          <FooterBar />
-        </SocketContext.Provider>
-      </ClockOffsetContext.Provider>
+      <BrowserCompatibilityContext.Provider
+        value={{
+          supportedBrowser: supportedBrowser,
+          showCompatibilityWarning,
+          setShowCompatibilityWarning,
+        }}
+      >
+        <ClockOffsetContext.Provider value={{ clockOffset }}>
+          <SocketContext.Provider value={{ socket: socket }}>
+            <HeaderNav
+              playerAlias={
+                !!currUserData && !!currUserData.user
+                  ? currUserData.user.userAlias
+                  : undefined
+              }
+              browserWarning={!supportedBrowser}
+            />
+            <PageContent>
+              <PageRouter />
+            </PageContent>
+            <FooterBar />
+          </SocketContext.Provider>
+        </ClockOffsetContext.Provider>
+      </BrowserCompatibilityContext.Provider>
     </CurrentUserContext.Provider>
   ) : userLoadError || syncLoadError ? (
     <>FAILED</>
