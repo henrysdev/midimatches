@@ -61,7 +61,8 @@ defmodule Midimatches.MixProject do
       {:hackney, "~> 1.15"},
       {:sweet_xml, "~> 0.6"},
       {:recon, "~> 2.5"},
-      {:expletive, "~> 0.1.0"}
+      {:expletive, "~> 0.1.0"},
+      {:observer_cli, "~> 1.6"}
     ]
   end
 
