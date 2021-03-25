@@ -6,6 +6,7 @@ defmodule Midimatches.Application do
   use Application
 
   alias Midimatches.{
+    BannedUsers,
     RoomsGarbageCollector,
     ServerlistUpdater,
     Types.Configs,
@@ -26,6 +27,7 @@ defmodule Midimatches.Application do
       {DynamicSupervisor, strategy: :one_for_one, name: Midimatches.Rooms},
       {Registry, keys: :unique, name: ProcessRegistry},
       {UserCache, []},
+      {BannedUsers, []},
       {ServerlistUpdater, [{3_000}]},
       {RoomsGarbageCollector, []},
       {Task, fn -> configure() end},

@@ -4,6 +4,7 @@ defmodule Midimatches.Admin do
   """
 
   alias Midimatches.{
+    BannedUsers,
     Types.AdminMessage,
     Types.User,
     UserCache
@@ -27,6 +28,39 @@ defmodule Midimatches.Admin do
   """
   def alert_user(user_id, message, alert_lifetime \\ nil) do
     handle_alert_broadcast("user:#{user_id}", message, alert_lifetime)
+  end
+
+  @spec trigger_app_gc() :: :ok
+  @doc """
+  Trigger garbage collection across app to reclaim memory on server
+  """
+  def trigger_app_gc do
+    Process.list() |> Enum.each(&:erlang.garbage_collect/1)
+  end
+
+  @spec ban_user(id()) :: :ok | {:error, any}
+  @doc """
+  Add user to ban cache
+  """
+  def ban_user(user_id) do
+    BannedUsers.add_banned_user(user_id)
+  end
+
+  @spec unban_user(id()) :: :ok | {:error, any}
+  @doc """
+  Remove user from ban cache
+  """
+  def unban_user(user_id) do
+    BannedUsers.remove_banned_user(user_id)
+  end
+
+  @spec list_banned_users() :: list({id, %User{}})
+  @doc """
+  List all currently banned users
+  """
+  def list_banned_users do
+    BannedUsers.list_banned_users()
+    |> Enum.map(&UserCache.get_user_by_id/1)
   end
 
   @spec list_active_users() :: list(User)

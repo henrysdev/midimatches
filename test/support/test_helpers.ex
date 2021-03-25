@@ -18,6 +18,14 @@ defmodule Midimatches.TestHelpers do
     end
   end
 
+  def flush_banned_users do
+    if :ets.whereis(:banned_users) != :undefined do
+      :ets.match_delete(:banned_users, {:"$1"})
+    else
+      :ok
+    end
+  end
+
   def teardown_rooms do
     pids = room_pids()
 
