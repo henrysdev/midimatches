@@ -31,7 +31,10 @@ const AboutPage: React.FC = () => {
                   @henrysdev
                 </a>
                 . Feedback and bug reports welcome via{" "}
-                <a className="resource_link" href="https://discord.gg/CjKD7G3C">
+                <a
+                  className="resource_link"
+                  href="https://discord.gg/yNQAp2JAxE"
+                >
                   Discord
                 </a>{" "}
                 or{" "}
