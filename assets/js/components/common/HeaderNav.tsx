@@ -27,7 +27,7 @@ const HeaderNav: React.FC<HeaderNavProps> = ({
         }}
       >
         <div className="relative_anchor">
-          <a href="/menu" className="nav_header_logo centered_div">
+          <a href="/about" className="nav_header_logo centered_div">
             <MidiMatchesLogoSvg />
           </a>
         </div>
