@@ -16,7 +16,7 @@ defmodule Midimatches.BannedUsersTest do
     assert cache_exists?
   end
 
-  # Flakey tests since they use cast...
+  # Flakey
   # test "add banned user to banned users" do
   #   user_id = "foobar1"
   #   BannedUsers.add_banned_user(user_id)

@@ -26,7 +26,7 @@ defmodule Midimatches.BannedUsers do
   Add a user to the set of banned users
   """
   def add_banned_user(user_id, ban_time \\ @default_ban_time) do
-    GenServer.cast(__MODULE__, {:add_banned_user, user_id, ban_time})
+    GenServer.call(__MODULE__, {:add_banned_user, user_id, ban_time})
   end
 
   @spec remove_banned_user(id()) :: :ok
@@ -51,7 +51,7 @@ defmodule Midimatches.BannedUsers do
   """
   def banned?(user_id) when is_binary(user_id) do
     case :ets.lookup(:banned_users, user_id) do
-      [{^user_id, _value} | _rest] -> true
+      [{^user_id} | _rest] -> true
       [] -> false
     end
   end
@@ -66,9 +66,10 @@ defmodule Midimatches.BannedUsers do
 
   # Callbacks
 
-  @spec handle_cast({:add_banned_user, id(), integer()}, t) :: {:noreply, t}
-  def handle_cast(
+  @spec handle_call({:add_banned_user, id(), integer()}, any, t) :: {:reply, :ok, t}
+  def handle_call(
         {:add_banned_user, user_id, ban_time},
+        _sender,
         state = %{ban_lift_timers: ban_lift_timers}
       ) do
     # since we're updating the value, let's kill off the last ban_lift_timer.
@@ -83,13 +84,7 @@ defmodule Midimatches.BannedUsers do
     # generate a new ban_lift_timer
     ban_lift_timer = Process.send_after(self(), {:remove_ban, user_id}, ban_time)
 
-    {:noreply, %{state | ban_lift_timers: Map.put(ban_lift_timers, user_id, ban_lift_timer)}}
-  end
-
-  @spec handle_info({:remove_ban, id()}, t) :: {:noreply, t}
-  def handle_info({:remove_ban, user_id}, state) do
-    :ets.delete(:banned_users, user_id)
-    {:noreply, state}
+    {:reply, :ok, %{state | ban_lift_timers: Map.put(ban_lift_timers, user_id, ban_lift_timer)}}
   end
 
   @spec handle_call({:list_banned_users}, any, t) :: {:reply, list(id), t}
@@ -112,6 +107,12 @@ defmodule Midimatches.BannedUsers do
     :ets.delete(:banned_users)
     generate_table()
     {:reply, :ok, %{state | ban_lift_timers: %{}}}
+  end
+
+  @spec handle_info({:remove_ban, id()}, t) :: {:noreply, t}
+  def handle_info({:remove_ban, user_id}, state) do
+    :ets.delete(:banned_users, user_id)
+    {:noreply, state}
   end
 
   defp generate_table do

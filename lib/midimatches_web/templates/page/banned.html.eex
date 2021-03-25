@@ -1,0 +1,33 @@
+<!-- /web/templates/error/404.html.eex -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Temporary Ban</title>
+  </head>
+
+  <body>
+    <div class="error_page relative_anchor">
+      <div class="error_page_content centered_div centered_title">
+        <h1>Temporary Ban</h1>
+          <p>
+            You have been temporarily banned from Midi Matches for bad behavior.
+            If you believe this is a mistake, please reach out with an appeal via
+            the ban appeals channel on
+            <a className="resource_link" href="https://discord.gg/CjKD7G3C">
+              Discord
+            </a>
+             or send me an
+            <a className="resource_link" href="mailto:henrysdev@gmail.com">
+              email
+            </a>
+          </p>
+      </div>
+    </div>
+  </body>
+</html>
