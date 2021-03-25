@@ -11,11 +11,7 @@ use Mix.Config
 # before starting your production server.
 config :midimatches, MidimatchesWeb.Endpoint,
   url: [
-    host:
-      System.get_env("RENDER_EXTERNAL_HOSTNAME") || "216.24.57.1" || "midimatches.com" ||
-        "www.midimatches.com" || "https://midimatches.com" || "http://midimatches.com" ||
-        "https://www.midimatches.com" || "http://www.midimatches.com" ||
-        "localhost",
+    host: "midimatches.com",
     port: 80
   ],
   cache_static_manifest: "priv/static/cache_manifest.json"
