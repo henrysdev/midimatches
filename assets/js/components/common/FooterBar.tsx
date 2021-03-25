@@ -20,7 +20,7 @@ const FooterBar: React.FC<FooterBarProps> = ({ playerAlias }) => {
 
         <a
           className="footer_bar_flex_item resource_link"
-          href="https://discord.gg/CjKD7G3C"
+          href="https://discord.gg/yNQAp2JAxE"
         >
           Discord
         </a>
