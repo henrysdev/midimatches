@@ -2,7 +2,7 @@
 
 [Midi Matches](https://midimatches.com/) is a browser-based online multiplayer game that aims to combine the joy of improvisational keyboard with the thrill of friendly competition.
 
-The core game mechanic revolves around facing off with other musicians on creating short keyboard solos over beats.
+The core game mechanic revolves around facing off with other musicians on creating short keyboard solos over backing track samples.
 
 ## Game Mechanic
 
