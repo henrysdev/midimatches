@@ -11,7 +11,7 @@ use Mix.Config
 # before starting your production server.
 config :midimatches, MidimatchesWeb.Endpoint,
   url: [
-    host: "midimatches.com",
+    host: nil,
     port: 80
   ],
   cache_static_manifest: "priv/static/cache_manifest.json"
