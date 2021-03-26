@@ -2,13 +2,13 @@
 
 [Midi Matches](https://midimatches.com/) is a browser-based online multiplayer game that aims to combine the joy of improvisational keyboard with the thrill of friendly competition.
 
-The core game mechanic revolves around facing off with other musicians on creating short keyboard solos over backing track samples.
+The core game mechanic revolves around facing off with other musicians on creating short keyboard solos over beats/backing tracks.
 
 ## Game Mechanic
 
-Each game consists of multiple rounds of recording and voting. The structure of a round is as follows; at the beginning of a round,
-a random sample beat is selected for all players to record over. Every player in the game then independently records their own keyboard
-solo over the sample beat. Players listen to all other players' recordings and vote on their favorite. The player with the most votes
+A game consists of multiple rounds of recording and voting. The structure of a round is as follows; at the beginning of a round,
+a random backing track sample is selected for all players to record over. Every player in the game then independently records their own keyboard
+solo over the sample. Players then listen to all other players' recordings and vote for their favorite. The player with the most votes
 at the end of the game wins.
 
 ## Installation
