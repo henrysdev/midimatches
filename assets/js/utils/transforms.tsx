@@ -1,4 +1,8 @@
-import { GAME_VIEW, DEFAULT_SAMPLE_COLORS } from "../constants";
+import {
+  GAME_VIEW,
+  DEFAULT_SAMPLE_COLORS,
+  INPUT_LAG_COMPENSATION,
+} from "../constants";
 import {
   Loop,
   Note,
@@ -125,7 +129,8 @@ export function loopToEvents(
       const events = notes.map(({ key, duration, velocity }: Note) => {
         const note = midiToPitch(key);
         return {
-          time: now + timestepSizeInSeconds * timestep,
+          time:
+            now + (timestepSizeInSeconds * timestep + INPUT_LAG_COMPENSATION),
           note,
           velocity: midiVelocityToToneVelocity(velocity),
           duration: duration * timestepSizeInSeconds,

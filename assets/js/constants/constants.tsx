@@ -69,6 +69,7 @@ export const DEFAULT_SAMPLE_COLORS = [
   "rgba(107, 35, 143, 0.15)",
 ];
 
+export const INPUT_LAG_COMPENSATION = -0.01;
 export const DEFAULT_SAMPLE_PLAY_BUFFER_LENGTH = 2;
 export const DEFAULT_SAMPLE_LENGTH = 10.6667;
 export const DEFAULT_NUM_WARMUP_LOOPS = 1;
