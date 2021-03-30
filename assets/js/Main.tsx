@@ -15,7 +15,8 @@ import {
 } from "./contexts";
 import { LoadingSpinner, PageContent, FooterBar } from "./components/common";
 import { unmarshalBody, currUtcTimestamp } from "./utils";
-import PageRouter from "./PageRouter";
+import { PageRouter } from "./PageRouter";
+import { MobilePlaceholder } from "./MobilePlaceholder";
 
 const Main: React.FC = () => {
   const {
@@ -51,7 +52,10 @@ const Main: React.FC = () => {
     supportedBrowser,
     showCompatibilityWarning,
     setShowCompatibilityWarning,
+    isMobileDevice,
   } = useBrowserCompatibilityContextProvider();
+
+  console.log({ supportedBrowser, isMobileDevice });
 
   return userLoaded && syncLoaded ? (
     <CurrentUserContext.Provider value={{ user: currUserData.user }}>
@@ -60,6 +64,7 @@ const Main: React.FC = () => {
           supportedBrowser: supportedBrowser,
           showCompatibilityWarning,
           setShowCompatibilityWarning,
+          isMobileDevice,
         }}
       >
         <ClockOffsetContext.Provider value={{ clockOffset }}>
@@ -73,7 +78,7 @@ const Main: React.FC = () => {
               browserWarning={!supportedBrowser}
             />
             <PageContent>
-              <PageRouter />
+              {isMobileDevice ? <MobilePlaceholder /> : <PageRouter />}
             </PageContent>
             <FooterBar />
           </SocketContext.Provider>

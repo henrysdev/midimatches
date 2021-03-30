@@ -220,6 +220,7 @@ export interface BrowserCompatibilityContextType {
   supportedBrowser: boolean;
   showCompatibilityWarning: boolean;
   setShowCompatibilityWarning: Function;
+  isMobileDevice: boolean;
 }
 
 export interface KeyboardInputContextType {
