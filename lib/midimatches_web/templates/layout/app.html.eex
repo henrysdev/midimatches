@@ -4,9 +4,11 @@
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta name="description" content="Midi Matches is a free-to-play web-based multiplayer piano improvisation game that aims
-            to combine the joy of playing electronic keyboard with the thrill of
-            friendly competition.">
+    <meta name="description" content="Midi Matches is a free-to-play web-based multiplayer piano video
+            game that aims to combine the joy of playing improvisational
+            keyboard with the thrill of friendly competition. Midi Matches
+            supports MIDI-capable pianos as well as type-to-play via a standard
+            computer keyboard.">
     <meta name="keywords" content="MIDI, piano, multiplayer, keyboard, synthesizer, midigames, midimatches">
     <meta name="author" content="Henry Warren">
     <title>Midi Matches</title>
