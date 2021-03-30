@@ -19,10 +19,17 @@ const HeaderNav: React.FC<HeaderNavProps> = ({
   return (
     <div className="header_nav sticky">
       <div className="navbar_actions_group roboto_font">
-        <a href="/menu" className="navbar_action resource_link audiowide_font">
-          <MaterialIcon iconName="menu" className="navbar_icon" />
-          MENU
-        </a>
+        {!playerAlias || isMobileDevice ? (
+          <div style={{ height: 24, margin: 4 }}></div>
+        ) : (
+          <a
+            href="/menu"
+            className="navbar_action resource_link audiowide_font"
+          >
+            <MaterialIcon iconName="menu" className="navbar_icon" />
+            MENU
+          </a>
+        )}
       </div>
       <div
         style={{

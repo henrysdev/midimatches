@@ -6,9 +6,11 @@ const HowToPlay: React.FC = () => {
       <dl>
         <dd>
           <p>
-            Midi Matches is a multiplayer improvisational piano game that aims
-            to combine the joy of playing electronic keyboard with the thrill of
-            friendly competition.
+            Midi Matches is a free-to-play web-based multiplayer piano video
+            game that aims to combine the joy of playing improvisational
+            keyboard with the thrill of friendly competition. Midi Matches
+            supports MIDI-capable pianos as well as type-to-play via a standard
+            computer keyboard.
           </p>
         </dd>
         <br />
@@ -17,10 +19,10 @@ const HowToPlay: React.FC = () => {
         </dt>
         <dd>
           <p>
-            Midi Matches is intended to be played with a MIDI-capable piano. For
-            the best experience, you'll want to have a MIDI piano plugged into
-            your computer. Alternatively, you can play with your computer
-            keyboard.
+            Midi Matches is intended to be played with a MIDI-capable piano
+            keyboard. For the best experience, you'll want to have a MIDI
+            keyboard connected to your computer. Alternatively, you can play via
+            type-to-play with just your computer keys.
           </p>
         </dd>
         <br />
@@ -31,10 +33,10 @@ const HowToPlay: React.FC = () => {
           <p>
             Each game consists of multiple rounds of recording and voting. The
             structure of a round is as follows; at the beginning of a round, a
-            random sample beat is selected for all players to record over. Every
-            player in the game then independently records their own keyboard
-            solo over the sample beat. Players listen to all other players'
-            recordings and vote on their favorite. The player with the most
+            random backing track is selected for all players to record over.
+            Every player in the game then independently records their own
+            keyboard solo over the backing track. Players listen to all
+            recordings and then vote on their favorite. The player with the most
             votes at the end of the game wins.
           </p>
         </dd>

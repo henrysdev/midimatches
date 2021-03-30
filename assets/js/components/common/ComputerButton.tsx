@@ -2,11 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 
 import * as Tone from "tone";
 
-const defaultClasses = [
-  "banner_button",
-  "relative_anchor",
-  // "outset_3d_border_shallow",
-];
+const defaultClasses = ["banner_button", "relative_anchor"];
 
 interface ComputerButtonProps {
   children?: any;
