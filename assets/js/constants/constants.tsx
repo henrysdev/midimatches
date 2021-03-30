@@ -78,7 +78,7 @@ export const DEFAULT_RECORDING_LENGTH =
 export const DEFAULT_WARMUP_LENGTH =
   DEFAULT_SAMPLE_LENGTH * DEFAULT_NUM_WARMUP_LOOPS;
 
-export const DEFAULT_SAMPLE_VOLUME = -4;
+export const DEFAULT_SAMPLE_VOLUME = -3;
 
 export const DEFAULT_SYNTH_CONFIG = {
   oscillator: {
