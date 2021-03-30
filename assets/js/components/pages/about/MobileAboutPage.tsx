@@ -1,13 +1,13 @@
 import React from "react";
 
-import { HowToPlay } from "./components/pages/about";
+import { HowToPlay } from ".";
 
-const MobilePlaceholder: React.FC = () => {
+const MobileAboutPage: React.FC = () => {
   return (
     <div>
       <div className="mobile_placeholder outset_3d_border_deep">
         <h1 className="mobile_title centered_title">
-          <span className="accent_bars">///</span>WELCOME
+          <span className="accent_bars">///</span>ABOUT
         </h1>
         <HowToPlay />
         <div className="warning_alert roboto_font">
@@ -18,4 +18,4 @@ const MobilePlaceholder: React.FC = () => {
     </div>
   );
 };
-export { MobilePlaceholder };
+export { MobileAboutPage };

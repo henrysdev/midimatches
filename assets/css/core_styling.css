@@ -359,9 +359,32 @@ body {
   padding: 16px;
   color: var(--text_light);
   border-radius: 10px;
+  max-height: calc(100vh - 416px);
+  overflow: auto;
 }
 
 .about_page_info dt {
+  padding-left: 8px;
+}
+
+.privacy_page_content {
+  max-width: 100%;
+  margin: auto;
+  padding: 16px;
+  color: var(--text_light);
+}
+
+.privacy_page_info {
+  margin: auto;
+  margin-top: 16px;
+  padding: 16px;
+  color: var(--text_light);
+  border-radius: 10px;
+  max-height: calc(100vh - 348px);
+  overflow: auto;
+}
+
+.privacy_page_info dt {
   padding-left: 8px;
 }
 

@@ -59,6 +59,14 @@ const MenuPage: React.FC = () => {
               ABOUT
             </ComputerButton>
           </div>
+          <div className="main_menu_btn">
+            <ComputerButton
+              callback={() => (window.location.href = "/privacy")}
+              extraClasses={["register_button"]}
+            >
+              PRIVACY POLICY
+            </ComputerButton>
+          </div>
         </div>
       </div>
     </PageWrapper>
