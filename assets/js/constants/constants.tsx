@@ -114,7 +114,7 @@ export const DEFAULT_FM_SYNTH_CONFIG = {
     attackCurve: "linear",
     decay: 0.3,
     decayCurve: "exponential",
-    release: 0.5,
+    release: 0.3,
     releaseCurve: "exponential",
     sustain: 1,
   },
@@ -135,6 +135,14 @@ export const DEFAULT_FM_SYNTH_CONFIG = {
   },
   modulationIndex: 12.22,
 } as any;
+
+// export const DEFAULT_SAMPLER_CONFIG = new Tone.Sampler({
+//   urls: {
+//     C4: "funk_daddy_c4.mp3",
+//     C5: "funk_daddy_c5.mp3",
+//   },
+//   baseUrl: "https://progressions-game.s3.amazonaws.com/synths/funk_daddy/",
+// }).toDestination();
 
 export const DEFAULT_MANUAL_NOTE_VELOCITY = 100;
 
