@@ -3,6 +3,7 @@ import React, { useMemo } from "react";
 import { HeaderNav, ComputerFrame } from "./components/common/index";
 import {
   useCurrentUser,
+  useCalcClockOffset,
   useSocket,
   useSyncUser,
   useBrowserCompatibilityContextProvider,
@@ -32,20 +33,7 @@ const Main: React.FC = () => {
   } = useSyncUser();
   const socket = useSocket();
 
-  // TODO pull into hook
-  const clockOffset = useMemo(() => {
-    if (syncLoaded && !!syncData) {
-      const { firstHopDeltaTime, serverTime } = unmarshalBody(syncData) as any;
-      const clientEndTime = currUtcTimestamp();
-      const msOffset = Math.floor(
-        -1 * ((firstHopDeltaTime + (serverTime - clientEndTime)) / 2)
-      );
-      console.log("local clock offset ", msOffset);
-      return msOffset;
-    } else {
-      return 0;
-    }
-  }, [syncData, syncLoaded]);
+  const clockOffset = useCalcClockOffset();
 
   const {
     supportedBrowser,
