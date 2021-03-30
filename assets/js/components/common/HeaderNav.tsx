@@ -46,9 +46,11 @@ const HeaderNav: React.FC<HeaderNavProps> = ({
           }}
         >
           {!!playerAlias ? (
-            <p className="current_player_badge">
-              playing as <strong>{playerAlias}</strong>
-            </p>
+            <a href="/register">
+              <p className="current_player_badge">
+                playing as <strong>{playerAlias}</strong>
+              </p>
+            </a>
           ) : (
             <></>
           )}
