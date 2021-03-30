@@ -26,6 +26,7 @@ const AboutPage: React.FC = () => {
                 Created by{" "}
                 <a
                   className="resource_link"
+                  target="_blank"
                   href="https://github.com/henrysdev"
                 >
                   @henrysdev
@@ -33,6 +34,7 @@ const AboutPage: React.FC = () => {
                 . Feedback and bug reports welcome via{" "}
                 <a
                   className="resource_link"
+                  target="_blank"
                   href="https://discord.gg/yNQAp2JAxE"
                 >
                   Discord
@@ -44,6 +46,7 @@ const AboutPage: React.FC = () => {
                 . <br /> <br />
                 <a
                   className="resource_link"
+                  target="_blank"
                   href="https://github.com/henrysdev/midimatches"
                 >
                   Open source
@@ -51,6 +54,7 @@ const AboutPage: React.FC = () => {
                 and proudly built with{" "}
                 <a
                   className="resource_link elixir_accent"
+                  target="_blank"
                   href="https://elixir-lang.org/"
                 >
                   Elixir
@@ -60,6 +64,7 @@ const AboutPage: React.FC = () => {
                 <br /> If you enjoy this game, please consider
                 <a
                   className="resource_link"
+                  target="_blank"
                   href="https://www.patreon.com/midimatches"
                 >
                   {" "}

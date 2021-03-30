@@ -1,7 +1,5 @@
 import * as React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import { isMobile } from "react-device-detect";
-import { MobilePlaceholder } from "./MobilePlaceholder";
 
 import {
   AboutPage,
@@ -13,9 +11,7 @@ import {
 } from "./components/pages/index";
 
 const PageRouter: React.FC = () => {
-  return isMobile ? (
-    <MobilePlaceholder />
-  ) : (
+  return (
     <BrowserRouter>
       <Switch>
         <Route exact path="/about" component={AboutPage} />
@@ -29,4 +25,4 @@ const PageRouter: React.FC = () => {
   );
 };
 
-export default PageRouter;
+export { PageRouter };

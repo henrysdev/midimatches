@@ -12,6 +12,7 @@ const FooterBar: React.FC<FooterBarProps> = ({ playerAlias }) => {
       <div className="footer_bar_flex_wrapper">
         {/* <a
           className="footer_bar_flex_item resource_link"
+          target="_blank"
           href="https://github.com/henrysdev/midimatches"
         >
           GitHub
@@ -20,6 +21,7 @@ const FooterBar: React.FC<FooterBarProps> = ({ playerAlias }) => {
 
         <a
           className="footer_bar_flex_item resource_link"
+          target="_blank"
           href="https://discord.gg/yNQAp2JAxE"
         >
           Discord
@@ -38,6 +40,7 @@ const FooterBar: React.FC<FooterBarProps> = ({ playerAlias }) => {
 
         <a
           className="footer_bar_flex_item resource_link"
+          target="_blank"
           href="https://www.patreon.com/midimatches"
         >
           Patreon
@@ -46,6 +49,7 @@ const FooterBar: React.FC<FooterBarProps> = ({ playerAlias }) => {
         {/* <span className="accent_bars">/</span>
         <a
           className="footer_bar_flex_item resource_link"
+          target="_blank"
           href="https://twitter.com/midimatches"
         >
           Twitter

@@ -26,7 +26,7 @@ defmodule MidimatchesWeb.Endpoint do
     at: "/",
     from: :midimatches,
     gzip: false,
-    only: ~w(css fonts images js favicon.ico robots.txt soundeffects)
+    only: ~w(css fonts images js favicon.ico robots.txt sitemap.xml soundeffects)
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.

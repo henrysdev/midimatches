@@ -12,7 +12,10 @@ const HeaderNav: React.FC<HeaderNavProps> = ({
   playerAlias,
   browserWarning,
 }) => {
-  const { setShowCompatibilityWarning } = useBrowserCompatibilityContext();
+  const {
+    setShowCompatibilityWarning,
+    isMobileDevice,
+  } = useBrowserCompatibilityContext();
   return (
     <div className="header_nav sticky">
       <div className="navbar_actions_group roboto_font">
@@ -43,13 +46,15 @@ const HeaderNav: React.FC<HeaderNavProps> = ({
           }}
         >
           {!!playerAlias ? (
-            <p className="current_player_badge">
-              playing as <strong>{playerAlias}</strong>
-            </p>
+            <a href="/register">
+              <p className="current_player_badge">
+                playing as <strong>{playerAlias}</strong>
+              </p>
+            </a>
           ) : (
             <></>
           )}
-          {browserWarning ? (
+          {browserWarning && !isMobileDevice ? (
             <div onClick={() => setShowCompatibilityWarning(true)}>
               <p className="browser_warning_navbar_badge">
                 ⚠ Unsupported Browser

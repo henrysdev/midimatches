@@ -6,6 +6,7 @@ import {
   isEdge,
   isChrome,
   isOpera,
+  isMobile,
 } from "react-device-detect";
 import { BrowserCompatibilityContextType } from "../types";
 
@@ -26,5 +27,6 @@ export function useBrowserCompatibilityContextProvider(): BrowserCompatibilityCo
     supportedBrowser,
     showCompatibilityWarning,
     setShowCompatibilityWarning,
+    isMobileDevice: isMobile,
   };
 }

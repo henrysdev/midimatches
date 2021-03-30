@@ -1,7 +1,6 @@
 import React from "react";
 
 import { HowToPlay } from "./components/pages/about";
-import { ComputerFrame } from "./components/common";
 
 const MobilePlaceholder: React.FC = () => {
   return (
@@ -12,8 +11,8 @@ const MobilePlaceholder: React.FC = () => {
         </h1>
         <HowToPlay />
         <div className="warning_alert roboto_font">
-          <strong>Note: </strong> Midi Matches is not supported on mobile
-          browsers. Please switch to a desktop browser to continue to game.
+          <strong>Note: </strong> Midi Matches is not currently supported on
+          mobile devices. Please switch to a desktop browser to continue.
         </div>
       </div>
     </div>
