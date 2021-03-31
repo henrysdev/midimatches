@@ -8,11 +8,13 @@ interface ComputerButtonProps {
   children?: any;
   callback: Function;
   extraClasses?: string[];
+  extraStyles?: any;
 }
 const ComputerButton: React.FC<ComputerButtonProps> = ({
   children,
   callback,
   extraClasses = [],
+  extraStyles = {},
 }) => {
   const [lightBulbAnimClass, setLightBulbAnimClass] = useState<string>(
     "led-green"
@@ -31,6 +33,7 @@ const ComputerButton: React.FC<ComputerButtonProps> = ({
         callback();
       }}
       className={className}
+      style={{ ...extraStyles }}
     >
       <div className="led-box" style={{ float: "left" }}>
         <div className={lightBulbAnimClass}></div>

@@ -1,17 +1,21 @@
 import React from "react";
 
-import { MediumLargeTitle, ComputerButton } from "../../common";
+import {
+  MediumLargeTitle,
+  ComputerButton,
+  Modal,
+  CenteredFrontWindow,
+} from "../../common";
 
 interface RoomPageJoinProps {
   roomId: string;
 }
 const RoomPageJoin: React.FC<RoomPageJoinProps> = ({ roomId }) => {
   return (
-    <div className="computer_frame outset_3d_border_deep">
+    <CenteredFrontWindow>
       <br />
-      <MediumLargeTitle>
-        <span className="accent_bars">///</span>JOINING ROOM...
-      </MediumLargeTitle>
+      <MediumLargeTitle>JOIN ROOM AS A...</MediumLargeTitle>
+
       <div className="main_menu_btn_group">
         <div className="main_menu_btn">
           <ComputerButton
@@ -19,8 +23,9 @@ const RoomPageJoin: React.FC<RoomPageJoinProps> = ({ roomId }) => {
               window.location.href = `/room/${roomId}/play`;
             }}
             extraClasses={["register_button"]}
+            extraStyles={{ margin: 8 }}
           >
-            I WANT TO PLAY!
+            PLAYER
           </ComputerButton>
         </div>
         <div className="main_menu_btn">
@@ -29,12 +34,22 @@ const RoomPageJoin: React.FC<RoomPageJoinProps> = ({ roomId }) => {
               window.location.href = `/room/${roomId}/watch`;
             }}
             extraClasses={["register_button"]}
+            extraStyles={{ margin: 8 }}
           >
-            I JUST WANT TO WATCH!
+            AUDIENCE MEMBER
           </ComputerButton>
         </div>
       </div>
-    </div>
+      <div
+        className="inset_3d_border_shallow inline_screen"
+        style={{ padding: "8px", margin: "8px" }}
+      >
+        <p>
+          Note: <strong>Audience Member</strong> capabilities are limited to
+          voting and chat.
+        </p>
+      </div>
+    </CenteredFrontWindow>
   );
 };
 export { RoomPageJoin };

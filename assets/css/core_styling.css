@@ -601,7 +601,7 @@ input:checked + .slider:before {
 
 .register_button {
   width: 92%;
-  margin: 0;
+  margin: 0px;
 }
 
 .in_game_content_flex_anchor {
@@ -1353,7 +1353,7 @@ strong {
   backdrop-filter: blur(10px);
   display: block;
   position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
+  z-index: 10; /* Sit on top */
   left: 0;
   top: 0;
   width: 100%; /* Full width */
@@ -1428,6 +1428,16 @@ strong {
   background-color: rgb(222, 222, 222);
 }
 
+.modal_content_wide {
+  margin: auto;
+  padding: 16px;
+  border: 1px solid #888;
+  width: 60%;
+  height: 60%;
+  color: black;
+  background-color: rgb(222, 222, 222);
+}
+
 /* The Close Button */
 .modal_close {
   color: #aaaaaa;
@@ -1448,6 +1458,10 @@ strong {
   color: black;
 }
 
+.front_window {
+  overflow: auto;
+}
+
 .developer_about_tagline_flex_wrapper {
   display: flex;
   align-items: center;
@@ -1460,6 +1474,12 @@ strong {
   font-family: "Roboto", sans-serif;
   /* bottom: 16px; */
   padding: 16px;
+}
+
+.large_instructions_text {
+  font-size: 1.5em;
+  color: var(--text_light);
+  font-family: "Roboto", sans-serif;
 }
 
 .footer_bar {
