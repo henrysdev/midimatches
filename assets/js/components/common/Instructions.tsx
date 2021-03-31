@@ -15,7 +15,7 @@ const Instructions: React.FC<InstructionsProps> = ({
   return (
     <div className="instructions_card">
       {!!title ? <div>{title}</div> : <></>}
-      <div>
+      <div className="instructions_description">
         {!!description ? (
           <div>
             <p className={extreme ? "extreme_instruction" : ""}>

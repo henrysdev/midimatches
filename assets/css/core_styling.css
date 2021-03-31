@@ -59,6 +59,7 @@
   );
   --practice_play_button_icon_size: 100px;
   --current_player_color: #296cff;
+  --audience_member_color: #ffc229;
   --text_dark: rgb(36, 36, 36);
 
   --header_bar_height: 40px;
@@ -601,7 +602,7 @@ input:checked + .slider:before {
 
 .register_button {
   width: 92%;
-  margin: 0;
+  margin: 0px;
 }
 
 .in_game_content_flex_anchor {
@@ -1349,11 +1350,25 @@ strong {
   }
 }
 
+.player_role_text {
+  color: var(--text_light);
+  /* text-shadow: 0 0 10px white; */
+}
+
+.audience_member_role_text {
+  color: var(--audience_member_color);
+  /* text-shadow: 0 0 10px white; */
+}
+
+.instructions_description {
+  font-size: 1.4em;
+}
+
 .alert_modal {
   backdrop-filter: blur(10px);
   display: block;
   position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
+  z-index: 10; /* Sit on top */
   left: 0;
   top: 0;
   width: 100%; /* Full width */
@@ -1428,6 +1443,16 @@ strong {
   background-color: rgb(222, 222, 222);
 }
 
+.modal_content_wide {
+  margin: auto;
+  padding: 16px;
+  border: 1px solid #888;
+  width: 60%;
+  height: 60%;
+  color: black;
+  background-color: rgb(222, 222, 222);
+}
+
 /* The Close Button */
 .modal_close {
   color: #aaaaaa;
@@ -1448,6 +1473,10 @@ strong {
   color: black;
 }
 
+.front_window {
+  overflow: auto;
+}
+
 .developer_about_tagline_flex_wrapper {
   display: flex;
   align-items: center;
@@ -1460,6 +1489,12 @@ strong {
   font-family: "Roboto", sans-serif;
   /* bottom: 16px; */
   padding: 16px;
+}
+
+.large_instructions_text {
+  font-size: 1.5em;
+  color: var(--text_light);
+  font-family: "Roboto", sans-serif;
 }
 
 .footer_bar {
@@ -1495,6 +1530,21 @@ strong {
 }
 
 .resource_link:visited {
+  color: var(--text_light);
+  font-style: normal;
+  text-decoration: none;
+}
+
+.error_page_text {
+  font-size: 1.6em;
+}
+
+.error_page_link:link {
+  font-weight: 600;
+  color: var(--text_light);
+}
+
+.error_page_link:visited {
   color: var(--text_light);
   font-style: normal;
   text-decoration: none;

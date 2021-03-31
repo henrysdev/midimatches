@@ -22,6 +22,20 @@ defmodule MidimatchesWeb.PageControllerTest do
     assert html_response(conn, 302) =~ "/about"
   end
 
+  test "GET /room/:room_id/play alias redirect", %{conn: conn} do
+    conn = get(conn, "/room/xyz/play")
+    resp = html_response(conn, 302)
+    assert resp =~ "/room/xyz"
+    assert resp =~ "audience=false"
+  end
+
+  test "GET /room/:room_id/watch alias redirect", %{conn: conn} do
+    conn = get(conn, "/room/xyz/watch")
+    resp = html_response(conn, 302)
+    assert resp =~ "/room/xyz"
+    assert resp =~ "audience=true"
+  end
+
   describe "GET /register" do
     test "menu dest", %{conn: conn} do
       conn = get(conn, "/register", destination: "/menu")

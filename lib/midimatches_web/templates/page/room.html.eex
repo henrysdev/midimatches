@@ -1,1 +1,2 @@
+<script>window.playerRole = "<%= @player_role %>";</script>
 <div id="react-app"></div>

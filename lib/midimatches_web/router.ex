@@ -24,6 +24,8 @@ defmodule MidimatchesWeb.Router do
     get "/privacy", PageController, :privacy
     get "/menu", PageController, :menu
     get "/rooms", PageController, :serverlist
+    get "/room/:room_id/play", PageController, :room_play
+    get "/room/:room_id/watch", PageController, :room_watch
     get "/room/:room_id", PageController, :room
     get "/register", PageController, :register_player
     get "/practice", PageController, :practice
