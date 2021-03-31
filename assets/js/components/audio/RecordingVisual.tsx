@@ -68,7 +68,12 @@ const RecordingVisual: React.FC<RecordingVisualProps> = ({
 
   return emptyRecording ? (
     <div className="piano_roll_container empty_recording_roll">
-      <div className="roboto_font empty_recording_label">(Empty Recording)</div>
+      <div
+        className="roboto_font empty_recording_label large_instructions_text"
+        style={{ color: "black" }}
+      >
+        (Empty Recording)
+      </div>
       {isPlaying ? (
         drawProgress(progress, firstPlayback)
       ) : listenComplete ? (

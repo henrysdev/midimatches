@@ -7,7 +7,7 @@ defmodule Midimatches.Types.GameRules.ViewTimeouts do
 
   @default_game_start_timeout 10_000
   @default_round_start_timeout 3_000
-  @default_recording_timeout 25_000
+  @default_recording_timeout 28_000
   @default_playback_voting_timeout 90_000
   @default_round_end_timeout 3_000
   @default_game_end_timeout 5_000

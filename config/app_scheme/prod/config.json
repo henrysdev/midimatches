@@ -11,7 +11,7 @@
         "view_timeouts": {
           "game_start": 10000,
           "round_start": 3000,
-          "recording": 25000,
+          "recording": 28000,
           "playback_voting": 90000,
           "round_end": 10000,
           "game_end": 10000
@@ -29,7 +29,7 @@
         "view_timeouts": {
           "game_start": 10000,
           "round_start": 3000,
-          "recording": 25000,
+          "recording": 28000,
           "playback_voting": 90000,
           "round_end": 10000,
           "game_end": 10000
@@ -47,7 +47,7 @@
         "view_timeouts": {
           "game_start": 10000,
           "round_start": 3000,
-          "recording": 25000,
+          "recording": 28000,
           "playback_voting": 90000,
           "round_end": 10000,
           "game_end": 10000

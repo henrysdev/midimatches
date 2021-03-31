@@ -71,6 +71,7 @@ p {
   padding: 8px;
   line-height: 1.4;
   font-family: "Roboto", sans-serif;
+  font-size: 1.2em;
 }
 
 h1,
@@ -1370,10 +1371,6 @@ strong {
   /* text-shadow: 0 0 10px white; */
 }
 
-.instructions_description {
-  font-size: 1.4em;
-}
-
 .alert_modal {
   backdrop-filter: blur(10px);
   display: block;
@@ -1516,7 +1513,7 @@ strong {
 }
 
 .large_instructions_text {
-  font-size: 1.5em;
+  font-size: 1.2em;
   color: var(--text_light);
   font-family: "Roboto", sans-serif;
 }

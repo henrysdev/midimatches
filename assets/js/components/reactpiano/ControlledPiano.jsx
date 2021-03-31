@@ -197,7 +197,7 @@ class ControlledPiano extends React.Component {
           frozen={this.props.frozen}
           width={this.props.width}
           keyWidthToHeight={this.props.keyWidthToHeight}
-          gliss={this.state.isMouseDown}
+          gliss={false}
           showNoteLabels={this.props.showNoteLabels}
           useTouchEvents={this.state.useTouchEvents}
           renderNoteLabel={this.renderNoteLabel}
