@@ -69,6 +69,9 @@ export const DEFAULT_SAMPLE_COLORS = [
   "rgba(107, 35, 143, 0.15)",
 ];
 
+// ms threshold for which to actually diagnose client's clock as out of sync
+export const CLOCK_OUT_OF_SYNC_THRESHOLD = 0;
+export const INPUT_LAG_COMPENSATION = -0.005;
 export const DEFAULT_SAMPLE_PLAY_BUFFER_LENGTH = 2;
 export const DEFAULT_SAMPLE_LENGTH = 10.6667;
 export const DEFAULT_NUM_WARMUP_LOOPS = 1;
@@ -78,7 +81,7 @@ export const DEFAULT_RECORDING_LENGTH =
 export const DEFAULT_WARMUP_LENGTH =
   DEFAULT_SAMPLE_LENGTH * DEFAULT_NUM_WARMUP_LOOPS;
 
-export const DEFAULT_SAMPLE_VOLUME = -4;
+export const DEFAULT_SAMPLE_VOLUME = -3;
 
 export const DEFAULT_SYNTH_CONFIG = {
   oscillator: {
@@ -113,7 +116,7 @@ export const DEFAULT_FM_SYNTH_CONFIG = {
     attackCurve: "linear",
     decay: 0.3,
     decayCurve: "exponential",
-    release: 0.5,
+    release: 0.3,
     releaseCurve: "exponential",
     sustain: 1,
   },
@@ -134,6 +137,14 @@ export const DEFAULT_FM_SYNTH_CONFIG = {
   },
   modulationIndex: 12.22,
 } as any;
+
+// export const DEFAULT_SAMPLER_CONFIG = new Tone.Sampler({
+//   urls: {
+//     C4: "funk_daddy_c4.mp3",
+//     C5: "funk_daddy_c5.mp3",
+//   },
+//   baseUrl: "https://progressions-game.s3.amazonaws.com/synths/funk_daddy/",
+// }).toDestination();
 
 export const DEFAULT_MANUAL_NOTE_VELOCITY = 100;
 

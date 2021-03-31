@@ -14,7 +14,7 @@ defmodule Midimatches.GameLogicTest do
   end
 
   describe "ready up" do
-    test "all musicians and advance to next game view" do
+    test "all players and advance to next game view" do
       players =
         MapSet.new([
           %Player{
@@ -303,7 +303,7 @@ defmodule Midimatches.GameLogicTest do
     end
   end
 
-  test "remove musician from game" do
+  test "remove player from game" do
     players =
       MapSet.new([
         %Player{
@@ -370,7 +370,7 @@ defmodule Midimatches.GameLogicTest do
     assert actual_state == expected_state
   end
 
-  test "add musician to game" do
+  test "add player to game" do
     players =
       MapSet.new([
         %Player{
@@ -439,6 +439,144 @@ defmodule Midimatches.GameLogicTest do
       sample_beats: [],
       scores: %{"4" => 0},
       ready_ups: MapSet.new(["4"])
+    }
+
+    assert actual_state == expected_state
+  end
+
+  test "add audience member to game" do
+    players =
+      MapSet.new([
+        %Player{
+          player_id: "1",
+          player_alias: "foo"
+        },
+        %Player{
+          player_id: "2",
+          player_alias: "zoo"
+        },
+        %Player{
+          player_id: "3",
+          player_alias: "fee"
+        }
+      ])
+
+    new_audience_member = %Player{
+      player_id: "4",
+      player_alias: "fum"
+    }
+
+    contestants = ["1", "2", "3"]
+    player_ids_set = MapSet.new(contestants)
+
+    game_server_state = %GameServer{
+      room_id: "1",
+      game_id: "abc",
+      players: players,
+      player_ids_set: player_ids_set,
+      game_view: :playback_voting,
+      contestants: contestants,
+      round_num: 3,
+      game_rules: %{rounds_to_win: 3},
+      sample_beats: []
+    }
+
+    %{state: actual_state} = GameLogic.add_audience_member(game_server_state, new_audience_member)
+
+    expected_state = %GameServer{
+      room_id: "1",
+      game_id: "abc",
+      players:
+        MapSet.new([
+          %Player{
+            player_id: "1",
+            player_alias: "foo"
+          },
+          %Player{
+            player_id: "2",
+            player_alias: "zoo"
+          },
+          %Player{
+            player_id: "3",
+            player_alias: "fee"
+          }
+        ]),
+      player_ids_set: MapSet.new(["1", "2", "3"]),
+      audience_members: MapSet.new([%Player{player_id: "4", player_alias: "fum"}]),
+      audience_member_ids_set: MapSet.new(["4"]),
+      game_view: :playback_voting,
+      contestants: ["1", "2", "3"],
+      round_num: 3,
+      game_rules: %{rounds_to_win: 3},
+      sample_beats: [],
+      scores: %{}
+    }
+
+    assert actual_state == expected_state
+  end
+
+  test "remove audience member from game" do
+    players =
+      MapSet.new([
+        %Player{
+          player_id: "1",
+          player_alias: "foo"
+        },
+        %Player{
+          player_id: "2",
+          player_alias: "zoo"
+        }
+      ])
+
+    audience_members =
+      MapSet.new([
+        %Player{
+          player_id: "5",
+          player_alias: "dum"
+        }
+      ])
+
+    contestants = ["1", "2"]
+    player_ids_set = MapSet.new(contestants)
+
+    game_server_state = %GameServer{
+      room_id: "1",
+      game_id: "abc",
+      audience_members: audience_members,
+      audience_member_ids_set: MapSet.new(["5"]),
+      players: players,
+      player_ids_set: player_ids_set,
+      game_view: :playback_voting,
+      contestants: contestants,
+      round_num: 3,
+      game_rules: %{rounds_to_win: 3},
+      sample_beats: []
+    }
+
+    %{state: actual_state} = GameLogic.remove_audience_member(game_server_state, "5")
+
+    expected_state = %GameServer{
+      room_id: "1",
+      game_id: "abc",
+      players:
+        MapSet.new([
+          %Player{
+            player_id: "1",
+            player_alias: "foo"
+          },
+          %Player{
+            player_id: "2",
+            player_alias: "zoo"
+          }
+        ]),
+      audience_members: MapSet.new(),
+      audience_member_ids_set: MapSet.new(),
+      player_ids_set: MapSet.new(["1", "2"]),
+      game_view: :playback_voting,
+      contestants: ["1", "2"],
+      round_num: 3,
+      game_rules: %{rounds_to_win: 3},
+      sample_beats: []
     }
 
     assert actual_state == expected_state

@@ -30,6 +30,7 @@ defmodule Midimatches.Rooms.RoomServer do
     field(:start_game_deadline, number(), default: -1)
     field(:primed_to_start, boolean(), default: true)
     field(:created_at, number(), default: -1)
+    field(:audience_members, MapSet.t(Player), default: MapSet.new())
   end
 
   def start_link(args) do
@@ -79,6 +80,22 @@ defmodule Midimatches.Rooms.RoomServer do
     GenServer.call(pid, :get_players)
   end
 
+  @spec add_audience_member(pid(), %Player{}) :: %RoomServer{}
+  @doc """
+  Add a new audience member to a room
+  """
+  def add_audience_member(pid, audience_member) do
+    GenServer.call(pid, {:add_audience_member, audience_member})
+  end
+
+  @spec drop_audience_member(pid(), id()) :: :ok
+  @doc """
+  Drop an audience member from a room
+  """
+  def drop_audience_member(pid, audience_member_id) do
+    GenServer.cast(pid, {:drop_audience_member, audience_member_id})
+  end
+
   @spec full?(pid()) :: boolean()
   @doc """
   Return true if room is at max capacity of players
@@ -114,7 +131,6 @@ defmodule Midimatches.Rooms.RoomServer do
   @impl true
   def handle_cast(
         {:drop_player, player_id},
-        # _from,
         %RoomServer{players: players, game: game, room_id: room_id} = state
       ) do
     valid_player_to_drop? =
@@ -138,6 +154,39 @@ defmodule Midimatches.Rooms.RoomServer do
       else
         game_server = Pids.fetch!({:game_server, room_id})
         GameServer.drop_player(game_server, player_id)
+        {:noreply, state}
+      end
+    else
+      {:noreply, state}
+    end
+  end
+
+  @impl true
+  def handle_cast(
+        {:drop_audience_member, player_id},
+        %RoomServer{audience_members: audience_members, game: game, room_id: room_id} = state
+      ) do
+    valid_audience_member_to_drop? =
+      audience_members
+      |> MapSet.to_list()
+      |> Enum.any?(&(&1.player_id == player_id))
+
+    if valid_audience_member_to_drop? do
+      state = %RoomServer{
+        state
+        | audience_members:
+            audience_members
+            |> MapSet.to_list()
+            |> Enum.reject(&(&1.player_id == player_id))
+            |> MapSet.new()
+      }
+
+      if is_nil(game) do
+        broadcast_lobby_state(state)
+        {:noreply, state}
+      else
+        game_server = Pids.fetch!({:game_server, room_id})
+        GameServer.drop_audience_member(game_server, player_id)
         {:noreply, state}
       end
     else
@@ -187,11 +236,36 @@ defmodule Midimatches.Rooms.RoomServer do
 
   @impl true
   def handle_call(
+        {:add_audience_member, audience_member},
+        _from,
+        %RoomServer{
+          audience_members: audience_members,
+          room_id: room_id,
+          game: game
+        } = state
+      ) do
+    room_audience_members = MapSet.put(audience_members, audience_member)
+    state = %RoomServer{state | audience_members: room_audience_members}
+
+    state =
+      if is_nil(game) do
+        broadcast_lobby_state(state)
+        state
+      else
+        game_server = Pids.fetch!({:game_server, room_id})
+        GameServer.add_audience_member(game_server, audience_member)
+        state
+      end
+
+    {:reply, state, state}
+  end
+
+  @impl true
+  def handle_call(
         :full?,
         _from,
         %RoomServer{
           players: players,
-          # TODO have a room config and use this max_players, could be diff from game max_players
           game_config: %GameRules{
             max_players: max_players
           }
@@ -214,8 +288,6 @@ defmodule Midimatches.Rooms.RoomServer do
           }
         } = state
       ) do
-    # last_activity_timestamp = max(created_at, start_game_deadline)
-
     cond do
       permanent_room ->
         {:reply, false, state}

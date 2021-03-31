@@ -252,7 +252,7 @@ const Serverlist: React.FC<ServerlistProps> = ({
             </div>
             <ComputerButton
               callback={() =>
-                (window.location.href = `/room/${selectedRoom.roomId}`)
+                (window.location.href = `/room/${selectedRoom.roomId}/?audience=false`)
               }
               extraClasses={["server_details_connect_button"]}
             >

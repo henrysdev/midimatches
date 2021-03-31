@@ -61,13 +61,29 @@ defmodule MidimatchesWeb.PageController do
   end
 
   @spec room(Plug.Conn.t(), map) :: Plug.Conn.t()
+  @doc """
+  Page that hosts all in-game UI content. Handles players as well as audience members.
+  """
+  def room(%Plug.Conn{} = conn, %{"room_id" => room_id, "audience" => "true"}),
+    do: room_page(conn, room_id, true)
+
+  def room(%Plug.Conn{} = conn, %{"room_id" => room_id, "audience" => "false"}),
+    do:
+      redirect(conn,
+        to: Routes.page_path(conn, :room, room_id)
+      )
+
   def room(%Plug.Conn{} = conn, %{"room_id" => room_id}) do
+    room_page(conn, room_id, false)
+  end
+
+  defp room_page(%Plug.Conn{} = conn, room_id, audience?) do
     if has_user_session?(conn) do
       success_behavior = fn conn ->
         if Rooms.room_exists?(room_id) do
           room_server = Pids.fetch!({:room_server, room_id})
 
-          if RoomServer.full?(room_server) do
+          if RoomServer.full?(room_server) and !audience? do
             render(conn, "full_room.html")
           else
             render(conn, "room.html")

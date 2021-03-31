@@ -70,6 +70,46 @@ defmodule Midimatches.RoomServerTest do
     assert players == expected_players
   end
 
+  test "add and drop audience members" do
+    room_id = "1"
+    room_name = "foobar"
+
+    [m1, m2, m3] = [
+      %Player{
+        player_id: "m1",
+        player_alias: "foo"
+      },
+      %Player{
+        player_id: "m2",
+        player_alias: "zoo"
+      },
+      %Player{
+        player_id: "m3",
+        player_alias: "fee"
+      }
+    ]
+
+    {:ok, room_server} = start_supervised({RoomServer, [{room_id, room_name}]})
+
+    RoomServer.add_audience_member(room_server, m1)
+    RoomServer.add_audience_member(room_server, m2)
+    RoomServer.add_audience_member(room_server, m3)
+    RoomServer.add_audience_member(room_server, m3)
+    RoomServer.drop_audience_member(room_server, m1.player_id)
+
+    audience_members =
+      room_server
+      |> (&:sys.get_state(&1).audience_members).()
+      |> MapSet.to_list()
+
+    expected_audience_members = [
+      %Player{player_id: "m3", player_alias: "fee"},
+      %Player{player_id: "m2", player_alias: "zoo"}
+    ]
+
+    assert audience_members == expected_audience_members
+  end
+
   test "starts game when enough players have joined" do
     room_id = "1"
     room_name = "foobar"

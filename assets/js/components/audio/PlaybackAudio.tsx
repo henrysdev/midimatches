@@ -113,13 +113,15 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
 
     Tone.Transport.scheduleRepeat(
       (currTime) => {
-        const progress = (currTime - startTime) / DEFAULT_RECORDING_LENGTH;
-        if (progress >= 0.99) {
-          completeListening(playerId);
-          setProgress(1.0);
-        } else {
-          setProgress(progress);
-        }
+        Tone.Draw.schedule(() => {
+          const progress = (currTime - startTime) / DEFAULT_RECORDING_LENGTH;
+          if (progress >= 0.99) {
+            completeListening(playerId);
+            setProgress(1.0);
+          } else {
+            setProgress(progress);
+          }
+        }, currTime);
       },
       0.05,
       "+0",
