@@ -1,18 +1,6 @@
-import { Channel, Socket } from "phoenix";
 import React, { useEffect, useState } from "react";
 
-import { unmarshalBody } from "../../../utils";
-import { ServerlistUpdatePayload, RoomState } from "../../../types";
-import {
-  SERVERLIST_UPDATE_EVENT,
-  MAX_PLAYER_ALIAS_LENGTH,
-  MIN_PLAYER_ALIAS_LENGTH,
-} from "../../../constants";
-import {
-  FullWidthButton,
-  MediumLargeTitle,
-  ComputerButton,
-} from "../../common";
+import { MediumLargeTitle, ComputerButton } from "../../common";
 import { useCurrentUserContext, useSocketContext } from "../../../hooks";
 import { PageWrapper } from "../";
 

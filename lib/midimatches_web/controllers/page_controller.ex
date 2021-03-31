@@ -60,33 +60,48 @@ defmodule MidimatchesWeb.PageController do
     end
   end
 
+  @spec room_play(Plug.Conn.t(), map) :: Plug.Conn.t()
+  @doc """
+  Shortcut route to join player into game as a participatory musician/player.
+  """
+  def room_play(%Plug.Conn{} = conn, %{"room_id" => room_id}) do
+    redirect(conn, to: Routes.page_path(conn, :room, room_id, audience: false))
+  end
+
+  @spec room_watch(Plug.Conn.t(), map) :: Plug.Conn.t()
+  @doc """
+  Shortcut route to join player into game as an audience member.
+  """
+  def room_watch(%Plug.Conn{} = conn, %{"room_id" => room_id}) do
+    redirect(conn, to: Routes.page_path(conn, :room, room_id, audience: true))
+  end
+
   @spec room(Plug.Conn.t(), map) :: Plug.Conn.t()
   @doc """
   Page that hosts all in-game UI content. Handles players as well as audience members.
   """
-  def room(%Plug.Conn{} = conn, %{"room_id" => room_id, "audience" => "true"}),
-    do: room_page(conn, room_id, true)
-
-  def room(%Plug.Conn{} = conn, %{"room_id" => room_id, "audience" => "false"}),
-    do:
-      redirect(conn,
-        to: Routes.page_path(conn, :room, room_id)
-      )
-
-  def room(%Plug.Conn{} = conn, %{"room_id" => room_id}) do
-    room_page(conn, room_id, false)
+  def room(%Plug.Conn{} = conn, %{"room_id" => room_id, "audience" => "true"}) do
+    room_page(conn, room_id, :audience_member)
   end
 
-  defp room_page(%Plug.Conn{} = conn, room_id, audience?) do
+  def room(%Plug.Conn{} = conn, %{"room_id" => room_id, "audience" => "false"}) do
+    room_page(conn, room_id, :player)
+  end
+
+  def room(%Plug.Conn{} = conn, %{"room_id" => room_id}) do
+    room_page(conn, room_id, :not_specified)
+  end
+
+  defp room_page(%Plug.Conn{} = conn, room_id, player_role) do
     if has_user_session?(conn) do
       success_behavior = fn conn ->
         if Rooms.room_exists?(room_id) do
           room_server = Pids.fetch!({:room_server, room_id})
 
-          if RoomServer.full?(room_server) and !audience? do
+          if RoomServer.full?(room_server) and player_role == :player do
             render(conn, "full_room.html")
           else
-            render(conn, "room.html")
+            render(conn, "room.html", player_role: player_role)
           end
         else
           render(conn, "missing_room.html")
