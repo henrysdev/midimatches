@@ -193,6 +193,7 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
             <div
               style={{
                 flex: "5",
+                height: "50px",
               }}
             >
               <RecordingVisual

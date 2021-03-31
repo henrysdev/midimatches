@@ -932,7 +932,17 @@ strong {
   width: 100%;
   min-height: 50px;
   height: 100%;
-  border: 1px solid var(--text_dark);
+  /* border: 1px solid var(--text_dark); */
+  z-index: 11;
+  overflow: hidden;
+}
+
+.piano_roll_playhead_container {
+  position: relative;
+  transform: translateY(-53px);
+  width: 100%;
+  min-height: 50px;
+  height: 100%;
   z-index: 11;
   overflow: hidden;
 }

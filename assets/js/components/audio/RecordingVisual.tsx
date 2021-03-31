@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { Loop, TimestepSlice, Note, Color } from "../../types";
 import { useGameRulesContext } from "../../hooks";
 import { microsToMs, msToSec } from "../../utils";
@@ -33,15 +33,38 @@ const RecordingVisual: React.FC<RecordingVisualProps> = ({
     gameRules: { timestepSize },
   } = useGameRulesContext();
 
-  const { percentagePerTimestep, percentagePerKey } = useMemo(
-    () => calcPercentageUnits(keyboardRange, timestepSize),
-    [timestepSize, keyboardRange]
-  );
-
   const recordedNotes = useMemo(
     () => flattenTimestepSlices(recording.timestepSlices),
     [recording.timestepSlices.length]
   );
+
+  const canvasRef = useRef<any>(null);
+  useEffect(() => {
+    if (!!canvasRef && !!canvasRef.current) {
+      const canvasCtx = canvasRef.current.getContext("2d");
+      const canvasWidth = canvasRef.current.clientWidth;
+      const canvasHeight = canvasRef.current.clientHeight;
+      canvasCtx.canvas.width = canvasWidth;
+      canvasCtx.canvas.height = canvasHeight;
+
+      const { pixelsPerTimestep, pixelsPerKey } = calcPixelUnits(
+        keyboardRange,
+        timestepSize,
+        canvasWidth,
+        canvasHeight
+      );
+
+      recordedNotes.map((notePoint) =>
+        drawNotePointOnCanvas(
+          notePoint,
+          pixelsPerTimestep,
+          pixelsPerKey,
+          "var(--text_dark)",
+          canvasRef
+        )
+      );
+    }
+  }, [canvasRef]);
 
   return emptyRecording ? (
     <div className="piano_roll_container empty_recording_roll">
@@ -55,21 +78,15 @@ const RecordingVisual: React.FC<RecordingVisualProps> = ({
       )}
     </div>
   ) : (
-    <div
-      className="piano_roll_container"
-      style={{
-        backgroundColor: color,
-      }}
-    >
-      <div>
-        {recordedNotes.map((notePoint) =>
-          drawNotePointByPercentages(
-            notePoint,
-            percentagePerTimestep,
-            percentagePerKey,
-            "var(--text_dark)"
-          )
-        )}
+    <div className="piano_roll_container">
+      <canvas
+        className="piano_roll_container"
+        style={{
+          backgroundColor: color,
+        }}
+        ref={canvasRef}
+      ></canvas>
+      <div className="piano_roll_playhead_container">
         {isPlaying ? (
           drawProgress(progress, firstPlayback)
         ) : listenComplete ? (
@@ -106,44 +123,42 @@ const flattenTimestepSlices = (
   }, []);
 };
 
-const calcPercentageUnits = (
+const calcPixelUnits = (
   keyboardRange: number,
-  timestepSize: number
-): { percentagePerTimestep: number; percentagePerKey: number } => {
+  timestepSize: number,
+  canvasWidth: number,
+  canvasHeight: number
+): { pixelsPerTimestep: number; pixelsPerKey: number } => {
   const timestepSizeInSeconds = msToSec(microsToMs(timestepSize));
   const numTotalTimesteps = Math.floor(
     DEFAULT_RECORDING_LENGTH / timestepSizeInSeconds
   );
-  const percentagePerTimestep = 100 / numTotalTimesteps;
-  const percentagePerKey = 100 / keyboardRange;
-  return { percentagePerTimestep, percentagePerKey };
+  const pixelsPerTimestep = canvasWidth / numTotalTimesteps;
+  const pixelsPerKey = canvasHeight / keyboardRange;
+  return { pixelsPerTimestep, pixelsPerKey };
 };
 
-const drawNotePointByPercentages = (
+const drawNotePointOnCanvas = (
   notePoint: NotePoint,
-  percentagePerTimestep: number,
-  percentagePerKey: number,
-  color: string
-): JSX.Element => {
-  const pixelStartX = `${notePoint.timestep * percentagePerTimestep}%`;
-  const pixelStartY = `${
-    (notePoint.key - MIN_NOTE_NUMBER) * percentagePerKey
-  }%`;
-  const pixelDuration = `${notePoint.duration * percentagePerTimestep}%`;
+  pixelsPerTimestep: number,
+  pixelHeightPerKey: number,
+  color: string,
+  canvasRef: any
+): void => {
+  const pixelStartX = notePoint.timestep * pixelsPerTimestep;
+  const pixelStartY = (MAX_NOTE_NUMBER - notePoint.key) * pixelHeightPerKey;
+  const pixelDuration = notePoint.duration * pixelsPerTimestep;
 
-  return (
-    <div
-      key={`${notePoint.timestep}_${notePoint.key}`}
-      style={{
-        position: "absolute",
-        width: pixelDuration,
-        height: percentagePerKey,
-        backgroundColor: color,
-        left: pixelStartX,
-        bottom: pixelStartY,
-      }}
-    />
+  const canvasCtx = canvasRef.current.getContext("2d");
+  canvasCtx.beginPath();
+  canvasCtx.rect(pixelStartX, pixelStartY, pixelDuration, pixelHeightPerKey);
+  canvasCtx.fillRect(
+    pixelStartX,
+    pixelStartY,
+    pixelDuration,
+    pixelHeightPerKey
   );
+  canvasCtx.stroke();
 };
 
 const drawProgress = (progress: number, firstPlayback: boolean) => {
