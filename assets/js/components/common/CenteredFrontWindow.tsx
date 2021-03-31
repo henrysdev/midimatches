@@ -39,7 +39,7 @@ const CenteredFrontWindow: React.FC<CenteredFrontWindowProps> = ({
   return (
     <div>
       {showModal ? (
-        <div className="modal relative_anchor">
+        <div className="front_window_modal relative_anchor">
           <div
             className="modal_content_wide centered_div computer_frame outset_3d_border_deep front_window"
             style={{ backgroundColor: "var(--main_theme_shade_1)" }}
