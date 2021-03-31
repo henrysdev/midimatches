@@ -38,7 +38,6 @@ import {
 } from "../../../hooks";
 import { PregameDebug } from "../../debug";
 import { PageWrapper } from "../";
-import { BrowserWarning } from "../../pages";
 
 const RoomPage: React.FC = () => {
   const toneAudioContext = useAudioContextProvider();
@@ -75,6 +74,22 @@ const RoomPage: React.FC = () => {
     }
   };
 
+  const roomId = useMemo(() => {
+    const path = window.location.pathname
+      .replace(window.location.search, "")
+      .split("/")
+      .filter((section) => section !== "");
+
+    return path[path.length - 1];
+  }, []);
+
+  const isAudienceMember = useMemo(() => {
+    const queryParams = new URLSearchParams(window.location.search);
+    return queryParams.has("audience")
+      ? queryParams.get("audience") === "true"
+      : false;
+  }, []);
+
   useEffect(() => {
     setCurrPlayer({
       playerId: currentUser.userId,
@@ -82,8 +97,7 @@ const RoomPage: React.FC = () => {
     });
 
     // channel init
-    const path = window.location.pathname.split("/");
-    const roomId = path[path.length - 1];
+
     const channel: Channel = socket.channel(`room:${roomId}`, {
       user_id: currentUser.userId,
     });
@@ -100,6 +114,7 @@ const RoomPage: React.FC = () => {
       const sentMessage = channel.push(SUBMIT_JOIN, {
         player_alias: currentUser.userAlias,
         player_id: currentUser.userId,
+        is_audience_member: isAudienceMember,
       });
       if (!!sentMessage) {
         sentMessage
@@ -212,7 +227,12 @@ const RoomPage: React.FC = () => {
         >
           <ChatContext.Provider value={{ chatHistory, submitChatMessageEvent }}>
             {!!gameChannel && !!currPlayer && !!initGameState ? (
-              <PlayerContext.Provider value={{ player: currPlayer }}>
+              <PlayerContext.Provider
+                value={{
+                  player: currPlayer,
+                  isAudienceMember,
+                }}
+              >
                 <Game
                   gameChannel={gameChannel}
                   initGameState={initGameState}

@@ -171,6 +171,7 @@ export interface ToneAudioContextType {
 
 export interface PlayerContextType {
   player: Player;
+  isAudienceMember: boolean;
 }
 
 export interface CurrentUserContextType {

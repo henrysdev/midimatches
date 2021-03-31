@@ -65,10 +65,15 @@ defmodule Midimatches.Rooms.Room.Game.Views.PlaybackVoting do
 
   @spec vote_status(%GameServer{}, ballot()) :: vote_status()
   defp vote_status(
-         %GameServer{player_ids_set: player_ids_set, contestants: contestants, votes: votes},
+         %GameServer{
+           player_ids_set: player_ids_set,
+           audience_member_ids_set: audience_member_ids_set,
+           contestants: contestants,
+           votes: votes
+         },
          {player_id, vote}
        ) do
-    judges = MapSet.to_list(player_ids_set)
+    judges = MapSet.union(player_ids_set, audience_member_ids_set) |> MapSet.to_list()
 
     valid_vote? =
       Enum.member?(judges, player_id) and

@@ -90,7 +90,7 @@ defmodule MidimatchesWeb.RoomChannel do
         %{
           "player_alias" => player_alias,
           "player_id" => player_id,
-          "is_spectating" => spectator?
+          "is_audience_member" => audience_member?
         },
         %Phoenix.Socket{assigns: %{room_id: room_id, player_id: player_id}} = socket
       ) do
@@ -101,7 +101,13 @@ defmodule MidimatchesWeb.RoomChannel do
       player_alias: player_alias
     }
 
-    room_state = RoomServer.add_player(room_server, player)
+    room_state =
+      if audience_member? do
+        RoomServer.add_audience_member(room_server, player)
+      else
+        RoomServer.add_player(room_server, player)
+      end
+
     payload = Utils.server_room_to_client_room_game_join(room_state)
 
     {:reply, {:ok, payload}, assign_game_server(socket)}
