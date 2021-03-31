@@ -11,9 +11,6 @@ const BrowserWarning: React.FC = () => {
     setShowCompatibilityWarning,
   } = useBrowserCompatibilityContext();
   const [showWarningModal, setShowWarningModal] = useState<boolean>(false);
-  // const [modalCtr, setModalCtr] = useState<number>(0);
-  // const refreshModal = () => setModalCtr((prev) => prev + 1);
-
   const { hasCookie, setCookie } = useCookies();
 
   useEffect(() => {
@@ -22,11 +19,6 @@ const BrowserWarning: React.FC = () => {
       setCookie(SEEN_BROWSER_WARNING_COOKIE, true);
     }
   }, [supportedBrowser]);
-
-  // useEffect(() => {
-  //   console.log("aAHAhA");
-  //   refreshModal();
-  // }, [forceShowWarning]);
 
   return showWarningModal || forceShowWarning ? (
     <Modal
