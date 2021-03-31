@@ -60,10 +60,7 @@ const RoomPage: React.FC = () => {
       {hasJoinedRoom ? (
         <RoomPageContent roomId={roomId} isAudienceMember={isAudienceMember} />
       ) : hasCheckedDomForPlayerType ? (
-        <RoomPageJoin
-          setHasJoinedRoom={setHasJoinedRoom}
-          setIsAudienceMember={setIsAudienceMember}
-        />
+        <RoomPageJoin roomId={roomId} />
       ) : (
         <LoadingSpinner />
       )}

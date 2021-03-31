@@ -1500,6 +1500,21 @@ strong {
   text-decoration: none;
 }
 
+.error_page_text {
+  font-size: 1.6em;
+}
+
+.error_page_link:link {
+  font-weight: 600;
+  color: var(--text_light);
+}
+
+.error_page_link:visited {
+  color: var(--text_light);
+  font-style: normal;
+  text-decoration: none;
+}
+
 .about_page_play_button_container {
   height: 80px;
 }

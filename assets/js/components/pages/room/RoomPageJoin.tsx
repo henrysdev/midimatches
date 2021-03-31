@@ -3,13 +3,9 @@ import React from "react";
 import { MediumLargeTitle, ComputerButton } from "../../common";
 
 interface RoomPageJoinProps {
-  setHasJoinedRoom: Function;
-  setIsAudienceMember: Function;
+  roomId: string;
 }
-const RoomPageJoin: React.FC<RoomPageJoinProps> = ({
-  setHasJoinedRoom,
-  setIsAudienceMember,
-}) => {
+const RoomPageJoin: React.FC<RoomPageJoinProps> = ({ roomId }) => {
   return (
     <div className="computer_frame outset_3d_border_deep">
       <br />
@@ -20,8 +16,7 @@ const RoomPageJoin: React.FC<RoomPageJoinProps> = ({
         <div className="main_menu_btn">
           <ComputerButton
             callback={() => {
-              setIsAudienceMember(false);
-              setHasJoinedRoom(true);
+              window.location.href = `/room/${roomId}/play`;
             }}
             extraClasses={["register_button"]}
           >
@@ -31,12 +26,11 @@ const RoomPageJoin: React.FC<RoomPageJoinProps> = ({
         <div className="main_menu_btn">
           <ComputerButton
             callback={() => {
-              setIsAudienceMember(true);
-              setHasJoinedRoom(true);
+              window.location.href = `/room/${roomId}/watch`;
             }}
             extraClasses={["register_button"]}
           >
-            I JUST WANT TO SPECTATE!
+            I JUST WANT TO WATCH!
           </ComputerButton>
         </div>
       </div>

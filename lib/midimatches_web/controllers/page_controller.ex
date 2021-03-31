@@ -99,7 +99,7 @@ defmodule MidimatchesWeb.PageController do
           room_server = Pids.fetch!({:room_server, room_id})
 
           if RoomServer.full?(room_server) and player_role == :player do
-            render(conn, "full_room.html")
+            render(conn, "full_room.html", room_id: room_id)
           else
             render(conn, "room.html", player_role: player_role)
           end

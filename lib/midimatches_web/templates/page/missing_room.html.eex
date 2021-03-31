@@ -15,7 +15,13 @@
     <div class="error_page relative_anchor">
       <div class="error_page_content centered_div centered_title">
         <h1>Room Does Not Exist</h1>
-        <p><a className="resource_link" href="/rooms"><strong>Find an active room</strong></a></p>
+        <div class="error_page_text">
+          <p>
+            <%= link to: Routes.page_path(@conn, :serverlist), class: "error_page_link" do %>
+              <strong>Find another room</strong>
+            <% end %>
+          </p>
+        </div>
       </div>
     </div>
   </body>

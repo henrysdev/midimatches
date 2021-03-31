@@ -15,7 +15,25 @@
     <div class="error_page relative_anchor">
       <div class="error_page_content centered_div centered_title">
         <h1>Room Is Full</h1>
-        <p><a className="resource_link" href="/rooms"><strong>Find another room</strong></a></p>
+        <div class="error_page_text">
+          <p>
+            <%= link to: Routes.page_path(@conn, :room_play, @room_id), class: "error_page_link" do %>
+              <strong>Try again</strong>
+            <% end %>
+          </p>
+          <p><strong>OR</strong></p>
+          <p>
+            <%= link to: Routes.page_path(@conn, :room_watch, @room_id), class: "error_page_link" do %>
+              <strong>Join as an audience member</strong>
+            <% end %>
+          </p>
+          <p><strong>OR</strong></p>
+          <p>
+            <%= link to: Routes.page_path(@conn, :serverlist), class: "error_page_link" do %>
+              <strong>Find another room</strong>
+            <% end %>
+          </p>
+        </div>
       </div>
     </div>
   </body>

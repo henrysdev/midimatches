@@ -1,6 +1,4 @@
-import React from "react";
 import { loopToEvents, midiToPitch } from "./";
-import { Loop, Note, TimestepSlice, LocalNoteEvent } from "../types";
 import { INPUT_LAG_COMPENSATION } from "../constants";
 
 const loopMocks = require("../mocks/loops.json");
