@@ -94,6 +94,50 @@ defmodule Midimatches.Rooms.Room.GameLogic do
     |> as_instruction(sync?: valid_player_to_drop?, view_change?: false)
   end
 
+  @spec add_audience_member(%GameServer{}, %Player{}) :: instruction_map()
+  def add_audience_member(
+        %GameServer{audience_members: audience_members} = state,
+        %Player{player_id: audience_member_id} = audience_member
+      ) do
+    %GameServer{
+      state
+      | audience_member_ids_set: MapSet.put(state.audience_member_ids_set, audience_member_id),
+        audience_members: MapSet.put(audience_members, audience_member)
+    }
+    |> as_instruction(sync?: true, view_change?: false)
+  end
+
+  @spec remove_audience_member(%GameServer{}, id()) :: instruction_map()
+  def remove_audience_member(%GameServer{} = state, player_id) do
+    valid_audience_member_to_drop? = MapSet.member?(state.audience_member_ids_set, player_id)
+
+    if valid_audience_member_to_drop? do
+      updated_audience_members =
+        state.audience_members
+        |> MapSet.to_list()
+        |> Enum.reject(&(&1.player_id == player_id))
+        |> MapSet.new()
+
+      # filter out vote cast by the leaving player's. Votes for the leaving player will be treated
+      # as equal to abstaining.
+      updated_votes =
+        state.votes
+        |> Map.to_list()
+        |> Enum.reject(fn {voter, _candidate} -> voter == player_id end)
+        |> Map.new()
+
+      %GameServer{
+        state
+        | audience_member_ids_set: MapSet.delete(state.audience_member_ids_set, player_id),
+          audience_members: updated_audience_members,
+          votes: updated_votes
+      }
+    else
+      state
+    end
+    |> as_instruction(sync?: valid_audience_member_to_drop?, view_change?: false)
+  end
+
   @spec ready_up(%GameServer{}, id()) :: instruction_map()
   defdelegate ready_up(state, player_id), to: Views.GameStart, as: :ready_up
 

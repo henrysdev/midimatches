@@ -87,7 +87,11 @@ defmodule MidimatchesWeb.RoomChannel do
 
   def handle_in(
         "player_join",
-        %{"player_alias" => player_alias, "player_id" => player_id},
+        %{
+          "player_alias" => player_alias,
+          "player_id" => player_id,
+          "is_spectating" => spectator?
+        },
         %Phoenix.Socket{assigns: %{room_id: room_id, player_id: player_id}} = socket
       ) do
     room_server = Pids.fetch!({:room_server, room_id})

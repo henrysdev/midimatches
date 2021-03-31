@@ -51,6 +51,8 @@ defmodule Midimatches.Rooms.Room.GameServer do
     field(:round_winners, %WinResult{}, default: nil)
     field(:scores, %{required(id()) => integer()}, default: %{})
     field(:view_deadline, integer(), default: -1)
+    field(:audience_members, MapSet.t(Player), default: MapSet.new())
+    field(:audience_member_ids_set, MapSet.t(id()), default: MapSet.new())
   end
 
   def start_link(args) do
@@ -102,15 +104,31 @@ defmodule Midimatches.Rooms.Room.GameServer do
 
   @spec drop_player(pid(), id()) :: :ok
   @doc """
-  Remove a musician from the game.
+  Remove a player from the game.
   """
   def drop_player(pid, player_id) do
     GenServer.cast(pid, {:drop_player, player_id})
   end
 
+  @spec add_audience_member(pid(), %Player{}) :: :ok
+  @doc """
+  Add a new audience member to the game.
+  """
+  def add_audience_member(pid, %Player{} = player) do
+    GenServer.call(pid, {:add_audience_member, player})
+  end
+
+  @spec drop_audience_member(pid(), id()) :: :ok
+  @doc """
+  Remove an audience member from the game.
+  """
+  def drop_audience_member(pid, player_id) do
+    GenServer.cast(pid, {:drop_audience_member, player_id})
+  end
+
   @spec player_ready_up(pid(), id()) :: :ok
   @doc """
-  Ready up a musician in the game. All ready ups from active players required to progress
+  Ready up a player in the game. All ready ups from active players required to progress
   state from game start to recording
   """
   def player_ready_up(pid, player_id) do
@@ -119,7 +137,7 @@ defmodule Midimatches.Rooms.Room.GameServer do
 
   @spec player_recording(pid(), id(), any) :: :ok
   @doc """
-  Collect a recording for a musician in the game. Recordings from all players required to progress
+  Collect a recording for a player in the game. Recordings from all players required to progress
   state from recording to playback voting
   """
   def player_recording(pid, player_id, recording) do
@@ -128,7 +146,7 @@ defmodule Midimatches.Rooms.Room.GameServer do
 
   @spec player_vote(pid(), id(), id()) :: :ok
   @doc """
-  Collect a vote for a musician recording. Votes from all players required to progress
+  Collect a vote for a player recording. Votes from all players required to progress
   state from recording to recording
   """
   def player_vote(pid, player_id, vote) do
@@ -143,8 +161,26 @@ defmodule Midimatches.Rooms.Room.GameServer do
   end
 
   @impl true
+  def handle_cast({:drop_audience_member, player_id}, %GameServer{} = state) do
+    instruction = GameLogic.remove_audience_member(state, player_id)
+
+    {:noreply, exec_instruction(instruction)}
+  end
+
+  @impl true
   def handle_call({:add_player, %Player{} = player}, _from, %GameServer{} = state) do
     instruction = GameLogic.add_player(state, player)
+
+    {:reply, :ok, exec_instruction(instruction)}
+  end
+
+  @impl true
+  def handle_call(
+        {:add_audience_member, %Player{} = audience_member},
+        _from,
+        %GameServer{} = state
+      ) do
+    instruction = GameLogic.add_audience_member(state, audience_member)
 
     {:reply, :ok, exec_instruction(instruction)}
   end
