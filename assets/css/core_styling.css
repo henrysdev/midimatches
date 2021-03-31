@@ -59,6 +59,7 @@
   );
   --practice_play_button_icon_size: 100px;
   --current_player_color: #296cff;
+  --audience_member_color: #ffc229;
   --text_dark: rgb(36, 36, 36);
 
   --header_bar_height: 40px;
@@ -1347,6 +1348,20 @@ strong {
   100% {
     background-color: none;
   }
+}
+
+.player_role_text {
+  color: var(--text_light);
+  /* text-shadow: 0 0 10px white; */
+}
+
+.audience_member_role_text {
+  color: var(--audience_member_color);
+  /* text-shadow: 0 0 10px white; */
+}
+
+.instructions_description {
+  font-size: 1.4em;
 }
 
 .alert_modal {

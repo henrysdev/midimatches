@@ -13,7 +13,7 @@ import { PregameDebug } from "../../../debug";
 import { PregameCenterPane, WarmUp } from ".";
 import { User, Player } from "../../../../types";
 import { currUtcTimestamp } from "../../../../utils";
-import { useClockOffsetContext } from "../../../../hooks";
+import { useClockOffsetContext, usePlayerContext } from "../../../../hooks";
 
 interface PregameLobbyProps {
   gameInProgress: boolean;
@@ -36,15 +36,31 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
 }) => {
   const [copySuccess, setCopySuccess] = useState<boolean>(false);
   const { clockOffset } = useClockOffsetContext();
+  const { isAudienceMember } = usePlayerContext();
 
   return (
     <div>
       <ComputerFrame>
         <div className="pregame_lobby_page_content">
-          <MediumLargeTitle centered={false}>
-            <span className="accent_bars">///</span>PREGAME LOBBY
-          </MediumLargeTitle>
-          <MediumTitle centered={false}>{roomName}</MediumTitle>
+          <div style={{ display: "flex" }}>
+            <div style={{ flex: 6, float: "left" }}>
+              <MediumLargeTitle centered={false}>
+                <span className="accent_bars">///</span>PREGAME LOBBY
+              </MediumLargeTitle>
+              <MediumTitle centered={false}>{roomName}</MediumTitle>
+            </div>
+            <div style={{ flex: 1, float: "right", textAlign: "right" }}>
+              <h2
+                className={
+                  isAudienceMember
+                    ? "audience_member_role_text"
+                    : "player_role_text"
+                }
+              >
+                <strong>{isAudienceMember ? "[AUDIENCE]" : ""}</strong>
+              </h2>
+            </div>
+          </div>
           <div className="pregame_lobby_flex_anchor">
             <div className="pregame_content_pane">
               <div className="inline_screen inset_3d_border_shallow rounded_border">
@@ -56,7 +72,7 @@ const PregameLobby: React.FC<PregameLobbyProps> = ({
                     <strong>
                       {` Need at least ${
                         numPlayersToStart - roomPlayers.length
-                      } more players to start game`}
+                      } more Player(s) to start game`}
                     </strong>
                   ) : (
                     <></>

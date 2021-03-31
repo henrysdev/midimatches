@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import { WarmUp } from ".";
 import { User } from "../../../../types";
-import { useToneAudioContext } from "../../../../hooks";
+import { usePlayerContext } from "../../../../hooks";
 
 interface PregameCenterPaneProps {
   gameInProgress: boolean;
@@ -13,7 +13,11 @@ const PregameCenterPane: React.FC<PregameCenterPaneProps> = ({
   gameInProgress,
   currentUser,
 }) => {
-  const audioCtx = useToneAudioContext();
+  const { isAudienceMember } = usePlayerContext();
+
+  console.log({
+    isAudienceMember,
+  });
 
   return (
     <div className="pregame_content_pane" style={{ marginLeft: "16px" }}>
@@ -32,8 +36,10 @@ const PregameCenterPane: React.FC<PregameCenterPaneProps> = ({
           <div>
             <div>
               <p>
-                Joined successfully as <strong>{currentUser.userAlias}</strong>.
-                Waiting for more players...
+                Joined successfully as{" "}
+                {isAudienceMember ? "Audience Member" : "Player"}{" "}
+                <strong>{currentUser.userAlias}</strong>. Waiting for more
+                Players to start game...
               </p>
               {/* <WarmUp /> */}
             </div>

@@ -68,7 +68,9 @@ const RoomPageContent: React.FC<RoomPageContentProps> = ({
   const { socket } = useSocketContext();
 
   const resetRoom = () => {
-    window.location.reload();
+    window.location.href = `/room/${roomId}/${
+      isAudienceMember ? "watch" : "play"
+    }`;
     setGameInProgress(false);
     setInitGameState(undefined);
     if (!!toneAudioContext && !!toneAudioContext.stopSample) {
@@ -217,35 +219,37 @@ const RoomPageContent: React.FC<RoomPageContentProps> = ({
             showKeyboardLabels,
           }}
         >
-          <ChatContext.Provider value={{ chatHistory, submitChatMessageEvent }}>
-            {!!gameChannel && !!currPlayer && !!initGameState ? (
-              <PlayerContext.Provider
-                value={{
-                  player: currPlayer,
-                  isAudienceMember,
-                }}
-              >
+          <PlayerContext.Provider
+            value={{
+              player: currPlayer,
+              isAudienceMember,
+            }}
+          >
+            <ChatContext.Provider
+              value={{ chatHistory, submitChatMessageEvent }}
+            >
+              {!!gameChannel && !!currPlayer && !!initGameState ? (
                 <Game
                   gameChannel={gameChannel}
                   initGameState={initGameState}
                   roomName={lobbyState.roomName}
                   clockOffset={clockOffset}
                 />
-              </PlayerContext.Provider>
-            ) : !!gameChannel ? (
-              <PregameLobby
-                gameInProgress={gameInProgress}
-                roomPlayers={lobbyState.roomPlayers}
-                maxPlayers={lobbyState.maxPlayers}
-                numPlayersToStart={lobbyState.numPlayersToStart}
-                startGameDeadline={lobbyState.startGameDeadline}
-                currentUser={currentUser}
-                roomName={lobbyState.roomName}
-              />
-            ) : (
-              <></>
-            )}
-          </ChatContext.Provider>
+              ) : !!gameChannel ? (
+                <PregameLobby
+                  gameInProgress={gameInProgress}
+                  roomPlayers={lobbyState.roomPlayers}
+                  maxPlayers={lobbyState.maxPlayers}
+                  numPlayersToStart={lobbyState.numPlayersToStart}
+                  startGameDeadline={lobbyState.startGameDeadline}
+                  currentUser={currentUser}
+                  roomName={lobbyState.roomName}
+                />
+              ) : (
+                <></>
+              )}
+            </ChatContext.Provider>
+          </PlayerContext.Provider>
         </KeyboardInputContext.Provider>
       </ToneAudioContext.Provider>
       {/* <PregameDebug /> */}

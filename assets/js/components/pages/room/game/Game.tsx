@@ -21,6 +21,7 @@ import {
 import { InGameFrame, GameSubContexts } from ".";
 import { GameContextType, Milliseconds } from "../../../../types";
 import { GameLeftPane, GameRightPane } from ".";
+import { AudienceRecordingView } from "./AudienceRecordingView";
 
 interface GameProps {
   gameChannel: Channel;
@@ -40,6 +41,8 @@ const Game: React.FC<GameProps> = ({
     initGameState,
     clockOffset
   );
+
+  const { isAudienceMember } = usePlayerContext();
 
   const {
     isSamplePlayerLoaded,
@@ -87,6 +90,10 @@ const Game: React.FC<GameProps> = ({
         <InGameFrame
           title="GAME"
           subtitle={`${roomName} / FREE-FOR-ALL / ROUND ${gameContext.roundNum}`}
+          textRight={isAudienceMember ? "[AUDIENCE]" : ""}
+          textRightClass={
+            isAudienceMember ? "audience_member_role_text" : "player_role_text"
+          }
         >
           <GameLeftPane />
           {(() => {
@@ -104,13 +111,15 @@ const Game: React.FC<GameProps> = ({
                 );
 
               case GAME_VIEW.RECORDING:
-                return (
+                return !isAudienceMember ? (
                   <RecordingView
                     isContestant={!joinedMidRecording}
                     pushMessageToChannel={pushMessage}
                     stopSample={stopSample}
                     sampleName={currSampleBeat}
                   />
+                ) : (
+                  <AudienceRecordingView />
                 );
 
               case GAME_VIEW.PLAYBACK_VOTING:
