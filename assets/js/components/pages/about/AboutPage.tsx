@@ -51,8 +51,7 @@ const AboutPage: React.FC = () => {
                 >
                   Elixir
                 </a>
-                . <br /> <br />
-                Created by{" "}
+                . Created by{" "}
                 <a
                   className="resource_link"
                   target="_blank"
