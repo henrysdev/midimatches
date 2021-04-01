@@ -85,7 +85,7 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
 
   const autoPlayingId = useMemo(() => {
     return !!recordings &&
-      recordings.length > autoPlayingTrackIdx &&
+      recordings.length - emptyRecordings.size > autoPlayingTrackIdx &&
       autoPlayingTrackIdx >= 0
       ? recordings[autoPlayingTrackIdx][0]
       : undefined;
