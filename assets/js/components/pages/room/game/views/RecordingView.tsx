@@ -84,7 +84,7 @@ const RecordingView: React.FC<RecordingViewProps> = ({
         <div style={{ height: "100%" }}>
           <DynamicContent>
             <p className="centered_text">
-              <strong>{`Sample: ${sampleName}`}</strong>
+              <strong className="large_instructions_text">{`Sample: ${sampleName}`}</strong>
             </p>
 
             {!!roundRecordingStartTime ? (

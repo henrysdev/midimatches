@@ -15,4 +15,5 @@ export { useUserChannel } from "./useUserChannel";
 export { useLoadUpdateUser } from "./useLoadUpdateUser";
 export { useBrowserCompatibilityContextProvider } from "./useBrowserCompatibilityProvider";
 export { useCalcClockOffset } from "./useCalcClockOffset";
+export { useCurrentWidth } from "./useCurrentWidth";
 export * from "./context";

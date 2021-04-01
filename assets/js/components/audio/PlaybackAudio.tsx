@@ -150,11 +150,11 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
     <div className="recording_playback_wrapper">
       {!practiceMode ? (
         isCurrPlayer ? (
-          <div className="roboto_font">
+          <div className="roboto_font large_instructions_text">
             <strong>You</strong>
           </div>
         ) : (
-          <div className="roboto_font">Anonymous</div>
+          <div className="roboto_font large_instructions_text">Anonymous</div>
         )
       ) : (
         <></>
@@ -193,6 +193,7 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
             <div
               style={{
                 flex: "5",
+                height: "50px",
               }}
             >
               <RecordingVisual

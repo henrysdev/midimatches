@@ -3,6 +3,8 @@ defmodule MidimatchesWeb.MatchmakingChannel do
   Exposes API for all websocket communication on servers page
   """
   alias Midimatches.Rooms
+  alias MidimatchesWeb.PresenceTracker
+
   use MidimatchesWeb, :channel
 
   require Logger
@@ -20,9 +22,11 @@ defmodule MidimatchesWeb.MatchmakingChannel do
 
   def handle_info({:init_serverlist}, socket) do
     room_states = Rooms.get_rooms_list()
+    num_players_online = PresenceTracker.get_tracked_conns() |> length()
 
     push(socket, "serverlist_update", %{
-      rooms: room_states
+      rooms: room_states,
+      num_players_online: num_players_online
     })
 
     {:noreply, socket}

@@ -11,6 +11,7 @@ import { PageWrapper } from "../";
 
 const ServerlistPage: React.FC = () => {
   const [roomStates, setRoomStates] = useState<Array<RoomState>>([]);
+  const [numPlayersOnline, setNumPlayersOnline] = useState<number>(0);
   const [timeSinceRefresh, setTimeSinceRefresh] = useState<number>(0);
   const [lastRefresh, _setLastRefresh] = useState<number>(0);
   const lastRefreshRef = useRef({});
@@ -35,7 +36,10 @@ const ServerlistPage: React.FC = () => {
 
     // server list update
     channel.on(SERVERLIST_UPDATE_EVENT, (body) => {
-      const { rooms } = unmarshalBody(body) as ServerlistUpdatePayload;
+      const { rooms, numPlayersOnline: numPlayers } = unmarshalBody(
+        body
+      ) as ServerlistUpdatePayload;
+      setNumPlayersOnline(numPlayers);
       setRoomStates(rooms);
       setLastRefresh(currUtcTimestamp());
     });
@@ -59,6 +63,7 @@ const ServerlistPage: React.FC = () => {
           <Serverlist
             roomStates={roomStates}
             timeSinceRefresh={timeSinceRefresh}
+            numPlayersOnline={numPlayersOnline}
           />
         </div>
       </ComputerFrame>

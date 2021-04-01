@@ -13,6 +13,7 @@ import { CreateRoomForm } from "./CreateRoomForm";
 interface ServerlistProps {
   roomStates: RoomState[];
   timeSinceRefresh: number;
+  numPlayersOnline: number;
 }
 
 const enum SortKey {
@@ -83,13 +84,8 @@ const sortBehaviorsMap = {
 const Serverlist: React.FC<ServerlistProps> = ({
   roomStates,
   timeSinceRefresh,
+  numPlayersOnline,
 }) => {
-  const numPlayersOnline = useMemo(() => {
-    return roomStates.reduce((acc: number, room: RoomState) => {
-      return acc + room.numCurrPlayers;
-    }, 0);
-  }, [timeSinceRefresh]);
-
   const [selectedRoom, setSelectedRoom] = useState<RoomState>();
 
   const [sortKey, setSortKey] = useState<SortKey>(SortKey.NUM_CURR_PLAYERS);

@@ -71,6 +71,7 @@ p {
   padding: 8px;
   line-height: 1.4;
   font-family: "Roboto", sans-serif;
+  font-size: 1.2em;
 }
 
 h1,
@@ -932,13 +933,23 @@ strong {
   width: 100%;
   min-height: 50px;
   height: 100%;
-  border: 1px solid var(--text_dark);
+  /* border: 1px solid var(--text_dark); */
+  z-index: 11;
+  overflow: hidden;
+}
+
+.piano_roll_playhead_container {
+  position: relative;
+  transform: translateY(-53px);
+  width: 100%;
+  min-height: 50px;
+  height: 100%;
   z-index: 11;
   overflow: hidden;
 }
 
 .empty_recording_roll {
-  /* background-color: rgb(184, 184, 184); */
+  background-color: rgb(184, 184, 184);
 }
 
 .empty_recording_label {
@@ -1360,10 +1371,6 @@ strong {
   /* text-shadow: 0 0 10px white; */
 }
 
-.instructions_description {
-  font-size: 1.4em;
-}
-
 .alert_modal {
   backdrop-filter: blur(10px);
   display: block;
@@ -1409,6 +1416,20 @@ strong {
   color: black;
 }
 
+.front_window_modal {
+  display: block;
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 48px;
+  width: 100%; /* Full width */
+  height: calc(
+    100% - var(--header_bar_height) - var(--footer_bar_height) - 24px
+  ); /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  /* animation: fadein 0.2s; */
+}
+
 .modal {
   backdrop-filter: blur(10px);
   display: block;
@@ -1419,8 +1440,8 @@ strong {
   width: 100%; /* Full width */
   height: 100%; /* Full height */
   overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0, 0, 0); /* Fallback color */
-  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
   animation: fadein 0.2s;
 }
 @keyframes fadein {
@@ -1492,7 +1513,7 @@ strong {
 }
 
 .large_instructions_text {
-  font-size: 1.5em;
+  font-size: 1.2em;
   color: var(--text_light);
   font-family: "Roboto", sans-serif;
 }

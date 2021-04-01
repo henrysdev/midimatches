@@ -74,7 +74,7 @@ const PracticePlaybackView: React.FC<PracticePlaybackViewProps> = ({
               recording={recording}
               playerId={playerId}
               stopSample={stopSample}
-              color={"white"}
+              color={"var(--current_player_color)"}
               submitVote={() => {}}
               setActivePlaybackTrack={setActivePlaybackTrack}
               isPlaying={true}
