@@ -42,11 +42,13 @@ import { PageWrapper } from "..";
 interface RoomPageContentProps {
   roomId: string;
   isAudienceMember: boolean;
+  channel: Channel;
 }
 
 const RoomPageContent: React.FC<RoomPageContentProps> = ({
   roomId,
   isAudienceMember,
+  channel,
 }) => {
   const toneAudioContext = useAudioContextProvider();
   const [chatHistory, handleChatMessage] = useChat();
@@ -55,7 +57,6 @@ const RoomPageContent: React.FC<RoomPageContentProps> = ({
   );
   const [showKeyboardLabels, setShowKeyboardLabels] = useState<boolean>(true);
 
-  const [gameChannel, setGameChannel] = useState<Channel>();
   const [gameInProgress, setGameInProgress] = useState<boolean>(false);
   const [currPlayer, setCurrPlayer] = useState<Player>();
   const [initGameState, setInitGameState] = useState<GameContextType>();
@@ -79,9 +80,7 @@ const RoomPageContent: React.FC<RoomPageContentProps> = ({
   };
 
   const submitChatMessageEvent = (messageText: string): void => {
-    if (!!gameChannel) {
-      gameChannel.push(SUBMIT_CHAT_MESSAGE, { message_text: messageText });
-    }
+    channel.push(SUBMIT_CHAT_MESSAGE, { message_text: messageText });
   };
 
   useEffect(() => {
@@ -89,20 +88,6 @@ const RoomPageContent: React.FC<RoomPageContentProps> = ({
       playerId: currentUser.userId,
       playerAlias: currentUser.userAlias,
     });
-
-    // channel init
-
-    const channel: Channel = socket.channel(`room:${roomId}`, {
-      user_id: currentUser.userId,
-    });
-    channel
-      .join()
-      .receive("ok", (resp) => {
-        console.log("Joined successfully", resp);
-      })
-      .receive("error", (resp) => {
-        console.log("Unable to join", resp);
-      });
 
     const joinRoomFlow = () => {
       const sentMessage = channel.push(SUBMIT_JOIN, {
@@ -200,12 +185,6 @@ const RoomPageContent: React.FC<RoomPageContentProps> = ({
       channel.push(SUBMIT_LEAVE_ROOM, {});
       channel.leave();
     });
-
-    setGameChannel(channel);
-
-    return () => {
-      channel.leave();
-    };
   }, []);
 
   return (
@@ -228,14 +207,14 @@ const RoomPageContent: React.FC<RoomPageContentProps> = ({
             <ChatContext.Provider
               value={{ chatHistory, submitChatMessageEvent }}
             >
-              {!!gameChannel && !!currPlayer && !!initGameState ? (
+              {!!channel && !!currPlayer && !!initGameState ? (
                 <Game
-                  gameChannel={gameChannel}
+                  gameChannel={channel}
                   initGameState={initGameState}
                   roomName={lobbyState.roomName}
                   clockOffset={clockOffset}
                 />
-              ) : !!gameChannel ? (
+              ) : !!channel ? (
                 <PregameLobby
                   gameInProgress={gameInProgress}
                   roomPlayers={lobbyState.roomPlayers}
