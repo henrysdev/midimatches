@@ -6,11 +6,10 @@ const HowToPlay: React.FC = () => {
       <dl>
         <dd>
           <p>
-            Midi Matches is a free-to-play web-based multiplayer piano video
-            game that aims to combine the joy of playing improvisational
-            keyboard with the thrill of friendly competition. Midi Matches
-            supports MIDI-capable pianos as well as type-to-play via a standard
-            computer keyboard.
+            Midi Matches is a free-to-play web-based multiplayer piano game that
+            aims to combine the joy of playing improvisational keyboard with the
+            thrill of friendly competition. Midi Matches supports MIDI-capable
+            pianos as well as type-to-play via a standard computer keyboard.
           </p>
         </dd>
         <br />

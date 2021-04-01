@@ -7,7 +7,7 @@
         "timestep_size": 50,
         "quantization_threshold": 0.5,
         "rounds_to_win": 3,
-        "max_players": 10,
+        "max_players": 6,
         "view_timeouts": {
           "game_start": 10000,
           "round_start": 3000,

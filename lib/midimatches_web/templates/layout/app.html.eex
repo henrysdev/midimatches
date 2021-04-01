@@ -4,24 +4,17 @@
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta name="description" content="Midi Matches is a free-to-play web-based multiplayer piano video
-            game that aims to combine the joy of playing improvisational
-            keyboard with the thrill of friendly competition. Midi Matches
-            supports MIDI-capable pianos as well as type-to-play via a standard
-            computer keyboard.">
-    <meta name="keywords" content="MIDI, piano, multiplayer, keyboard, synthesizer, midigames, midimatches">
+    <meta name="description" content="Midi Matches is a free-to-play web-based multiplayer piano game that
+            aims to combine the joy of playing improvisational keyboard with the
+            thrill of friendly competition. Midi Matches supports MIDI-capable
+            pianos as well as type-to-play via a standard computer keyboard.">
+    <meta name="keywords" content="midi matches, midi game, game, MIDI, piano, multiplayer, keyboard, synthesizer, midigames, midimatches">
     <meta name="author" content="Henry Warren">
     <meta http-equiv="origin-trial" content="AqrhhEMjlmzgEUbszRIITV20oXTUvbOsz2BT7D6DnnGwye0h44X630PRXZTT+u73/PzqaOkgKoA9qTLM0auGRgkAAAB5eyJvcmlnaW4iOiJodHRwczovL21pZGltYXRjaGVzLmNvbTo0NDMiLCJmZWF0dXJlIjoiVW5yZXN0cmljdGVkU2hhcmVkQXJyYXlCdWZmZXIiLCJleHBpcnkiOjE2MzM0NzgzOTksImlzU3ViZG9tYWluIjp0cnVlfQ==" >
-    <title>Midi Matches</title>
+    <title>Midi Matches Game</title>
     <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="shortcut icon" href="/favicon.ico">
-    <%# <link href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Open+Sans&display=swap" rel="stylesheet"> %>
-
-    <!-- UIkit CSS -->
-    <%# <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.6.14/dist/css/uikit.min.css" /> %>
-
     <!-- icons -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   </head>
