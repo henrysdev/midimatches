@@ -15,10 +15,6 @@ const PregameCenterPane: React.FC<PregameCenterPaneProps> = ({
 }) => {
   const { isAudienceMember } = usePlayerContext();
 
-  console.log({
-    isAudienceMember,
-  });
-
   return (
     <div className="pregame_content_pane" style={{ marginLeft: "16px" }}>
       <div className="inline_screen inset_3d_border_shallow rounded_border">

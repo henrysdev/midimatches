@@ -9,3 +9,4 @@ export { PrivacyPolicyPage } from "./privacy/PrivacyPolicyPage";
 export { PageWrapper } from "./PageWrapper";
 export { AdminAlert } from "./AdminAlert";
 export { BrowserWarning } from "./BrowserWarning";
+export { DuplicateSessionAlert } from "./DuplicateSessionAlert";

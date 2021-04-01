@@ -74,8 +74,6 @@ const RegisterPlayerPage: React.FC = () => {
     return { submitDisabled, showAliasLengthRule };
   }, [trimmedAlias]);
 
-  console.log({ submitDisabled });
-
   const handleSubmitForm = (e: any) => {
     e.preventDefault();
     if (!submitDisabled) {

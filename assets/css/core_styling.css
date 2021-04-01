@@ -1393,6 +1393,7 @@ strong {
   width: 40%;
   height: 40%;
   color: black;
+  overflow: auto;
   background-color: rgb(222, 222, 222);
 }
 
