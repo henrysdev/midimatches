@@ -23,15 +23,7 @@ const AboutPage: React.FC = () => {
             </div>
             <div className="developer_about_tagline_flex_wrapper">
               <div className="developer_about_tagline">
-                Created by{" "}
-                <a
-                  className="resource_link"
-                  target="_blank"
-                  href="https://github.com/henrysdev"
-                >
-                  @henrysdev
-                </a>
-                . Feedback and bug reports welcome via{" "}
+                Alpha stage project; all feedback and bug reports welcome via{" "}
                 <a
                   className="resource_link"
                   target="_blank"
@@ -58,6 +50,15 @@ const AboutPage: React.FC = () => {
                   href="https://elixir-lang.org/"
                 >
                   Elixir
+                </a>
+                . <br /> <br />
+                Created by{" "}
+                <a
+                  className="resource_link"
+                  target="_blank"
+                  href="https://github.com/henrysdev"
+                >
+                  @henrysdev
                 </a>
                 .
                 {/* <br />
