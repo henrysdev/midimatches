@@ -3,6 +3,7 @@ defmodule Midimatches.ServerlistUpdater do
   Provides an actor-based timer for pushing out updates to the serverlist state
   """
   alias Midimatches.Rooms
+  alias MidimatchesWeb.PresenceTracker
 
   alias __MODULE__
 
@@ -31,9 +32,15 @@ defmodule Midimatches.ServerlistUpdater do
   """
   def broadcast_serverlist_update do
     room_states = Rooms.get_rooms_list()
+    num_players_online = PresenceTracker.get_tracked_conns() |> length()
 
-    MidimatchesWeb.Endpoint.broadcast("matchmaking:serverlist", "serverlist_update", %{
-      rooms: room_states
-    })
+    MidimatchesWeb.Endpoint.broadcast(
+      "matchmaking:serverlist",
+      "serverlist_update",
+      %{
+        rooms: room_states,
+        num_players_online: num_players_online
+      }
+    )
   end
 end

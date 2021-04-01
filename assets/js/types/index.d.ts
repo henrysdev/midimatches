@@ -59,6 +59,7 @@ export type PlayerJoinPayload = {
 
 export interface ServerlistUpdatePayload {
   rooms: any[];
+  numPlayersOnline: number;
 }
 
 export interface AdminAlertPayload {
