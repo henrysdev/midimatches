@@ -9,10 +9,12 @@ import { MediumLargeTitle, InlineWidthButton, MaterialIcon } from "../common";
 
 interface DuplicateSessionAlertProps {
   socket: Socket;
+  beforeSocketClose?: Function;
   userChannel?: Channel;
 }
 const DuplicateSessionAlert: React.FC<DuplicateSessionAlertProps> = ({
   socket,
+  beforeSocketClose = () => {},
   userChannel,
 }) => {
   useEffect(() => {
@@ -30,6 +32,7 @@ const DuplicateSessionAlert: React.FC<DuplicateSessionAlertProps> = ({
 
   useEffect(() => {
     if (!!showDuplicateSessionAlert && !!userChannel) {
+      beforeSocketClose();
       socket.disconnect();
     }
   }, [showDuplicateSessionAlert]);

@@ -11,7 +11,7 @@
     <meta name="keywords" content="midi matches, midi game, game, MIDI, piano, multiplayer, keyboard, synthesizer, midigames, midimatches">
     <meta name="author" content="Henry Warren">
     <meta http-equiv="origin-trial" content="AqrhhEMjlmzgEUbszRIITV20oXTUvbOsz2BT7D6DnnGwye0h44X630PRXZTT+u73/PzqaOkgKoA9qTLM0auGRgkAAAB5eyJvcmlnaW4iOiJodHRwczovL21pZGltYXRjaGVzLmNvbTo0NDMiLCJmZWF0dXJlIjoiVW5yZXN0cmljdGVkU2hhcmVkQXJyYXlCdWZmZXIiLCJleHBpcnkiOjE2MzM0NzgzOTksImlzU3ViZG9tYWluIjp0cnVlfQ==" >
-    <title>Midi Matches Game</title>
+    <title>Midi Matches</title>
     <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="shortcut icon" href="https://midimatches.com/favicon.ico">

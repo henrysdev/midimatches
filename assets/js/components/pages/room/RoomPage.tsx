@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useMemo } from "react";
-
+import { Channel } from "phoenix";
 import { useCurrentUserContext, useSocketContext } from "../../../hooks";
 import { PageWrapper } from "../";
 import { RoomPageJoin, RoomPageContent } from ".";
 import { LoadingSpinner } from "../../common";
+import { SUBMIT_LEAVE_ROOM } from "../../../constants";
 
 const RoomPage: React.FC = () => {
   const [hasJoinedRoom, setHasJoinedRoom] = useState<boolean>(false);
@@ -13,6 +14,7 @@ const RoomPage: React.FC = () => {
   ] = useState<boolean>(false);
   const { user: currentUser } = useCurrentUserContext();
   const { socket } = useSocketContext();
+  const [roomChannel, setRoomChannel] = useState<Channel>();
 
   useEffect(() => {
     const windowRef = window as any;
@@ -42,6 +44,29 @@ const RoomPage: React.FC = () => {
       }
     }
     setHasCheckedDomForPlayerType(true);
+
+    const roomChannel: Channel = socket.channel(`room:${roomId}`, {
+      user_id: currentUser.userId,
+    });
+    roomChannel
+      .join()
+      .receive("ok", (resp) => {
+        console.log("Joined successfully", resp);
+      })
+      .receive("error", (resp) => {
+        console.log("Unable to join", resp);
+      });
+
+    window.addEventListener("beforeunload", () => {
+      roomChannel.push(SUBMIT_LEAVE_ROOM, {});
+      roomChannel.leave();
+    });
+
+    setRoomChannel(roomChannel);
+
+    return () => {
+      roomChannel.leave();
+    };
   }, []);
 
   const roomId = useMemo(() => {
@@ -56,15 +81,22 @@ const RoomPage: React.FC = () => {
   const [isAudienceMember, setIsAudienceMember] = useState<boolean>(false);
 
   return (
-    <PageWrapper socket={socket} currentUser={currentUser}>
-      {hasJoinedRoom ? (
-        <RoomPageContent roomId={roomId} isAudienceMember={isAudienceMember} />
+    <PageWrapper
+      socket={socket}
+      currentUser={currentUser}
+      roomChannel={roomChannel}
+    >
+      {hasJoinedRoom && !!roomChannel ? (
+        <RoomPageContent
+          channel={roomChannel}
+          roomId={roomId}
+          isAudienceMember={isAudienceMember}
+        />
       ) : hasCheckedDomForPlayerType ? (
         <RoomPageJoin roomId={roomId} />
       ) : (
         <LoadingSpinner />
       )}
-      {/* <PregameDebug /> */}
     </PageWrapper>
   );
 };
