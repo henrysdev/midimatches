@@ -14,7 +14,7 @@
     <title>Midi Matches Game</title>
     <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="shortcut icon" href="https://midimatches.com/favicon.ico">
     <!-- icons -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   </head>
