@@ -31,6 +31,7 @@ export const RESET_ROOM_EVENT = "reset_room";
 export const LOBBY_UPDATE_EVENT = "lobby_update";
 export const NEW_CHAT_MESSAGE_EVENT = "new_chat_message";
 export const ADMIN_ALERT_MESSAGE_EVENT = "admin_alert";
+export const DUPLICATE_SESSION_EVENT = "duplicate_session";
 
 export const SUBMIT_REGISTERED_JOIN = "user_enter_room";
 export const SUBMIT_JOIN = "player_join";
