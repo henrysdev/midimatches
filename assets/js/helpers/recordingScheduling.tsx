@@ -112,6 +112,7 @@ function scheduleRecordingAudioTimeline(
   // start sample (warmup)
   Tone.Transport.scheduleOnce((time: Seconds) => {
     Tone.Draw.schedule(() => {
+      console.log("Start Sample Playback called!");
       sampleStartPlayCallback();
     }, time);
   }, `+${sampleStartTime}`);
