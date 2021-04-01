@@ -26,6 +26,14 @@ const MidiMatchesLogoSvg: React.FC = () => {
           fill="#ec5454"
           fillRule="evenodd"
         ></path>
+        <text
+          x="400"
+          y="45"
+          style={{ fontSize: "32px", fill: "var(--text_light)" }}
+          className="roboto_font"
+        >
+          Alpha v1.0
+        </text>
         <path
           id="path2"
           d=""
