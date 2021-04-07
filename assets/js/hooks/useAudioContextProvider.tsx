@@ -8,6 +8,7 @@ import {
   SOUND_VOLUME_COOKIE,
   MIN_SOUND_VOLUME,
   DEFAULT_SOUND_VOLUME,
+  DISABLED_MIDI_INPUTS_COOKIE,
 } from "../constants";
 import { useSamplePlayer, useWebMidi, useCookies } from ".";
 
@@ -20,9 +21,11 @@ export function useAudioContextProvider(): ToneAudioContextType {
   useEffect(() => {
     if (hasCookie(SOUND_VOLUME_COOKIE)) {
       const savedVolume = parseFloat(getCookie(SOUND_VOLUME_COOKIE));
-      const startingVolume =
-        savedVolume === MIN_SOUND_VOLUME ? DEFAULT_SOUND_VOLUME : savedVolume;
-      setCurrVolume(startingVolume);
+      setCurrVolume(savedVolume);
+    }
+    if (hasCookie(DISABLED_MIDI_INPUTS_COOKIE)) {
+      const savedDisabledMidiInputs = getCookie(DISABLED_MIDI_INPUTS_COOKIE);
+      setDisabledMidiInputIds(savedDisabledMidiInputs);
     }
   }, []);
 
@@ -40,9 +43,13 @@ export function useAudioContextProvider(): ToneAudioContextType {
   // midi inputs init
   const [originalMidiInputs, refreshMidiInputs] = useWebMidi();
   const [midiInputs, setMidiInputs] = useState<Array<Input>>([]);
-  const [disabledMidiInputIds, setDisabledMidiInputIds] = useState<
+  const [disabledMidiInputIds, _setDisabledMidiInputIds] = useState<
     Array<string>
   >([]);
+  const setDisabledMidiInputIds = (disabledIds: string[]) => {
+    setCookie(DISABLED_MIDI_INPUTS_COOKIE, disabledIds);
+    _setDisabledMidiInputIds(disabledIds);
+  };
   useEffect(() => {
     if (!!originalMidiInputs) {
       setMidiInputs(
