@@ -44,12 +44,17 @@ const PracticeSampleSelectionView: React.FC<PracticeSampleSelectionViewProps> = 
 }) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
+  useEffect(() => {
+    samplePlayer.loop = true;
+  }, []);
+
   const stopSamplePreview = () => {
     stopSample();
     setIsPlaying(false);
   };
 
   const startSamplePreview = () => {
+    samplePlayer.loop = true;
     samplePlayer.start();
     setIsPlaying(true);
   };

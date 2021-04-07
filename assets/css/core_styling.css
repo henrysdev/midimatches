@@ -915,6 +915,10 @@ strong {
   background: rgba(242, 242, 242, 0.6);
 }
 
+.playback_recordings_container {
+  /* height: 200px; */
+}
+
 .playback_progress {
   position: absolute;
   right: 0;

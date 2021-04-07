@@ -55,6 +55,12 @@ const mockSamplePlayer: any = {
 const mockedPlayers = [
   { playerAlias: "xb4z", playerId: "1199" },
   { playerAlias: "fearz123", playerId: "1111" },
+  { playerAlias: "anotha", playerId: "11151251" },
+  { playerAlias: "humbug", playerId: "124142" },
+  { playerAlias: "childress", playerId: "1111221" },
+  { playerAlias: "birb", playerId: "9111d51251" },
+  { playerAlias: "egg", playerId: "811241242" },
+  { playerAlias: "blurr", playerId: "16611g21221" },
 ];
 
 const mockedRecordings = {
@@ -155,6 +161,282 @@ const gameContext = {
     ],
     [
       "fearz123",
+      {
+        timestepSlices: [
+          {
+            timestep: 4,
+            notes: [
+              {
+                key: 54,
+                duration: 14,
+              },
+              {
+                key: 64,
+                duration: 12,
+              },
+            ],
+          },
+          {
+            timestep: 41,
+            notes: [
+              {
+                key: 14,
+                duration: 20,
+              },
+              {
+                key: 4,
+                duration: 14,
+              },
+            ],
+          },
+          {
+            timestep: 200,
+            notes: [
+              {
+                key: 88,
+                duration: 4,
+              },
+              {
+                key: 65,
+                duration: 40,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "anotha",
+      {
+        timestepSlices: [
+          {
+            timestep: 4,
+            notes: [
+              {
+                key: 54,
+                duration: 14,
+              },
+              {
+                key: 64,
+                duration: 12,
+              },
+            ],
+          },
+          {
+            timestep: 41,
+            notes: [
+              {
+                key: 14,
+                duration: 20,
+              },
+              {
+                key: 4,
+                duration: 14,
+              },
+            ],
+          },
+          {
+            timestep: 200,
+            notes: [
+              {
+                key: 88,
+                duration: 4,
+              },
+              {
+                key: 65,
+                duration: 40,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "humbug",
+      {
+        timestepSlices: [
+          {
+            timestep: 4,
+            notes: [
+              {
+                key: 54,
+                duration: 14,
+              },
+              {
+                key: 64,
+                duration: 12,
+              },
+            ],
+          },
+          {
+            timestep: 41,
+            notes: [
+              {
+                key: 14,
+                duration: 20,
+              },
+              {
+                key: 4,
+                duration: 14,
+              },
+            ],
+          },
+          {
+            timestep: 200,
+            notes: [
+              {
+                key: 88,
+                duration: 4,
+              },
+              {
+                key: 65,
+                duration: 40,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "childress",
+      {
+        timestepSlices: [
+          {
+            timestep: 4,
+            notes: [
+              {
+                key: 54,
+                duration: 14,
+              },
+              {
+                key: 64,
+                duration: 12,
+              },
+            ],
+          },
+          {
+            timestep: 41,
+            notes: [
+              {
+                key: 14,
+                duration: 20,
+              },
+              {
+                key: 4,
+                duration: 14,
+              },
+            ],
+          },
+          {
+            timestep: 200,
+            notes: [
+              {
+                key: 88,
+                duration: 4,
+              },
+              {
+                key: 65,
+                duration: 40,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "birb",
+      {
+        timestepSlices: [
+          {
+            timestep: 4,
+            notes: [
+              {
+                key: 54,
+                duration: 14,
+              },
+              {
+                key: 64,
+                duration: 12,
+              },
+            ],
+          },
+          {
+            timestep: 41,
+            notes: [
+              {
+                key: 14,
+                duration: 20,
+              },
+              {
+                key: 4,
+                duration: 14,
+              },
+            ],
+          },
+          {
+            timestep: 200,
+            notes: [
+              {
+                key: 88,
+                duration: 4,
+              },
+              {
+                key: 65,
+                duration: 40,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "egg",
+      {
+        timestepSlices: [
+          {
+            timestep: 4,
+            notes: [
+              {
+                key: 54,
+                duration: 14,
+              },
+              {
+                key: 64,
+                duration: 12,
+              },
+            ],
+          },
+          {
+            timestep: 41,
+            notes: [
+              {
+                key: 14,
+                duration: 20,
+              },
+              {
+                key: 4,
+                duration: 14,
+              },
+            ],
+          },
+          {
+            timestep: 200,
+            notes: [
+              {
+                key: 88,
+                duration: 4,
+              },
+              {
+                key: 65,
+                duration: 40,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "blurr",
       {
         timestepSlices: [
           {
