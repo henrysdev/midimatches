@@ -33,16 +33,13 @@ const GameSettings: React.FC<GameSettingsProps> = ({}) => {
     setShowKeyboardLabels,
   } = useKeyboardInputContext();
 
-  const { setCookie } = useCookies();
   const handleVolumeChange = (e: any) => {
     const volume = e.target.value;
     setCurrVolume(volume);
   };
 
   const handleShowKeyboardLabelsChange = (e: any) => {
-    const newSetShowKeyboardLabels = !showKeyboardLabels;
-    setShowKeyboardLabels(newSetShowKeyboardLabels);
-    setCookie(SHOW_KEYBOARD_LABELS_COOKIE, newSetShowKeyboardLabels);
+    setShowKeyboardLabels(!showKeyboardLabels);
   };
 
   return (

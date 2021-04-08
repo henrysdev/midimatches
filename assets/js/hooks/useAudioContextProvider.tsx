@@ -85,6 +85,7 @@ export function useAudioContextProvider(): ToneAudioContextType {
     loadSample,
     stopSample,
   ] = useSamplePlayer(Tone);
+
   const resetTone = () => {
     stopSample();
     Tone.Transport.cancel(0);

@@ -38,6 +38,7 @@ import {
 } from "../../../hooks";
 import { PregameDebug } from "../../debug";
 import { PageWrapper } from "..";
+import { useKeyboardInputContextProvider } from "../../../hooks";
 
 interface RoomPageContentProps {
   roomId: string;
@@ -51,11 +52,8 @@ const RoomPageContent: React.FC<RoomPageContentProps> = ({
   channel,
 }) => {
   const toneAudioContext = useAudioContextProvider();
+  const keyboardInputContext = useKeyboardInputContextProvider();
   const [chatHistory, handleChatMessage] = useChat();
-  const [disableKeyboardInput, setDisableKeyboardInput] = useState<boolean>(
-    false
-  );
-  const [showKeyboardLabels, setShowKeyboardLabels] = useState<boolean>(true);
 
   const [gameInProgress, setGameInProgress] = useState<boolean>(false);
   const [currPlayer, setCurrPlayer] = useState<Player>();
@@ -190,14 +188,7 @@ const RoomPageContent: React.FC<RoomPageContentProps> = ({
   return (
     <PageWrapper socket={socket} currentUser={currentUser}>
       <ToneAudioContext.Provider value={toneAudioContext}>
-        <KeyboardInputContext.Provider
-          value={{
-            setDisableKeyboardInput,
-            disableKeyboardInput,
-            setShowKeyboardLabels,
-            showKeyboardLabels,
-          }}
-        >
+        <KeyboardInputContext.Provider value={keyboardInputContext}>
           <PlayerContext.Provider
             value={{
               player: currPlayer,

@@ -16,4 +16,5 @@ export { useLoadUpdateUser } from "./useLoadUpdateUser";
 export { useBrowserCompatibilityContextProvider } from "./useBrowserCompatibilityProvider";
 export { useCalcClockOffset } from "./useCalcClockOffset";
 export { useCurrentWidth } from "./useCurrentWidth";
+export { useKeyboardInputContextProvider } from "./useKeyboardInputContextProvider";
 export * from "./context";

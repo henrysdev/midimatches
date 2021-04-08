@@ -32,7 +32,7 @@ const MidiMatchesLogoSvg: React.FC = () => {
           style={{ fontSize: "32px", fill: "var(--text_light)" }}
           className="roboto_font"
         >
-          Alpha v1.0
+          Alpha
         </text>
         <path
           id="path2"

@@ -83,9 +83,34 @@ const RecordingView: React.FC<RecordingViewProps> = ({
       {isContestant ? (
         <div style={{ height: "100%" }}>
           <DynamicContent>
-            <p className="centered_text">
-              <strong className="large_instructions_text">{`Sample: ${sampleName}`}</strong>
-            </p>
+            <div style={{ display: "flex" }}>
+              <div style={{ flex: 1, minWidth: 100 }}></div>
+
+              <div style={{ width: 200 }}>
+                <div style={{ display: "flex" }}>
+                  <div style={{ flex: 1 }}>
+                    <p className="centered_text">
+                      <strong className="large_instructions_text">
+                        {sampleName}
+                      </strong>
+                    </p>
+                  </div>
+                  {isSamplePlaying ? (
+                    <div style={{ flex: 1 }}>
+                      <div className="sound_wave_bars">
+                        {[...Array(5).keys()].map((i) => {
+                          return <div key={i} className="sound_wave_bar" />;
+                        })}
+                      </div>
+                    </div>
+                  ) : (
+                    <></>
+                  )}
+                </div>
+              </div>
+
+              <div style={{ flex: 1, minWidth: 100 }}></div>
+            </div>
 
             {!!roundRecordingStartTime ? (
               <RecordMidi
@@ -106,7 +131,7 @@ const RecordingView: React.FC<RecordingViewProps> = ({
             {recordingState === RecordingState.INIT ? (
               <Instructions description="Loading sample and syncing clients..." />
             ) : recordingState === RecordingState.WARMUP ? (
-              <Instructions description="Listen to the sample and get ready to record!" />
+              <Instructions description="Listen to the sample and warm up your fingers!" />
             ) : recordingState === RecordingState.RECORDING ? (
               <Instructions
                 description="Recording in progress... keep playing!"

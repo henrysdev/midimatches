@@ -11,6 +11,7 @@ import {
   useLoadRandomSamples,
   useCurrentUserContext,
   useSocketContext,
+  useKeyboardInputContextProvider,
 } from "../../../hooks";
 import {
   msToMicros,
@@ -39,7 +40,7 @@ const PracticePage: React.FC<PracticePageProps> = ({ children }) => {
     setRoundRecordingStartTime,
   ] = useState<number>();
   const toneAudioContext = useAudioContextProvider();
-  const [showKeyboardLabels, setShowKeyboardLabels] = useState<boolean>(true);
+  const keyboardInputContext = useKeyboardInputContextProvider();
   const gameContext = useMemo(() => {
     return {
       gameRules: {
@@ -102,12 +103,7 @@ const PracticePage: React.FC<PracticePageProps> = ({ children }) => {
   return (
     <PageWrapper socket={socket} currentUser={currentUser}>
       <ToneAudioContext.Provider value={toneAudioContext}>
-        <KeyboardInputContext.Provider
-          value={{
-            setShowKeyboardLabels,
-            showKeyboardLabels,
-          }}
-        >
+        <KeyboardInputContext.Provider value={keyboardInputContext}>
           <GameContext.Provider value={gameContext}>
             <GameRulesContext.Provider
               value={{ gameRules: gameContext.gameRules }}
