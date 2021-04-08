@@ -9,6 +9,7 @@ import {
   MIN_SOUND_VOLUME,
   DEFAULT_SOUND_VOLUME,
   DISABLED_MIDI_INPUTS_COOKIE,
+  DEFAULT_SAMPLER_SYNTH,
 } from "../constants";
 import { useSamplePlayer, useWebMidi, useCookies } from ".";
 
@@ -66,10 +67,12 @@ export function useAudioContextProvider(): ToneAudioContextType {
     Tone.context.lookAhead = 0;
     Tone.Master.volume.value = DEFAULT_SOUND_VOLUME;
 
+    const newSynth = new Tone.Sampler(DEFAULT_SAMPLER_SYNTH);
+    // const newSynth = new Tone.PolySynth(Tone.FMSynth, DEFAULT_FM_SYNTH_CONFIG);
+
     const autoWah = new Tone.AutoWah(60, 6, -30).toDestination();
     const chorus = new Tone.Chorus(3, 0.5, 0.5).start();
     const vibrato = new Tone.Vibrato("16n", 0.05);
-    const newSynth = new Tone.PolySynth(Tone.FMSynth, DEFAULT_FM_SYNTH_CONFIG);
     newSynth.chain(vibrato, chorus, Tone.Destination);
 
     setSynth(newSynth);
