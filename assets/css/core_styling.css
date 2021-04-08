@@ -1633,7 +1633,7 @@ strong {
 }
 
 .sound_wave_bar {
-  background: var(--current_player_color);
+  background: var(--text_light);
   bottom: 1px;
   height: 3px;
   position: absolute;

@@ -99,17 +99,7 @@ const RecordingView: React.FC<RecordingViewProps> = ({
                     <div style={{ flex: 1 }}>
                       <div className="sound_wave_bars">
                         {[...Array(5).keys()].map((i) => {
-                          return (
-                            <div
-                              key={i}
-                              className="sound_wave_bar"
-                              style={
-                                isRecording
-                                  ? { background: "var(--accent_color_2)" }
-                                  : {}
-                              }
-                            />
-                          );
+                          return <div key={i} className="sound_wave_bar" />;
                         })}
                       </div>
                     </div>
