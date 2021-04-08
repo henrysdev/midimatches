@@ -80,18 +80,44 @@ const PracticeRecordingView: React.FC<PracticeRecordingViewProps> = ({
       <span className="anim_line" />
       <MediumLargeTitle>PRACTICE - RECORDING</MediumLargeTitle>
       <DynamicContent>
-        {recordingState === RecordingState.INIT ? (
-          <Instructions description="Loading sample..." />
-        ) : recordingState === RecordingState.WARMUP ? (
-          <Instructions description="Listen to the sample and get ready to record!" />
-        ) : recordingState === RecordingState.RECORDING ? (
-          <Instructions description="Recording in progress... keep playing!" />
-        ) : (
-          <Instructions
-            description="Recording submitted. Waiting for other players to finish
-            recording..."
-          />
-        )}
+        <div style={{ display: "flex" }}>
+          <div style={{ flex: 1, minWidth: 100 }}></div>
+
+          <div style={{ width: 200 }}>
+            <div style={{ display: "flex" }}>
+              <div style={{ flex: 1 }}>
+                <p className="centered_text">
+                  <strong className="large_instructions_text">
+                    {sampleName}
+                  </strong>
+                </p>
+              </div>
+              {isSamplePlaying ? (
+                <div style={{ flex: 1 }}>
+                  <div className="sound_wave_bars">
+                    {[...Array(5).keys()].map((i) => {
+                      return (
+                        <div
+                          key={i}
+                          className="sound_wave_bar"
+                          style={
+                            isRecording
+                              ? { background: "var(--accent_color_2)" }
+                              : {}
+                          }
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+              ) : (
+                <></>
+              )}
+            </div>
+          </div>
+
+          <div style={{ flex: 1, minWidth: 100 }}></div>
+        </div>
 
         {!!roundRecordingStartTime ? (
           <RecordMidi
@@ -107,6 +133,19 @@ const PracticeRecordingView: React.FC<PracticeRecordingViewProps> = ({
           />
         ) : (
           <></>
+        )}
+
+        {recordingState === RecordingState.INIT ? (
+          <Instructions description="Loading sample..." />
+        ) : recordingState === RecordingState.WARMUP ? (
+          <Instructions description="Listen to the sample and warm up your fingers!" />
+        ) : recordingState === RecordingState.RECORDING ? (
+          <Instructions description="Recording in progress... keep playing!" />
+        ) : (
+          <Instructions
+            description="Recording submitted. Waiting for other players to finish
+            recording..."
+          />
         )}
       </DynamicContent>
       <TimerBox>

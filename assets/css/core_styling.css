@@ -1619,23 +1619,74 @@ strong {
   }
   100% {
     font-size: 1em;
-    /* transform: translateY(0px); */
   }
 }
 
-/* .extreme_instruction {
-  position: absolute;
-  top: 64px;
-  text-align: center;
-  height: 1em;
-  width: calc(100% - 72px);
-  animation: text_wave 1s infinite;
+:root {
+  --sound_wave_bar_width: 10px;
 }
-@keyframes text_wave {
+
+.sound_wave_bars {
+  height: 30px;
+  position: absolute;
+  width: 40px;
+}
+
+.sound_wave_bar {
+  background: var(--current_player_color);
+  bottom: 1px;
+  height: 3px;
+  position: absolute;
+  width: var(--sound_wave_bar_width);
+  animation: sound_waves 0ms -800ms linear infinite alternate;
+}
+
+@keyframes sound_waves {
   0% {
-    font-size: 2em;
+    height: 1px;
   }
   100% {
-    font-size: 1em;
+    height: 32px;
   }
-} */
+}
+
+.sound_wave_bar:nth-child(1) {
+  left: 1px;
+  animation-duration: 474ms;
+}
+.sound_wave_bar:nth-child(2) {
+  left: calc((var(--sound_wave_bar_width) * 1) + 1px);
+  animation-duration: 433ms;
+}
+.sound_wave_bar:nth-child(3) {
+  left: calc((var(--sound_wave_bar_width) * 2) + 1px);
+  animation-duration: 407ms;
+}
+.sound_wave_bar:nth-child(4) {
+  left: calc((var(--sound_wave_bar_width) * 3) + 1px);
+  animation-duration: 458ms;
+}
+.sound_wave_bar:nth-child(5) {
+  left: calc((var(--sound_wave_bar_width) * 4) + 1px);
+  animation-duration: 400ms;
+}
+.sound_wave_bar:nth-child(6) {
+  left: calc((var(--sound_wave_bar_width) * 5) + 1px);
+  animation-duration: 427ms;
+}
+.sound_wave_bar:nth-child(7) {
+  left: calc((var(--sound_wave_bar_width) * 6) + 1px);
+  animation-duration: 441ms;
+}
+.sound_wave_bar:nth-child(8) {
+  left: calc((var(--sound_wave_bar_width) * 7) + 1px);
+  animation-duration: 419ms;
+}
+.sound_wave_bar:nth-child(9) {
+  left: calc((var(--sound_wave_bar_width) * 8) + 1px);
+  animation-duration: 487ms;
+}
+.sound_wave_bar:nth-child(10) {
+  left: calc((var(--sound_wave_bar_width) * 9) + 1px);
+  animation-duration: 442ms;
+}
