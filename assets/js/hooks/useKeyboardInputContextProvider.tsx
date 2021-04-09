@@ -12,9 +12,6 @@ export function useKeyboardInputContextProvider(): KeyboardInputContextType {
   const [showKeyboardLabels, _setShowKeyboardLabels] = useState<boolean>(true);
 
   const setShowKeyboardLabels = (showLabels: boolean): void => {
-    console.log({
-      showLabels,
-    });
     setCookie(SHOW_KEYBOARD_LABELS_COOKIE, showLabels);
     _setShowKeyboardLabels(showLabels);
   };
@@ -22,7 +19,7 @@ export function useKeyboardInputContextProvider(): KeyboardInputContextType {
   useEffect(() => {
     const showKeyLabelsStr = hasCookie(SHOW_KEYBOARD_LABELS_COOKIE)
       ? getCookie(SHOW_KEYBOARD_LABELS_COOKIE)
-      : "false";
+      : "true";
     setShowKeyboardLabels(showKeyLabelsStr === "true");
   }, []);
 
