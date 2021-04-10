@@ -1,5 +1,5 @@
 import { loopToEvents, midiToPitch } from "./";
-import { INPUT_LAG_COMPENSATION } from "../constants";
+import { DEFAULT_INPUT_LAG_COMPENSATION } from "../constants";
 
 const loopMocks = require("../mocks/loops.json");
 
@@ -10,19 +10,19 @@ describe("loopToEvents", () => {
     const timestepSize = 1_000_000;
     const expectedEvents = [
       {
-        time: now + INPUT_LAG_COMPENSATION,
+        time: now + DEFAULT_INPUT_LAG_COMPENSATION,
         note: midiToPitch(72),
         velocity: 1,
         duration: 1,
       },
       {
-        time: 8 + INPUT_LAG_COMPENSATION,
+        time: 8 + DEFAULT_INPUT_LAG_COMPENSATION,
         note: midiToPitch(76),
         velocity: 0,
         duration: 2,
       },
       {
-        time: 12 + INPUT_LAG_COMPENSATION,
+        time: 12 + DEFAULT_INPUT_LAG_COMPENSATION,
         note: midiToPitch(79),
         velocity: 0.7480314960629921,
         duration: 1,

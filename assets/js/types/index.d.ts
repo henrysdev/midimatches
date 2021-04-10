@@ -168,6 +168,8 @@ export interface ToneAudioContextType {
   setCurrVolume: Function;
   currVolume: number;
   soundIsOn: boolean;
+  currInputLagComp: Milliseconds;
+  setCurrInputLagComp: Function;
 }
 
 export interface PlayerContextType {

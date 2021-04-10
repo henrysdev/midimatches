@@ -62,7 +62,7 @@ export function useNoteRecorder({
   gameRules,
   shouldRecord,
 }: NoteRecorderProps): NoteRecorder {
-  const { samplePlayer } = useToneAudioContext();
+  const { samplePlayer, currInputLagComp } = useToneAudioContext();
 
   const [internalState, _setInternalState] = useState<InternalState>(
     {} as InternalState
@@ -115,10 +115,13 @@ export function useNoteRecorder({
                 activeNotes,
                 acc,
                 true,
-                getCurrentTimestep(internalStateRef.current as InternalState),
+                getCurrentTimestep(
+                  internalStateRef.current as InternalState,
+                  currInputLagComp
+                ),
                 {
                   note: { number: noteNumber },
-                  receivedTimestep: currUtcTimestamp(),
+                  receivedTimestep: currUtcTimestamp() - currInputLagComp,
                 }
               );
               return updatedAcc;
@@ -145,7 +148,8 @@ export function useNoteRecorder({
   const handleNoteOn = (midiEvent: any) => {
     const { activeNotes } = internalStateRef.current as InternalState;
     const currTimestep = getCurrentTimestep(
-      internalStateRef.current as InternalState
+      internalStateRef.current as InternalState,
+      currInputLagComp
     );
     const noteOnEvent = webMidiEventToMidiNoteEvent(midiEvent, currTimestep);
     if (
@@ -166,7 +170,8 @@ export function useNoteRecorder({
       isRecording,
     } = internalStateRef.current as InternalState;
     const currTimestep = getCurrentTimestep(
-      internalStateRef.current as InternalState
+      internalStateRef.current as InternalState,
+      currInputLagComp
     );
 
     const { noteOffEvent, stateUpdate, activeNotesCopy } = recordNoteOff(
@@ -188,7 +193,7 @@ export function useNoteRecorder({
   useEffect(() => {
     if (!!roundRecordingStartTime && shouldRecord) {
       scheduleRecordingDeadlines(
-        roundRecordingStartTime,
+        currUtcTimestamp(),
         sampleStartPlayCallback,
         startRecord,
         stopRecord,
@@ -251,11 +256,14 @@ export function useNoteRecorder({
   };
 }
 
-function getCurrentTimestep({
-  gameRules: { timestepSize, quantizationThreshold },
-  recordingStartTime,
-}: InternalState): number {
-  const nowMicros = msToMicros(currUtcTimestamp());
+function getCurrentTimestep(
+  {
+    gameRules: { timestepSize, quantizationThreshold },
+    recordingStartTime,
+  }: InternalState,
+  currInputLagComp: Milliseconds
+): number {
+  const nowMicros = msToMicros(currUtcTimestamp() - currInputLagComp);
   return calculateTimestep(
     nowMicros,
     msToMicros(recordingStartTime),

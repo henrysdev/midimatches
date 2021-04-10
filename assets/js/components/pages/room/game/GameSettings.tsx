@@ -11,6 +11,8 @@ import {
   MAX_SOUND_VOLUME,
   SOUND_VOLUME_COOKIE,
   SHOW_KEYBOARD_LABELS_COOKIE,
+  MAX_INPUT_LAG_COMP,
+  DEFAULT_INPUT_LAG_COMPENSATION,
 } from "../../../../constants";
 import { MaterialIcon } from "../../../common";
 
@@ -26,6 +28,8 @@ const GameSettings: React.FC<GameSettingsProps> = ({}) => {
     setCurrVolume,
     soundIsOn,
     refreshMidiInputs,
+    currInputLagComp,
+    setCurrInputLagComp,
   } = useToneAudioContext();
 
   const {
@@ -40,6 +44,11 @@ const GameSettings: React.FC<GameSettingsProps> = ({}) => {
 
   const handleShowKeyboardLabelsChange = (e: any) => {
     setShowKeyboardLabels(!showKeyboardLabels);
+  };
+
+  const handleInputLagCompChange = (e: any) => {
+    const newInputLagComp = parseInt(e.target.value);
+    setCurrInputLagComp(newInputLagComp);
   };
 
   return (
@@ -92,6 +101,17 @@ const GameSettings: React.FC<GameSettingsProps> = ({}) => {
         />
         <span className="slider round"></span>
       </label>
+      <h5 className="settings_item_label">Input Lag Comp (ms)</h5>
+      <div className="input_lag_comp">
+        <input
+          type="number"
+          min={0}
+          max={MAX_INPUT_LAG_COMP}
+          value={currInputLagComp}
+          onChange={handleInputLagCompChange}
+          className="input_lag_comp_input"
+        />
+      </div>
     </div>
   );
 };
