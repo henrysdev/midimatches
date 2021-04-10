@@ -1,8 +1,4 @@
-import {
-  GAME_VIEW,
-  DEFAULT_SAMPLE_COLORS,
-  INPUT_LAG_COMPENSATION,
-} from "../constants";
+import { GAME_VIEW, DEFAULT_SAMPLE_COLORS } from "../constants";
 import {
   Loop,
   Note,
