@@ -72,7 +72,7 @@ export const DEFAULT_SAMPLE_COLORS = [
 
 // ms threshold for which to actually diagnose client's clock as out of sync
 export const CLOCK_OUT_OF_SYNC_THRESHOLD = 0;
-export const INPUT_LAG_COMPENSATION = 10;
+export const DEFAULT_INPUT_LAG_COMPENSATION = 20;
 export const DEFAULT_SAMPLE_PLAY_BUFFER_LENGTH = 2;
 export const DEFAULT_SAMPLE_LENGTH = 10.6667;
 export const DEFAULT_NUM_WARMUP_LOOPS = 1;
@@ -204,3 +204,4 @@ export const SOUND_VOLUME_COOKIE = "midimatches_soundvolume";
 export const SHOW_KEYBOARD_LABELS_COOKIE = "midimatches_keyboardlabels";
 export const SEEN_BROWSER_WARNING_COOKIE = "midimatches_seenbrowserwarning";
 export const DISABLED_MIDI_INPUTS_COOKIE = "midimatches_disabledmidiinputs";
+export const INPUT_LAG_COMPENSATION_COOKIE = "midimatches_inputlagcompensation";

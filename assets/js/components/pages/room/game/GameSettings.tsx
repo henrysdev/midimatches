@@ -12,7 +12,7 @@ import {
   SOUND_VOLUME_COOKIE,
   SHOW_KEYBOARD_LABELS_COOKIE,
   MAX_INPUT_LAG_COMP,
-  INPUT_LAG_COMPENSATION,
+  DEFAULT_INPUT_LAG_COMPENSATION,
 } from "../../../../constants";
 import { MaterialIcon } from "../../../common";
 
@@ -103,11 +103,6 @@ const GameSettings: React.FC<GameSettingsProps> = ({}) => {
       </label>
       <h5 className="settings_item_label">Input Lag Comp (ms)</h5>
       <div className="input_lag_comp">
-        {soundIsOn ? (
-          <MaterialIcon iconName="volume_off" style={{ color: "red" }} />
-        ) : (
-          <MaterialIcon iconName="volume_up" />
-        )}
         <input
           type="number"
           min={0}

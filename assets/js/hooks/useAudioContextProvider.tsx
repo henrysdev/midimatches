@@ -10,7 +10,8 @@ import {
   DEFAULT_SOUND_VOLUME,
   DISABLED_MIDI_INPUTS_COOKIE,
   DEFAULT_SAMPLER_SYNTH,
-  INPUT_LAG_COMPENSATION,
+  DEFAULT_INPUT_LAG_COMPENSATION,
+  INPUT_LAG_COMPENSATION_COOKIE,
 } from "../constants";
 import { useSamplePlayer, useWebMidi, useCookies } from ".";
 
@@ -18,9 +19,13 @@ import { ToneAudioContextType } from "../types";
 
 export function useAudioContextProvider(): ToneAudioContextType {
   const { hasCookie, getCookie, setCookie } = useCookies();
-  const [currInputLagComp, setCurrInputLagComp] = useState<number>(
-    INPUT_LAG_COMPENSATION
+  const [currInputLagComp, _setCurrInputLagComp] = useState<number>(
+    DEFAULT_INPUT_LAG_COMPENSATION
   );
+  const setCurrInputLagComp = (lagComp: number) => {
+    setCookie(INPUT_LAG_COMPENSATION_COOKIE, lagComp);
+    _setCurrInputLagComp(lagComp);
+  };
   const [currVolume, setCurrVolume] = useState<number>(-1);
 
   useEffect(() => {
@@ -31,6 +36,10 @@ export function useAudioContextProvider(): ToneAudioContextType {
     if (hasCookie(DISABLED_MIDI_INPUTS_COOKIE)) {
       const savedDisabledMidiInputs = getCookie(DISABLED_MIDI_INPUTS_COOKIE);
       setDisabledMidiInputIds(savedDisabledMidiInputs);
+    }
+    if (hasCookie(INPUT_LAG_COMPENSATION_COOKIE)) {
+      const lagComp = getCookie(INPUT_LAG_COMPENSATION_COOKIE);
+      setCurrInputLagComp(lagComp);
     }
   }, []);
 
