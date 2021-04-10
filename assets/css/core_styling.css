@@ -1202,6 +1202,7 @@ strong {
 }
 
 .settings_item_label {
+  margin-top: 8px;
   color: var(--text_light);
 }
 

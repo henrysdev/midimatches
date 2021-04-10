@@ -11,7 +11,9 @@ import {
   Seconds,
   Color,
   Player,
+  Milliseconds,
 } from "../types";
+import { msToSec } from "../utils";
 import _ from "lodash";
 import randomColor from "randomcolor";
 
@@ -120,8 +122,7 @@ export function randomElement(array: Array<any>): any {
 export function loopToEvents(
   loop: Loop,
   now: number,
-  timestepSize: Microseconds,
-  inputLagComp: number
+  timestepSize: Microseconds
 ): LocalNoteEvent[] {
   return loop.timestepSlices.reduce(
     (accEvents: LocalNoteEvent[], timestepSlice, idx) => {
@@ -130,7 +131,7 @@ export function loopToEvents(
       const events = notes.map(({ key, duration, velocity }: Note) => {
         const note = midiToPitch(key);
         return {
-          time: now + (timestepSizeInSeconds * timestep + inputLagComp),
+          time: now + timestepSizeInSeconds * timestep,
           note,
           velocity: midiVelocityToToneVelocity(velocity),
           duration: duration * timestepSizeInSeconds,

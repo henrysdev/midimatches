@@ -43,7 +43,7 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
   hideKeyboard = false,
   isRecording,
 }) => {
-  const { midiInputs, synth } = useToneAudioContext();
+  const { midiInputs, synth, currInputLagComp } = useToneAudioContext();
   const {
     disableKeyboardInput,
     showKeyboardLabels,

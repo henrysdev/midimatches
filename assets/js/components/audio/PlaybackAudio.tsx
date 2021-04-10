@@ -55,7 +55,7 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
   } = useGameRulesContext();
 
   const [progress, setProgress] = useState<number>(0);
-  const { synth, samplePlayer, inputLagComp } = useToneAudioContext();
+  const { synth, samplePlayer } = useToneAudioContext();
 
   useEffect(() => {
     return () => {
@@ -91,7 +91,7 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
     Tone.Transport.cancel(0);
     Tone.Transport.start(startTime);
 
-    const part = buildPart(recording, timestepSize, playNote, inputLagComp);
+    const part = buildPart(recording, timestepSize, playNote);
 
     startPlayheadProgress(startTime);
 
@@ -234,10 +234,9 @@ export { PlaybackAudio };
 function buildPart(
   recording: Loop,
   timestepSize: number,
-  playNote: Function,
-  inputLagComp: number
+  playNote: Function
 ): Tone.Part {
-  const noteEvents = loopToEvents(recording, 0, timestepSize, inputLagComp);
+  const noteEvents = loopToEvents(recording, 0, timestepSize);
   const part = new Tone.Part((time: number, { note, duration, velocity }) => {
     playNote(note, duration, time, velocity);
   }, noteEvents);

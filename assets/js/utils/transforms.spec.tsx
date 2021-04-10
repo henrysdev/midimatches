@@ -29,12 +29,7 @@ describe("loopToEvents", () => {
       },
     ];
 
-    const events = loopToEvents(
-      inputLoop,
-      now,
-      timestepSize,
-      INPUT_LAG_COMPENSATION
-    );
+    const events = loopToEvents(inputLoop, now, timestepSize);
 
     expect(events).toStrictEqual(expectedEvents);
   });

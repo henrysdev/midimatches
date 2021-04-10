@@ -18,7 +18,9 @@ import { ToneAudioContextType } from "../types";
 
 export function useAudioContextProvider(): ToneAudioContextType {
   const { hasCookie, getCookie, setCookie } = useCookies();
-  const inputLagComp = INPUT_LAG_COMPENSATION;
+  const [currInputLagComp, setCurrInputLagComp] = useState<number>(
+    INPUT_LAG_COMPENSATION
+  );
   const [currVolume, setCurrVolume] = useState<number>(-1);
 
   useEffect(() => {
@@ -111,6 +113,7 @@ export function useAudioContextProvider(): ToneAudioContextType {
     setCurrVolume,
     soundIsOn,
     refreshMidiInputs,
-    inputLagComp,
+    currInputLagComp,
+    setCurrInputLagComp,
   };
 }
