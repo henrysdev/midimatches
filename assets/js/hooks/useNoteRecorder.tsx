@@ -188,7 +188,7 @@ export function useNoteRecorder({
   useEffect(() => {
     if (!!roundRecordingStartTime && shouldRecord) {
       scheduleRecordingDeadlines(
-        roundRecordingStartTime,
+        currUtcTimestamp(),
         sampleStartPlayCallback,
         startRecord,
         stopRecord,

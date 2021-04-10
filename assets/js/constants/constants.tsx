@@ -72,7 +72,7 @@ export const DEFAULT_SAMPLE_COLORS = [
 
 // ms threshold for which to actually diagnose client's clock as out of sync
 export const CLOCK_OUT_OF_SYNC_THRESHOLD = 0;
-export const INPUT_LAG_COMPENSATION = -0.005;
+export const INPUT_LAG_COMPENSATION = -0.01;
 export const DEFAULT_SAMPLE_PLAY_BUFFER_LENGTH = 2;
 export const DEFAULT_SAMPLE_LENGTH = 10.6667;
 export const DEFAULT_NUM_WARMUP_LOOPS = 1;

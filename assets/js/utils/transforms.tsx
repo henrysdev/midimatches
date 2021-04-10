@@ -120,7 +120,8 @@ export function randomElement(array: Array<any>): any {
 export function loopToEvents(
   loop: Loop,
   now: number,
-  timestepSize: Microseconds
+  timestepSize: Microseconds,
+  inputLagComp: number
 ): LocalNoteEvent[] {
   return loop.timestepSlices.reduce(
     (accEvents: LocalNoteEvent[], timestepSlice, idx) => {
@@ -129,8 +130,7 @@ export function loopToEvents(
       const events = notes.map(({ key, duration, velocity }: Note) => {
         const note = midiToPitch(key);
         return {
-          time:
-            now + (timestepSizeInSeconds * timestep + INPUT_LAG_COMPENSATION),
+          time: now + (timestepSizeInSeconds * timestep + inputLagComp),
           note,
           velocity: midiVelocityToToneVelocity(velocity),
           duration: duration * timestepSizeInSeconds,

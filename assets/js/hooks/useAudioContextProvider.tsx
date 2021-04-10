@@ -10,6 +10,7 @@ import {
   DEFAULT_SOUND_VOLUME,
   DISABLED_MIDI_INPUTS_COOKIE,
   DEFAULT_SAMPLER_SYNTH,
+  INPUT_LAG_COMPENSATION,
 } from "../constants";
 import { useSamplePlayer, useWebMidi, useCookies } from ".";
 
@@ -17,6 +18,7 @@ import { ToneAudioContextType } from "../types";
 
 export function useAudioContextProvider(): ToneAudioContextType {
   const { hasCookie, getCookie, setCookie } = useCookies();
+  const inputLagComp = INPUT_LAG_COMPENSATION;
   const [currVolume, setCurrVolume] = useState<number>(-1);
 
   useEffect(() => {
@@ -109,5 +111,6 @@ export function useAudioContextProvider(): ToneAudioContextType {
     setCurrVolume,
     soundIsOn,
     refreshMidiInputs,
+    inputLagComp,
   };
 }

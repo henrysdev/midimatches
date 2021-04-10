@@ -36,5 +36,6 @@ const ntpOffset = (data: any): Milliseconds => {
     -1 * ((firstHopDeltaTime + (serverTime - clientEndTime)) / 2)
   );
 
+  // stop adding any ntp compensation now that we only care about local utc for recording
   return approxOffset;
 };
