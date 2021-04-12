@@ -3,6 +3,8 @@ import React, { useState, useMemo, useEffect, useRef } from "react";
 import {
   SUBMIT_VOTE_EVENT,
   DEFAULT_RECORDING_LENGTH,
+  MIN_FORCED_VOTING_WINDOW_TIME,
+  DEFAULT_SAMPLE_LENGTH,
 } from "../../../../../constants";
 import {
   useGameContext,
@@ -18,7 +20,7 @@ import {
   DynamicContent,
   MediumLargeTitle,
 } from "../../../../common";
-import { shuffleArray, genRandomColors } from "../../../../../utils";
+import { shuffleArray, genRandomColors, msToSec } from "../../../../../utils";
 import { Color, Loop, RecordingTuple } from "../../../../../types";
 import { calcMsUntilMsTimestamp, secToMs } from "../../../../../utils";
 
@@ -44,6 +46,7 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
 
   const { player: currPlayer } = usePlayerContext();
   const [voteSubmitted, setVoteSubmitted] = useState<boolean>(false);
+  const [canVote, setCanVote] = useState<boolean>(false);
   const [activePlaybackTrack, setActivePlaybackTrack] = useState<string>();
   const [listenCompleteTracks, setListenCompleteTracks] = useState<Set<string>>(
     new Set<string>()
@@ -102,9 +105,15 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
     );
   }, []);
 
-  const canVote: boolean = useMemo(() => {
-    return listenCompleteTracks.size >= recordings.length;
-  }, [listenCompleteTracks.size]);
+  useEffect(() => {
+    if (
+      listenCompleteTracks.size >= recordings.length ||
+      msToSec(calcMsUntilMsTimestamp(viewDeadline) + clockOffset) <=
+        MIN_FORCED_VOTING_WINDOW_TIME
+    ) {
+      setCanVote(true);
+    }
+  }, [listenCompleteTracks.size, autoPlayingTrackIdx]);
 
   const completeListening = (playerId: string) => {
     const updatedListenCompleteTracksSet = new Set([

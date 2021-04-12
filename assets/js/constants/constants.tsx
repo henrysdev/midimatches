@@ -42,7 +42,7 @@ export const SUBMIT_VOTE_EVENT = "player_vote";
 export const SUBMIT_CHAT_MESSAGE = "player_chat_message";
 
 export const MAX_CHAT_HISTORY_LENGTH = 200;
-export const MAX_CHARS_PER_CHAT_MESSAGE = 80;
+export const MAX_CHARS_PER_CHAT_MESSAGE = 160;
 
 export const MIN_PLAYER_ALIAS_LENGTH = 3;
 export const MAX_PLAYER_ALIAS_LENGTH = 10;
@@ -52,6 +52,8 @@ export const MAX_C_OCTAVE = 7;
 export const MIDDLE_C_OCTAVE = 3;
 export const MIN_NOTE_NUMBER = 24;
 export const MAX_NOTE_NUMBER = 108;
+
+export const MIN_FORCED_VOTING_WINDOW_TIME = 10;
 
 export const DEFAULT_SAMPLE_COLORS = [
   "rgba(255, 127, 0, 0.15)",
