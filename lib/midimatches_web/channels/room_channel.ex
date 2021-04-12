@@ -110,7 +110,8 @@ defmodule MidimatchesWeb.RoomChannel do
 
     payload = Utils.server_room_to_client_room_game_join(room_state)
 
-    {:reply, {:ok, payload}, assign_game_server(socket)}
+    {:reply, {:ok, payload},
+     socket |> assign_game_server() |> assign(audience_member?: audience_member?)}
   end
 
   def handle_in(
@@ -158,7 +159,8 @@ defmodule MidimatchesWeb.RoomChannel do
   def handle_in(
         "player_chat_message",
         %{"message_text" => message_text},
-        %Phoenix.Socket{assigns: %{player_id: player_id}} = socket
+        %Phoenix.Socket{assigns: %{player_id: player_id, audience_member?: audience_member?}} =
+          socket
       ) do
     player =
       player_id
@@ -167,6 +169,7 @@ defmodule MidimatchesWeb.RoomChannel do
 
     chat_message = %ChatMessage{
       sender_id: player_id,
+      is_audience_member: audience_member?,
       sender_alias: player.player_alias,
       message_text: ProfanityFilter.sanitize(message_text),
       timestamp: Utils.curr_utc_timestamp()

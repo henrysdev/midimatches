@@ -59,6 +59,7 @@
   );
   --practice_play_button_icon_size: 100px;
   --current_player_color: #296cff;
+  --other_player_color: #e72c2c;
   --audience_member_color: #ffc229;
   --text_dark: rgb(36, 36, 36);
 
@@ -1100,7 +1101,7 @@ strong {
 }
 
 .chat_message_author_label {
-  color: red;
+  color: var(--other_player_color);
   margin-right: 4px;
   float: left;
 }

@@ -101,7 +101,7 @@ const GameSettings: React.FC<GameSettingsProps> = ({}) => {
         />
         <span className="slider round"></span>
       </label>
-      <h5 className="settings_item_label">Input Lag Comp (ms)</h5>
+      {/* <h5 className="settings_item_label">Input Lag Comp (ms)</h5>
       <div className="input_lag_comp">
         <input
           type="number"
@@ -111,7 +111,7 @@ const GameSettings: React.FC<GameSettingsProps> = ({}) => {
           onChange={handleInputLagCompChange}
           className="input_lag_comp_input"
         />
-      </div>
+      </div> */}
     </div>
   );
 };

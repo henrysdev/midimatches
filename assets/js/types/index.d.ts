@@ -122,6 +122,7 @@ export interface WinResult {
 
 export interface ChatMessage {
   senderId: string;
+  isAudienceMember: boolean;
   senderAlias: string;
   messageText: string;
   timestamp: number;
