@@ -89,13 +89,13 @@ export function useNoteRecorder({
     });
   }, []);
 
-  const startRecord = (): void => {
+  const startRecord = (recordingStartTime: Milliseconds): void => {
     // startRecorder();
     setIsRecording(true);
     if (!!roundRecordingStartTime) {
-      const recordingStartTime = getRecordingStartTimestamp(
-        roundRecordingStartTime
-      );
+      // const recordingStartTime = getRecordingStartTimestamp(
+      //   roundRecordingStartTime
+      // );
       setInternalState({
         isRecording: true,
         recordingStartTime,

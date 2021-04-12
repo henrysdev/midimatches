@@ -111,16 +111,15 @@ function scheduleRecordingAudioTimeline(
 
   // start sample (warmup)
   Tone.Transport.scheduleOnce((time: Seconds) => {
-    sampleStartPlayCallback();
-    // Tone.Draw.schedule(() => {
-    //   console.log("Start Sample Playback called!");
-    //   sampleStartPlayCallback();
-    // }, time);
+    Tone.Draw.schedule(() => {
+      console.log("Start Sample Playback called!");
+      sampleStartPlayCallback();
+    }, time);
   }, `+${sampleStartTime}`);
 
   // start recording
   Tone.Transport.scheduleOnce((time: Seconds) => {
-    startRecording();
+    startRecording(currUtcTimestamp());
     // Tone.Draw.schedule(() => {
     //   startRecording();
     // }, time);

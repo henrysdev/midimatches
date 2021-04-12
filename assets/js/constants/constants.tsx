@@ -200,7 +200,7 @@ export const DEFAULT_ALERT_LIFETIME = 5_000;
 
 export const MAX_INPUT_LAG_COMP = 500;
 
-export const PRACTICE_MODE_TIMESTEP_SIZE = 50; //166666;
+export const PRACTICE_MODE_TIMESTEP_SIZE = 50; //83333;
 
 export const SOUND_VOLUME_COOKIE = "midimatches_soundvolume";
 export const SHOW_KEYBOARD_LABELS_COOKIE = "midimatches_keyboardlabels";
