@@ -34,7 +34,12 @@ const ChatBox: React.FC<ChatBoxProps> = memo(({ currPlayer }) => {
       <div className="chat_messages_container">
         {chatHistory.map(
           (
-            { senderId, senderAlias, messageText }: ChatMessage,
+            {
+              senderId,
+              isAudienceMember,
+              senderAlias,
+              messageText,
+            }: ChatMessage,
             index: number
           ): JSX.Element => {
             return (
@@ -43,8 +48,13 @@ const ChatBox: React.FC<ChatBoxProps> = memo(({ currPlayer }) => {
                   className="chat_message_author_label roboto_font"
                   style={
                     !!currPlayer && senderId === currPlayer.playerId
-                      ? { color: "var(--current_player_color)" }
-                      : {}
+                      ? {
+                          color: "var(--current_player_color)",
+                          fontWeight: 700,
+                        }
+                      : isAudienceMember
+                      ? { color: "var(--audience_member_color)" }
+                      : { color: "var(--other_player_color)" }
                   }
                 >
                   {senderAlias}

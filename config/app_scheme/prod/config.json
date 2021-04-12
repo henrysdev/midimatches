@@ -6,8 +6,8 @@
         "permanent_room": true,
         "timestep_size": 50,
         "quantization_threshold": 0.5,
-        "rounds_to_win": 3,
-        "max_players": 6,
+        "rounds_to_win": 5,
+        "max_players": 10,
         "view_timeouts": {
           "game_start": 10000,
           "round_start": 3000,
@@ -24,26 +24,8 @@
         "permanent_room": true,
         "timestep_size": 50,
         "quantization_threshold": 0.5,
-        "rounds_to_win": 3,
+        "rounds_to_win": 10,
         "max_players": 5,
-        "view_timeouts": {
-          "game_start": 10000,
-          "round_start": 3000,
-          "recording": 28000,
-          "playback_voting": 90000,
-          "round_end": 10000,
-          "game_end": 10000
-        }
-      }
-    },
-    {
-      "room_name": "∆∂ˆ´ø……¬å∆",
-      "server": {
-        "permanent_room": true,
-        "timestep_size": 50,
-        "quantization_threshold": 0.5,
-        "rounds_to_win": 3,
-        "max_players": 4,
         "view_timeouts": {
           "game_start": 10000,
           "round_start": 3000,

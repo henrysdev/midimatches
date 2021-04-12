@@ -183,8 +183,8 @@ export const DEFAULT_SAMPLER_SYNTH = {
 export const DEFAULT_MANUAL_NOTE_VELOCITY = 100;
 
 // room creation parameters
-export const MIN_ROOM_SIZE = 3;
-export const MAX_ROOM_SIZE = 6;
+export const MIN_ROOM_SIZE = 2;
+export const MAX_ROOM_SIZE = 10;
 export const DEFAULT_ROOM_SIZE = 4;
 
 export const MIN_NUM_ROUNDS = 1;

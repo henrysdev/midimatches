@@ -9,6 +9,7 @@ defmodule Midimatches.Types.ChatMessage do
   typedstruct enforce: true do
     field(:sender_id, id())
     field(:sender_alias, String.t())
+    field(:is_audience_member, boolean())
     field(:timestamp, integer())
     field(:message_text, String.t())
   end
