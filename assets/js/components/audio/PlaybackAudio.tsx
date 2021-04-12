@@ -104,7 +104,7 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
     samplePlayer.seek(0);
 
     samplePlayer.start(`+0.05`);
-    part.start(`+0.05`);
+    part.start(`+0.00`);
   };
 
   const startPlayheadProgress = (startTime: number): void => {

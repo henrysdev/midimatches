@@ -62,7 +62,12 @@ export function useNoteRecorder({
   gameRules,
   shouldRecord,
 }: NoteRecorderProps): NoteRecorder {
-  const { samplePlayer, currInputLagComp } = useToneAudioContext();
+  const {
+    samplePlayer,
+    currInputLagComp,
+    startRecorder,
+    stopRecorder,
+  } = useToneAudioContext();
 
   const [internalState, _setInternalState] = useState<InternalState>(
     {} as InternalState
@@ -85,6 +90,7 @@ export function useNoteRecorder({
   }, []);
 
   const startRecord = (): void => {
+    // startRecorder();
     setIsRecording(true);
     if (!!roundRecordingStartTime) {
       const recordingStartTime = getRecordingStartTimestamp(
@@ -98,6 +104,7 @@ export function useNoteRecorder({
   };
 
   const stopRecord = (): void => {
+    // stopRecorder("test");
     setIsRecording(false);
     const {
       recordedTimesteps,
