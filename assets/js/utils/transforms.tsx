@@ -9,7 +9,7 @@ import {
   Player,
   Milliseconds,
 } from "../types";
-import { msToSec } from "../utils";
+import { msToSec, microsToMs } from "../utils";
 import _ from "lodash";
 import randomColor from "randomcolor";
 
@@ -122,7 +122,7 @@ export function loopToEvents(
 ): LocalNoteEvent[] {
   return loop.timestepSlices.reduce(
     (accEvents: LocalNoteEvent[], timestepSlice, idx) => {
-      const timestepSizeInSeconds: Seconds = 0.000001 * timestepSize;
+      const timestepSizeInSeconds: Seconds = msToSec(microsToMs(timestepSize));
       const { timestep, notes } = timestepSlice;
       const events = notes.map(({ key, duration, velocity }: Note) => {
         const note = midiToPitch(key);
