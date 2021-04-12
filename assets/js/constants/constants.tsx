@@ -42,7 +42,7 @@ export const SUBMIT_VOTE_EVENT = "player_vote";
 export const SUBMIT_CHAT_MESSAGE = "player_chat_message";
 
 export const MAX_CHAT_HISTORY_LENGTH = 200;
-export const MAX_CHARS_PER_CHAT_MESSAGE = 80;
+export const MAX_CHARS_PER_CHAT_MESSAGE = 160;
 
 export const MIN_PLAYER_ALIAS_LENGTH = 3;
 export const MAX_PLAYER_ALIAS_LENGTH = 10;
@@ -52,6 +52,8 @@ export const MAX_C_OCTAVE = 7;
 export const MIDDLE_C_OCTAVE = 3;
 export const MIN_NOTE_NUMBER = 24;
 export const MAX_NOTE_NUMBER = 108;
+
+export const MIN_FORCED_VOTING_WINDOW_TIME = 10;
 
 export const DEFAULT_SAMPLE_COLORS = [
   "rgba(255, 127, 0, 0.15)",
@@ -72,7 +74,7 @@ export const DEFAULT_SAMPLE_COLORS = [
 
 // ms threshold for which to actually diagnose client's clock as out of sync
 export const CLOCK_OUT_OF_SYNC_THRESHOLD = 0;
-export const DEFAULT_INPUT_LAG_COMPENSATION = 20;
+export const DEFAULT_INPUT_LAG_COMPENSATION = 0;
 export const DEFAULT_SAMPLE_PLAY_BUFFER_LENGTH = 2;
 export const DEFAULT_SAMPLE_LENGTH = 10.6667;
 export const DEFAULT_NUM_WARMUP_LOOPS = 1;
@@ -199,6 +201,8 @@ export const DEFAULT_SOUND_VOLUME = -0.5;
 export const DEFAULT_ALERT_LIFETIME = 5_000;
 
 export const MAX_INPUT_LAG_COMP = 500;
+
+export const PRACTICE_MODE_TIMESTEP_SIZE = 50; //83333;
 
 export const SOUND_VOLUME_COOKIE = "midimatches_soundvolume";
 export const SHOW_KEYBOARD_LABELS_COOKIE = "midimatches_keyboardlabels";

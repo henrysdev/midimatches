@@ -16,6 +16,7 @@ import {
 import { useSamplePlayer, useWebMidi, useCookies } from ".";
 
 import { ToneAudioContextType } from "../types";
+import { useRecorder } from "./useRecorder";
 
 export function useAudioContextProvider(): ToneAudioContextType {
   const { hasCookie, getCookie, setCookie } = useCookies();
@@ -54,6 +55,8 @@ export function useAudioContextProvider(): ToneAudioContextType {
     return Math.floor(currVolume) === MIN_SOUND_VOLUME;
   }, [currVolume]);
 
+  const { recorder, startRecorder, stopRecorder } = useRecorder(Tone);
+
   // midi inputs init
   const [originalMidiInputs, refreshMidiInputs] = useWebMidi();
   const [midiInputs, setMidiInputs] = useState<Array<Input>>([]);
@@ -88,6 +91,7 @@ export function useAudioContextProvider(): ToneAudioContextType {
     const vibrato = new Tone.Vibrato("16n", 0.05);
     newSynth.chain(vibrato, chorus, Tone.Destination);
 
+    newSynth.connect(recorder);
     setSynth(newSynth);
   }, []);
 
@@ -97,7 +101,7 @@ export function useAudioContextProvider(): ToneAudioContextType {
     samplePlayer,
     loadSample,
     stopSample,
-  ] = useSamplePlayer(Tone);
+  ] = useSamplePlayer(Tone, recorder);
 
   const resetTone = () => {
     stopSample();
@@ -124,5 +128,8 @@ export function useAudioContextProvider(): ToneAudioContextType {
     refreshMidiInputs,
     currInputLagComp,
     setCurrInputLagComp,
+    recorder,
+    startRecorder,
+    stopRecorder,
   };
 }

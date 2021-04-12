@@ -21,7 +21,10 @@ import {
 } from "../../../utils";
 import { InGameFrame, GameSettings, GameSubContexts } from "../room/game";
 import { WarmUp } from "../room/pregame";
-import { PRACTICE_GAME_VIEW } from "../../../constants";
+import {
+  PRACTICE_GAME_VIEW,
+  PRACTICE_MODE_TIMESTEP_SIZE,
+} from "../../../constants";
 import { PracticeRecordingView } from "./views/PracticeRecordingView";
 import { PracticeSampleSelectionView } from "./views/PracticeSampleSelectionView";
 import { VinylLoadingSpinner, DynamicContent } from "../../common";
@@ -44,7 +47,7 @@ const PracticePage: React.FC<PracticePageProps> = ({ children }) => {
   const gameContext = useMemo(() => {
     return {
       gameRules: {
-        timestepSize: 50,
+        timestepSize: PRACTICE_MODE_TIMESTEP_SIZE,
         quantizationThreshold: 0.5,
       },
       ...{ roundRecordingStartTime },

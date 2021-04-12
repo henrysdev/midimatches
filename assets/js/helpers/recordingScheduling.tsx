@@ -119,16 +119,18 @@ function scheduleRecordingAudioTimeline(
 
   // start recording
   Tone.Transport.scheduleOnce((time: Seconds) => {
-    Tone.Draw.schedule(() => {
-      startRecording();
-    }, time);
+    startRecording(currUtcTimestamp());
+    // Tone.Draw.schedule(() => {
+    //   startRecording();
+    // }, time);
   }, `+${recordingStartTime}`);
 
   // stop recording
   Tone.Transport.scheduleOnce((time: Seconds) => {
-    Tone.Draw.schedule(() => {
-      stopRecording();
-    }, time);
+    stopRecording();
+    // Tone.Draw.schedule(() => {
+    //   stopRecording();
+    // }, time);
   }, `+${recordingEndTime}`);
 }
 

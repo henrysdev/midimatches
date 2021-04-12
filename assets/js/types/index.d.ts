@@ -170,6 +170,9 @@ export interface ToneAudioContextType {
   soundIsOn: boolean;
   currInputLagComp: Milliseconds;
   setCurrInputLagComp: Function;
+  recorder: any;
+  startRecorder: Function;
+  stopRecorder: Function;
 }
 
 export interface PlayerContextType {

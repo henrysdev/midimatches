@@ -7,7 +7,7 @@ import {
 
 type SamplePlayerTuple = [boolean, any, (url: string) => void, () => void];
 
-export function useSamplePlayer(Tone: any): SamplePlayerTuple {
+export function useSamplePlayer(Tone: any, recorder: any): SamplePlayerTuple {
   const [loadedSampleName, setLoadedSampleName] = useState<string>();
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
@@ -18,6 +18,7 @@ export function useSamplePlayer(Tone: any): SamplePlayerTuple {
       loopEnd: DEFAULT_SAMPLE_LENGTH,
     }).toDestination();
     newSamplePlayer.volume.value = DEFAULT_SAMPLE_VOLUME;
+    newSamplePlayer.connect(recorder);
     return newSamplePlayer;
   }, []);
 

@@ -4,7 +4,7 @@
       "room_name": "Regular Room",
       "server": {
         "permanent_room": true,
-        "timestep_size": 50,
+        "timestep_size": 166666,
         "quantization_threshold": 0.5,
         "rounds_to_win": 3,
         "max_players": 6,
@@ -22,7 +22,7 @@
       "room_name": "Speed Rounds!",
       "server": {
         "permanent_room": true,
-        "timestep_size": 50,
+        "timestep_size": 166666,
         "quantization_threshold": 0.5,
         "rounds_to_win": 3,
         "max_players": 3,
