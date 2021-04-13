@@ -6,6 +6,7 @@ defmodule MidimatchesWeb.RoomChannel do
   use MidimatchesWeb, :channel
 
   alias Midimatches.{
+    ChatServer,
     Pids,
     ProfanityFilter,
     Rooms,
@@ -53,6 +54,7 @@ defmodule MidimatchesWeb.RoomChannel do
     if Rooms.room_exists?(room_id) do
       send(self(), {:init_conn, room_id})
       room_server = Pids.fetch!({:room_server, room_id})
+      chat_server = Pids.fetch!({:chat_server, room_id})
 
       if UserCache.user_id_exists?(user_id) do
         player =
@@ -65,6 +67,7 @@ defmodule MidimatchesWeb.RoomChannel do
          |> assign(room_id: room_id)
          |> assign(room_server: room_server)
          |> assign(player_id: player.player_id)
+         |> assign(chat_server: chat_server)
          |> assign_game_server()}
       else
         {:error, "cannot join, no user found for user_id=#{user_id}"}
@@ -159,8 +162,13 @@ defmodule MidimatchesWeb.RoomChannel do
   def handle_in(
         "player_chat_message",
         %{"message_text" => message_text},
-        %Phoenix.Socket{assigns: %{player_id: player_id, audience_member?: audience_member?}} =
-          socket
+        %Phoenix.Socket{
+          assigns: %{
+            player_id: player_id,
+            audience_member?: audience_member?,
+            chat_server: chat_server
+          }
+        } = socket
       ) do
     player =
       player_id
@@ -174,6 +182,8 @@ defmodule MidimatchesWeb.RoomChannel do
       message_text: ProfanityFilter.sanitize(message_text),
       timestamp: Utils.curr_utc_timestamp()
     }
+
+    ChatServer.incoming_chat_message(chat_server, chat_message)
 
     broadcast!(socket, "new_chat_message", chat_message)
 

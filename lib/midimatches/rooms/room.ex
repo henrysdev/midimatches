@@ -5,6 +5,7 @@ defmodule Midimatches.Rooms.Room do
   use Supervisor
 
   alias Midimatches.{
+    ChatServer,
     Pids,
     Rooms.RoomServer,
     Types.Configs.RoomConfig
@@ -28,7 +29,8 @@ defmodule Midimatches.Rooms.Room do
     Pids.register({:room_supervisor, room_id}, self())
 
     children = [
-      {RoomServer, [{room_id, room_name, room_config.server}]}
+      {RoomServer, [{room_id, room_name, room_config.server}]},
+      {ChatServer, [{room_id}]}
     ]
 
     Supervisor.init(children, strategy: :rest_for_one)

@@ -2,6 +2,7 @@ defmodule Midimatches.RoomTest do
   use ExUnit.Case
 
   alias Midimatches.{
+    ChatServer,
     Rooms.Room,
     Rooms.RoomServer,
     TestHelpers
@@ -21,7 +22,8 @@ defmodule Midimatches.RoomTest do
     started_children = Supervisor.which_children(sup) |> Enum.reverse()
 
     assert [
-             {RoomServer, _, :worker, [RoomServer]}
+             {RoomServer, _, :worker, [RoomServer]},
+             {ChatServer, _, :worker, [ChatServer]}
            ] = started_children
   end
 end
