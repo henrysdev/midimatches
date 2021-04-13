@@ -84,7 +84,7 @@ defmodule Midimatches.Rooms do
     DynamicSupervisor.which_children(__MODULE__)
     |> Stream.map(fn {_, room_supervisor, _, _} -> room_supervisor end)
     |> Stream.map(&Supervisor.which_children(&1))
-    |> Enum.map(fn [{_, room_server, _, _}] -> room_server end)
+    |> Enum.map(fn [_, {_, room_server, _, _}] -> room_server end)
   end
 
   @spec configure_rooms(list(%RoomConfig{})) :: :ok

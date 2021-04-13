@@ -6,6 +6,7 @@ defmodule MidimatchesWeb.RoomChannel do
   use MidimatchesWeb, :channel
 
   alias Midimatches.{
+    ChatServer,
     Pids,
     ProfanityFilter,
     Rooms,
@@ -51,8 +52,9 @@ defmodule MidimatchesWeb.RoomChannel do
         socket
       ) do
     if Rooms.room_exists?(room_id) do
-      send(self(), {:init_conn, room_id})
       room_server = Pids.fetch!({:room_server, room_id})
+      chat_server = Pids.fetch!({:chat_server, room_id})
+      send(self(), {:init_conn, room_id, chat_server})
 
       if UserCache.user_id_exists?(user_id) do
         player =
@@ -65,6 +67,7 @@ defmodule MidimatchesWeb.RoomChannel do
          |> assign(room_id: room_id)
          |> assign(room_server: room_server)
          |> assign(player_id: player.player_id)
+         |> assign(chat_server: chat_server)
          |> assign_game_server()}
       else
         {:error, "cannot join, no user found for user_id=#{user_id}"}
@@ -74,9 +77,13 @@ defmodule MidimatchesWeb.RoomChannel do
     end
   end
 
-  def handle_info({:init_conn, room_id}, socket) do
+  def handle_info({:init_conn, room_id, chat_server}, socket) do
     Pids.fetch!({:room_server, room_id})
     |> RoomServer.sync_lobby_state()
+
+    chat_history = ChatServer.chat_history(chat_server)
+
+    push(socket, "new_chat_messages", %{chat_messages: chat_history})
 
     {:noreply, socket}
   end
@@ -159,8 +166,13 @@ defmodule MidimatchesWeb.RoomChannel do
   def handle_in(
         "player_chat_message",
         %{"message_text" => message_text},
-        %Phoenix.Socket{assigns: %{player_id: player_id, audience_member?: audience_member?}} =
-          socket
+        %Phoenix.Socket{
+          assigns: %{
+            player_id: player_id,
+            audience_member?: audience_member?,
+            chat_server: chat_server
+          }
+        } = socket
       ) do
     player =
       player_id
@@ -175,7 +187,9 @@ defmodule MidimatchesWeb.RoomChannel do
       timestamp: Utils.curr_utc_timestamp()
     }
 
-    broadcast!(socket, "new_chat_message", chat_message)
+    ChatServer.incoming_chat_message(chat_server, chat_message)
+
+    broadcast!(socket, "new_chat_messages", %{chat_messages: [chat_message]})
 
     {:reply, {:ok, %{}}, socket}
   end

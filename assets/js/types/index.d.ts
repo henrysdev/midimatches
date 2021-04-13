@@ -57,6 +57,10 @@ export type PlayerJoinPayload = {
   gameState: GameState;
 };
 
+export type NewChatMessagePayload = {
+  chatMessages: ChatMessage[];
+};
+
 export interface ServerlistUpdatePayload {
   rooms: any[];
   numPlayersOnline: number;

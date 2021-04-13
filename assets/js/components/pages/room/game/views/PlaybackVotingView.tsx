@@ -78,6 +78,8 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
         autoPlayCounter.current = setTimeout(() => {
           setAutoPlayingTrackIdx((idx) => idx + 1);
         }, secToMs(DEFAULT_RECORDING_LENGTH));
+      } else {
+        setCanVote(true);
       }
     }
 
@@ -106,14 +108,10 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
   }, []);
 
   useEffect(() => {
-    if (
-      listenCompleteTracks.size >= recordings.length ||
-      msToSec(calcMsUntilMsTimestamp(viewDeadline) + clockOffset) <=
-        MIN_FORCED_VOTING_WINDOW_TIME
-    ) {
+    if (listenCompleteTracks.size >= recordings.length) {
       setCanVote(true);
     }
-  }, [listenCompleteTracks.size, autoPlayingTrackIdx]);
+  }, [listenCompleteTracks.size]);
 
   const completeListening = (playerId: string) => {
     const updatedListenCompleteTracksSet = new Set([

@@ -29,7 +29,7 @@ export const GAME_UPDATE_EVENT = "game_update";
 export const START_GAME_EVENT = "start_game";
 export const RESET_ROOM_EVENT = "reset_room";
 export const LOBBY_UPDATE_EVENT = "lobby_update";
-export const NEW_CHAT_MESSAGE_EVENT = "new_chat_message";
+export const NEW_CHAT_MESSAGES_EVENT = "new_chat_messages";
 export const ADMIN_ALERT_MESSAGE_EVENT = "admin_alert";
 export const DUPLICATE_SESSION_EVENT = "duplicate_session";
 
@@ -53,7 +53,7 @@ export const MIDDLE_C_OCTAVE = 3;
 export const MIN_NOTE_NUMBER = 24;
 export const MAX_NOTE_NUMBER = 108;
 
-export const MIN_FORCED_VOTING_WINDOW_TIME = 10;
+export const MIN_FORCED_VOTING_WINDOW_TIME = 20;
 
 export const DEFAULT_SAMPLE_COLORS = [
   "rgba(255, 127, 0, 0.15)",
@@ -74,7 +74,7 @@ export const DEFAULT_SAMPLE_COLORS = [
 
 // ms threshold for which to actually diagnose client's clock as out of sync
 export const CLOCK_OUT_OF_SYNC_THRESHOLD = 0;
-export const DEFAULT_INPUT_LAG_COMPENSATION = 0;
+export const DEFAULT_INPUT_LAG_COMPENSATION = 5;
 export const DEFAULT_SAMPLE_PLAY_BUFFER_LENGTH = 2;
 export const DEFAULT_SAMPLE_LENGTH = 10.6667;
 export const DEFAULT_NUM_WARMUP_LOOPS = 1;
