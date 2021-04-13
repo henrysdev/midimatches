@@ -52,9 +52,9 @@ defmodule MidimatchesWeb.RoomChannel do
         socket
       ) do
     if Rooms.room_exists?(room_id) do
-      send(self(), {:init_conn, room_id})
       room_server = Pids.fetch!({:room_server, room_id})
       chat_server = Pids.fetch!({:chat_server, room_id})
+      send(self(), {:init_conn, room_id, chat_server})
 
       if UserCache.user_id_exists?(user_id) do
         player =
@@ -77,9 +77,13 @@ defmodule MidimatchesWeb.RoomChannel do
     end
   end
 
-  def handle_info({:init_conn, room_id}, socket) do
+  def handle_info({:init_conn, room_id, chat_server}, socket) do
     Pids.fetch!({:room_server, room_id})
     |> RoomServer.sync_lobby_state()
+
+    chat_history = ChatServer.chat_history(chat_server)
+
+    push(socket, "new_chat_messages", %{chat_messages: chat_history})
 
     {:noreply, socket}
   end
@@ -185,7 +189,7 @@ defmodule MidimatchesWeb.RoomChannel do
 
     ChatServer.incoming_chat_message(chat_server, chat_message)
 
-    broadcast!(socket, "new_chat_message", chat_message)
+    broadcast!(socket, "new_chat_messages", %{chat_messages: [chat_message]})
 
     {:reply, {:ok, %{}}, socket}
   end

@@ -29,7 +29,7 @@ export const GAME_UPDATE_EVENT = "game_update";
 export const START_GAME_EVENT = "start_game";
 export const RESET_ROOM_EVENT = "reset_room";
 export const LOBBY_UPDATE_EVENT = "lobby_update";
-export const NEW_CHAT_MESSAGE_EVENT = "new_chat_message";
+export const NEW_CHAT_MESSAGES_EVENT = "new_chat_messages";
 export const ADMIN_ALERT_MESSAGE_EVENT = "admin_alert";
 export const DUPLICATE_SESSION_EVENT = "duplicate_session";
 

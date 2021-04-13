@@ -9,6 +9,7 @@ import {
   StartGamePayload,
   LobbyUpdatePayload,
   RoomState,
+  NewChatMessagePayload,
   ChatMessage,
 } from "../../../types";
 import { Game } from "./game/Game";
@@ -25,7 +26,7 @@ import {
   RESET_ROOM_EVENT,
   SUBMIT_LEAVE_ROOM,
   SUBMIT_JOIN,
-  NEW_CHAT_MESSAGE_EVENT,
+  NEW_CHAT_MESSAGES_EVENT,
   MAX_CHAT_HISTORY_LENGTH,
   SUBMIT_CHAT_MESSAGE,
 } from "../../../constants";
@@ -128,9 +129,9 @@ const RoomPageContent: React.FC<RoomPageContentProps> = ({
     joinRoomFlow();
 
     // receive chat
-    channel.on(NEW_CHAT_MESSAGE_EVENT, (body) => {
-      const chatMessage = unmarshalBody(body) as ChatMessage;
-      handleChatMessage(chatMessage);
+    channel.on(NEW_CHAT_MESSAGES_EVENT, (body) => {
+      const { chatMessages } = unmarshalBody(body) as NewChatMessagePayload;
+      chatMessages.forEach((chatMsg) => handleChatMessage(chatMsg));
     });
 
     // lobby update
