@@ -142,6 +142,7 @@ export const DEFAULT_FM_SYNTH_CONFIG = {
 } as any;
 
 export const DEFAULT_SAMPLER_SYNTH = {
+  volume: 0.5,
   attack: 0.01,
   urls: {
     A0: "A0.mp3",
@@ -202,10 +203,14 @@ export const DEFAULT_ALERT_LIFETIME = 5_000;
 
 export const MAX_INPUT_LAG_COMP = 500;
 
-export const PRACTICE_MODE_TIMESTEP_SIZE = 50; //83333;
+export const PRACTICE_MODE_TIMESTEP_SIZE = 50;
+export const PRACTICE_MODE_QUANTIZE_THRESHOLD = 0.5;
+
+export const DEFAULT_QUANTIZATION_SIZE = 166666;
 
 export const SOUND_VOLUME_COOKIE = "midimatches_soundvolume";
 export const SHOW_KEYBOARD_LABELS_COOKIE = "midimatches_keyboardlabels";
 export const SEEN_BROWSER_WARNING_COOKIE = "midimatches_seenbrowserwarning";
 export const DISABLED_MIDI_INPUTS_COOKIE = "midimatches_disabledmidiinputs";
 export const INPUT_LAG_COMPENSATION_COOKIE = "midimatches_inputlagcompensation";
+export const ENABLE_QUANTIZATION_COOKIE = "midimatches_enablequantization";

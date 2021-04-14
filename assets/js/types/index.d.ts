@@ -178,6 +178,8 @@ export interface ToneAudioContextType {
   recorder: any;
   startRecorder: Function;
   stopRecorder: Function;
+  shouldQuantize: boolean;
+  setShouldQuantize: Function;
 }
 
 export interface PlayerContextType {

@@ -12,6 +12,7 @@ import {
   DEFAULT_SAMPLER_SYNTH,
   DEFAULT_INPUT_LAG_COMPENSATION,
   INPUT_LAG_COMPENSATION_COOKIE,
+  ENABLE_QUANTIZATION_COOKIE,
 } from "../constants";
 import { useSamplePlayer, useWebMidi, useCookies } from ".";
 
@@ -27,6 +28,13 @@ export function useAudioContextProvider(): ToneAudioContextType {
     setCookie(INPUT_LAG_COMPENSATION_COOKIE, lagComp);
     _setCurrInputLagComp(lagComp);
   };
+
+  const [shouldQuantize, _setShouldQuantize] = useState<boolean>(true);
+  const setShouldQuantize = (shouldQntz: boolean) => {
+    setCookie(ENABLE_QUANTIZATION_COOKIE, shouldQntz);
+    _setShouldQuantize(shouldQntz);
+  };
+
   const [currVolume, setCurrVolume] = useState<number>(-1);
 
   useEffect(() => {
@@ -41,6 +49,13 @@ export function useAudioContextProvider(): ToneAudioContextType {
     if (hasCookie(INPUT_LAG_COMPENSATION_COOKIE)) {
       const lagComp = getCookie(INPUT_LAG_COMPENSATION_COOKIE);
       setCurrInputLagComp(lagComp);
+    }
+    if (hasCookie(ENABLE_QUANTIZATION_COOKIE)) {
+      const shouldQntz = getCookie(ENABLE_QUANTIZATION_COOKIE) === "true";
+      console.log({
+        shouldQntz,
+      });
+      setShouldQuantize(shouldQntz);
     }
   }, []);
 
@@ -130,5 +145,7 @@ export function useAudioContextProvider(): ToneAudioContextType {
     recorder,
     startRecorder,
     stopRecorder,
+    shouldQuantize,
+    setShouldQuantize,
   };
 }

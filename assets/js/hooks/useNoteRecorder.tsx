@@ -7,6 +7,7 @@ import {
   Note,
   GameRules,
   Milliseconds,
+  Microseconds,
 } from "../types";
 import { useToneAudioContext } from ".";
 import {
@@ -17,6 +18,7 @@ import {
   DEFAULT_MANUAL_NOTE_VELOCITY,
   MIN_NOTE_NUMBER,
   MAX_NOTE_NUMBER,
+  DEFAULT_QUANTIZATION_SIZE,
 } from "../constants";
 import {
   msToMicros,
@@ -67,6 +69,7 @@ export function useNoteRecorder({
     currInputLagComp,
     startRecorder,
     stopRecorder,
+    shouldQuantize,
   } = useToneAudioContext();
 
   const [internalState, _setInternalState] = useState<InternalState>(
@@ -124,7 +127,8 @@ export function useNoteRecorder({
                 true,
                 getCurrentTimestep(
                   internalStateRef.current as InternalState,
-                  currInputLagComp
+                  currInputLagComp,
+                  { shouldQuantize: false, noteStart: false }
                 ),
                 {
                   note: { number: noteNumber },
@@ -156,7 +160,8 @@ export function useNoteRecorder({
     const { activeNotes } = internalStateRef.current as InternalState;
     const currTimestep = getCurrentTimestep(
       internalStateRef.current as InternalState,
-      currInputLagComp
+      currInputLagComp,
+      { shouldQuantize, noteStart: true }
     );
     const noteOnEvent = webMidiEventToMidiNoteEvent(midiEvent, currTimestep);
     if (
@@ -178,7 +183,8 @@ export function useNoteRecorder({
     } = internalStateRef.current as InternalState;
     const currTimestep = getCurrentTimestep(
       internalStateRef.current as InternalState,
-      currInputLagComp
+      currInputLagComp,
+      { shouldQuantize: true, noteStart: false }
     );
 
     const { noteOffEvent, stateUpdate, activeNotesCopy } = recordNoteOff(
@@ -268,14 +274,17 @@ function getCurrentTimestep(
     gameRules: { timestepSize, quantizationThreshold },
     recordingStartTime,
   }: InternalState,
-  currInputLagComp: Milliseconds
+  currInputLagComp: Milliseconds,
+  { shouldQuantize, noteStart }: { shouldQuantize: boolean; noteStart: boolean }
 ): number {
   const nowMicros = msToMicros(currUtcTimestamp() - currInputLagComp);
   return calculateTimestep(
     nowMicros,
     msToMicros(recordingStartTime),
     timestepSize,
-    quantizationThreshold
+    shouldQuantize,
+    quantizationThreshold,
+    noteStart
   );
 }
 
@@ -283,14 +292,31 @@ function calculateTimestep(
   timeUtc: number,
   recordingStartTime: number,
   timestepSize: number,
-  quantizationThreshold: number
+  shouldQuantize: boolean,
+  quantizationThreshold: number,
+  noteStart: boolean
 ): number {
   const elapsedTime = Math.abs(timeUtc - recordingStartTime);
-  const elapsedTimesteps = Math.floor(elapsedTime / timestepSize);
-  const remainderTime = elapsedTime % timestepSize;
-  const quantizeTimestep =
-    remainderTime >= quantizationThreshold * 1000 ? 1 : 0;
-  return elapsedTimesteps + quantizeTimestep;
+  if (!!shouldQuantize) {
+    const quantizationSize = DEFAULT_QUANTIZATION_SIZE;
+    const sizeAdjustmentFactor = quantizationSize / timestepSize;
+    const adjustedTimestepSize = quantizationSize;
+    const elapsedTimesteps = Math.floor(elapsedTime / adjustedTimestepSize);
+    const remainderTime = elapsedTime % adjustedTimestepSize;
+    const quantizeTimestep =
+      remainderTime >= quantizationThreshold * 1000 ? 1 : 0;
+    const noteEndTimestep = noteStart ? 0 : 1;
+    return (
+      (elapsedTimesteps + quantizeTimestep + noteEndTimestep) *
+      sizeAdjustmentFactor
+    );
+  } else {
+    const elapsedTimesteps = Math.floor(elapsedTime / timestepSize);
+    const remainderTime = elapsedTime % timestepSize;
+    const quantizeTimestep =
+      remainderTime >= quantizationThreshold * 1000 ? 1 : 0;
+    return elapsedTimesteps + quantizeTimestep;
+  }
 }
 
 function webMidiEventToMidiNoteEvent(
