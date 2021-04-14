@@ -36,16 +36,19 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllServer do
 
   @impl true
   def init(args) do
-    {room_id, game_id, players, game_rules} =
+    {room_id, game_id, players, audience_members, game_rules} =
       case args do
-        [{room_id, game_id, players, game_rules}] -> {room_id, game_id, players, game_rules}
-        [{room_id, game_id, players}] -> {room_id, game_id, players, %GameRules{}}
+        [{room_id, game_id, players, audience_members, game_rules}] ->
+          {room_id, game_id, players, audience_members, game_rules}
+
+        [{room_id, game_id, players, audience_members}] ->
+          {room_id, game_id, players, audience_members, %GameRules{}}
       end
 
     Pids.register({:game_server, room_id}, self())
 
     game_state =
-      FreeForAllLogic.start_game(game_rules, players, room_id, game_id)
+      FreeForAllLogic.start_game(game_rules, players, audience_members, room_id, game_id)
       |> broadcast_start_game()
       |> schedule_view_timeout()
 

@@ -21,10 +21,16 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllLogic do
           state: %GameInstance{}
         }
 
-  @spec start_game(%GameRules{}, MapSet.t(Player), id(), id()) :: %GameInstance{}
-  def start_game(game_rules, players, room_id, game_id) do
+  @spec start_game(%GameRules{}, MapSet.t(Player), MapSet.t(Player), id(), id()) ::
+          %GameInstance{}
+  def start_game(game_rules, players, audience_members, room_id, game_id) do
     player_ids_list =
       players
+      |> MapSet.to_list()
+      |> Enum.map(& &1.player_id)
+
+    audience_member_ids_list =
+      audience_members
       |> MapSet.to_list()
       |> Enum.map(& &1.player_id)
 
@@ -36,6 +42,8 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllLogic do
       game_rules: game_rules,
       players: players,
       player_ids_set: MapSet.new(player_ids_list),
+      audience_members: audience_members,
+      audience_member_ids_set: MapSet.new(audience_member_ids_list),
       game_view: :game_start,
       contestants: player_ids_list,
       sample_beats: sample_beats,
