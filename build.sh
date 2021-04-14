@@ -6,13 +6,13 @@ set -o errexit
 mix deps.get --only prod
 MIX_ENV=prod mix compile
 
-# Apply ecto migrations
-mix ecto.migrate
-
 # Compile assets
 npm install --prefix ./assets
 npm run deploy --prefix ./assets
 mix phx.digest
+
+# Apply any ecto migrations
+mix ecto.migrate
 
 # Build the release and overwrite the existing release directory
 MIX_ENV=prod mix release --overwrite
