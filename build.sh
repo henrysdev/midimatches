@@ -12,7 +12,7 @@ npm run deploy --prefix ./assets
 mix phx.digest
 
 # Apply any ecto migrations
-mix ecto.migrate
+# mix ecto.migrate
 
 # Build the release and overwrite the existing release directory
 MIX_ENV=prod mix release --overwrite
