@@ -4,8 +4,8 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.Recording do
   """
 
   alias Midimatches.{
-    Rooms.Room.GameLogic,
-    Rooms.Room.GameServer,
+    Rooms.Room.GameInstance,
+    Rooms.Room.Modes.FreeForAll.FreeForAllLogic,
     Types.GameRules,
     Types.GameRules.ViewTimeouts
   }
@@ -15,13 +15,13 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.Recording do
   @type instruction_map() :: %{
           sync_clients?: boolean(),
           view_change?: boolean(),
-          state: %GameServer{}
+          state: %GameInstance{}
         }
   @type record_payload() :: {id(), any}
 
-  @spec advance_view(%GameServer{}) :: %GameServer{}
+  @spec advance_view(%GameInstance{}) :: %GameInstance{}
   def advance_view(
-        %GameServer{
+        %GameInstance{
           recordings: recordings,
           game_view: :recording,
           game_rules:
@@ -35,7 +35,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.Recording do
     # based on how many players are in the game
     number_of_recordings = recordings |> Map.keys() |> length()
 
-    state = %GameServer{
+    state = %GameInstance{
       state
       | game_rules: %GameRules{
           game_rules
@@ -46,37 +46,37 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.Recording do
         }
     }
 
-    %GameServer{state | game_view: :playback_voting}
+    %GameInstance{state | game_view: :playback_voting}
   end
 
-  @spec add_recording(%GameServer{}, any) :: instruction_map()
+  @spec add_recording(%GameInstance{}, any) :: instruction_map()
   @doc """
   Handle player event where a contestant submits a recording.
   """
-  def add_recording(%GameServer{} = state, record_payload) do
+  def add_recording(%GameInstance{} = state, record_payload) do
     case recording_status(state, record_payload) do
       # last needed recording - store recording and transition to playback voting server state
       :last_valid_recording ->
         state
         |> valid_recording(record_payload)
         |> advance_view()
-        |> GameLogic.as_instruction(sync?: true, view_change?: true)
+        |> FreeForAllLogic.as_instruction(sync?: true, view_change?: true)
 
       # valid recording - store recording in game server state
       :valid_recording ->
         state
         |> valid_recording(record_payload)
-        |> GameLogic.as_instruction(sync?: true, view_change?: false)
+        |> FreeForAllLogic.as_instruction(sync?: true, view_change?: false)
 
       # invalid vote - return state unchanged
       _bad_recording ->
-        GameLogic.as_instruction(state, sync?: false, view_change?: false)
+        FreeForAllLogic.as_instruction(state, sync?: false, view_change?: false)
     end
   end
 
-  @spec recording_status(%GameServer{}, record_payload()) :: recording_status()
+  @spec recording_status(%GameInstance{}, record_payload()) :: recording_status()
   defp recording_status(
-         %GameServer{contestants: contestants, recordings: recordings},
+         %GameInstance{contestants: contestants, recordings: recordings},
          {player_id, _recording}
        ) do
     valid_recording? =
@@ -92,9 +92,9 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.Recording do
     end
   end
 
-  @spec valid_recording(%GameServer{}, record_payload()) :: %GameServer{}
-  def valid_recording(%GameServer{recordings: recordings} = state, {player_id, recording}) do
-    %GameServer{state | recordings: Map.put(recordings, player_id, recording)}
+  @spec valid_recording(%GameInstance{}, record_payload()) :: %GameInstance{}
+  def valid_recording(%GameInstance{recordings: recordings} = state, {player_id, recording}) do
+    %GameInstance{state | recordings: Map.put(recordings, player_id, recording)}
   end
 
   # Auto recording logic (save logic for bot usage)
@@ -103,9 +103,9 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.Recording do
   # @empty_recording %{
   #   timestep_slices: []
   # }
-  # @spec auto_create_recordings(%GameServer{}) :: %GameServer{}
+  # @spec auto_create_recordings(%GameInstance{}) :: %GameInstance{}
   # defp auto_create_recordings(
-  #        %GameServer{
+  #        %GameInstance{
   #          contestants: contestants,
   #          recordings: recordings,
   #          game_view: :recording
@@ -122,8 +122,8 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.Recording do
   #   end)
   # end
 
-  # @spec simulate_add_recording(%GameServer{}, any) :: %GameServer{}
-  # defp simulate_add_recording(%GameServer{} = state, record_payload) do
+  # @spec simulate_add_recording(%GameInstance{}, any) :: %GameInstance{}
+  # defp simulate_add_recording(%GameInstance{} = state, record_payload) do
   #   case recording_status(state, record_payload) do
   #     :last_valid_recording ->
   #       state
@@ -135,7 +135,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.Recording do
   #       |> valid_recording(record_payload)
 
   #     _bad_recording ->
-  #       GameLogic.as_instruction(state, sync?: false, view_change?: false)
+  #       FreeForAllLogic.as_instruction(state, sync?: false, view_change?: false)
   #   end
   # end
 end

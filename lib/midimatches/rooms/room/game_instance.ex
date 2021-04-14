@@ -1,14 +1,19 @@
-defmodule Midimatches.Rooms.Room.GenericGameServer do
+defmodule Midimatches.Rooms.Room.GameInstance do
   @moduledoc """
-  GameServer common module. Fills in common functionality that all game server modules will
-  need.
+  A common top-level API and state specification for game mode implementations.
   """
 
   use TypedStruct
 
+  alias __MODULE__
+
   alias Midimatches.{
-    Rooms.Room.Modes.FreeForAllServer,
+    Pids,
+    Rooms.Room.Modes.FreeForAll.FreeForAllServer,
+    Rooms.RoomServer,
+    Types.GameRules,
     Types.Player,
+    Types.WinResult
   }
 
   @type id() :: String.t()
@@ -39,6 +44,16 @@ defmodule Midimatches.Rooms.Room.GenericGameServer do
     field(:view_deadline, integer(), default: -1)
     field(:audience_members, MapSet.t(Player), default: MapSet.new())
     field(:audience_member_ids_set, MapSet.t(id()), default: MapSet.new())
+  end
+
+  def child_spec(opts) do
+    %{
+      id: __MODULE__,
+      start: {__MODULE__, :start_link, [opts]},
+      type: :worker,
+      restart: :permanent,
+      shutdown: 500
+    }
   end
 
   def start_link(args, module \\ FreeForAllServer) do
@@ -94,33 +109,20 @@ defmodule Midimatches.Rooms.Room.GenericGameServer do
     GenServer.cast(pid, {:drop_audience_member, player_id})
   end
 
-  # Optional Functions
-  # TODO condense to client_event handler function
-
-  @spec player_ready_up(pid(), id()) :: :ok
+  @spec client_event(pid(), tuple()) :: :ok
   @doc """
-  Ready up a player in the game. All ready ups from active players required to progress
-  state from game start to recording
+  Catchall endpoint for accepting game-mode specific client events to be processed.
   """
-  def player_ready_up(pid, player_id) do
-    GenServer.call(pid, {:client_event, {:ready_up, player_id}})
+  def client_event(pid, event) do
+    GenServer.call(pid, {:client_event, event})
   end
 
-  @spec player_recording(pid(), id(), any) :: :ok
+  @spec back_to_room_lobby(%GameInstance{}) :: :ok
   @doc """
-  Collect a recording for a player in the game. Recordings from all players required to progress
-  state from recording to playback voting
+  Reset room at end of game
   """
-  def player_recording(pid, player_id, recording) do
-    GenServer.call(pid, {:client_event, {:record, {player_id, recording}}})
-  end
-
-  @spec player_vote(pid(), id(), id()) :: :ok
-  @doc """
-  Collect a vote for a player recording. Votes from all players required to progress
-  state from recording to recording
-  """
-  def player_vote(pid, player_id, vote) do
-    GenServer.call(pid, {:client_event, {:vote, {player_id, vote}}})
+  def back_to_room_lobby(%GameInstance{room_id: room_id}) do
+    room_server = Pids.fetch!({:room_server, room_id})
+    RoomServer.reset_room(room_server)
   end
 end

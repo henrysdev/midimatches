@@ -1,6 +1,6 @@
 defmodule Midimatches.Types.GameRules do
   @moduledoc """
-  Configurable fields for a new instance of a GameServer
+  Configurable fields for a new instance of a GameRules
   """
 
   alias Midimatches.Types.GameRules.ViewTimeouts

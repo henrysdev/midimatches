@@ -4,8 +4,8 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.PlaybackVoting do
   """
 
   alias Midimatches.{
-    Rooms.Room.GameLogic,
-    Rooms.Room.GameServer,
+    Rooms.Room.GameInstance,
+    Rooms.Room.Modes.FreeForAll.FreeForAllLogic,
     Types.WinResult,
     Utils
   }
@@ -15,16 +15,18 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.PlaybackVoting do
   @type instruction_map() :: %{
           sync_clients?: boolean(),
           view_change?: boolean(),
-          state: %GameServer{}
+          state: %GameInstance{}
         }
   @type votes_map() :: %{required(id) => id}
   @type ballot() :: {id(), id()}
 
-  @spec advance_view(%GameServer{}) :: %GameServer{}
+  @spec advance_view(%GameInstance{}) :: %GameInstance{}
   @doc """
   Take care of any unfinished business before advancing view.
   """
-  def advance_view(%GameServer{game_view: :playback_voting, round_winners: round_winners} = state) do
+  def advance_view(
+        %GameInstance{game_view: :playback_voting, round_winners: round_winners} = state
+      ) do
     # address case where last vote has not yet been encountered and therefore round winner has not
     # yet been calculated
     state =
@@ -34,14 +36,14 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.PlaybackVoting do
         state
       end
 
-    %GameServer{state | game_view: :round_end}
+    %GameInstance{state | game_view: :round_end}
   end
 
-  @spec cast_vote(%GameServer{}, ballot()) :: instruction_map()
+  @spec cast_vote(%GameInstance{}, ballot()) :: instruction_map()
   @doc """
   Handle player event where a judge casts a vote.
   """
-  def cast_vote(%GameServer{} = state, ballot) do
+  def cast_vote(%GameInstance{} = state, ballot) do
     case vote_status(state, ballot) do
       # last vote - advance to next game view
       :last_valid_vote ->
@@ -49,23 +51,23 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.PlaybackVoting do
         |> valid_vote(ballot)
         |> last_vote()
         |> advance_view()
-        |> GameLogic.as_instruction(sync?: true, view_change?: true)
+        |> FreeForAllLogic.as_instruction(sync?: true, view_change?: true)
 
       # valid vote - count and continue
       :valid_vote ->
         state
         |> valid_vote(ballot)
-        |> GameLogic.as_instruction(sync?: true, view_change?: false)
+        |> FreeForAllLogic.as_instruction(sync?: true, view_change?: false)
 
       # invalid vote - return state unchanged
       _bad_vote ->
-        GameLogic.as_instruction(state, sync?: false, view_change?: false)
+        FreeForAllLogic.as_instruction(state, sync?: false, view_change?: false)
     end
   end
 
-  @spec vote_status(%GameServer{}, ballot()) :: vote_status()
+  @spec vote_status(%GameInstance{}, ballot()) :: vote_status()
   defp vote_status(
-         %GameServer{
+         %GameInstance{
            player_ids_set: player_ids_set,
            audience_member_ids_set: audience_member_ids_set,
            contestants: contestants,
@@ -89,17 +91,17 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.PlaybackVoting do
     end
   end
 
-  @spec valid_vote(%GameServer{}, ballot()) :: %GameServer{}
-  defp valid_vote(%GameServer{votes: votes} = state, {player_id, vote}) do
-    %GameServer{state | votes: Map.put(votes, player_id, vote)}
+  @spec valid_vote(%GameInstance{}, ballot()) :: %GameInstance{}
+  defp valid_vote(%GameInstance{votes: votes} = state, {player_id, vote}) do
+    %GameInstance{state | votes: Map.put(votes, player_id, vote)}
   end
 
-  @spec last_vote(%GameServer{}) :: %GameServer{}
-  defp last_vote(%GameServer{} = state), do: update_scores(state)
+  @spec last_vote(%GameInstance{}) :: %GameInstance{}
+  defp last_vote(%GameInstance{} = state), do: update_scores(state)
 
-  @spec update_scores(%GameServer{}) :: %GameServer{}
+  @spec update_scores(%GameInstance{}) :: %GameInstance{}
   def update_scores(
-        %GameServer{votes: votes, scores: scores, player_ids_set: player_ids_set} = state
+        %GameInstance{votes: votes, scores: scores, player_ids_set: player_ids_set} = state
       ) do
     scores =
       Enum.reduce(
@@ -114,7 +116,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.PlaybackVoting do
       votes
       |> votes_to_win_result(player_ids_set)
 
-    %GameServer{state | scores: scores, round_winners: round_winners}
+    %GameInstance{state | scores: scores, round_winners: round_winners}
   end
 
   @spec votes_to_win_result(votes_map(), MapSet.t(id)) :: %WinResult{}
@@ -147,9 +149,9 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.PlaybackVoting do
   # Auto voting and random voting logic (save logic for bot usage)
   # - to be called from advance_view()
 
-  # @spec auto_votes(%GameServer{}) :: %GameServer{}
+  # @spec auto_votes(%GameInstance{}) :: %GameInstance{}
   # defp auto_votes(
-  #        %GameServer{
+  #        %GameInstance{
   #          game_view: :playback_voting,
   #          votes: votes,
   #          contestants: contestants,
@@ -173,8 +175,8 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.PlaybackVoting do
   #   end)
   # end
 
-  # @spec simulate_vote(%GameServer{}, ballot()) :: %GameServer{}
-  # defp simulate_vote(%GameServer{} = state, ballot) do
+  # @spec simulate_vote(%GameInstance{}, ballot()) :: %GameInstance{}
+  # defp simulate_vote(%GameInstance{} = state, ballot) do
   #   case vote_status(state, ballot) do
   #     :last_valid_vote ->
   #       state

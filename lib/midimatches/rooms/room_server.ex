@@ -12,7 +12,7 @@ defmodule Midimatches.Rooms.RoomServer do
   alias Midimatches.{
     Pids,
     Rooms.Room.Game,
-    Rooms.Room.GameServer,
+    Rooms.Room.GameInstance,
     Types.GameRules,
     Types.Player,
     Utils
@@ -153,7 +153,7 @@ defmodule Midimatches.Rooms.RoomServer do
         {:noreply, state}
       else
         game_server = Pids.fetch!({:game_server, room_id})
-        GameServer.drop_player(game_server, player_id)
+        GameInstance.drop_player(game_server, player_id)
         {:noreply, state}
       end
     else
@@ -186,7 +186,7 @@ defmodule Midimatches.Rooms.RoomServer do
         {:noreply, state}
       else
         game_server = Pids.fetch!({:game_server, room_id})
-        GameServer.drop_audience_member(game_server, player_id)
+        GameInstance.drop_audience_member(game_server, player_id)
         {:noreply, state}
       end
     else
@@ -222,7 +222,7 @@ defmodule Midimatches.Rooms.RoomServer do
         end
       else
         game_server = Pids.fetch!({:game_server, room_id})
-        GameServer.add_player(game_server, player)
+        GameInstance.add_player(game_server, player)
         state
       end
 
@@ -253,7 +253,7 @@ defmodule Midimatches.Rooms.RoomServer do
         state
       else
         game_server = Pids.fetch!({:game_server, room_id})
-        GameServer.add_audience_member(game_server, audience_member)
+        GameInstance.add_audience_member(game_server, audience_member)
         state
       end
 

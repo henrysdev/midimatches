@@ -1,6 +1,6 @@
 defmodule Midimatches.Types.GameRules.ViewTimeouts do
   @moduledoc """
-  Configurable fields for a new instance of a GameServer
+  Configurable fields for a new instance of a GameInstance
   """
 
   use TypedStruct

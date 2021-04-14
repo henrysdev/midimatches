@@ -1,4 +1,4 @@
-defmodule Midimatches.Rooms.Room.Modes.FreeForAllServer do
+defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllServer do
   @moduledoc """
   Process for maintaining game state for a game in a room
   """
@@ -10,12 +10,12 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAllServer do
   alias Midimatches.{
     Pids,
     Rooms.Room.Game.ViewTimer,
-    Rooms.Room.Modes.FreeForAllLogic,
-    Rooms.Room.GameServer,
+    Rooms.Room.GameInstance,
+    Rooms.Room.Modes.FreeForAll.FreeForAllLogic,
     Rooms.RoomServer,
     Types.GameRules,
     Types.Player,
-    Utils,
+    Utils
   }
 
   require Logger
@@ -27,7 +27,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAllServer do
   @type instruction_map() :: %{
           sync_clients?: boolean(),
           view_change?: boolean(),
-          state: %GameServer{}
+          state: %GameInstance{}
         }
 
   def start_link(args) do
@@ -53,21 +53,21 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAllServer do
   end
 
   @impl true
-  def handle_cast({:drop_player, player_id}, %GameServer{} = state) do
+  def handle_cast({:drop_player, player_id}, %GameInstance{} = state) do
     instruction = FreeForAllLogic.remove_player(state, player_id)
 
     {:noreply, exec_instruction(instruction)}
   end
 
   @impl true
-  def handle_cast({:drop_audience_member, player_id}, %GameServer{} = state) do
+  def handle_cast({:drop_audience_member, player_id}, %GameInstance{} = state) do
     instruction = FreeForAllLogic.remove_audience_member(state, player_id)
 
     {:noreply, exec_instruction(instruction)}
   end
 
   @impl true
-  def handle_call({:add_player, %Player{} = player}, _from, %GameServer{} = state) do
+  def handle_call({:add_player, %Player{} = player}, _from, %GameInstance{} = state) do
     instruction = FreeForAllLogic.add_player(state, player)
 
     {:reply, :ok, exec_instruction(instruction)}
@@ -77,7 +77,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAllServer do
   def handle_call(
         {:add_audience_member, %Player{} = audience_member},
         _from,
-        %GameServer{} = state
+        %GameInstance{} = state
       ) do
     instruction = FreeForAllLogic.add_audience_member(state, audience_member)
 
@@ -85,7 +85,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAllServer do
   end
 
   @impl true
-  def handle_call(:current_view, _from, %GameServer{game_view: game_view} = state) do
+  def handle_call(:current_view, _from, %GameInstance{game_view: game_view} = state) do
     {:reply, game_view, state}
   end
 
@@ -93,7 +93,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAllServer do
   def handle_call(
         {:advance_from_game_view, curr_view, curr_view_counter},
         _from,
-        %GameServer{game_view: game_view, view_counter: view_counter} = state
+        %GameInstance{game_view: game_view, view_counter: view_counter} = state
       ) do
     if game_view == curr_view and view_counter == curr_view_counter do
       state =
@@ -118,7 +118,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAllServer do
   def handle_call(
         {:client_event, {event_type, event_payload}},
         _from,
-        %GameServer{
+        %GameInstance{
           game_view: curr_game_view
         } = state
       ) do
@@ -146,7 +146,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAllServer do
     {:reply, :ok, exec_instruction(instruction)}
   end
 
-  @spec exec_instruction(instruction_map()) :: %GameServer{}
+  @spec exec_instruction(instruction_map()) :: %GameInstance{}
   defp exec_instruction(%{sync_clients?: sync_clients?, view_change?: view_change?, state: state}) do
     check_game_empty(state)
 
@@ -176,9 +176,9 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAllServer do
     state
   end
 
-  @spec update_view_deadline(%GameServer{}) :: %GameServer{}
+  @spec update_view_deadline(%GameInstance{}) :: %GameInstance{}
   defp update_view_deadline(
-         %GameServer{
+         %GameInstance{
            game_view: game_view,
            game_rules: %{view_timeouts: view_timeouts}
          } = state
@@ -192,12 +192,12 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAllServer do
         -1
       end
 
-    %GameServer{state | view_deadline: view_deadline}
+    %GameInstance{state | view_deadline: view_deadline}
   end
 
-  @spec schedule_view_timeout(%GameServer{}) :: %GameServer{}
+  @spec schedule_view_timeout(%GameInstance{}) :: %GameInstance{}
   defp schedule_view_timeout(
-         %GameServer{
+         %GameInstance{
            room_id: room_id,
            game_view: game_view,
            view_counter: view_counter,
@@ -222,13 +222,13 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAllServer do
     end
   end
 
-  @spec check_game_empty(%GameServer{}) :: %GameServer{} | :ok
+  @spec check_game_empty(%GameInstance{}) :: %GameInstance{} | :ok
   @doc """
   Check that there are still enough players in game to continue the game. If there is not,
   then reset the room back to pregame lobby.
   """
   def check_game_empty(
-        %GameServer{players: players, game_rules: %GameRules{min_players: min_players}} = state
+        %GameInstance{players: players, game_rules: %GameRules{min_players: min_players}} = state
       ) do
     # reset room if not enough players to play
     if MapSet.size(players) < min_players do
@@ -238,8 +238,8 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAllServer do
     end
   end
 
-  @spec broadcast_start_game(%GameServer{}) :: %GameServer{}
-  defp broadcast_start_game(%GameServer{room_id: room_id} = state) do
+  @spec broadcast_start_game(%GameInstance{}) :: %GameInstance{}
+  defp broadcast_start_game(%GameInstance{room_id: room_id} = state) do
     MidimatchesWeb.Endpoint.broadcast("room:#{room_id}", "start_game", %{
       game_state: Utils.server_to_client_game_state(state)
     })
@@ -247,8 +247,8 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAllServer do
     state
   end
 
-  @spec broadcast_gamestate(%GameServer{}) :: %GameServer{}
-  defp broadcast_gamestate(%GameServer{room_id: room_id} = state) do
+  @spec broadcast_gamestate(%GameInstance{}) :: %GameInstance{}
+  defp broadcast_gamestate(%GameInstance{room_id: room_id} = state) do
     MidimatchesWeb.Endpoint.broadcast("room:#{room_id}", "game_update", %{
       game_state: Utils.server_to_client_game_state(state)
     })
@@ -256,12 +256,12 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAllServer do
     state
   end
 
-  @spec increment_view_counter(%GameServer{}) :: %GameServer{}
-  defp increment_view_counter(%GameServer{view_counter: view_counter} = state),
-    do: %GameServer{state | view_counter: view_counter + 1}
+  @spec increment_view_counter(%GameInstance{}) :: %GameInstance{}
+  defp increment_view_counter(%GameInstance{view_counter: view_counter} = state),
+    do: %GameInstance{state | view_counter: view_counter + 1}
 
-  @spec back_to_room_lobby(%GameServer{}) :: :ok
-  def back_to_room_lobby(%GameServer{room_id: room_id}) do
+  @spec back_to_room_lobby(%GameInstance{}) :: :ok
+  def back_to_room_lobby(%GameInstance{room_id: room_id}) do
     room_server = Pids.fetch!({:room_server, room_id})
     RoomServer.reset_room(room_server)
   end

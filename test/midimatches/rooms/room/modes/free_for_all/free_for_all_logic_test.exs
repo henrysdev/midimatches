@@ -1,9 +1,9 @@
-defmodule Midimatches.GameLogicTest do
+defmodule Midimatches.FreeForAllLogicTest do
   use ExUnit.Case
 
   alias Midimatches.{
-    Rooms.Room.GameLogic,
-    Rooms.Room.GameServer,
+    Rooms.Room.GameInstance,
+    Rooms.Room.Modes.FreeForAll.FreeForAllLogic,
     TestHelpers,
     Types.Player
   }
@@ -37,7 +37,7 @@ defmodule Midimatches.GameLogicTest do
 
       player_ids_set = MapSet.new(["1", "2", "3", "4"])
 
-      game_server_state = %GameServer{
+      game_server_state = %GameInstance{
         room_id: "1",
         game_id: "abc",
         players: players,
@@ -50,7 +50,7 @@ defmodule Midimatches.GameLogicTest do
           player_ids_set,
           {game_server_state, []},
           fn musician, {gss, state_scan} ->
-            %{state: gss} = GameLogic.ready_up(gss, musician)
+            %{state: gss} = FreeForAllLogic.ready_up(gss, musician)
             ready_ups = MapSet.to_list(gss.ready_ups)
             {gss, [{ready_ups, gss.game_view} | state_scan]}
           end
@@ -90,7 +90,7 @@ defmodule Midimatches.GameLogicTest do
       player_ids_set = MapSet.new(["1", "2", "3", "4"])
       duped_ready_ups = ["1", "1", "3", "1"]
 
-      game_server_state = %GameServer{
+      game_server_state = %GameInstance{
         room_id: "1",
         game_id: "abc",
         players: players,
@@ -103,7 +103,7 @@ defmodule Midimatches.GameLogicTest do
           duped_ready_ups,
           {game_server_state, []},
           fn musician, {gss, state_scan} ->
-            %{state: gss} = GameLogic.ready_up(gss, musician)
+            %{state: gss} = FreeForAllLogic.ready_up(gss, musician)
             ready_ups = MapSet.to_list(gss.ready_ups)
             {gss, [{ready_ups, gss.game_view} | state_scan]}
           end
@@ -145,7 +145,7 @@ defmodule Midimatches.GameLogicTest do
       player_ids_set = MapSet.new(["1", "2", "3", "4"])
       event_payloads = [{"1", %{"a" => "foo"}}, {"2", %{"b" => "bar"}}]
 
-      game_server_state = %GameServer{
+      game_server_state = %GameInstance{
         room_id: "1",
         game_id: "abc",
         players: players,
@@ -160,7 +160,7 @@ defmodule Midimatches.GameLogicTest do
           event_payloads,
           {game_server_state, []},
           fn ep, {gss, state_scan} ->
-            %{state: gss} = GameLogic.add_recording(gss, ep)
+            %{state: gss} = FreeForAllLogic.add_recording(gss, ep)
             recordings = Map.values(gss.recordings)
             {gss, [{recordings, gss.game_view} | state_scan]}
           end
@@ -201,7 +201,7 @@ defmodule Midimatches.GameLogicTest do
       player_ids_set = MapSet.new(contestants)
       event_payloads = [{"3", "1"}, {"4", "1"}, {"2", "1"}, {"1", "4"}]
 
-      game_server_state = %GameServer{
+      game_server_state = %GameInstance{
         room_id: "1",
         game_id: "abc",
         players: players,
@@ -216,7 +216,7 @@ defmodule Midimatches.GameLogicTest do
           event_payloads,
           {game_server_state, []},
           fn ep, {gss, state_scan} ->
-            %{state: gss} = GameLogic.cast_vote(gss, ep)
+            %{state: gss} = FreeForAllLogic.cast_vote(gss, ep)
 
             {gss, [{gss.votes, gss.game_winners, gss.game_view} | state_scan]}
           end
@@ -266,7 +266,7 @@ defmodule Midimatches.GameLogicTest do
         {"2", "1"}
       ]
 
-      game_server_state = %GameServer{
+      game_server_state = %GameInstance{
         room_id: "1",
         game_id: "abc",
         players: players,
@@ -283,7 +283,7 @@ defmodule Midimatches.GameLogicTest do
           event_payloads,
           {game_server_state, []},
           fn ep, {gss, state_scan} ->
-            %{state: gss} = GameLogic.cast_vote(gss, ep)
+            %{state: gss} = FreeForAllLogic.cast_vote(gss, ep)
 
             {gss, [{gss.votes, gss.game_winners, gss.game_view} | state_scan]}
           end
@@ -327,7 +327,7 @@ defmodule Midimatches.GameLogicTest do
     contestants = ["1", "2", "3", "4"]
     player_ids_set = MapSet.new(contestants)
 
-    game_server_state = %GameServer{
+    game_server_state = %GameInstance{
       room_id: "1",
       game_id: "abc",
       players: players,
@@ -339,9 +339,9 @@ defmodule Midimatches.GameLogicTest do
       sample_beats: []
     }
 
-    %{state: actual_state} = GameLogic.remove_player(game_server_state, "1")
+    %{state: actual_state} = FreeForAllLogic.remove_player(game_server_state, "1")
 
-    expected_state = %GameServer{
+    expected_state = %GameInstance{
       room_id: "1",
       game_id: "abc",
       players:
@@ -395,7 +395,7 @@ defmodule Midimatches.GameLogicTest do
     contestants = ["1", "2", "3"]
     player_ids_set = MapSet.new(contestants)
 
-    game_server_state = %GameServer{
+    game_server_state = %GameInstance{
       room_id: "1",
       game_id: "abc",
       players: players,
@@ -407,9 +407,9 @@ defmodule Midimatches.GameLogicTest do
       sample_beats: []
     }
 
-    %{state: actual_state} = GameLogic.add_player(game_server_state, new_player)
+    %{state: actual_state} = FreeForAllLogic.add_player(game_server_state, new_player)
 
-    expected_state = %GameServer{
+    expected_state = %GameInstance{
       room_id: "1",
       game_id: "abc",
       players:
@@ -469,7 +469,7 @@ defmodule Midimatches.GameLogicTest do
     contestants = ["1", "2", "3"]
     player_ids_set = MapSet.new(contestants)
 
-    game_server_state = %GameServer{
+    game_server_state = %GameInstance{
       room_id: "1",
       game_id: "abc",
       players: players,
@@ -481,9 +481,10 @@ defmodule Midimatches.GameLogicTest do
       sample_beats: []
     }
 
-    %{state: actual_state} = GameLogic.add_audience_member(game_server_state, new_audience_member)
+    %{state: actual_state} =
+      FreeForAllLogic.add_audience_member(game_server_state, new_audience_member)
 
-    expected_state = %GameServer{
+    expected_state = %GameInstance{
       room_id: "1",
       game_id: "abc",
       players:
@@ -539,7 +540,7 @@ defmodule Midimatches.GameLogicTest do
     contestants = ["1", "2"]
     player_ids_set = MapSet.new(contestants)
 
-    game_server_state = %GameServer{
+    game_server_state = %GameInstance{
       room_id: "1",
       game_id: "abc",
       audience_members: audience_members,
@@ -553,9 +554,9 @@ defmodule Midimatches.GameLogicTest do
       sample_beats: []
     }
 
-    %{state: actual_state} = GameLogic.remove_audience_member(game_server_state, "5")
+    %{state: actual_state} = FreeForAllLogic.remove_audience_member(game_server_state, "5")
 
-    expected_state = %GameServer{
+    expected_state = %GameInstance{
       room_id: "1",
       game_id: "abc",
       players:

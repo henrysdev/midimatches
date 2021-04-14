@@ -5,7 +5,7 @@ defmodule Midimatches.TestHelpers do
 
   alias Midimatches.{
     Rooms,
-    Rooms.Room.GameServer,
+    Rooms.Room.GameInstance,
     Rooms.RoomServer,
     Types.Loop
   }
@@ -44,7 +44,7 @@ defmodule Midimatches.TestHelpers do
 
   def ready_up_players(game_server, player_ids) do
     Enum.each(player_ids, fn m_id ->
-      GameServer.player_ready_up(game_server, m_id)
+      GameInstance.client_event(game_server, {:ready_up, m_id})
     end)
 
     game_server
@@ -52,14 +52,15 @@ defmodule Midimatches.TestHelpers do
 
   def record_players(game_server, player_ids) do
     Enum.each(player_ids, fn m_id ->
-      GameServer.player_recording(
+      GameInstance.client_event(
         game_server,
-        m_id,
-        %Loop{
-          start_timestep: 0,
-          length: 4,
-          timestep_slices: []
-        }
+        {:record,
+         {m_id,
+          %Loop{
+            start_timestep: 0,
+            length: 4,
+            timestep_slices: []
+          }}}
       )
     end)
 
@@ -70,7 +71,7 @@ defmodule Midimatches.TestHelpers do
     player_votes
     |> Map.to_list()
     |> Enum.each(fn {m_id, m_vote} ->
-      GameServer.player_vote(game_server, m_id, m_vote)
+      GameInstance.client_event(game_server, {:vote, {m_id, m_vote}})
     end)
 
     game_server

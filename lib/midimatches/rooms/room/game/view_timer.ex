@@ -7,7 +7,7 @@ defmodule Midimatches.Rooms.Room.Game.ViewTimer do
 
   alias Midimatches.{
     Pids,
-    Rooms.Room.GameServer
+    Rooms.Room.GameInstance
   }
 
   use GenServer
@@ -37,7 +37,7 @@ defmodule Midimatches.Rooms.Room.Game.ViewTimer do
         {:view_timeout, timeout_view, view_counter, game_server_pid},
         state
       ) do
-    GameServer.advance_from_game_view(game_server_pid, timeout_view, view_counter)
+    GameInstance.advance_from_game_view(game_server_pid, timeout_view, view_counter)
 
     {:noreply, state}
   end

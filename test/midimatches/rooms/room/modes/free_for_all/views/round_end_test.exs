@@ -2,8 +2,8 @@ defmodule Midimatches.RoundEndTest do
   use ExUnit.Case
 
   alias Midimatches.{
-    Rooms.Room.Game.Views.RoundEnd,
-    Rooms.Room.GameServer,
+    Rooms.Room.GameInstance,
+    Rooms.Room.Modes.FreeForAll.Views.RoundEnd,
     Types.Player,
     Types.WinResult
   }
@@ -48,7 +48,7 @@ defmodule Midimatches.RoundEndTest do
     contestants = ["1", "2", "3", "4", "5", "6", "7", "8"]
     player_ids_set = MapSet.new(contestants)
 
-    game_server_state = %GameServer{
+    game_server_state = %GameInstance{
       room_id: "1",
       game_id: "abc",
       players: players,
@@ -62,7 +62,7 @@ defmodule Midimatches.RoundEndTest do
 
     actual_game_state = RoundEnd.advance_view(game_server_state)
 
-    expected_game_state = %GameServer{
+    expected_game_state = %GameInstance{
       contestants: ["1", "2", "3", "4", "5", "6", "7", "8"],
       game_view: :round_start,
       players: players,
@@ -108,7 +108,7 @@ defmodule Midimatches.RoundEndTest do
 
     scores = %{"1" => 0, "2" => 4, "3" => 2, "4" => 2}
 
-    game_server_state = %GameServer{
+    game_server_state = %GameInstance{
       room_id: "1",
       game_id: "abc",
       players: players,
@@ -124,7 +124,7 @@ defmodule Midimatches.RoundEndTest do
 
     actual_game_state = RoundEnd.advance_view(game_server_state)
 
-    expected_game_state = %GameServer{
+    expected_game_state = %GameInstance{
       game_server_state
       | game_view: :game_end,
         game_winners: %WinResult{winners: ["2"], num_points: 4}

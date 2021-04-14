@@ -1,11 +1,11 @@
-defmodule Midimatches.Rooms.Room.Modes.FreeForAllLogic do
+defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllLogic do
   @moduledoc """
   A collection of functions that allow facilitating a tournament-like bracket system.
   """
 
   alias Midimatches.{
+    Rooms.Room.GameInstance,
     Rooms.Room.Modes.FreeForAll.Views,
-    Rooms.Room.GameServer,
     S3ClientProxy,
     Types.GameRules,
     Types.Player,
@@ -18,10 +18,10 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAllLogic do
   @type instruction_map() :: %{
           sync_clients?: boolean(),
           view_change?: boolean(),
-          state: %GameServer{}
+          state: %GameInstance{}
         }
 
-  @spec start_game(%GameRules{}, MapSet.t(Player), id(), id()) :: %GameServer{}
+  @spec start_game(%GameRules{}, MapSet.t(Player), id(), id()) :: %GameInstance{}
   def start_game(game_rules, players, room_id, game_id) do
     player_ids_list =
       players
@@ -30,7 +30,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAllLogic do
 
     sample_beats = S3ClientProxy.random_sample_beats(game_rules.rounds_to_win)
 
-    %GameServer{
+    %GameInstance{
       room_id: room_id,
       game_id: game_id,
       game_rules: game_rules,
@@ -44,12 +44,15 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAllLogic do
     }
   end
 
-  @spec add_player(%GameServer{}, %Player{}) :: instruction_map()
-  def add_player(%GameServer{players: players} = state, %Player{player_id: player_id} = player) do
+  @spec add_player(%GameInstance{}, %Player{}) :: instruction_map()
+  def add_player(
+        %GameInstance{players: players} = state,
+        %Player{player_id: player_id} = player
+      ) do
     updated_players = MapSet.put(players, player)
     updated_contestants = [player_id | state.contestants] |> MapSet.new() |> MapSet.to_list()
 
-    %GameServer{
+    %GameInstance{
       state
       | player_ids_set: MapSet.put(state.player_ids_set, player_id),
         players: updated_players,
@@ -60,8 +63,8 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAllLogic do
     |> as_instruction(sync?: true, view_change?: false)
   end
 
-  @spec remove_player(%GameServer{}, id()) :: instruction_map()
-  def remove_player(%GameServer{} = state, player_id) do
+  @spec remove_player(%GameInstance{}, id()) :: instruction_map()
+  def remove_player(%GameInstance{} = state, player_id) do
     valid_player_to_drop? = MapSet.member?(state.player_ids_set, player_id)
 
     if valid_player_to_drop? do
@@ -79,7 +82,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAllLogic do
         |> Enum.reject(fn {voter, _candidate} -> voter == player_id end)
         |> Map.new()
 
-      %GameServer{
+      %GameInstance{
         state
         | player_ids_set: MapSet.delete(state.player_ids_set, player_id),
           players: updated_players,
@@ -94,12 +97,12 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAllLogic do
     |> as_instruction(sync?: valid_player_to_drop?, view_change?: false)
   end
 
-  @spec add_audience_member(%GameServer{}, %Player{}) :: instruction_map()
+  @spec add_audience_member(%GameInstance{}, %Player{}) :: instruction_map()
   def add_audience_member(
-        %GameServer{audience_members: audience_members} = state,
+        %GameInstance{audience_members: audience_members} = state,
         %Player{player_id: audience_member_id} = audience_member
       ) do
-    %GameServer{
+    %GameInstance{
       state
       | audience_member_ids_set: MapSet.put(state.audience_member_ids_set, audience_member_id),
         audience_members: MapSet.put(audience_members, audience_member)
@@ -107,8 +110,8 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAllLogic do
     |> as_instruction(sync?: true, view_change?: false)
   end
 
-  @spec remove_audience_member(%GameServer{}, id()) :: instruction_map()
-  def remove_audience_member(%GameServer{} = state, player_id) do
+  @spec remove_audience_member(%GameInstance{}, id()) :: instruction_map()
+  def remove_audience_member(%GameInstance{} = state, player_id) do
     valid_audience_member_to_drop? = MapSet.member?(state.audience_member_ids_set, player_id)
 
     if valid_audience_member_to_drop? do
@@ -126,7 +129,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAllLogic do
         |> Enum.reject(fn {voter, _candidate} -> voter == player_id end)
         |> Map.new()
 
-      %GameServer{
+      %GameInstance{
         state
         | audience_member_ids_set: MapSet.delete(state.audience_member_ids_set, player_id),
           audience_members: updated_audience_members,
@@ -138,20 +141,20 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAllLogic do
     |> as_instruction(sync?: valid_audience_member_to_drop?, view_change?: false)
   end
 
-  @spec ready_up(%GameServer{}, id()) :: instruction_map()
+  @spec ready_up(%GameInstance{}, id()) :: instruction_map()
   defdelegate ready_up(state, player_id), to: Views.GameStart, as: :ready_up
 
-  @spec add_recording(%GameServer{}, any) :: instruction_map()
+  @spec add_recording(%GameInstance{}, any) :: instruction_map()
   defdelegate add_recording(state, recording), to: Views.Recording, as: :add_recording
 
-  @spec cast_vote(%GameServer{}, {id(), id()}) :: instruction_map()
+  @spec cast_vote(%GameInstance{}, {id(), id()}) :: instruction_map()
   defdelegate cast_vote(state, vote), to: Views.PlaybackVoting, as: :cast_vote
 
-  @spec advance_game_view(%GameServer{}) :: instruction_map()
+  @spec advance_game_view(%GameInstance{}) :: instruction_map()
   @doc """
   Execute default behavior for ending current game view and advance to next game view
   """
-  def advance_game_view(%GameServer{game_view: game_view} = state) do
+  def advance_game_view(%GameInstance{game_view: game_view} = state) do
     case game_view do
       :game_start ->
         Views.GameStart.advance_view(state)
@@ -178,6 +181,6 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAllLogic do
     |> as_instruction(sync?: true, view_change?: true)
   end
 
-  def as_instruction(%GameServer{} = state, sync?: sync?, view_change?: view_change?),
+  def as_instruction(%GameInstance{} = state, sync?: sync?, view_change?: view_change?),
     do: %{sync_clients?: sync?, view_change?: view_change?, state: state}
 end

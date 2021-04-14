@@ -4,7 +4,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.RoundEnd do
   """
 
   alias Midimatches.{
-    Rooms.Room.GameServer,
+    Rooms.Room.GameInstance,
     Types.WinResult,
     Utils
   }
@@ -12,9 +12,9 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.RoundEnd do
   @type id() :: String.t()
   @type scores_map() :: %{required(id) => number}
 
-  @spec advance_view(%GameServer{}) :: %GameServer{}
+  @spec advance_view(%GameInstance{}) :: %GameInstance{}
   def advance_view(
-        %GameServer{
+        %GameInstance{
           game_view: :round_end,
           round_num: round_num,
           game_rules: %{rounds_to_win: rounds_to_win}
@@ -27,8 +27,8 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.RoundEnd do
     end
   end
 
-  @spec reset_round(%GameServer{}) :: %GameServer{}
-  def reset_round(%GameServer{
+  @spec reset_round(%GameInstance{}) :: %GameInstance{}
+  def reset_round(%GameInstance{
         room_id: room_id,
         game_id: game_id,
         game_rules: game_rules,
@@ -40,7 +40,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.RoundEnd do
         sample_beats: sample_beats,
         round_num: round_num
       }) do
-    %GameServer{
+    %GameInstance{
       game_view: :round_start,
       room_id: room_id,
       game_id: game_id,
@@ -55,10 +55,10 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.RoundEnd do
     }
   end
 
-  @spec game_over(%GameServer{}) :: %GameServer{}
-  def game_over(%GameServer{scores: scores} = state) do
+  @spec game_over(%GameInstance{}) :: %GameInstance{}
+  def game_over(%GameInstance{scores: scores} = state) do
     game_winners = scores_to_win_result(scores)
-    %GameServer{state | game_view: :game_end, game_winners: game_winners}
+    %GameInstance{state | game_view: :game_end, game_winners: game_winners}
   end
 
   @spec scores_to_win_result(scores_map()) :: %WinResult{}

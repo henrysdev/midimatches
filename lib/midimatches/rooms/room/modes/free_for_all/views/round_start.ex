@@ -4,13 +4,13 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.RoundStart do
   """
 
   alias Midimatches.{
-    Rooms.Room.GameServer,
+    Rooms.Room.GameInstance,
     Utils
   }
 
-  @spec advance_view(%GameServer{}) :: %GameServer{}
-  def advance_view(%GameServer{game_view: :round_start} = state) do
-    %GameServer{
+  @spec advance_view(%GameInstance{}) :: %GameInstance{}
+  def advance_view(%GameInstance{game_view: :round_start} = state) do
+    %GameInstance{
       state
       | game_view: :recording,
         round_recording_start_time: Utils.curr_utc_timestamp()

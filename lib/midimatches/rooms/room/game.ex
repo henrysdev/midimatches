@@ -7,7 +7,7 @@ defmodule Midimatches.Rooms.Room.Game do
   alias Midimatches.{
     Pids,
     Rooms.Room.Game.ViewTimer,
-    Rooms.Room.GameServer,
+    Rooms.Room.GameInstance,
     Types.GameRules,
     Utils
   }
@@ -29,9 +29,10 @@ defmodule Midimatches.Rooms.Room.Game do
     # assign game a unique id
     game_id = Utils.gen_uuid()
 
+    # TODO pass game mode here via game_config
     children = [
       {ViewTimer, [{room_id}]},
-      {GameServer, [{room_id, game_id, players, game_config}]}
+      {GameInstance, [{room_id, game_id, players, game_config}]}
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

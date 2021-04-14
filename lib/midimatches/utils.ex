@@ -5,7 +5,7 @@ defmodule Midimatches.Utils do
 
   alias Midimatches.{
     Pids,
-    Rooms.Room.GameServer,
+    Rooms.Room.GameInstance,
     Rooms.RoomServer,
     Types.ClientGameState,
     Types.ClientRoomGameJoin,
@@ -47,11 +47,11 @@ defmodule Midimatches.Utils do
   """
   def gen_uuid, do: UUID.uuid4()
 
-  @spec server_to_client_game_state(%GameServer{}) :: any
+  @spec server_to_client_game_state(%GameInstance{}) :: any
   @doc """
   Transform game server state into update payload for clients
   """
-  def server_to_client_game_state(%GameServer{} = server_state) do
+  def server_to_client_game_state(%GameInstance{} = server_state) do
     # votes are secret - should not expose actual votes to clients, only progress on
     # voting as a whole
     num_votes_cast =

@@ -3,14 +3,12 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.GameEnd do
   Game logic specific to the game_end game view
   """
 
-  alias Midimatches.{
-    Rooms.Room.GameServer
-  }
+  alias Midimatches.Rooms.Room.GameInstance
 
-  @spec advance_view(%GameServer{}) :: %GameServer{}
-  def advance_view(%GameServer{game_view: :game_end} = state) do
+  @spec advance_view(%GameInstance{}) :: %GameInstance{}
+  def advance_view(%GameInstance{game_view: :game_end} = state) do
     # tell room server to reset
-    GameServer.back_to_room_lobby(state)
+    GameInstance.back_to_room_lobby(state)
     state
   end
 end
