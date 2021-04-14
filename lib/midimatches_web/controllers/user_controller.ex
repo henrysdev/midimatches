@@ -69,6 +69,35 @@ defmodule MidimatchesWeb.UserController do
     |> json(%{})
   end
 
+  # @spec register_new(Plug.Conn.t(), map) :: Plug.Conn.t()
+  # @doc """
+  # Register a new user
+  # """
+  # def register_new(conn, %{
+  #       "user_alias" => user_alias,
+  #       "user_email" => user_email,
+  #       "user_pass" => user_pass
+  #     }) do
+  #   with {:ok, user_alias} <- parse_user_alias(user_alias, user_id),
+  #        {:ok, user_pass} <- parse_user_pass(user_pass, user_id),
+  #        {:ok, user_email} <- parse_user_email(user_email, user_id) do
+  #     # TODO move to utils
+  #     hashed_pass = :crypto.hash(:md5, user_pass)
+  #     user_id = Utils.gen_uuid()
+
+  #     {:ok,
+  #      %User{
+  #        user_alias: user_alias,
+  #        user_id: user_id,
+  #        password: hashed_pass,
+  #        email: user_email
+  #      }}
+  #   else
+  #     {:error, reason} ->
+  #       {:error, reason}
+  #   end
+  # end
+
   @spec upsert(Plug.Conn.t(), map) :: Plug.Conn.t()
   @doc """
   Upsert user
@@ -170,6 +199,16 @@ defmodule MidimatchesWeb.UserController do
       {:ok, user_alias}
     end
   end
+
+  # @spec parse_user_pass(String.t(), id()) :: {:error, String.t()} | {:ok, String.t()}
+  # def parse_user_pass(user_pass, user_id) do
+  #   with {:ok, user_pass} <- validate_user_pass_length(user_alias) do
+  #     {:ok, user_alias}
+  #   else
+  #     {:error, reason} ->
+  #       {:error, reason}
+  #   end
+  # end
 
   defp update_remote_ip(%User{} = user, conn) do
     remote_ip = to_string(:inet_parse.ntoa(conn.remote_ip))
