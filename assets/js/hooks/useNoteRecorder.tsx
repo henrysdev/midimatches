@@ -184,7 +184,7 @@ export function useNoteRecorder({
     const currTimestep = getCurrentTimestep(
       internalStateRef.current as InternalState,
       currInputLagComp,
-      { shouldQuantize: true, noteStart: false }
+      { shouldQuantize, noteStart: false }
     );
 
     const { noteOffEvent, stateUpdate, activeNotesCopy } = recordNoteOff(
