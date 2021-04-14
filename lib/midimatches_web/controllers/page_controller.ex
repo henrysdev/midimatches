@@ -167,9 +167,4 @@ defmodule MidimatchesWeb.PageController do
       success_behavior.(conn)
     end
   end
-
-  @spec has_user_session?(Plug.Conn.t()) :: boolean()
-  defp has_user_session?(conn) do
-    !(conn |> get_session(:user) |> is_nil())
-  end
 end

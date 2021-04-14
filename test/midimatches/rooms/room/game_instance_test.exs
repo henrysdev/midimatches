@@ -1,9 +1,9 @@
-defmodule Midimatches.GameServerTest do
+defmodule Midimatches.GameInstanceTest do
   use ExUnit.Case
 
   alias Midimatches.{
     Rooms.Room.Game.ViewTimer,
-    Rooms.Room.GameServer,
+    Rooms.Room.GameInstance,
     TestHelpers,
     Types.GameRules,
     Types.GameRules.ViewTimeouts,
@@ -42,7 +42,7 @@ defmodule Midimatches.GameServerTest do
     musicians = MapSet.new(["1", "2", "3", "4"])
     game_rules = %GameRules{}
 
-    {:ok, game_server} = GameServer.start_link([{room_id, game_id, players, game_rules}])
+    {:ok, game_server} = GameInstance.start_link([{room_id, game_id, players, game_rules}])
 
     contestants =
       :sys.get_state(game_server).contestants
@@ -82,8 +82,8 @@ defmodule Midimatches.GameServerTest do
 
     game_rules = %GameRules{}
 
-    {:ok, game_server} = GameServer.start_link([{room_id, game_id, players, game_rules}])
-    game_view = GameServer.get_current_view(game_server)
+    {:ok, game_server} = GameInstance.start_link([{room_id, game_id, players, game_rules}])
+    game_view = GameInstance.get_current_view(game_server)
 
     assert game_view == :game_start
   end
@@ -115,9 +115,9 @@ defmodule Midimatches.GameServerTest do
 
       game_rules = %GameRules{}
 
-      {:ok, game_server} = GameServer.start_link([{room_id, game_id, players, game_rules}])
+      {:ok, game_server} = GameInstance.start_link([{room_id, game_id, players, game_rules}])
 
-      assert :ok == GameServer.advance_from_game_view(game_server, :game_start, 0)
+      assert :ok == GameInstance.advance_from_game_view(game_server, :game_start, 0)
     end
 
     test "when game view is inconsistent with actual game view" do
@@ -146,9 +146,9 @@ defmodule Midimatches.GameServerTest do
 
       game_rules = %GameRules{}
 
-      {:ok, game_server} = GameServer.start_link([{room_id, game_id, players, game_rules}])
+      {:ok, game_server} = GameInstance.start_link([{room_id, game_id, players, game_rules}])
 
-      assert :error == GameServer.advance_from_game_view(game_server, :recording, 0)
+      assert :error == GameInstance.advance_from_game_view(game_server, :recording, 0)
     end
 
     # TODO fix test... is flakey
@@ -182,15 +182,15 @@ defmodule Midimatches.GameServerTest do
         }
       }
 
-      {:ok, game_server} = GameServer.start_link([{room_id, game_id, players, game_rules}])
+      {:ok, game_server} = GameInstance.start_link([{room_id, game_id, players, game_rules}])
       {:ok, _view_timer} = ViewTimer.start_link([{room_id}])
 
-      assert GameServer.get_current_view(game_server) == :game_start
+      assert GameInstance.get_current_view(game_server) == :game_start
       ctr = :sys.get_state(game_server).view_counter
-      GameServer.advance_from_game_view(game_server, :game_start, ctr)
-      assert GameServer.get_current_view(game_server) == :round_start
+      GameInstance.advance_from_game_view(game_server, :game_start, ctr)
+      assert GameInstance.get_current_view(game_server) == :round_start
       Process.sleep(game_rules.view_timeouts.round_start + 5)
-      assert GameServer.get_current_view(game_server) == :recording
+      assert GameInstance.get_current_view(game_server) == :recording
     end
   end
 end

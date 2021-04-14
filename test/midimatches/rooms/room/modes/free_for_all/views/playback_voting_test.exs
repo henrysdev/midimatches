@@ -2,8 +2,8 @@ defmodule Midimatches.PlaybackVotingTest do
   use ExUnit.Case
 
   alias Midimatches.{
-    Rooms.Room.Game.Views.PlaybackVoting,
-    Rooms.Room.GameServer,
+    Rooms.Room.GameInstance,
+    Rooms.Room.Modes.FreeForAll.Views.PlaybackVoting,
     Types.Player,
     Types.WinResult
   }
@@ -32,7 +32,7 @@ defmodule Midimatches.PlaybackVotingTest do
     contestants = ["1", "2", "3", "4"]
     player_ids_set = MapSet.new(contestants)
 
-    game_server_state = %GameServer{
+    game_server_state = %GameInstance{
       room_id: "1",
       game_id: "abc",
       players: players,
@@ -43,7 +43,7 @@ defmodule Midimatches.PlaybackVotingTest do
       sample_beats: []
     }
 
-    %GameServer{
+    %GameInstance{
       votes: votes
     } = PlaybackVoting.advance_view(game_server_state)
 
@@ -79,7 +79,7 @@ defmodule Midimatches.PlaybackVotingTest do
     contestants = ["1", "2", "3", "4"]
     player_ids_set = MapSet.new(contestants)
 
-    game_server_state = %GameServer{
+    game_server_state = %GameInstance{
       room_id: "1",
       game_id: "abc",
       players: players,

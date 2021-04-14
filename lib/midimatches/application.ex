@@ -17,6 +17,7 @@ defmodule Midimatches.Application do
 
   def start(_type, _args) do
     children = [
+      MidimatchesDb.Repo,
       # Start the Telemetry supervisor
       MidimatchesWeb.Telemetry,
       # Start the PubSub system

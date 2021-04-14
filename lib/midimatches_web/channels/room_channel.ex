@@ -10,7 +10,7 @@ defmodule MidimatchesWeb.RoomChannel do
     Pids,
     ProfanityFilter,
     Rooms,
-    Rooms.Room.GameServer,
+    Rooms.Room.GameInstance,
     Rooms.RoomServer,
     Types.ChatMessage,
     Types.Loop,
@@ -136,7 +136,7 @@ defmodule MidimatchesWeb.RoomChannel do
         _params,
         %Phoenix.Socket{assigns: %{game_server: game_server, player_id: player_id}} = socket
       ) do
-    GameServer.player_ready_up(game_server, player_id)
+    GameInstance.client_event(game_server, {:ready_up, player_id})
 
     {:reply, {:ok, %{}}, socket}
   end
@@ -148,7 +148,7 @@ defmodule MidimatchesWeb.RoomChannel do
       ) do
     {:ok, recording} = Poison.decode(loop_json, as: @loop_schema)
 
-    GameServer.player_recording(game_server, player_id, recording)
+    GameInstance.client_event(game_server, {:record, {player_id, recording}})
 
     {:reply, {:ok, %{}}, socket}
   end
@@ -158,7 +158,7 @@ defmodule MidimatchesWeb.RoomChannel do
         %{"vote" => vote},
         %Phoenix.Socket{assigns: %{game_server: game_server, player_id: player_id}} = socket
       ) do
-    GameServer.player_vote(game_server, player_id, vote)
+    GameInstance.client_event(game_server, {:vote, {player_id, vote}})
 
     {:reply, {:ok, %{}}, socket}
   end

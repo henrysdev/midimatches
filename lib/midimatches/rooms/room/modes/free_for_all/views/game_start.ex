@@ -1,10 +1,10 @@
-defmodule Midimatches.Rooms.Room.Game.Views.GameStart do
+defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.GameStart do
   @moduledoc """
   Game logic specific to the game_start game view
   """
   alias Midimatches.Rooms.Room.{
-    GameLogic,
-    GameServer
+    GameInstance,
+    Modes.FreeForAll.FreeForAllLogic
   }
 
   @type id() :: String.t()
@@ -12,13 +12,16 @@ defmodule Midimatches.Rooms.Room.Game.Views.GameStart do
   @type instruction_map() :: %{
           sync_clients?: boolean(),
           view_change?: boolean(),
-          state: %GameServer{}
+          state: %GameInstance{}
         }
 
-  @spec advance_view(%GameServer{}) :: %GameServer{}
+  @spec advance_view(%GameInstance{}) :: %GameInstance{}
   def advance_view(
-        %GameServer{player_ids_set: player_ids_set, ready_ups: ready_ups, game_view: :game_start} =
-          state
+        %GameInstance{
+          player_ids_set: player_ids_set,
+          ready_ups: ready_ups,
+          game_view: :game_start
+        } = state
       ) do
     missing_ready_ups =
       player_ids_set
@@ -30,36 +33,36 @@ defmodule Midimatches.Rooms.Room.Game.Views.GameStart do
         simulate_ready_up(acc_state, ready_up_player_id)
       end)
 
-    %GameServer{state | game_view: :round_start}
+    %GameInstance{state | game_view: :round_start}
   end
 
-  @spec ready_up(%GameServer{}, id()) :: instruction_map()
+  @spec ready_up(%GameInstance{}, id()) :: instruction_map()
   @doc """
   Handle ready-up player events.
   """
-  def ready_up(%GameServer{} = state, player_id) do
+  def ready_up(%GameInstance{} = state, player_id) do
     case ready_up_status(state, player_id) do
       # last needed ready up - reset ready ups and transition to next game server state
       :last_valid_ready_up ->
         state
         |> valid_ready_up(player_id)
         |> advance_view()
-        |> GameLogic.as_instruction(sync?: true, view_change?: true)
+        |> FreeForAllLogic.as_instruction(sync?: true, view_change?: true)
 
       # valid ready up - store ready up in game server state
       :valid_ready_up ->
         state
         |> valid_ready_up(player_id)
-        |> GameLogic.as_instruction(sync?: true, view_change?: false)
+        |> FreeForAllLogic.as_instruction(sync?: true, view_change?: false)
 
       # invalid vote - return state unchanged
       _bad_ready_up ->
-        GameLogic.as_instruction(state, sync?: false, view_change?: false)
+        FreeForAllLogic.as_instruction(state, sync?: false, view_change?: false)
     end
   end
 
-  @spec simulate_ready_up(%GameServer{}, id()) :: %GameServer{}
-  def simulate_ready_up(%GameServer{} = state, player_id) do
+  @spec simulate_ready_up(%GameInstance{}, id()) :: %GameInstance{}
+  def simulate_ready_up(%GameInstance{} = state, player_id) do
     case ready_up_status(state, player_id) do
       :last_valid_ready_up ->
         state
@@ -74,9 +77,9 @@ defmodule Midimatches.Rooms.Room.Game.Views.GameStart do
     end
   end
 
-  @spec ready_up_status(%GameServer{}, id()) :: ready_up_status()
+  @spec ready_up_status(%GameInstance{}, id()) :: ready_up_status()
   defp ready_up_status(
-         %GameServer{player_ids_set: player_ids_set, ready_ups: ready_ups},
+         %GameInstance{player_ids_set: player_ids_set, ready_ups: ready_ups},
          player_id
        ) do
     valid_ready_up? =
@@ -91,7 +94,7 @@ defmodule Midimatches.Rooms.Room.Game.Views.GameStart do
     end
   end
 
-  defp valid_ready_up(%GameServer{ready_ups: ready_ups} = state, player_id) do
-    %GameServer{state | ready_ups: MapSet.put(ready_ups, player_id)}
+  defp valid_ready_up(%GameInstance{ready_ups: ready_ups} = state, player_id) do
+    %GameInstance{state | ready_ups: MapSet.put(ready_ups, player_id)}
   end
 end

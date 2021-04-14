@@ -23,7 +23,7 @@ defmodule MidimatchesWeb do
 
       import Plug.Conn
       import MidimatchesWeb.Gettext
-      import MidimatchesWeb.Validation
+      import MidimatchesWeb.ControllerHelpers
       alias MidimatchesWeb.Router.Helpers, as: Routes
     end
   end

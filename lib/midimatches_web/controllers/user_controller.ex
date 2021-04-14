@@ -11,6 +11,8 @@ defmodule MidimatchesWeb.UserController do
     Utils
   }
 
+  alias MidimatchesDb, as: Db
+
   require Logger
 
   @min_user_alias_length 3
@@ -69,6 +71,37 @@ defmodule MidimatchesWeb.UserController do
     |> json(%{})
   end
 
+  @spec create(Plug.Conn.t(), map) :: Plug.Conn.t()
+  @doc """
+  Create a new db user
+  """
+  def create(conn, %{
+        "username" => username,
+        "email" => email,
+        "password" => password
+      }) do
+    with {:ok, password} <- parse_password(password) do
+      created_user =
+        Db.Users.create_user(%Db.User{
+          username: username,
+          email: email,
+          # Bcrypt.add_hash(password, hash_key: :pass_hash).pass_hash
+          pass_hash: password
+        })
+
+      conn
+      |> put_session(:user, created_user)
+      |> json(%{})
+    else
+      {:error, reason} ->
+        Logger.warn("create db user failed with error reason #{reason}")
+
+        conn
+        |> put_status(:bad_request)
+        |> json(%{error: reason})
+    end
+  end
+
   @spec upsert(Plug.Conn.t(), map) :: Plug.Conn.t()
   @doc """
   Upsert user
@@ -84,19 +117,7 @@ defmodule MidimatchesWeb.UserController do
       end
 
     with {:ok, user_alias} <- parse_user_alias(user_alias, user_id) do
-      if conn |> get_session(:user) |> is_nil() do
-        # create and insert new user
-        user_id = Utils.gen_uuid()
-
-        new_user =
-          %User{user_alias: user_alias, user_id: user_id}
-          |> update_remote_ip(conn)
-          |> UserCache.upsert_user()
-
-        conn
-        |> put_session(:user, new_user)
-        |> json(%{})
-      else
+      if has_user_session?(conn) do
         # update an existing user
         existing_user =
           get_session(conn, :user)
@@ -110,6 +131,18 @@ defmodule MidimatchesWeb.UserController do
 
         conn
         |> put_session(:user, updated_user)
+        |> json(%{})
+      else
+        # create and insert new user
+        user_id = Utils.gen_uuid()
+
+        new_user =
+          %User{user_alias: user_alias, user_id: user_id}
+          |> update_remote_ip(conn)
+          |> UserCache.upsert_user()
+
+        conn
+        |> put_session(:user, new_user)
         |> json(%{})
       end
     else
@@ -168,6 +201,26 @@ defmodule MidimatchesWeb.UserController do
       {:error, invalid_value_error("user_alias", :profanity)}
     else
       {:ok, user_alias}
+    end
+  end
+
+  @spec parse_password(String.t()) :: {:error, String.t()} | {:ok, String.t()}
+  def parse_password(password) do
+    with {:ok, password} <- validate_password_length(password) do
+      {:ok, password}
+    else
+      {:error, reason} ->
+        {:error, reason}
+    end
+  end
+
+  defp validate_password_length(password) do
+    password_len = String.length(password)
+
+    if password < @min_user_alias_length or password_len > @max_user_alias_length do
+      {:error, invalid_value_error("password", :invalid_length)}
+    else
+      {:ok, password}
     end
   end
 

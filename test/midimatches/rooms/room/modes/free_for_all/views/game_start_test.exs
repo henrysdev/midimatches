@@ -1,13 +1,13 @@
-defmodule Midimatches.RecordingTest do
+defmodule Midimatches.GameStartTest do
   use ExUnit.Case
 
   alias Midimatches.{
-    Rooms.Room.Game.Views.Recording,
-    Rooms.Room.GameServer,
+    Rooms.Room.GameInstance,
+    Rooms.Room.Modes.FreeForAll.Views.GameStart,
     Types.Player
   }
 
-  test "advance view through entirely simulated recordings" do
+  test "advance view through entirely simulated ready ups" do
     players =
       MapSet.new([
         %Player{
@@ -31,30 +31,25 @@ defmodule Midimatches.RecordingTest do
     contestants = ["1", "2", "3", "4"]
     player_ids_set = MapSet.new(contestants)
 
-    game_server_state = %GameServer{
+    game_server_state = %GameInstance{
       room_id: "1",
       game_id: "abc",
       players: players,
       player_ids_set: player_ids_set,
-      game_view: :recording,
+      game_view: :game_start,
       contestants: contestants,
-      recordings: %{},
+      ready_ups: MapSet.new(),
       sample_beats: []
     }
 
-    %GameServer{
-      recordings: _recordings,
-      game_view: _game_view
-    } = Recording.advance_view(game_server_state)
+    %GameInstance{
+      ready_ups: ready_ups,
+      game_view: game_view
+    } = GameStart.advance_view(game_server_state)
 
-    _expected_recordings = %{
-      "1" => %{timestep_slices: []},
-      "2" => %{timestep_slices: []},
-      "3" => %{timestep_slices: []},
-      "4" => %{timestep_slices: []}
-    }
+    expected_ready_ups = MapSet.new(contestants)
 
-    # assert recordings == expected_recordings
-    # assert game_view == :playback_voting
+    assert ready_ups == expected_ready_ups
+    assert game_view == :round_start
   end
 end

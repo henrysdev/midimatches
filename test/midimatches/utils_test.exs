@@ -2,7 +2,7 @@ defmodule Midimatches.UtilsTest do
   use ExUnit.Case
 
   alias Midimatches.{
-    Rooms.Room.GameServer,
+    Rooms.Room.GameInstance,
     Rooms.RoomServer,
     Types.ClientGameState,
     Types.ClientRoomState,
@@ -38,7 +38,7 @@ defmodule Midimatches.UtilsTest do
     contestants = ["1", "2", "3", "4"]
     player_ids_set = MapSet.new(contestants)
 
-    server_state = %GameServer{
+    server_state = %GameInstance{
       room_id: "1",
       game_id: "abc",
       players: players,

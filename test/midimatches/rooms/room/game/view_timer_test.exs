@@ -3,7 +3,7 @@ defmodule Midimatches.ViewTimerTest do
 
   alias Midimatches.{
     Rooms.Room.Game.ViewTimer,
-    Rooms.Room.GameServer,
+    Rooms.Room.GameInstance,
     Types.GameRules,
     Types.Player
   }
@@ -36,7 +36,7 @@ defmodule Midimatches.ViewTimerTest do
     timeout_duration = 10
     views = [:game_start, :round_start, :recording, :playback_voting, :round_end]
 
-    {:ok, game_server} = GameServer.start_link([{room_id, game_id, players, game_rules}])
+    {:ok, game_server} = GameInstance.start_link([{room_id, game_id, players, game_rules}])
     {:ok, view_timer} = ViewTimer.start_link([{room_id}])
 
     {_ctr, actual_views} =
@@ -48,7 +48,7 @@ defmodule Midimatches.ViewTimerTest do
 
           Process.sleep(timeout_duration)
 
-          curr_view = GameServer.get_current_view(game_server)
+          curr_view = GameInstance.get_current_view(game_server)
 
           {ctr + 1, [{view, curr_view} | acc_views]}
         end
