@@ -17,6 +17,7 @@ config :midimatches, MidimatchesWeb.Endpoint,
 
 # Configures custom application env vars
 config :midimatches,
+  ecto_repos: [Midimatches.Repo],
   rooms_config: "config/app_scheme/dev/config.json"
 
 # Configures Elixir's Logger

@@ -6,6 +6,16 @@ use Mix.Config
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we use it
 # with webpack to recompile .js and .css sources.
+
+# Configure your database
+config :midimatches, Midimatches.Repo,
+  username: "postgres",
+  password: "postgres",
+  database: "midimatches_dev",
+  hostname: "localhost",
+  show_sensitive_data_on_connection_error: true,
+  pool_size: 10
+
 config :midimatches, MidimatchesWeb.Endpoint,
   http: [port: 4000],
   catch_errors: true,
