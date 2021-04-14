@@ -83,13 +83,12 @@ export function useAudioContextProvider(): ToneAudioContextType {
     Tone.context.lookAhead = 0;
     Tone.Master.volume.value = DEFAULT_SOUND_VOLUME;
 
-    const newSynth = new Tone.Sampler(DEFAULT_SAMPLER_SYNTH);
+    const newSynth = new Tone.Sampler(DEFAULT_SAMPLER_SYNTH).toDestination();
     // const newSynth = new Tone.PolySynth(Tone.FMSynth, DEFAULT_FM_SYNTH_CONFIG);
-
-    const autoWah = new Tone.AutoWah(60, 6, -30).toDestination();
-    const chorus = new Tone.Chorus(3, 0.5, 0.5).start();
-    const vibrato = new Tone.Vibrato("16n", 0.05);
-    newSynth.chain(vibrato, chorus, Tone.Destination);
+    // const autoWah = new Tone.AutoWah(60, 6, -30).toDestination();
+    // const chorus = new Tone.Chorus(3, 0.5, 0.5).start();
+    // const vibrato = new Tone.Vibrato("16n", 0.05);
+    // newSynth.chain(vibrato, chorus, Tone.Destination);
 
     newSynth.connect(recorder);
     setSynth(newSynth);
