@@ -84,19 +84,7 @@ defmodule MidimatchesWeb.UserController do
       end
 
     with {:ok, user_alias} <- parse_user_alias(user_alias, user_id) do
-      if conn |> get_session(:user) |> is_nil() do
-        # create and insert new user
-        user_id = Utils.gen_uuid()
-
-        new_user =
-          %User{user_alias: user_alias, user_id: user_id}
-          |> update_remote_ip(conn)
-          |> UserCache.upsert_user()
-
-        conn
-        |> put_session(:user, new_user)
-        |> json(%{})
-      else
+      if has_user_session?(conn) do
         # update an existing user
         existing_user =
           get_session(conn, :user)
@@ -110,6 +98,18 @@ defmodule MidimatchesWeb.UserController do
 
         conn
         |> put_session(:user, updated_user)
+        |> json(%{})
+      else
+        # create and insert new user
+        user_id = Utils.gen_uuid()
+
+        new_user =
+          %User{user_alias: user_alias, user_id: user_id}
+          |> update_remote_ip(conn)
+          |> UserCache.upsert_user()
+
+        conn
+        |> put_session(:user, new_user)
         |> json(%{})
       end
     else

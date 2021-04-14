@@ -34,12 +34,7 @@ defmodule MidimatchesWeb.RoomController do
           "num_rounds" => num_rounds
         }
       ) do
-    # TODO move to a plug
-    if get_session(conn, :user) |> is_nil() do
-      conn
-      |> put_status(401)
-      |> json(%{error: "no authorized user session"})
-    else
+    if has_user_session?(conn) do
       user_id = get_session(conn, :user).user_id
 
       with {:ok, room_name} <- parse_room_name(room_name, user_id),
@@ -68,6 +63,10 @@ defmodule MidimatchesWeb.RoomController do
           |> put_status(:bad_request)
           |> json(%{error: reason})
       end
+    else
+      conn
+      |> put_status(401)
+      |> json(%{error: "no authorized user session"})
     end
   end
 
