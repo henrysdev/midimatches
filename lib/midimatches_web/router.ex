@@ -36,6 +36,7 @@ defmodule MidimatchesWeb.Router do
 
     get "/user/self", UserController, :self
     post "/user", UserController, :upsert
+    post "/user/new", UserController, :create
     get "/user/sync", UserController, :sync
 
     get "/samples/random", SampleController, :random

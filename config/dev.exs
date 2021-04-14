@@ -8,7 +8,7 @@ use Mix.Config
 # with webpack to recompile .js and .css sources.
 
 # Configure your database
-config :midimatches, Midimatches.Repo,
+config :midimatches, MidimatchesDb.Repo,
   username: "postgres",
   password: "postgres",
   database: "midimatches_dev",

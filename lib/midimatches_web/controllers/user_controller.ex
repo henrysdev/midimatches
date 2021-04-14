@@ -11,6 +11,8 @@ defmodule MidimatchesWeb.UserController do
     Utils
   }
 
+  alias MidimatchesDb, as: Db
+
   require Logger
 
   @min_user_alias_length 3
@@ -69,34 +71,36 @@ defmodule MidimatchesWeb.UserController do
     |> json(%{})
   end
 
-  # @spec register_new(Plug.Conn.t(), map) :: Plug.Conn.t()
-  # @doc """
-  # Register a new user
-  # """
-  # def register_new(conn, %{
-  #       "user_alias" => user_alias,
-  #       "user_email" => user_email,
-  #       "user_pass" => user_pass
-  #     }) do
-  #   with {:ok, user_alias} <- parse_user_alias(user_alias, user_id),
-  #        {:ok, user_pass} <- parse_user_pass(user_pass, user_id),
-  #        {:ok, user_email} <- parse_user_email(user_email, user_id) do
-  #     # TODO move to utils
-  #     hashed_pass = :crypto.hash(:md5, user_pass)
-  #     user_id = Utils.gen_uuid()
+  @spec create(Plug.Conn.t(), map) :: Plug.Conn.t()
+  @doc """
+  Create a new db user
+  """
+  def create(conn, %{
+        "username" => username,
+        "email" => email,
+        "password" => password
+      }) do
+    with {:ok, password} <- parse_password(password) do
+      created_user =
+        Db.Users.create_user(%Db.User{
+          username: username,
+          email: email,
+          # Bcrypt.add_hash(password, hash_key: :pass_hash).pass_hash
+          pass_hash: password
+        })
 
-  #     {:ok,
-  #      %User{
-  #        user_alias: user_alias,
-  #        user_id: user_id,
-  #        password: hashed_pass,
-  #        email: user_email
-  #      }}
-  #   else
-  #     {:error, reason} ->
-  #       {:error, reason}
-  #   end
-  # end
+      conn
+      |> put_session(:user, created_user)
+      |> json(%{})
+    else
+      {:error, reason} ->
+        Logger.warn("create db user failed with error reason #{reason}")
+
+        conn
+        |> put_status(:bad_request)
+        |> json(%{error: reason})
+    end
+  end
 
   @spec upsert(Plug.Conn.t(), map) :: Plug.Conn.t()
   @doc """
@@ -200,15 +204,25 @@ defmodule MidimatchesWeb.UserController do
     end
   end
 
-  # @spec parse_user_pass(String.t(), id()) :: {:error, String.t()} | {:ok, String.t()}
-  # def parse_user_pass(user_pass, user_id) do
-  #   with {:ok, user_pass} <- validate_user_pass_length(user_alias) do
-  #     {:ok, user_alias}
-  #   else
-  #     {:error, reason} ->
-  #       {:error, reason}
-  #   end
-  # end
+  @spec parse_password(String.t()) :: {:error, String.t()} | {:ok, String.t()}
+  def parse_password(password) do
+    with {:ok, password} <- validate_password_length(password) do
+      {:ok, password}
+    else
+      {:error, reason} ->
+        {:error, reason}
+    end
+  end
+
+  defp validate_password_length(password) do
+    password_len = String.length(password)
+
+    if password < @min_user_alias_length or password_len > @max_user_alias_length do
+      {:error, invalid_value_error("password", :invalid_length)}
+    else
+      {:ok, password}
+    end
+  end
 
   defp update_remote_ip(%User{} = user, conn) do
     remote_ip = to_string(:inet_parse.ntoa(conn.remote_ip))

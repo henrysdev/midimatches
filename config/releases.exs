@@ -11,7 +11,7 @@ database_url =
     For instance: ecto://USER:PASS@HOST/DATABASE
     """
 
-config :midimatches, Midimatches.Repo,
+config :midimatches, MidimatchesDb.Repo,
   # ssl: true,
   url: database_url,
   pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10")

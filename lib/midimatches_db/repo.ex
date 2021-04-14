@@ -1,4 +1,4 @@
-defmodule Midimatches.Repo do
+defmodule MidimatchesDb.Repo do
   use Ecto.Repo,
     otp_app: :midimatches,
     adapter: Ecto.Adapters.Postgres

@@ -65,7 +65,8 @@ defmodule Midimatches.MixProject do
       {:observer_cli, "~> 1.6"},
       {:phoenix_ecto, "~> 4.1"},
       {:ecto_sql, "~> 3.4"},
-      {:postgrex, ">= 0.0.0"}
+      {:postgrex, ">= 0.0.0"},
+      {:bcrypt_elixir, "~> 2.0"}
     ]
   end
 
