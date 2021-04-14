@@ -74,7 +74,7 @@ export const DEFAULT_SAMPLE_COLORS = [
 
 // ms threshold for which to actually diagnose client's clock as out of sync
 export const CLOCK_OUT_OF_SYNC_THRESHOLD = 0;
-export const DEFAULT_INPUT_LAG_COMPENSATION = 5;
+export const DEFAULT_INPUT_LAG_COMPENSATION = 10;
 export const DEFAULT_SAMPLE_PLAY_BUFFER_LENGTH = 2;
 export const DEFAULT_SAMPLE_LENGTH = 10.6667;
 export const DEFAULT_NUM_WARMUP_LOOPS = 1;
@@ -206,7 +206,7 @@ export const MAX_INPUT_LAG_COMP = 500;
 export const PRACTICE_MODE_TIMESTEP_SIZE = 50;
 export const PRACTICE_MODE_QUANTIZE_THRESHOLD = 0.5;
 
-export const DEFAULT_QUANTIZATION_SIZE = 166666;
+export const DEFAULT_QUANTIZATION_SIZE = 166666 / 2;
 
 export const SOUND_VOLUME_COOKIE = "midimatches_soundvolume";
 export const SHOW_KEYBOARD_LABELS_COOKIE = "midimatches_keyboardlabels";

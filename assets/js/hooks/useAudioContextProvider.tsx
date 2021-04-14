@@ -29,7 +29,7 @@ export function useAudioContextProvider(): ToneAudioContextType {
     _setCurrInputLagComp(lagComp);
   };
 
-  const [shouldQuantize, _setShouldQuantize] = useState<boolean>(true);
+  const [shouldQuantize, _setShouldQuantize] = useState<boolean>(false);
   const setShouldQuantize = (shouldQntz: boolean) => {
     setCookie(ENABLE_QUANTIZATION_COOKIE, shouldQntz);
     _setShouldQuantize(shouldQntz);
