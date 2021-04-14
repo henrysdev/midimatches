@@ -30,6 +30,8 @@ const GameSettings: React.FC<GameSettingsProps> = ({}) => {
     refreshMidiInputs,
     currInputLagComp,
     setCurrInputLagComp,
+    shouldQuantize,
+    setShouldQuantize,
   } = useToneAudioContext();
 
   const {
@@ -44,11 +46,6 @@ const GameSettings: React.FC<GameSettingsProps> = ({}) => {
 
   const handleShowKeyboardLabelsChange = (e: any) => {
     setShowKeyboardLabels(!showKeyboardLabels);
-  };
-
-  const handleInputLagCompChange = (e: any) => {
-    const newInputLagComp = parseInt(e.target.value);
-    setCurrInputLagComp(newInputLagComp);
   };
 
   return (
@@ -98,6 +95,15 @@ const GameSettings: React.FC<GameSettingsProps> = ({}) => {
           type="checkbox"
           checked={showKeyboardLabels}
           onChange={handleShowKeyboardLabelsChange}
+        />
+        <span className="slider round"></span>
+      </label>
+      <h5 className="settings_item_label">Quantize Notes</h5>
+      <label className="switch">
+        <input
+          type="checkbox"
+          checked={shouldQuantize}
+          onChange={() => setShouldQuantize(!shouldQuantize)}
         />
         <span className="slider round"></span>
       </label>

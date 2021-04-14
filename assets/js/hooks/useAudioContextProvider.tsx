@@ -12,6 +12,7 @@ import {
   DEFAULT_SAMPLER_SYNTH,
   DEFAULT_INPUT_LAG_COMPENSATION,
   INPUT_LAG_COMPENSATION_COOKIE,
+  ENABLE_QUANTIZATION_COOKIE,
 } from "../constants";
 import { useSamplePlayer, useWebMidi, useCookies } from ".";
 
@@ -27,6 +28,13 @@ export function useAudioContextProvider(): ToneAudioContextType {
     setCookie(INPUT_LAG_COMPENSATION_COOKIE, lagComp);
     _setCurrInputLagComp(lagComp);
   };
+
+  const [shouldQuantize, _setShouldQuantize] = useState<boolean>(true);
+  const setShouldQuantize = (shouldQntz: boolean) => {
+    setCookie(ENABLE_QUANTIZATION_COOKIE, shouldQntz);
+    _setShouldQuantize(shouldQntz);
+  };
+
   const [currVolume, setCurrVolume] = useState<number>(-1);
 
   useEffect(() => {
@@ -41,6 +49,13 @@ export function useAudioContextProvider(): ToneAudioContextType {
     if (hasCookie(INPUT_LAG_COMPENSATION_COOKIE)) {
       const lagComp = getCookie(INPUT_LAG_COMPENSATION_COOKIE);
       setCurrInputLagComp(lagComp);
+    }
+    if (hasCookie(ENABLE_QUANTIZATION_COOKIE)) {
+      const shouldQntz = getCookie(ENABLE_QUANTIZATION_COOKIE) === "true";
+      console.log({
+        shouldQntz,
+      });
+      setShouldQuantize(shouldQntz);
     }
   }, []);
 
@@ -83,13 +98,12 @@ export function useAudioContextProvider(): ToneAudioContextType {
     Tone.context.lookAhead = 0;
     Tone.Master.volume.value = DEFAULT_SOUND_VOLUME;
 
-    const newSynth = new Tone.Sampler(DEFAULT_SAMPLER_SYNTH);
+    const newSynth = new Tone.Sampler(DEFAULT_SAMPLER_SYNTH).toDestination();
     // const newSynth = new Tone.PolySynth(Tone.FMSynth, DEFAULT_FM_SYNTH_CONFIG);
-
-    const autoWah = new Tone.AutoWah(60, 6, -30).toDestination();
-    const chorus = new Tone.Chorus(3, 0.5, 0.5).start();
-    const vibrato = new Tone.Vibrato("16n", 0.05);
-    newSynth.chain(vibrato, chorus, Tone.Destination);
+    // const autoWah = new Tone.AutoWah(60, 6, -30).toDestination();
+    // const chorus = new Tone.Chorus(3, 0.5, 0.5).start();
+    // const vibrato = new Tone.Vibrato("16n", 0.05);
+    // newSynth.chain(vibrato, chorus, Tone.Destination);
 
     newSynth.connect(recorder);
     setSynth(newSynth);
@@ -131,5 +145,7 @@ export function useAudioContextProvider(): ToneAudioContextType {
     recorder,
     startRecorder,
     stopRecorder,
+    shouldQuantize,
+    setShouldQuantize,
   };
 }

@@ -375,10 +375,17 @@ defmodule Midimatches.Rooms.RoomServer do
 
   @spec start_game(%RoomServer{}) :: %RoomServer{}
   defp start_game(
-         %RoomServer{room_id: room_id, players: players, game_config: game_config} = state
+         %RoomServer{
+           room_id: room_id,
+           players: players,
+           audience_members: audience_members,
+           game_config: game_config
+         } = state
        ) do
     {:ok, game} =
-      Supervisor.start_link([{Game, [{room_id, players, game_config}]}], strategy: :one_for_one)
+      Supervisor.start_link([{Game, [{room_id, players, audience_members, game_config}]}],
+        strategy: :one_for_one
+      )
 
     %RoomServer{state | game: game}
   end

@@ -36,7 +36,9 @@ defmodule Midimatches.ViewTimerTest do
     timeout_duration = 10
     views = [:game_start, :round_start, :recording, :playback_voting, :round_end]
 
-    {:ok, game_server} = GameInstance.start_link([{room_id, game_id, players, game_rules}])
+    {:ok, game_server} =
+      GameInstance.start_link([{room_id, game_id, players, MapSet.new(), game_rules}])
+
     {:ok, view_timer} = ViewTimer.start_link([{room_id}])
 
     {_ctr, actual_views} =

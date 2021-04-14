@@ -42,7 +42,8 @@ defmodule Midimatches.GameInstanceTest do
     musicians = MapSet.new(["1", "2", "3", "4"])
     game_rules = %GameRules{}
 
-    {:ok, game_server} = GameInstance.start_link([{room_id, game_id, players, game_rules}])
+    {:ok, game_server} =
+      GameInstance.start_link([{room_id, game_id, players, MapSet.new(), game_rules}])
 
     contestants =
       :sys.get_state(game_server).contestants
@@ -82,7 +83,9 @@ defmodule Midimatches.GameInstanceTest do
 
     game_rules = %GameRules{}
 
-    {:ok, game_server} = GameInstance.start_link([{room_id, game_id, players, game_rules}])
+    {:ok, game_server} =
+      GameInstance.start_link([{room_id, game_id, players, MapSet.new(), game_rules}])
+
     game_view = GameInstance.get_current_view(game_server)
 
     assert game_view == :game_start
@@ -115,7 +118,8 @@ defmodule Midimatches.GameInstanceTest do
 
       game_rules = %GameRules{}
 
-      {:ok, game_server} = GameInstance.start_link([{room_id, game_id, players, game_rules}])
+      {:ok, game_server} =
+        GameInstance.start_link([{room_id, game_id, players, MapSet.new(), game_rules}])
 
       assert :ok == GameInstance.advance_from_game_view(game_server, :game_start, 0)
     end
@@ -146,7 +150,8 @@ defmodule Midimatches.GameInstanceTest do
 
       game_rules = %GameRules{}
 
-      {:ok, game_server} = GameInstance.start_link([{room_id, game_id, players, game_rules}])
+      {:ok, game_server} =
+        GameInstance.start_link([{room_id, game_id, players, MapSet.new(), game_rules}])
 
       assert :error == GameInstance.advance_from_game_view(game_server, :recording, 0)
     end
@@ -182,7 +187,9 @@ defmodule Midimatches.GameInstanceTest do
         }
       }
 
-      {:ok, game_server} = GameInstance.start_link([{room_id, game_id, players, game_rules}])
+      {:ok, game_server} =
+        GameInstance.start_link([{room_id, game_id, players, MapSet.new(), game_rules}])
+
       {:ok, _view_timer} = ViewTimer.start_link([{room_id}])
 
       assert GameInstance.get_current_view(game_server) == :game_start

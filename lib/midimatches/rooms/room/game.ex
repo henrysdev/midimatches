@@ -18,10 +18,13 @@ defmodule Midimatches.Rooms.Room.Game do
 
   @impl true
   def init(args) do
-    {room_id, players, game_config} =
+    {room_id, players, audience_members, game_config} =
       case args do
-        [{room_id, players}] -> {room_id, players, %GameRules{}}
-        [{room_id, players, room_config}] -> {room_id, players, room_config}
+        [{room_id, players, audience_members}] ->
+          {room_id, players, audience_members, %GameRules{}}
+
+        [{room_id, players, audience_members, room_config}] ->
+          {room_id, players, audience_members, room_config}
       end
 
     Pids.register({:game_supervisor, room_id}, self())
@@ -32,7 +35,7 @@ defmodule Midimatches.Rooms.Room.Game do
     # TODO pass game mode here via game_config
     children = [
       {ViewTimer, [{room_id}]},
-      {GameInstance, [{room_id, game_id, players, game_config}]}
+      {GameInstance, [{room_id, game_id, players, audience_members, game_config}]}
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

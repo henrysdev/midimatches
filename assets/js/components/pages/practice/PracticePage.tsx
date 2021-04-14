@@ -24,6 +24,7 @@ import { WarmUp } from "../room/pregame";
 import {
   PRACTICE_GAME_VIEW,
   PRACTICE_MODE_TIMESTEP_SIZE,
+  PRACTICE_MODE_QUANTIZE_THRESHOLD,
 } from "../../../constants";
 import { PracticeRecordingView } from "./views/PracticeRecordingView";
 import { PracticeSampleSelectionView } from "./views/PracticeSampleSelectionView";
@@ -47,8 +48,8 @@ const PracticePage: React.FC<PracticePageProps> = ({ children }) => {
   const gameContext = useMemo(() => {
     return {
       gameRules: {
-        timestepSize: PRACTICE_MODE_TIMESTEP_SIZE,
-        quantizationThreshold: 0.5,
+        timestepSize: 50, // PRACTICE_MODE_TIMESTEP_SIZE,
+        quantizationThreshold: PRACTICE_MODE_QUANTIZE_THRESHOLD,
       },
       ...{ roundRecordingStartTime },
     };

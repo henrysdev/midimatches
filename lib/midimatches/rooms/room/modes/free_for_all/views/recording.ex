@@ -41,7 +41,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.Recording do
           game_rules
           | view_timeouts: %ViewTimeouts{
               view_timeouts
-              | playback_voting: number_of_recordings * solo_time_limit
+              | playback_voting: number_of_recordings * solo_time_limit + 5_000
             }
         }
     }
