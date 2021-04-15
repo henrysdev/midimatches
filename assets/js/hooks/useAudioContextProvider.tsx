@@ -29,11 +29,11 @@ export function useAudioContextProvider(): ToneAudioContextType {
     _setCurrInputLagComp(lagComp);
   };
 
-  const [shouldQuantize, _setShouldQuantize] = useState<boolean>(false);
-  const setShouldQuantize = (shouldQntz: boolean) => {
-    setCookie(ENABLE_QUANTIZATION_COOKIE, shouldQntz);
-    _setShouldQuantize(shouldQntz);
-  };
+  // const [shouldQuantize, _setShouldQuantize] = useState<boolean>(false);
+  // const setShouldQuantize = (shouldQntz: boolean) => {
+  //   setCookie(ENABLE_QUANTIZATION_COOKIE, shouldQntz);
+  //   _setShouldQuantize(shouldQntz);
+  // };
 
   const [currVolume, setCurrVolume] = useState<number>(-1);
 
@@ -50,13 +50,13 @@ export function useAudioContextProvider(): ToneAudioContextType {
       const lagComp = getCookie(INPUT_LAG_COMPENSATION_COOKIE);
       setCurrInputLagComp(lagComp);
     }
-    if (hasCookie(ENABLE_QUANTIZATION_COOKIE)) {
-      const shouldQntz = getCookie(ENABLE_QUANTIZATION_COOKIE) === "true";
-      console.log({
-        shouldQntz,
-      });
-      setShouldQuantize(shouldQntz);
-    }
+    // if (hasCookie(ENABLE_QUANTIZATION_COOKIE)) {
+    //   const shouldQntz = getCookie(ENABLE_QUANTIZATION_COOKIE) === "true";
+    //   console.log({
+    //     shouldQntz,
+    //   });
+    //   setShouldQuantize(shouldQntz);
+    // }
   }, []);
 
   useEffect(() => {
@@ -145,7 +145,7 @@ export function useAudioContextProvider(): ToneAudioContextType {
     recorder,
     startRecorder,
     stopRecorder,
-    shouldQuantize,
-    setShouldQuantize,
+    shouldQuantize: false,
+    setShouldQuantize: () => {},
   };
 }
