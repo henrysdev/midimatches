@@ -129,6 +129,8 @@ defmodule MidimatchesWeb.UserController do
           |> update_remote_ip(conn)
           |> UserCache.upsert_user()
 
+        Logger.info("existing user updated alias user_id=#{user_id} user_alias=#{user_alias}")
+
         conn
         |> put_session(:user, updated_user)
         |> json(%{})
@@ -136,12 +138,12 @@ defmodule MidimatchesWeb.UserController do
         # create and insert new user
         user_id = Utils.gen_uuid()
 
-        Logger.info("new user upserted with user_id=#{user_id} user_alias=#{user_alias}")
-
         new_user =
           %User{user_alias: user_alias, user_id: user_id}
           |> update_remote_ip(conn)
           |> UserCache.upsert_user()
+
+        Logger.info("new user upserted with user_id=#{user_id} user_alias=#{user_alias}")
 
         conn
         |> put_session(:user, new_user)
