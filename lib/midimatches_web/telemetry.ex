@@ -4,8 +4,6 @@ defmodule MidimatchesWeb.Telemetry do
   use Supervisor
   import Telemetry.Metrics
 
-  alias MidimatchesWeb.TelemetryMetrics
-
   @custom_telemetrics Application.get_env(:midimatches, :custom_telemetrics)
 
   def start_link(arg) do
@@ -58,7 +56,7 @@ defmodule MidimatchesWeb.Telemetry do
     [
       # A module, function and arguments to be invoked periodically.
       # This function must call :telemetry.execute/3 and a metric must be added above.
-      {TelemetryMetrics, :num_active_user_sessions, []}
+      # {MidimatchesWeb.TelemetryMetrics, :num_active_user_sessions, []}
     ]
   end
 end
