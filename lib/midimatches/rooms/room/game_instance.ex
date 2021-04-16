@@ -7,6 +7,8 @@ defmodule Midimatches.Rooms.Room.GameInstance do
 
   alias __MODULE__
 
+  alias MidimatchesDb.BackingTrack
+
   alias Midimatches.{
     Pids,
     Rooms.Room.Modes.FreeForAll.FreeForAllServer,
@@ -27,7 +29,7 @@ defmodule Midimatches.Rooms.Room.GameInstance do
     field(:players, MapSet.t(Player), enforce: true)
     field(:room_id, id(), enforce: true)
     field(:game_id, id(), enforce: true)
-    field(:sample_beats, list(String.t()), enforce: true)
+    field(:sample_beats, list(BackingTrack), enforce: true)
 
     field(:game_rules, %GameRules{}, default: %GameRules{})
     field(:game_view, game_view(), default: :game_start)

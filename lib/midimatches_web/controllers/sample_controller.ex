@@ -4,7 +4,7 @@ defmodule MidimatchesWeb.SampleController do
   """
   use MidimatchesWeb, :controller
 
-  alias Midimatches.S3ClientProxy
+  alias MidimatchesDb.BackingTracks
 
   @spec random(Plug.Conn.t(), map) :: Plug.Conn.t()
   @doc """
@@ -14,7 +14,8 @@ defmodule MidimatchesWeb.SampleController do
     samples =
       count
       |> String.to_integer()
-      |> S3ClientProxy.random_sample_beats()
+      |> BackingTracks.fetch_random_backing_tracks()
+      |> Enum.map(& &1.file_url)
 
     conn
     |> json(%{

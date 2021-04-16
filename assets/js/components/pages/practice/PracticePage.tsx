@@ -79,8 +79,12 @@ const PracticePage: React.FC<PracticePageProps> = ({ children }) => {
 
   useEffect(() => {
     const newSample = samples[mod(currSampleIdx, samples.length)];
-    toneAudioContext.loadSample(newSample);
-    setCurrentSample(newSample);
+    if (!!newSample) {
+      const newSampleName = newSample.split("/").pop() || "";
+      toneAudioContext.loadSample(newSample);
+      // TODO use backing track struct
+      setCurrentSample(newSampleName);
+    }
   }, [currSampleIdx]);
 
   useEffect(() => {}, [toneAudioContext.isSamplePlayerLoaded]);

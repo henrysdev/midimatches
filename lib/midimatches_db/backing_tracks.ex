@@ -21,10 +21,10 @@ defmodule MidimatchesDb.BackingTracks do
   @doc """
   Fetches a specified count of randomly selected backing tracks
   """
-  def fetch_random_backing_tracks(count) do
+  def fetch_random_backing_tracks(count \\ 100) do
     query =
-      from(track in "backing_tracks",
-        select: track.name,
+      from(track in BackingTrack,
+        select: track,
         limit: ^count,
         order_by: fragment("RANDOM()")
       )

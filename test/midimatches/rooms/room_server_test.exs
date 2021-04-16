@@ -1,5 +1,5 @@
 defmodule Midimatches.RoomServerTest do
-  use ExUnit.Case
+  use MidimatchesDb.RepoCase
 
   alias Midimatches.{
     Pids,
