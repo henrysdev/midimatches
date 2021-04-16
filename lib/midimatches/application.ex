@@ -18,8 +18,6 @@ defmodule Midimatches.Application do
   def start(_type, _args) do
     children = [
       MidimatchesDb.Repo,
-      # Start the Telemetry supervisor
-      MidimatchesWeb.Telemetry,
       # Start the PubSub system
       {Phoenix.PubSub, name: Midimatches.PubSub},
       # Start the Endpoint (http/https)
@@ -32,7 +30,9 @@ defmodule Midimatches.Application do
       {ServerlistUpdater, [{3_000}]},
       {RoomsGarbageCollector, []},
       {Task, fn -> configure() end},
-      {PresenceTracker, [name: PresenceTracker, pubsub_server: Midimatches.PubSub]}
+      {PresenceTracker, [name: PresenceTracker, pubsub_server: Midimatches.PubSub]},
+      # Start the Telemetry supervisor
+      MidimatchesWeb.Telemetry
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

@@ -98,7 +98,7 @@ const GameSettings: React.FC<GameSettingsProps> = ({}) => {
         />
         <span className="slider round"></span>
       </label>
-      <h5 className="settings_item_label">Quantize Notes</h5>
+      {/* <h5 className="settings_item_label">Quantize Notes</h5>
       <label className="switch">
         <input
           type="checkbox"
@@ -106,7 +106,7 @@ const GameSettings: React.FC<GameSettingsProps> = ({}) => {
           onChange={() => setShouldQuantize(!shouldQuantize)}
         />
         <span className="slider round"></span>
-      </label>
+      </label> */}
       {/* <h5 className="settings_item_label">Input Lag Comp (ms)</h5>
       <div className="input_lag_comp">
         <input

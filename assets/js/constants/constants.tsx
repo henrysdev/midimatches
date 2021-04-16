@@ -142,7 +142,7 @@ export const DEFAULT_FM_SYNTH_CONFIG = {
 } as any;
 
 export const DEFAULT_SAMPLER_SYNTH = {
-  volume: 0.25,
+  volume: -0.1,
   attack: 0.01,
   urls: {
     A0: "A0.mp3",

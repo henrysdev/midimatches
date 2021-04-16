@@ -13,7 +13,7 @@ defmodule MidimatchesWeb.RoomController do
 
   require Logger
 
-  @max_players 6
+  @max_players 10
   @min_players 3
   @max_num_rounds 10
   @min_num_rounds 1

@@ -18,6 +18,7 @@ config :midimatches, MidimatchesWeb.Endpoint,
 
 # Configures custom application env vars
 config :midimatches,
+  custom_telemetrics: true,
   rooms_config: "config/app_scheme/prod/config.json"
 
 # Do not print debug messages in production
