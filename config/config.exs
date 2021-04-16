@@ -17,6 +17,7 @@ config :midimatches, MidimatchesWeb.Endpoint,
 
 # Configures custom application env vars
 config :midimatches,
+  custom_telemetrics: false,
   ecto_repos: [MidimatchesDb.Repo],
   rooms_config: "config/app_scheme/dev/config.json"
 

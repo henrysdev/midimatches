@@ -136,6 +136,8 @@ defmodule MidimatchesWeb.UserController do
         # create and insert new user
         user_id = Utils.gen_uuid()
 
+        Logger.info("new user upserted with user_id=#{user_id} user_alias=#{user_alias}")
+
         new_user =
           %User{user_alias: user_alias, user_id: user_id}
           |> update_remote_ip(conn)
@@ -147,7 +149,7 @@ defmodule MidimatchesWeb.UserController do
       end
     else
       {:error, reason} ->
-        Logger.warn("update user failed with error reason #{reason}")
+        Logger.error("update user failed with error reason #{reason}")
 
         conn
         |> put_status(:bad_request)
