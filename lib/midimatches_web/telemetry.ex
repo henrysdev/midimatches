@@ -24,7 +24,7 @@ defmodule MidimatchesWeb.Telemetry do
     children = [
       # Telemetry poller will execute the given period measurements
       # every 10_000ms. Learn more here: https://hexdocs.pm/telemetry_metrics
-      {:telemetry_poller, measurements: custom_measurements, period: 10_000}
+      {:telemetry_poller, measurements: custom_measurements, period: 30_000}
       # Add reporters as children of your supervision tree.
       # {Telemetry.Metrics.ConsoleReporter, metrics: metrics()}
     ]
