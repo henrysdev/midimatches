@@ -53,9 +53,14 @@ const Game: React.FC<GameProps> = ({
 
   const [joinedMidRecording, setJoinedMidRecording] = useState<boolean>(true);
 
+  // TODO use backing track struct instead of parsing out
   const currSampleBeat = useMemo(() => {
     return gameContext.sampleBeats[gameContext.roundNum - 1];
   }, [gameContext.roundNum]);
+
+  const sampleName = useMemo(() => {
+    return currSampleBeat.split("/").pop() || "";
+  }, [currSampleBeat]);
 
   useEffect(() => {
     switch (currentView) {
@@ -106,7 +111,7 @@ const Game: React.FC<GameProps> = ({
                   <RoundStartView
                     pushMessageToChannel={pushMessage}
                     roundNum={gameContext.roundNum}
-                    sampleName={currSampleBeat}
+                    sampleName={sampleName}
                   />
                 );
 
@@ -116,7 +121,7 @@ const Game: React.FC<GameProps> = ({
                     isContestant={!joinedMidRecording}
                     pushMessageToChannel={pushMessage}
                     stopSample={stopSample}
-                    sampleName={currSampleBeat}
+                    sampleName={sampleName}
                   />
                 ) : (
                   <AudienceRecordingView />

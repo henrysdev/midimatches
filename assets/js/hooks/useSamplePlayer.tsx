@@ -1,9 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import {
-  S3_BUCKET_URL,
-  DEFAULT_SAMPLE_VOLUME,
-  DEFAULT_SAMPLE_LENGTH,
-} from "../constants";
+import { DEFAULT_SAMPLE_VOLUME, DEFAULT_SAMPLE_LENGTH } from "../constants";
 
 type SamplePlayerTuple = [boolean, any, (url: string) => void, () => void];
 
@@ -25,9 +21,7 @@ export function useSamplePlayer(Tone: any, recorder: any): SamplePlayerTuple {
   const loadSample = async (sampleBeatFilename: string) => {
     if (!!samplePlayer && sampleBeatFilename !== loadedSampleName) {
       setIsLoaded(false);
-      await samplePlayer.load(
-        `${S3_BUCKET_URL}/sample-beats/${sampleBeatFilename}`
-      );
+      await samplePlayer.load(sampleBeatFilename);
       setLoadedSampleName(sampleBeatFilename);
       setIsLoaded(true);
     }

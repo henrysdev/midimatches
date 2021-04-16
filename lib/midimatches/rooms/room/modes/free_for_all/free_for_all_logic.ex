@@ -6,7 +6,6 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllLogic do
   alias Midimatches.{
     Rooms.Room.GameInstance,
     Rooms.Room.Modes.FreeForAll.Views,
-    S3ClientProxy,
     Types.GameRules,
     Types.Player,
     Utils
@@ -34,7 +33,9 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllLogic do
       |> MapSet.to_list()
       |> Enum.map(& &1.player_id)
 
-    sample_beats = S3ClientProxy.random_sample_beats(game_rules.rounds_to_win)
+    sample_beats =
+      MidimatchesDb.BackingTracks.fetch_random_backing_tracks(game_rules.rounds_to_win)
+      |> Enum.map(& &1.file_url)
 
     %GameInstance{
       room_id: room_id,

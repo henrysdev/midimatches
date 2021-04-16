@@ -1,5 +1,5 @@
 defmodule Midimatches.ViewTimerTest do
-  use ExUnit.Case
+  use MidimatchesDb.RepoCase
 
   alias Midimatches.{
     Rooms.Room.Game.ViewTimer,
