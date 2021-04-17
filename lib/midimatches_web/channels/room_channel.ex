@@ -237,11 +237,14 @@ defmodule MidimatchesWeb.RoomChannel do
   @spec assign_game_server(%Phoenix.Socket{}) :: %Phoenix.Socket{}
   defp assign_game_server(%Phoenix.Socket{assigns: %{room_id: room_id}} = socket) do
     game_server = Pids.fetch({:game_server, room_id})
+    chat_server = Pids.fetch({:chat_server, room_id})
 
     if is_nil(game_server) do
       socket
     else
-      assign(socket, game_server: game_server)
+      socket
+      |> assign(game_server: game_server)
+      |> assign(chat_server: chat_server)
     end
   end
 end
