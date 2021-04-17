@@ -56,6 +56,9 @@ defmodule MidimatchesWeb.RoomChannel do
       chat_server = Pids.fetch!({:chat_server, room_id})
       send(self(), {:init_conn, room_id, chat_server})
 
+      # check if user_id in audience for room
+      audience_member? = RoomServer.audience_member?(room_server, user_id)
+
       if UserCache.user_id_exists?(user_id) do
         player =
           user_id
@@ -68,6 +71,7 @@ defmodule MidimatchesWeb.RoomChannel do
          |> assign(room_server: room_server)
          |> assign(player_id: player.player_id)
          |> assign(chat_server: chat_server)
+         |> assign(audience_member?: audience_member?)
          |> assign_game_server()}
       else
         {:error, "cannot join, no user found for user_id=#{user_id}"}
@@ -237,14 +241,12 @@ defmodule MidimatchesWeb.RoomChannel do
   @spec assign_game_server(%Phoenix.Socket{}) :: %Phoenix.Socket{}
   defp assign_game_server(%Phoenix.Socket{assigns: %{room_id: room_id}} = socket) do
     game_server = Pids.fetch({:game_server, room_id})
-    chat_server = Pids.fetch({:chat_server, room_id})
 
     if is_nil(game_server) do
       socket
     else
       socket
       |> assign(game_server: game_server)
-      |> assign(chat_server: chat_server)
     end
   end
 end

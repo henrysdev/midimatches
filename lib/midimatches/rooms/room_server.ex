@@ -80,6 +80,14 @@ defmodule Midimatches.Rooms.RoomServer do
     GenServer.call(pid, :get_players)
   end
 
+  @spec audience_member?(pid(), id()) :: boolean()
+  @doc """
+  Check if an audience member exists in room
+  """
+  def audience_member?(pid, player_id) do
+    GenServer.call(pid, {:audience_member?, player_id})
+  end
+
   @spec add_audience_member(pid(), %Player{}) :: %RoomServer{}
   @doc """
   Add a new audience member to a room
@@ -232,6 +240,20 @@ defmodule Midimatches.Rooms.RoomServer do
   @impl true
   def handle_call(:get_players, _from, %RoomServer{players: players} = state) do
     {:reply, players, state}
+  end
+
+  @impl true
+  def handle_call(
+        {:audience_member?, player_id},
+        _from,
+        %RoomServer{audience_members: audience_members} = state
+      ) do
+    audience_member? =
+      audience_members
+      |> MapSet.to_list()
+      |> Enum.any?(&(&1.player_id == player_id))
+
+    {:reply, audience_member?, state}
   end
 
   @impl true

@@ -110,6 +110,31 @@ defmodule Midimatches.RoomServerTest do
     assert audience_members == expected_audience_members
   end
 
+  test "check if audience member is in room" do
+    room_id = "1"
+    room_name = "foobar"
+
+    [m1, m2] = [
+      %Player{
+        player_id: "m1",
+        player_alias: "foo"
+      },
+      %Player{
+        player_id: "m2",
+        player_alias: "zoo"
+      }
+    ]
+
+    {:ok, room_server} = start_supervised({RoomServer, [{room_id, room_name}]})
+
+    assert RoomServer.audience_member?(room_server, m1.player_id) == false
+    RoomServer.add_audience_member(room_server, m1)
+    RoomServer.add_audience_member(room_server, m2)
+    assert RoomServer.audience_member?(room_server, m1.player_id)
+    RoomServer.drop_audience_member(room_server, m1.player_id)
+    assert RoomServer.audience_member?(room_server, m1.player_id) == false
+  end
+
   test "starts game when enough players have joined" do
     room_id = "1"
     room_name = "foobar"
