@@ -100,8 +100,10 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
       samplePlayer.loop = false;
     }
 
-    samplePlayer.stop(`+0`);
-    samplePlayer.seek(0);
+    if (!!samplePlayer && samplePlayer.state === "started") {
+      samplePlayer.stop(`+0`);
+      samplePlayer.seek(0);
+    }
 
     samplePlayer.start(`+0.05`);
     part.start(`+0.05`);
