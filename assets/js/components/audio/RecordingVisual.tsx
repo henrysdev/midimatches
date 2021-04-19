@@ -1,12 +1,8 @@
 import React, { useEffect, useMemo, useRef } from "react";
-import { Loop, TimestepSlice, Note, Color } from "../../types";
-import { useGameRulesContext } from "../../hooks";
+import { Loop, TimestepSlice, Note, Color, Seconds } from "../../types";
+import { useGameRulesContext, useBackingTrackContext } from "../../hooks";
 import { microsToMs, msToSec } from "../../utils";
-import {
-  DEFAULT_RECORDING_LENGTH,
-  MAX_NOTE_NUMBER,
-  MIN_NOTE_NUMBER,
-} from "../../constants";
+import { MAX_NOTE_NUMBER, MIN_NOTE_NUMBER } from "../../constants";
 
 interface RecordingVisualProps {
   recording: Loop;
@@ -33,6 +29,8 @@ const RecordingVisual: React.FC<RecordingVisualProps> = ({
     gameRules: { timestepSize },
   } = useGameRulesContext();
 
+  const { recordingTime, backingTrack } = useBackingTrackContext();
+
   const recordedNotes = useMemo(
     () => flattenTimestepSlices(recording.timestepSlices),
     [recording.timestepSlices.length]
@@ -51,7 +49,8 @@ const RecordingVisual: React.FC<RecordingVisualProps> = ({
         keyboardRange,
         timestepSize,
         canvasWidth,
-        canvasHeight
+        canvasHeight,
+        recordingTime
       );
 
       recordedNotes.map((notePoint) =>
@@ -132,12 +131,11 @@ const calcPixelUnits = (
   keyboardRange: number,
   timestepSize: number,
   canvasWidth: number,
-  canvasHeight: number
+  canvasHeight: number,
+  recordingTime: Seconds
 ): { pixelsPerTimestep: number; pixelsPerKey: number } => {
   const timestepSizeInSeconds = msToSec(microsToMs(timestepSize));
-  const numTotalTimesteps = Math.floor(
-    DEFAULT_RECORDING_LENGTH / timestepSizeInSeconds
-  );
+  const numTotalTimesteps = Math.floor(recordingTime / timestepSizeInSeconds);
   const pixelsPerTimestep = canvasWidth / numTotalTimesteps;
   const pixelsPerKey = canvasHeight / keyboardRange;
   return { pixelsPerTimestep, pixelsPerKey };

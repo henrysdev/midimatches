@@ -9,6 +9,7 @@ export const ChatContext = createContext({});
 export const KeyboardInputContext = createContext({});
 export const ClockOffsetContext = createContext({});
 export const BrowserCompatibilityContext = createContext({});
+export const BackingTrackContext = createContext({});
 
 // Game Sub-contexts
 export const GameViewContext = createContext({});

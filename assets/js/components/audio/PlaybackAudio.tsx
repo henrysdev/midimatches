@@ -10,10 +10,10 @@ import {
   MaterialIcon,
 } from "../common";
 import {
-  DEFAULT_NUM_RECORDED_LOOPS,
-  DEFAULT_RECORDING_LENGTH,
-} from "../../constants";
-import { useGameRulesContext, useToneAudioContext } from "../../hooks";
+  useGameRulesContext,
+  useToneAudioContext,
+  useBackingTrackContext,
+} from "../../hooks";
 import { scheduleSamplePlay } from "../../helpers";
 import { RecordingVisual } from "./";
 
@@ -53,6 +53,8 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
   const {
     gameRules: { timestepSize },
   } = useGameRulesContext();
+
+  const { recordingTime } = useBackingTrackContext();
 
   const [progress, setProgress] = useState<number>(0);
   const { synth, samplePlayer } = useToneAudioContext();
@@ -116,7 +118,7 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
     Tone.Transport.scheduleRepeat(
       (currTime) => {
         Tone.Draw.schedule(() => {
-          const progress = (currTime - startTime) / DEFAULT_RECORDING_LENGTH;
+          const progress = (currTime - startTime) / recordingTime;
           if (progress >= 0.99) {
             completeListening(playerId);
             setProgress(1.0);
@@ -127,7 +129,7 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
       },
       0.05,
       "+0",
-      DEFAULT_RECORDING_LENGTH
+      recordingTime
     );
   };
 

@@ -1,15 +1,11 @@
 import React, { useState, useMemo, useEffect, useRef } from "react";
 
-import {
-  SUBMIT_VOTE_EVENT,
-  DEFAULT_RECORDING_LENGTH,
-  MIN_FORCED_VOTING_WINDOW_TIME,
-  DEFAULT_SAMPLE_LENGTH,
-} from "../../../../../constants";
+import { SUBMIT_VOTE_EVENT } from "../../../../../constants";
 import {
   useGameContext,
   usePlayerContext,
   useClockOffsetContext,
+  useBackingTrackContext,
 } from "../../../../../hooks";
 import { PlaybackAudio } from "../../../../audio";
 import {
@@ -43,6 +39,7 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
     viewDeadline,
   } = useGameContext();
   const { clockOffset } = useClockOffsetContext();
+  const { recordingTime } = useBackingTrackContext();
 
   const { player: currPlayer } = usePlayerContext();
   const [voteSubmitted, setVoteSubmitted] = useState<boolean>(false);
@@ -77,7 +74,7 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
       if (autoPlayingTrackIdx < recordings.length) {
         autoPlayCounter.current = setTimeout(() => {
           setAutoPlayingTrackIdx((idx) => idx + 1);
-        }, secToMs(DEFAULT_RECORDING_LENGTH));
+        }, secToMs(recordingTime));
       } else {
         setCanVote(true);
       }

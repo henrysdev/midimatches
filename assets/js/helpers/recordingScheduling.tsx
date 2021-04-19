@@ -1,13 +1,10 @@
 import * as Tone from "tone";
 import {
   DEFAULT_SAMPLE_PLAY_BUFFER_LENGTH,
-  DEFAULT_SAMPLE_LENGTH,
-  DEFAULT_RECORDING_LENGTH,
   DEFAULT_NUM_RECORDED_LOOPS,
-  DEFAULT_WARMUP_LENGTH,
   DEFAULT_NUM_WARMUP_LOOPS,
 } from "../constants";
-import { Milliseconds, Seconds } from "../types";
+import { Milliseconds, Seconds, BackingTrackContextType } from "../types";
 import { msToSec, secToMs, currUtcTimestamp } from "../utils";
 
 interface ScheduleDeadlines {
@@ -48,15 +45,15 @@ export function scheduleRecordingDeadlines(
   sampleStartPlayCallback: Function,
   startRecording: Function,
   stopRecording: Function,
-  samplePlayer: any
+  samplePlayer: any,
+  backingTrackContext: BackingTrackContextType
 ): void {
   // get deadlines
   const deadlines = calcRecordingDeadlines(
     serverSendTimestamp,
     DEFAULT_SAMPLE_PLAY_BUFFER_LENGTH,
-    DEFAULT_SAMPLE_LENGTH,
-    DEFAULT_RECORDING_LENGTH,
-    Date
+    Date,
+    backingTrackContext
   );
 
   // schedule deadlines
@@ -65,15 +62,17 @@ export function scheduleRecordingDeadlines(
     sampleStartPlayCallback,
     startRecording,
     stopRecording,
-    samplePlayer
+    samplePlayer,
+    backingTrackContext
   );
 }
 
 export function getRecordingStartTimestamp(
-  serverSendTimestamp: Milliseconds
+  serverSendTimestamp: Milliseconds,
+  backingTrackContext: BackingTrackContextType
 ): Milliseconds {
   const bufferTime = secToMs(DEFAULT_SAMPLE_PLAY_BUFFER_LENGTH);
-  const sampleIntro = secToMs(DEFAULT_WARMUP_LENGTH);
+  const sampleIntro = secToMs(backingTrackContext.warmUpTime);
   const recordingStartTimestamp = Math.abs(
     serverSendTimestamp + bufferTime + sampleIntro
   );
@@ -83,11 +82,14 @@ export function getRecordingStartTimestamp(
 export function scheduleSamplePlay(
   samplePlayer: any,
   startTime: Seconds = 0,
-  loopIterations: number
+  loopIterations: number,
+  backingTrackContext: BackingTrackContextType
 ): void {
   if (samplePlayer.loaded && !!samplePlayer.buffer) {
     samplePlayer.start(`+${startTime}`);
-    samplePlayer.stop(`+${startTime + loopIterations * DEFAULT_SAMPLE_LENGTH}`);
+    samplePlayer.stop(
+      `+${startTime + loopIterations * backingTrackContext.sampleLength}`
+    );
   }
 }
 
@@ -96,7 +98,8 @@ function scheduleRecordingAudioTimeline(
   sampleStartPlayCallback: Function,
   startRecording: Function,
   stopRecording: Function,
-  samplePlayer: any
+  samplePlayer: any,
+  backingTrackContext: BackingTrackContextType
 ): void {
   Tone.Transport.start("+0");
   if (!!samplePlayer && !samplePlayer.loop) {
@@ -107,7 +110,12 @@ function scheduleRecordingAudioTimeline(
   // start sample loop
   const loopIterations = DEFAULT_NUM_WARMUP_LOOPS + DEFAULT_NUM_RECORDED_LOOPS;
 
-  scheduleSamplePlay(samplePlayer, sampleStartTime, loopIterations);
+  scheduleSamplePlay(
+    samplePlayer,
+    sampleStartTime,
+    loopIterations,
+    backingTrackContext
+  );
 
   // start sample (warmup)
   Tone.Transport.scheduleOnce((time: Seconds) => {
@@ -137,9 +145,8 @@ function scheduleRecordingAudioTimeline(
 export function calcRecordingDeadlines(
   serverSendTimestamp: Milliseconds, // ex: 1610577790924
   bufferTime: Seconds, // ex: 5
-  sampleTime: Seconds, // ex: 10
-  recordingTime: Seconds, // ex: 30
-  date: any
+  date: any,
+  backingTrackContext: BackingTrackContextType
 ): ScheduleDeadlines {
   const nowUtc: Milliseconds = currUtcTimestamp();
 
@@ -148,8 +155,9 @@ export function calcRecordingDeadlines(
   );
 
   const sampleStartTime = timeTilSampleStart;
-  const recordingStartTime = sampleStartTime + DEFAULT_WARMUP_LENGTH;
-  const recordingEndTime = recordingStartTime + recordingTime;
+  const recordingStartTime = sampleStartTime + backingTrackContext.warmUpTime;
+  const recordingEndTime =
+    recordingStartTime + backingTrackContext.recordingTime;
 
   return {
     sampleStartTime,

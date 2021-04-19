@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { DEFAULT_SAMPLE_VOLUME, DEFAULT_SAMPLE_LENGTH } from "../constants";
+import { DEFAULT_SAMPLE_VOLUME } from "../constants";
 
 type SamplePlayerTuple = [boolean, any, (url: string) => void, () => void];
 
@@ -11,7 +11,6 @@ export function useSamplePlayer(Tone: any, recorder: any): SamplePlayerTuple {
     const newSamplePlayer = new Tone.Player({
       loop: true,
       loopStart: 0,
-      loopEnd: DEFAULT_SAMPLE_LENGTH,
     }).toDestination();
     newSamplePlayer.volume.value = DEFAULT_SAMPLE_VOLUME;
     newSamplePlayer.connect(recorder);

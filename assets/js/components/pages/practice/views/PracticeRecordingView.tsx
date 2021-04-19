@@ -1,11 +1,5 @@
 import React, { useState, useMemo } from "react";
 
-import {
-  SUBMIT_RECORDING_EVENT,
-  DEFAULT_SAMPLE_LENGTH,
-  DEFAULT_RECORDING_LENGTH,
-  DEFAULT_WARMUP_LENGTH,
-} from "../../../../constants";
 import { RecordMidi } from "../../../audio";
 import {
   Timer,
@@ -17,7 +11,13 @@ import {
   MaterialIcon,
 } from "../../../common";
 import { secToMs, unmarshalBody } from "../../../../utils";
-import { useGameContext, useClockOffsetContext } from "../../../../hooks";
+import {
+  useGameContext,
+  useBackingTrackContext,
+  useBackingTrackContextProvider,
+} from "../../../../hooks";
+import { BackingTrack } from "../../../../types";
+import { BackingTrackContext } from "../../../../contexts";
 
 enum RecordingState {
   INIT,
@@ -30,15 +30,16 @@ interface PracticeRecordingViewProps {
   setRecordingCallback: Function;
   stopSample: Function;
   advanceView: Function;
-  sampleName: string;
+  backingTrack: BackingTrack;
 }
 
 const PracticeRecordingView: React.FC<PracticeRecordingViewProps> = ({
   setRecordingCallback,
   stopSample,
   advanceView,
-  sampleName,
+  backingTrack,
 }) => {
+  const backingTrackContext = useBackingTrackContext();
   const [isSamplePlaying, setIsSamplePlaying] = useState<boolean>(false);
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [isFinishedRecording, setFinishedRecording] = useState<boolean>(false);
@@ -56,7 +57,6 @@ const PracticeRecordingView: React.FC<PracticeRecordingViewProps> = ({
   };
 
   const { gameRules, roundRecordingStartTime } = useGameContext();
-  const { clockOffset } = useClockOffsetContext();
 
   const recordingState: RecordingState = useMemo(() => {
     if (isSamplePlaying && !isRecording && !isFinishedRecording) {
@@ -88,7 +88,7 @@ const PracticeRecordingView: React.FC<PracticeRecordingViewProps> = ({
               <div style={{ flex: 1 }}>
                 <p className="centered_text">
                   <strong className="large_instructions_text">
-                    {sampleName}
+                    {backingTrack.name}
                   </strong>
                 </p>
               </div>
@@ -144,7 +144,7 @@ const PracticeRecordingView: React.FC<PracticeRecordingViewProps> = ({
         ) : recordingState === RecordingState.WARMUP ? (
           <Timer
             descriptionText={"Recording starts in "}
-            duration={secToMs(DEFAULT_WARMUP_LENGTH)}
+            duration={secToMs(backingTrackContext.warmUpTime)}
           />
         ) : recordingState === RecordingState.RECORDING ? (
           <div
@@ -160,7 +160,7 @@ const PracticeRecordingView: React.FC<PracticeRecordingViewProps> = ({
             />
             <Timer
               descriptionText={"Recording ends in "}
-              duration={secToMs(DEFAULT_RECORDING_LENGTH)}
+              duration={secToMs(backingTrackContext.recordingTime)}
               style={{ color: "red" }}
             />
           </div>

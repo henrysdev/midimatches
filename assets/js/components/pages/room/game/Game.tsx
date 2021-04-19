@@ -3,7 +3,7 @@ import { Channel } from "phoenix";
 
 import * as Tone from "tone";
 import { GAME_VIEW } from "../../../../constants";
-import { GameContext } from "../../../../contexts";
+import { GameContext, BackingTrackContext } from "../../../../contexts";
 import {
   GameEndView,
   GameStartView,
@@ -17,6 +17,7 @@ import {
   useSamplePlayer,
   usePlayerContext,
   useToneAudioContext,
+  useBackingTrackContextProvider,
 } from "../../../../hooks";
 import { InGameFrame, GameSubContexts } from ".";
 import { GameContextType, Milliseconds } from "../../../../types";
@@ -53,14 +54,13 @@ const Game: React.FC<GameProps> = ({
 
   const [joinedMidRecording, setJoinedMidRecording] = useState<boolean>(true);
 
-  // TODO use backing track struct instead of parsing out
-  const currSampleBeat = useMemo(() => {
+  const currBackingTrack = useMemo(() => {
     return gameContext.sampleBeats[gameContext.roundNum - 1];
   }, [gameContext.roundNum]);
 
   const sampleName = useMemo(() => {
-    return currSampleBeat.split("/").pop() || "";
-  }, [currSampleBeat]);
+    return currBackingTrack.name;
+  }, [currBackingTrack]);
 
   useEffect(() => {
     switch (currentView) {
@@ -68,14 +68,14 @@ const Game: React.FC<GameProps> = ({
         break;
       case GAME_VIEW.ROUND_START:
         setJoinedMidRecording(false);
-        loadSample(currSampleBeat);
+        loadSample(currBackingTrack.fileUrl);
         break;
       case GAME_VIEW.RECORDING:
-        loadSample(currSampleBeat);
+        loadSample(currBackingTrack.fileUrl);
         break;
       case GAME_VIEW.PLAYBACK_VOTING:
         setJoinedMidRecording(false);
-        loadSample(currSampleBeat);
+        loadSample(currBackingTrack.fileUrl);
         resetTone();
         break;
       case GAME_VIEW.ROUND_END:
@@ -89,61 +89,66 @@ const Game: React.FC<GameProps> = ({
     }
   }, [currentView]);
 
+  const backingTrackContext = useBackingTrackContextProvider(currBackingTrack);
+
   return (
     <GameContext.Provider value={gameContext}>
       <GameSubContexts gameContext={gameContext}>
-        <InGameFrame
-          title="GAME"
-          subtitle={`${roomName} / FREE-FOR-ALL / ROUND ${gameContext.roundNum}`}
-          textRight={isAudienceMember ? "[AUDIENCE]" : ""}
-          textRightClass={
-            isAudienceMember ? "audience_member_role_text" : "player_role_text"
-          }
-        >
-          <GameLeftPane />
-          {(() => {
-            switch (currentView) {
-              case GAME_VIEW.GAME_START:
-                return <GameStartView pushMessageToChannel={pushMessage} />;
-
-              case GAME_VIEW.ROUND_START:
-                return (
-                  <RoundStartView
-                    pushMessageToChannel={pushMessage}
-                    roundNum={gameContext.roundNum}
-                    sampleName={sampleName}
-                  />
-                );
-
-              case GAME_VIEW.RECORDING:
-                return !isAudienceMember ? (
-                  <RecordingView
-                    isContestant={!joinedMidRecording}
-                    pushMessageToChannel={pushMessage}
-                    stopSample={stopSample}
-                    sampleName={sampleName}
-                  />
-                ) : (
-                  <AudienceRecordingView />
-                );
-
-              case GAME_VIEW.PLAYBACK_VOTING:
-                return (
-                  <PlaybackVotingView
-                    pushMessageToChannel={pushMessage}
-                    stopSample={stopSample}
-                    isSamplePlayerLoaded={isSamplePlayerLoaded}
-                  />
-                );
-
-              case GAME_VIEW.ROUND_END:
-                return <RoundEndView />;
-
-              case GAME_VIEW.GAME_END:
-                return <GameEndView />;
+        <BackingTrackContext.Provider value={backingTrackContext}>
+          <InGameFrame
+            title="GAME"
+            subtitle={`${roomName} / FREE-FOR-ALL / ROUND ${gameContext.roundNum}`}
+            textRight={isAudienceMember ? "[AUDIENCE]" : ""}
+            textRightClass={
+              isAudienceMember
+                ? "audience_member_role_text"
+                : "player_role_text"
             }
-          })()}
-        </InGameFrame>
+          >
+            <GameLeftPane />
+            {(() => {
+              switch (currentView) {
+                case GAME_VIEW.GAME_START:
+                  return <GameStartView pushMessageToChannel={pushMessage} />;
+
+                case GAME_VIEW.ROUND_START:
+                  return (
+                    <RoundStartView
+                      pushMessageToChannel={pushMessage}
+                      roundNum={gameContext.roundNum}
+                      sampleName={sampleName}
+                    />
+                  );
+
+                case GAME_VIEW.RECORDING:
+                  return !isAudienceMember ? (
+                    <RecordingView
+                      isContestant={!joinedMidRecording}
+                      pushMessageToChannel={pushMessage}
+                      stopSample={stopSample}
+                    />
+                  ) : (
+                    <AudienceRecordingView />
+                  );
+
+                case GAME_VIEW.PLAYBACK_VOTING:
+                  return (
+                    <PlaybackVotingView
+                      pushMessageToChannel={pushMessage}
+                      stopSample={stopSample}
+                      isSamplePlayerLoaded={isSamplePlayerLoaded}
+                    />
+                  );
+
+                case GAME_VIEW.ROUND_END:
+                  return <RoundEndView />;
+
+                case GAME_VIEW.GAME_END:
+                  return <GameEndView />;
+              }
+            })()}
+          </InGameFrame>
+        </BackingTrackContext.Provider>
       </GameSubContexts>
     </GameContext.Provider>
   );

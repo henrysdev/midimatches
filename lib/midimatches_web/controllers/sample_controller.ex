@@ -15,7 +15,6 @@ defmodule MidimatchesWeb.SampleController do
       count
       |> String.to_integer()
       |> BackingTracks.fetch_random_backing_tracks()
-      |> Enum.map(& &1.file_url)
 
     conn
     |> json(%{

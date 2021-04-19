@@ -1,9 +1,6 @@
 import React, { useState, useMemo, useEffect, useRef } from "react";
 
-import {
-  SUBMIT_VOTE_EVENT,
-  DEFAULT_RECORDING_LENGTH,
-} from "../../../../constants";
+import { useBackingTrackContext } from "../../../../hooks";
 import { PlaybackAudio } from "../../../audio";
 import {
   SimpleButton,
@@ -41,6 +38,8 @@ const PracticePlaybackView: React.FC<PracticePlaybackViewProps> = ({
   const [autoPlayingTrackIdx, setAutoPlayingTrackIdx] = useState<number>(-1);
   const autoPlayCounter = useRef(null) as any;
 
+  const { recordingTime } = useBackingTrackContext();
+
   useEffect(() => {
     if (isSamplePlayerLoaded) {
       if (autoPlayingTrackIdx === -1) {
@@ -51,7 +50,7 @@ const PracticePlaybackView: React.FC<PracticePlaybackViewProps> = ({
     if (autoPlayingTrackIdx < 2) {
       autoPlayCounter.current = setTimeout(() => {
         setAutoPlayingTrackIdx((idx) => idx + 1);
-      }, secToMs(DEFAULT_RECORDING_LENGTH));
+      }, secToMs(recordingTime));
     }
 
     return () => {

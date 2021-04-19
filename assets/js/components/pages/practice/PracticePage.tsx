@@ -5,6 +5,7 @@ import {
   GameContext,
   GameRulesContext,
   KeyboardInputContext,
+  BackingTrackContext,
 } from "../../../contexts";
 import {
   useAudioContextProvider,
@@ -12,6 +13,7 @@ import {
   useCurrentUserContext,
   useSocketContext,
   useKeyboardInputContextProvider,
+  useBackingTrackContextProvider,
 } from "../../../hooks";
 import {
   msToMicros,
@@ -32,6 +34,7 @@ import { VinylLoadingSpinner, DynamicContent } from "../../common";
 import { PracticePlaybackView } from "./views/PracticePlaybackView";
 import { PageWrapper } from "../";
 import { BrowserWarning } from "../../pages";
+import { BackingTrack } from "../../../types";
 
 interface PracticePageProps {
   children?: any;
@@ -56,17 +59,18 @@ const PracticePage: React.FC<PracticePageProps> = ({ children }) => {
   }, [roundRecordingStartTime]);
 
   const {
-    data: { samples: sampleNames = [] } = {},
+    data: { samples: backingTracks = [] } = {},
     loading,
     loaded,
-    loadError,
   } = useLoadRandomSamples([], 200);
 
   const [currentView, setCurrentView] = useState<PRACTICE_GAME_VIEW>(
     PRACTICE_GAME_VIEW.SAMPLE_SELECTION
   );
 
-  const [currentSample, setCurrentSample] = useState<string>();
+  const [currentSample, setCurrentSample] = useState<BackingTrack>(
+    {} as BackingTrack
+  );
   const [currSampleIdx, setCurrSampleIdx] = useState<number>(-2);
 
   const incrCurrSampleIdx = () => {
@@ -80,10 +84,8 @@ const PracticePage: React.FC<PracticePageProps> = ({ children }) => {
   useEffect(() => {
     const newSample = samples[mod(currSampleIdx, samples.length)];
     if (!!newSample) {
-      const newSampleName = newSample.split("/").pop() || "";
-      toneAudioContext.loadSample(newSample);
-      // TODO use backing track struct
-      setCurrentSample(newSampleName);
+      toneAudioContext.loadSample(newSample.fileUrl);
+      setCurrentSample(newSample);
     }
   }, [currSampleIdx]);
 
@@ -92,9 +94,11 @@ const PracticePage: React.FC<PracticePageProps> = ({ children }) => {
   const [currentRecording, setCurrentRecording] = useState<any>();
 
   const samples = useMemo(() => {
-    sampleNames.sort();
-    return sampleNames;
-  }, [sampleNames.length]);
+    backingTracks.sort((a: BackingTrack, b: BackingTrack) =>
+      a.name.localeCompare(b.name)
+    );
+    return backingTracks;
+  }, [backingTracks.length]);
 
   useEffect(() => {
     incrCurrSampleIdx();
@@ -107,6 +111,8 @@ const PracticePage: React.FC<PracticePageProps> = ({ children }) => {
         break;
     }
   }, [currentView]);
+
+  const backingTrackContext = useBackingTrackContextProvider(currentSample);
 
   return (
     <PageWrapper socket={socket} currentUser={currentUser}>
@@ -139,64 +145,68 @@ const PracticePage: React.FC<PracticePageProps> = ({ children }) => {
                       <VinylLoadingSpinner />
                     </div>
                   </DynamicContent>
-                ) : loaded ? (
+                ) : loaded && !!currentSample ? (
                   <div style={{ height: "100%" }}>
-                    {(() => {
-                      switch (currentView) {
-                        case PRACTICE_GAME_VIEW.SAMPLE_SELECTION:
-                          return (
-                            <PracticeSampleSelectionView
-                              nextSample={incrCurrSampleIdx}
-                              prevSample={decrCurrSampleIdx}
-                              currentSample={currentSample}
-                              stopSample={toneAudioContext.stopSample}
-                              samplePlayer={toneAudioContext.samplePlayer}
-                              isSamplePlayerLoaded={
-                                toneAudioContext.isSamplePlayerLoaded
-                              }
-                              advanceView={() => {
-                                setRoundRecordingStartTime(currUtcTimestamp());
-                                setCurrentView(PRACTICE_GAME_VIEW.RECORDING);
-                              }}
-                            />
-                          );
-
-                        case PRACTICE_GAME_VIEW.RECORDING:
-                          return !!currentSample ? (
-                            <PracticeRecordingView
-                              setRecordingCallback={setCurrentRecording}
-                              sampleName={currentSample}
-                              stopSample={toneAudioContext.stopSample}
-                              advanceView={() => {
-                                setCurrentView(PRACTICE_GAME_VIEW.PLAYBACK);
-                              }}
-                            />
-                          ) : (
-                            <></>
-                          );
-
-                        case PRACTICE_GAME_VIEW.PLAYBACK:
-                          return !!currentSample ? (
-                            <div style={{ height: "100%" }}>
-                              <PracticePlaybackView
+                    <BackingTrackContext.Provider value={backingTrackContext}>
+                      {(() => {
+                        switch (currentView) {
+                          case PRACTICE_GAME_VIEW.SAMPLE_SELECTION:
+                            return (
+                              <PracticeSampleSelectionView
+                                nextSample={incrCurrSampleIdx}
+                                prevSample={decrCurrSampleIdx}
+                                currentSample={currentSample.name}
+                                stopSample={toneAudioContext.stopSample}
+                                samplePlayer={toneAudioContext.samplePlayer}
                                 isSamplePlayerLoaded={
                                   toneAudioContext.isSamplePlayerLoaded
                                 }
-                                sampleName={currentSample}
-                                stopSample={toneAudioContext.stopSample}
-                                recording={currentRecording}
                                 advanceView={() => {
-                                  setCurrentView(
-                                    PRACTICE_GAME_VIEW.SAMPLE_SELECTION
+                                  setRoundRecordingStartTime(
+                                    currUtcTimestamp()
                                   );
+                                  setCurrentView(PRACTICE_GAME_VIEW.RECORDING);
                                 }}
                               />
-                            </div>
-                          ) : (
-                            <></>
-                          );
-                      }
-                    })()}
+                            );
+
+                          case PRACTICE_GAME_VIEW.RECORDING:
+                            return !!currentSample ? (
+                              <PracticeRecordingView
+                                setRecordingCallback={setCurrentRecording}
+                                backingTrack={currentSample}
+                                stopSample={toneAudioContext.stopSample}
+                                advanceView={() => {
+                                  setCurrentView(PRACTICE_GAME_VIEW.PLAYBACK);
+                                }}
+                              />
+                            ) : (
+                              <></>
+                            );
+
+                          case PRACTICE_GAME_VIEW.PLAYBACK:
+                            return !!currentSample ? (
+                              <div style={{ height: "100%" }}>
+                                <PracticePlaybackView
+                                  isSamplePlayerLoaded={
+                                    toneAudioContext.isSamplePlayerLoaded
+                                  }
+                                  sampleName={currentSample.name}
+                                  stopSample={toneAudioContext.stopSample}
+                                  recording={currentRecording}
+                                  advanceView={() => {
+                                    setCurrentView(
+                                      PRACTICE_GAME_VIEW.SAMPLE_SELECTION
+                                    );
+                                  }}
+                                />
+                              </div>
+                            ) : (
+                              <></>
+                            );
+                        }
+                      })()}
+                    </BackingTrackContext.Provider>
                   </div>
                 ) : (
                   <></>

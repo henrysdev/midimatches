@@ -35,7 +35,6 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllLogic do
 
     sample_beats =
       MidimatchesDb.BackingTracks.fetch_random_backing_tracks(game_rules.rounds_to_win)
-      |> Enum.map(& &1.file_url)
 
     %GameInstance{
       room_id: room_id,

@@ -85,7 +85,7 @@ export interface RoomState {
 export interface GameState {
   gameRules: GameRules;
   roomId?: string;
-  sampleBeats: string[];
+  sampleBeats: BackingTrack[];
   gameView: string;
   players?: Player[];
   numVotesCast?: number;
@@ -130,6 +130,14 @@ export interface ChatMessage {
   senderAlias: string;
   messageText: string;
   timestamp: number;
+}
+
+export interface BackingTrack {
+  name: string;
+  fileUrl: string;
+  bpm: number;
+  musicalKey: string;
+  author: string;
 }
 
 export interface AdminMessage {
@@ -180,6 +188,13 @@ export interface ToneAudioContextType {
   stopRecorder: Function;
   shouldQuantize: boolean;
   setShouldQuantize: Function;
+}
+
+export interface BackingTrackContextType {
+  backingTrack: BackingTrack;
+  sampleLength: Seconds;
+  warmUpTime: Seconds;
+  recordingTime: Seconds;
 }
 
 export interface PlayerContextType {
