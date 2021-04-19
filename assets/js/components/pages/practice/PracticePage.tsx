@@ -32,6 +32,7 @@ import { VinylLoadingSpinner, DynamicContent } from "../../common";
 import { PracticePlaybackView } from "./views/PracticePlaybackView";
 import { PageWrapper } from "../";
 import { BrowserWarning } from "../../pages";
+import { BackingTrack } from "../../../types";
 
 interface PracticePageProps {
   children?: any;
@@ -56,17 +57,16 @@ const PracticePage: React.FC<PracticePageProps> = ({ children }) => {
   }, [roundRecordingStartTime]);
 
   const {
-    data: { samples: sampleNames = [] } = {},
+    data: { samples: backingTracks = [] } = {},
     loading,
     loaded,
-    loadError,
   } = useLoadRandomSamples([], 200);
 
   const [currentView, setCurrentView] = useState<PRACTICE_GAME_VIEW>(
     PRACTICE_GAME_VIEW.SAMPLE_SELECTION
   );
 
-  const [currentSample, setCurrentSample] = useState<string>();
+  const [currentSample, setCurrentSample] = useState<BackingTrack>();
   const [currSampleIdx, setCurrSampleIdx] = useState<number>(-2);
 
   const incrCurrSampleIdx = () => {
@@ -80,10 +80,8 @@ const PracticePage: React.FC<PracticePageProps> = ({ children }) => {
   useEffect(() => {
     const newSample = samples[mod(currSampleIdx, samples.length)];
     if (!!newSample) {
-      const newSampleName = newSample.split("/").pop() || "";
-      toneAudioContext.loadSample(newSample);
-      // TODO use backing track struct
-      setCurrentSample(newSampleName);
+      toneAudioContext.loadSample(newSample.fileUrl);
+      setCurrentSample(newSample);
     }
   }, [currSampleIdx]);
 
@@ -92,9 +90,11 @@ const PracticePage: React.FC<PracticePageProps> = ({ children }) => {
   const [currentRecording, setCurrentRecording] = useState<any>();
 
   const samples = useMemo(() => {
-    sampleNames.sort();
-    return sampleNames;
-  }, [sampleNames.length]);
+    backingTracks.sort((a: BackingTrack, b: BackingTrack) =>
+      a.name.localeCompare(b.name)
+    );
+    return backingTracks;
+  }, [backingTracks.length]);
 
   useEffect(() => {
     incrCurrSampleIdx();
@@ -139,7 +139,7 @@ const PracticePage: React.FC<PracticePageProps> = ({ children }) => {
                       <VinylLoadingSpinner />
                     </div>
                   </DynamicContent>
-                ) : loaded ? (
+                ) : loaded && !!currentSample ? (
                   <div style={{ height: "100%" }}>
                     {(() => {
                       switch (currentView) {
@@ -148,7 +148,7 @@ const PracticePage: React.FC<PracticePageProps> = ({ children }) => {
                             <PracticeSampleSelectionView
                               nextSample={incrCurrSampleIdx}
                               prevSample={decrCurrSampleIdx}
-                              currentSample={currentSample}
+                              currentSample={currentSample.name}
                               stopSample={toneAudioContext.stopSample}
                               samplePlayer={toneAudioContext.samplePlayer}
                               isSamplePlayerLoaded={
@@ -165,7 +165,7 @@ const PracticePage: React.FC<PracticePageProps> = ({ children }) => {
                           return !!currentSample ? (
                             <PracticeRecordingView
                               setRecordingCallback={setCurrentRecording}
-                              sampleName={currentSample}
+                              sampleName={currentSample.name}
                               stopSample={toneAudioContext.stopSample}
                               advanceView={() => {
                                 setCurrentView(PRACTICE_GAME_VIEW.PLAYBACK);
@@ -182,7 +182,7 @@ const PracticePage: React.FC<PracticePageProps> = ({ children }) => {
                                 isSamplePlayerLoaded={
                                   toneAudioContext.isSamplePlayerLoaded
                                 }
-                                sampleName={currentSample}
+                                sampleName={currentSample.name}
                                 stopSample={toneAudioContext.stopSample}
                                 recording={currentRecording}
                                 advanceView={() => {

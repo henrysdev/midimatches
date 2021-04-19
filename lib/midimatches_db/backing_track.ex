@@ -4,6 +4,7 @@ defmodule MidimatchesDb.BackingTrack do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @derive {Jason.Encoder, only: [:name, :file_url, :bpm, :musical_key, :author, :uuid]}
   schema "backing_tracks" do
     field(:name, :string)
     field(:file_url, :string)

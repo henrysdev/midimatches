@@ -53,13 +53,12 @@ const Game: React.FC<GameProps> = ({
 
   const [joinedMidRecording, setJoinedMidRecording] = useState<boolean>(true);
 
-  // TODO use backing track struct instead of parsing out
   const currSampleBeat = useMemo(() => {
     return gameContext.sampleBeats[gameContext.roundNum - 1];
   }, [gameContext.roundNum]);
 
   const sampleName = useMemo(() => {
-    return currSampleBeat.split("/").pop() || "";
+    return currSampleBeat.name;
   }, [currSampleBeat]);
 
   useEffect(() => {
@@ -68,14 +67,14 @@ const Game: React.FC<GameProps> = ({
         break;
       case GAME_VIEW.ROUND_START:
         setJoinedMidRecording(false);
-        loadSample(currSampleBeat);
+        loadSample(currSampleBeat.fileUrl);
         break;
       case GAME_VIEW.RECORDING:
-        loadSample(currSampleBeat);
+        loadSample(currSampleBeat.fileUrl);
         break;
       case GAME_VIEW.PLAYBACK_VOTING:
         setJoinedMidRecording(false);
-        loadSample(currSampleBeat);
+        loadSample(currSampleBeat.fileUrl);
         resetTone();
         break;
       case GAME_VIEW.ROUND_END:
