@@ -9,7 +9,7 @@ import {
   Milliseconds,
   Microseconds,
 } from "../types";
-import { useToneAudioContext } from ".";
+import { useToneAudioContext, useBackingTrackContext } from ".";
 import {
   scheduleRecordingDeadlines,
   getRecordingStartTimestamp,
@@ -71,6 +71,8 @@ export function useNoteRecorder({
     stopRecorder,
     shouldQuantize,
   } = useToneAudioContext();
+
+  const backingTrackContext = useBackingTrackContext();
 
   const [internalState, _setInternalState] = useState<InternalState>(
     {} as InternalState
@@ -210,7 +212,8 @@ export function useNoteRecorder({
         sampleStartPlayCallback,
         startRecord,
         stopRecord,
-        samplePlayer
+        samplePlayer,
+        backingTrackContext
       );
     }
   }, [roundRecordingStartTime]);

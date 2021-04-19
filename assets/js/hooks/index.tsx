@@ -18,4 +18,5 @@ export { useCalcClockOffset } from "./useCalcClockOffset";
 export { useCurrentWidth } from "./useCurrentWidth";
 export { useKeyboardInputContextProvider } from "./useKeyboardInputContextProvider";
 export { useRecorder } from "./useRecorder";
+export { useBackingTrackContextProvider } from "./useBackingTrackContextProvider";
 export * from "./context";

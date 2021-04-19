@@ -1,11 +1,6 @@
 import React, { useState, useMemo } from "react";
 
-import {
-  SUBMIT_RECORDING_EVENT,
-  DEFAULT_SAMPLE_LENGTH,
-  DEFAULT_RECORDING_LENGTH,
-  DEFAULT_WARMUP_LENGTH,
-} from "../../../../../constants";
+import { SUBMIT_RECORDING_EVENT } from "../../../../../constants";
 import { RecordMidi } from "../../../../audio";
 import {
   Timer,
@@ -20,7 +15,9 @@ import {
   useGameRulesContext,
   useViewDeadlineContext,
   useRoundRecordingStartTimeContext,
+  useBackingTrackContext,
 } from "../../../../../hooks";
+import { BackingTrack } from "../../../../../types";
 
 enum RecordingState {
   INIT,
@@ -33,14 +30,12 @@ interface RecordingViewProps {
   isContestant: boolean;
   pushMessageToChannel: Function;
   stopSample: Function;
-  sampleName: string;
 }
 
 const RecordingView: React.FC<RecordingViewProps> = ({
   isContestant,
   pushMessageToChannel,
   stopSample,
-  sampleName,
 }) => {
   const [isSamplePlaying, setIsSamplePlaying] = useState<boolean>(false);
   const [isRecording, setIsRecording] = useState<boolean>(false);
@@ -62,6 +57,7 @@ const RecordingView: React.FC<RecordingViewProps> = ({
   const { gameRules } = useGameRulesContext();
   const { viewDeadline } = useViewDeadlineContext();
   const { roundRecordingStartTime } = useRoundRecordingStartTimeContext();
+  const { backingTrack, warmUpTime, recordingTime } = useBackingTrackContext();
 
   const recordingState: RecordingState = useMemo(() => {
     if (isSamplePlaying && !isRecording && !isFinishedRecording) {
@@ -91,7 +87,7 @@ const RecordingView: React.FC<RecordingViewProps> = ({
                   <div style={{ flex: 1 }}>
                     <p className="centered_text">
                       <strong className="large_instructions_text">
-                        {sampleName}
+                        {backingTrack.name}
                       </strong>
                     </p>
                   </div>
@@ -150,7 +146,7 @@ const RecordingView: React.FC<RecordingViewProps> = ({
             ) : recordingState === RecordingState.WARMUP ? (
               <Timer
                 descriptionText={"Recording starts in "}
-                duration={secToMs(DEFAULT_WARMUP_LENGTH)}
+                duration={secToMs(warmUpTime)}
                 extremeText={true}
               />
             ) : recordingState === RecordingState.RECORDING ? (
@@ -168,7 +164,7 @@ const RecordingView: React.FC<RecordingViewProps> = ({
                   />
                   <Timer
                     descriptionText={"Recording ends in "}
-                    duration={secToMs(DEFAULT_RECORDING_LENGTH)}
+                    duration={secToMs(recordingTime)}
                     style={{ color: "red" }}
                     extremeText={true}
                   />

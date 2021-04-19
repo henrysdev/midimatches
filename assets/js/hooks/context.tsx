@@ -16,6 +16,7 @@ import {
   RoundRecordingStartTimeContext,
   ClockOffsetContext,
   BrowserCompatibilityContext,
+  BackingTrackContext,
 } from "../contexts";
 
 import {
@@ -34,6 +35,7 @@ import {
   RoundRecordingStartTimeContextType,
   ClockOffsetContextType,
   BrowserCompatibilityContextType,
+  BackingTrackContextType,
 } from "../types";
 import { Player } from "tone";
 
@@ -99,4 +101,8 @@ export function useBrowserCompatibilityContext() {
   return useContext(
     BrowserCompatibilityContext
   ) as BrowserCompatibilityContextType;
+}
+
+export function useBackingTrackContext() {
+  return useContext(BackingTrackContext) as BackingTrackContextType;
 }

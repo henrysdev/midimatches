@@ -1,11 +1,5 @@
 import React, { useState, useMemo } from "react";
 
-import {
-  SUBMIT_RECORDING_EVENT,
-  DEFAULT_SAMPLE_LENGTH,
-  DEFAULT_RECORDING_LENGTH,
-  DEFAULT_WARMUP_LENGTH,
-} from "../../../../constants";
 import { RecordMidi } from "../../../audio";
 import {
   Timer,

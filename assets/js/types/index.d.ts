@@ -190,6 +190,13 @@ export interface ToneAudioContextType {
   setShouldQuantize: Function;
 }
 
+export interface BackingTrackContextType {
+  backingTrack: BackingTrack;
+  sampleLength: Seconds;
+  warmUpTime: Seconds;
+  recordingTime: Seconds;
+}
+
 export interface PlayerContextType {
   player: Player;
   isAudienceMember: boolean;
