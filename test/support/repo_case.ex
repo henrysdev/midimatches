@@ -1,5 +1,9 @@
 defmodule MidimatchesDb.RepoCase do
+  @moduledoc false
+
   use ExUnit.CaseTemplate
+
+  alias MidimatchesDb.Repo
 
   using do
     quote do
@@ -12,10 +16,10 @@ defmodule MidimatchesDb.RepoCase do
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(MidimatchesDb.Repo)
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(MidimatchesDb.Repo, {:shared, self()})
+      Ecto.Adapters.SQL.Sandbox.mode(Repo, {:shared, self()})
     end
 
     :ok

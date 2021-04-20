@@ -7,7 +7,9 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.Recording do
     Rooms.Room.GameInstance,
     Rooms.Room.Modes.FreeForAll.FreeForAllLogic,
     Types.GameRules,
-    Types.GameRules.ViewTimeouts
+    Types.GameRules.ViewTimeouts,
+    Types.Loop,
+    Utils
   }
 
   @type id() :: String.t()
@@ -26,14 +28,25 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.Recording do
           game_view: :recording,
           game_rules:
             %GameRules{
-              solo_time_limit: solo_time_limit,
               view_timeouts: view_timeouts
-            } = game_rules
+            } = game_rules,
+          sample_beats: sample_beats,
+          round_num: round_num
         } = state
       ) do
     # handle special case where we want to calculate length of playback voting timeout
     # based on how many players are in the game
-    number_of_recordings = recordings |> Map.keys() |> length()
+    number_of_recordings_with_content =
+      recordings
+      |> Map.to_list()
+      |> Enum.reject(fn {_key, %Loop{timestep_slices: ts}} -> Enum.empty?(ts) end)
+      |> length()
+
+    current_sample_beat = Enum.at(sample_beats, round_num - 1)
+    sample_time = Utils.calc_sample_time(current_sample_beat.bpm)
+
+    playback_voting_timeout =
+      max(ceil(sample_time * number_of_recordings_with_content * 1.5) + 5_000, 10_000)
 
     state = %GameInstance{
       state
@@ -41,7 +54,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.Recording do
           game_rules
           | view_timeouts: %ViewTimeouts{
               view_timeouts
-              | playback_voting: number_of_recordings * solo_time_limit + 5_000
+              | playback_voting: playback_voting_timeout
             }
         }
     }

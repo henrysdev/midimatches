@@ -1,10 +1,13 @@
 defmodule Midimatches.FreeForAllLogicTest do
   use ExUnit.Case
 
+  alias MidimatchesDb.BackingTrack
+
   alias Midimatches.{
     Rooms.Room.GameInstance,
     Rooms.Room.Modes.FreeForAll.FreeForAllLogic,
     TestHelpers,
+    Types.Loop,
     Types.Player
   }
 
@@ -42,7 +45,15 @@ defmodule Midimatches.FreeForAllLogicTest do
         game_id: "abc",
         players: players,
         player_ids_set: player_ids_set,
-        sample_beats: []
+        sample_beats: [
+          %BackingTrack{
+            name: "footrack",
+            author: "barsician",
+            bpm: 110,
+            musical_key: "C",
+            file_url: "www.asdfasd.com/jalkasdg/das"
+          }
+        ]
       }
 
       {_bracket, actual_state_scan} =
@@ -95,7 +106,15 @@ defmodule Midimatches.FreeForAllLogicTest do
         game_id: "abc",
         players: players,
         player_ids_set: player_ids_set,
-        sample_beats: []
+        sample_beats: [
+          %BackingTrack{
+            name: "footrack",
+            author: "barsician",
+            bpm: 110,
+            musical_key: "C",
+            file_url: "www.asdfasd.com/jalkasdg/das"
+          }
+        ]
       }
 
       {_bracket, actual_state_scan} =
@@ -143,7 +162,11 @@ defmodule Midimatches.FreeForAllLogicTest do
         ])
 
       player_ids_set = MapSet.new(["1", "2", "3", "4"])
-      event_payloads = [{"1", %{"a" => "foo"}}, {"2", %{"b" => "bar"}}]
+
+      event_payloads = [
+        {"1", %Loop{timestep_slices: [], length: 0, start_timestep: 0}},
+        {"2", %Loop{timestep_slices: [], length: 0, start_timestep: 0}}
+      ]
 
       game_server_state = %GameInstance{
         room_id: "1",
@@ -152,7 +175,15 @@ defmodule Midimatches.FreeForAllLogicTest do
         player_ids_set: player_ids_set,
         game_view: :recording,
         contestants: ["1", "2"],
-        sample_beats: []
+        sample_beats: [
+          %BackingTrack{
+            name: "footrack",
+            author: "barsician",
+            bpm: 110,
+            musical_key: "C",
+            file_url: "www.asdfasd.com/jalkasdg/das"
+          }
+        ]
       }
 
       {_bracket, actual_state_scan} =
@@ -167,8 +198,11 @@ defmodule Midimatches.FreeForAllLogicTest do
         )
 
       expected_state_scan = [
-        {[%{"a" => "foo"}], :recording},
-        {[%{"a" => "foo"}, %{"b" => "bar"}], :playback_voting}
+        {[%Loop{timestep_slices: [], length: 0, start_timestep: 0}], :recording},
+        {[
+           %Loop{timestep_slices: [], length: 0, start_timestep: 0},
+           %Loop{timestep_slices: [], length: 0, start_timestep: 0}
+         ], :playback_voting}
       ]
 
       assert Enum.reverse(actual_state_scan) == expected_state_scan
@@ -208,7 +242,15 @@ defmodule Midimatches.FreeForAllLogicTest do
         player_ids_set: player_ids_set,
         game_view: :playback_voting,
         contestants: ["1", "2", "3", "4"],
-        sample_beats: []
+        sample_beats: [
+          %BackingTrack{
+            name: "footrack",
+            author: "barsician",
+            bpm: 110,
+            musical_key: "C",
+            file_url: "www.asdfasd.com/jalkasdg/das"
+          }
+        ]
       }
 
       {_bracket, actual_state_scan} =
@@ -275,7 +317,15 @@ defmodule Midimatches.FreeForAllLogicTest do
         contestants: contestants,
         round_num: 3,
         game_rules: %{rounds_to_win: 3},
-        sample_beats: []
+        sample_beats: [
+          %BackingTrack{
+            name: "footrack",
+            author: "barsician",
+            bpm: 110,
+            musical_key: "C",
+            file_url: "www.asdfasd.com/jalkasdg/das"
+          }
+        ]
       }
 
       {_bracket, actual_state_scan} =
@@ -336,7 +386,15 @@ defmodule Midimatches.FreeForAllLogicTest do
       contestants: contestants,
       round_num: 3,
       game_rules: %{rounds_to_win: 3},
-      sample_beats: []
+      sample_beats: [
+        %BackingTrack{
+          name: "footrack",
+          author: "barsician",
+          bpm: 110,
+          musical_key: "C",
+          file_url: "www.asdfasd.com/jalkasdg/das"
+        }
+      ]
     }
 
     %{state: actual_state} = FreeForAllLogic.remove_player(game_server_state, "1")
@@ -364,7 +422,15 @@ defmodule Midimatches.FreeForAllLogicTest do
       contestants: ["2", "3", "4"],
       round_num: 3,
       game_rules: %{rounds_to_win: 3},
-      sample_beats: []
+      sample_beats: [
+        %BackingTrack{
+          name: "footrack",
+          author: "barsician",
+          bpm: 110,
+          musical_key: "C",
+          file_url: "www.asdfasd.com/jalkasdg/das"
+        }
+      ]
     }
 
     assert actual_state == expected_state
@@ -404,7 +470,15 @@ defmodule Midimatches.FreeForAllLogicTest do
       contestants: contestants,
       round_num: 3,
       game_rules: %{rounds_to_win: 3},
-      sample_beats: []
+      sample_beats: [
+        %BackingTrack{
+          name: "footrack",
+          author: "barsician",
+          bpm: 110,
+          musical_key: "C",
+          file_url: "www.asdfasd.com/jalkasdg/das"
+        }
+      ]
     }
 
     %{state: actual_state} = FreeForAllLogic.add_player(game_server_state, new_player)
@@ -436,7 +510,15 @@ defmodule Midimatches.FreeForAllLogicTest do
       contestants: ["1", "2", "3", "4"],
       round_num: 3,
       game_rules: %{rounds_to_win: 3},
-      sample_beats: [],
+      sample_beats: [
+        %BackingTrack{
+          name: "footrack",
+          author: "barsician",
+          bpm: 110,
+          musical_key: "C",
+          file_url: "www.asdfasd.com/jalkasdg/das"
+        }
+      ],
       scores: %{"4" => 0},
       ready_ups: MapSet.new(["4"])
     }
@@ -478,7 +560,15 @@ defmodule Midimatches.FreeForAllLogicTest do
       contestants: contestants,
       round_num: 3,
       game_rules: %{rounds_to_win: 3},
-      sample_beats: []
+      sample_beats: [
+        %BackingTrack{
+          name: "footrack",
+          author: "barsician",
+          bpm: 110,
+          musical_key: "C",
+          file_url: "www.asdfasd.com/jalkasdg/das"
+        }
+      ]
     }
 
     %{state: actual_state} =
@@ -509,7 +599,15 @@ defmodule Midimatches.FreeForAllLogicTest do
       contestants: ["1", "2", "3"],
       round_num: 3,
       game_rules: %{rounds_to_win: 3},
-      sample_beats: [],
+      sample_beats: [
+        %BackingTrack{
+          name: "footrack",
+          author: "barsician",
+          bpm: 110,
+          musical_key: "C",
+          file_url: "www.asdfasd.com/jalkasdg/das"
+        }
+      ],
       scores: %{}
     }
 
@@ -551,7 +649,15 @@ defmodule Midimatches.FreeForAllLogicTest do
       contestants: contestants,
       round_num: 3,
       game_rules: %{rounds_to_win: 3},
-      sample_beats: []
+      sample_beats: [
+        %BackingTrack{
+          name: "footrack",
+          author: "barsician",
+          bpm: 110,
+          musical_key: "C",
+          file_url: "www.asdfasd.com/jalkasdg/das"
+        }
+      ]
     }
 
     %{state: actual_state} = FreeForAllLogic.remove_audience_member(game_server_state, "5")
@@ -577,7 +683,15 @@ defmodule Midimatches.FreeForAllLogicTest do
       contestants: ["1", "2"],
       round_num: 3,
       game_rules: %{rounds_to_win: 3},
-      sample_beats: []
+      sample_beats: [
+        %BackingTrack{
+          name: "footrack",
+          author: "barsician",
+          bpm: 110,
+          musical_key: "C",
+          file_url: "www.asdfasd.com/jalkasdg/das"
+        }
+      ]
     }
 
     assert actual_state == expected_state

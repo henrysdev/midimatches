@@ -5,8 +5,8 @@ defmodule MidimatchesDb.BackingTracks do
   import Ecto.Query
 
   alias MidimatchesDb.{
-    Repo,
-    BackingTrack
+    BackingTrack,
+    Repo
   }
 
   @spec create_backing_track(%BackingTrack{}) :: %BackingTrack{}
