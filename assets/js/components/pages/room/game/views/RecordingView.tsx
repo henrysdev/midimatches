@@ -119,6 +119,7 @@ const RecordingView: React.FC<RecordingViewProps> = ({
                 roundRecordingStartTime={roundRecordingStartTime}
                 shouldRecord={true}
                 isRecording={isRecording}
+                setIsSamplePlaying={setIsSamplePlaying}
               />
             ) : (
               <></>

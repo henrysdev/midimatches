@@ -34,6 +34,7 @@ interface NoteRecorderProps {
   roundRecordingStartTime: number;
   gameRules: GameRules;
   shouldRecord: boolean;
+  setIsSamplePlaying: Function;
 }
 
 interface InternalState {
@@ -63,6 +64,7 @@ export function useNoteRecorder({
   roundRecordingStartTime,
   gameRules,
   shouldRecord,
+  setIsSamplePlaying,
 }: NoteRecorderProps): NoteRecorder {
   const {
     samplePlayer,
@@ -213,7 +215,8 @@ export function useNoteRecorder({
         startRecord,
         stopRecord,
         samplePlayer,
-        backingTrackContext
+        backingTrackContext,
+        setIsSamplePlaying
       );
     }
   }, [roundRecordingStartTime]);
