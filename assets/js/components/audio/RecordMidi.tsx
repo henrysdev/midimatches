@@ -30,6 +30,7 @@ interface RecordMidiProps {
   shouldRecord: boolean;
   hideKeyboard?: boolean;
   isRecording: boolean;
+  setIsSamplePlaying: Function;
 }
 
 const RecordMidi: React.FC<RecordMidiProps> = ({
@@ -42,6 +43,7 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
   shouldRecord,
   hideKeyboard = false,
   isRecording,
+  setIsSamplePlaying,
 }) => {
   const { midiInputs, synth, currInputLagComp } = useToneAudioContext();
   const {
@@ -63,6 +65,7 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
     roundRecordingStartTime,
     gameRules,
     shouldRecord,
+    setIsSamplePlaying,
   });
 
   const stopNotes = () => {
