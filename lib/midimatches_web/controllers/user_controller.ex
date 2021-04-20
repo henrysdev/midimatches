@@ -17,6 +17,8 @@ defmodule MidimatchesWeb.UserController do
 
   @min_user_alias_length 3
   @max_user_alias_length 10
+  @min_password_length 10
+  @max_password_length 32
 
   @type id() :: String.t()
 
@@ -218,7 +220,7 @@ defmodule MidimatchesWeb.UserController do
   defp validate_password_length(password) do
     password_len = String.length(password)
 
-    if password < @min_user_alias_length or password_len > @max_user_alias_length do
+    if password < @min_password_length or password_len > @max_password_length do
       {:error, invalid_value_error("password", :invalid_length)}
     else
       {:ok, password}
