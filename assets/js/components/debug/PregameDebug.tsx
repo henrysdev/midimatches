@@ -6,6 +6,7 @@ import {
   ToneAudioContext,
   PlayerContext,
   KeyboardInputContext,
+  BackingTrackContext,
 } from "../../contexts";
 import { Keyboard } from "../audio";
 import {
@@ -15,7 +16,7 @@ import {
   RoundEndView,
 } from "../pages/room/game/views";
 import { Loop, GameContextType } from "../../types";
-import { useWebMidi } from "../../hooks";
+import { useWebMidi, useBackingTrackContextProvider } from "../../hooks";
 import { DynamicContent, ComputerFrame } from "../common";
 import Tone from "tone";
 
@@ -55,10 +56,6 @@ const mockSamplePlayer: any = {
 const mockedPlayers = [
   { playerAlias: "xb4z", playerId: "1199" },
   { playerAlias: "fearz123", playerId: "1111" },
-  { playerAlias: "anotha", playerId: "11151251" },
-  { playerAlias: "humbug", playerId: "124142" },
-  { playerAlias: "childress", playerId: "1111221" },
-  { playerAlias: "birb", playerId: "9111d51251" },
   { playerAlias: "egg", playerId: "811241242" },
   { playerAlias: "blurr", playerId: "16611g21221" },
 ];
@@ -159,332 +156,157 @@ const gameContext = {
         ],
       },
     ],
-    [
-      "fearz123",
-      {
-        timestepSlices: [
-          {
-            timestep: 4,
-            notes: [
-              {
-                key: 54,
-                duration: 14,
-              },
-              {
-                key: 64,
-                duration: 12,
-              },
-            ],
-          },
-          {
-            timestep: 41,
-            notes: [
-              {
-                key: 14,
-                duration: 20,
-              },
-              {
-                key: 4,
-                duration: 14,
-              },
-            ],
-          },
-          {
-            timestep: 200,
-            notes: [
-              {
-                key: 88,
-                duration: 4,
-              },
-              {
-                key: 65,
-                duration: 40,
-              },
-            ],
-          },
-        ],
-      },
-    ],
-    [
-      "anotha",
-      {
-        timestepSlices: [
-          {
-            timestep: 4,
-            notes: [
-              {
-                key: 54,
-                duration: 14,
-              },
-              {
-                key: 64,
-                duration: 12,
-              },
-            ],
-          },
-          {
-            timestep: 41,
-            notes: [
-              {
-                key: 14,
-                duration: 20,
-              },
-              {
-                key: 4,
-                duration: 14,
-              },
-            ],
-          },
-          {
-            timestep: 200,
-            notes: [
-              {
-                key: 88,
-                duration: 4,
-              },
-              {
-                key: 65,
-                duration: 40,
-              },
-            ],
-          },
-        ],
-      },
-    ],
-    [
-      "humbug",
-      {
-        timestepSlices: [
-          {
-            timestep: 4,
-            notes: [
-              {
-                key: 54,
-                duration: 14,
-              },
-              {
-                key: 64,
-                duration: 12,
-              },
-            ],
-          },
-          {
-            timestep: 41,
-            notes: [
-              {
-                key: 14,
-                duration: 20,
-              },
-              {
-                key: 4,
-                duration: 14,
-              },
-            ],
-          },
-          {
-            timestep: 200,
-            notes: [
-              {
-                key: 88,
-                duration: 4,
-              },
-              {
-                key: 65,
-                duration: 40,
-              },
-            ],
-          },
-        ],
-      },
-    ],
-    [
-      "childress",
-      {
-        timestepSlices: [
-          {
-            timestep: 4,
-            notes: [
-              {
-                key: 54,
-                duration: 14,
-              },
-              {
-                key: 64,
-                duration: 12,
-              },
-            ],
-          },
-          {
-            timestep: 41,
-            notes: [
-              {
-                key: 14,
-                duration: 20,
-              },
-              {
-                key: 4,
-                duration: 14,
-              },
-            ],
-          },
-          {
-            timestep: 200,
-            notes: [
-              {
-                key: 88,
-                duration: 4,
-              },
-              {
-                key: 65,
-                duration: 40,
-              },
-            ],
-          },
-        ],
-      },
-    ],
-    [
-      "birb",
-      {
-        timestepSlices: [
-          {
-            timestep: 4,
-            notes: [
-              {
-                key: 54,
-                duration: 14,
-              },
-              {
-                key: 64,
-                duration: 12,
-              },
-            ],
-          },
-          {
-            timestep: 41,
-            notes: [
-              {
-                key: 14,
-                duration: 20,
-              },
-              {
-                key: 4,
-                duration: 14,
-              },
-            ],
-          },
-          {
-            timestep: 200,
-            notes: [
-              {
-                key: 88,
-                duration: 4,
-              },
-              {
-                key: 65,
-                duration: 40,
-              },
-            ],
-          },
-        ],
-      },
-    ],
-    [
-      "egg",
-      {
-        timestepSlices: [
-          {
-            timestep: 4,
-            notes: [
-              {
-                key: 54,
-                duration: 14,
-              },
-              {
-                key: 64,
-                duration: 12,
-              },
-            ],
-          },
-          {
-            timestep: 41,
-            notes: [
-              {
-                key: 14,
-                duration: 20,
-              },
-              {
-                key: 4,
-                duration: 14,
-              },
-            ],
-          },
-          {
-            timestep: 200,
-            notes: [
-              {
-                key: 88,
-                duration: 4,
-              },
-              {
-                key: 65,
-                duration: 40,
-              },
-            ],
-          },
-        ],
-      },
-    ],
-    [
-      "blurr",
-      {
-        timestepSlices: [
-          {
-            timestep: 4,
-            notes: [
-              {
-                key: 54,
-                duration: 14,
-              },
-              {
-                key: 64,
-                duration: 12,
-              },
-            ],
-          },
-          {
-            timestep: 41,
-            notes: [
-              {
-                key: 14,
-                duration: 20,
-              },
-              {
-                key: 4,
-                duration: 14,
-              },
-            ],
-          },
-          {
-            timestep: 200,
-            notes: [
-              {
-                key: 88,
-                duration: 4,
-              },
-              {
-                key: 65,
-                duration: 40,
-              },
-            ],
-          },
-        ],
-      },
-    ],
+    // [
+    //   "fearz123",
+    //   {
+    //     timestepSlices: [
+    //       {
+    //         timestep: 4,
+    //         notes: [
+    //           {
+    //             key: 54,
+    //             duration: 14,
+    //           },
+    //           {
+    //             key: 64,
+    //             duration: 12,
+    //           },
+    //         ],
+    //       },
+    //       {
+    //         timestep: 41,
+    //         notes: [
+    //           {
+    //             key: 14,
+    //             duration: 20,
+    //           },
+    //           {
+    //             key: 4,
+    //             duration: 14,
+    //           },
+    //         ],
+    //       },
+    //       {
+    //         timestep: 200,
+    //         notes: [
+    //           {
+    //             key: 88,
+    //             duration: 4,
+    //           },
+    //           {
+    //             key: 65,
+    //             duration: 40,
+    //           },
+    //         ],
+    //       },
+    //     ],
+    //   },
+    // ],
+    // [
+    //   "egg",
+    //   {
+    //     timestepSlices: [
+    //       {
+    //         timestep: 4,
+    //         notes: [
+    //           {
+    //             key: 54,
+    //             duration: 14,
+    //           },
+    //           {
+    //             key: 64,
+    //             duration: 12,
+    //           },
+    //         ],
+    //       },
+    //       {
+    //         timestep: 41,
+    //         notes: [
+    //           {
+    //             key: 14,
+    //             duration: 20,
+    //           },
+    //           {
+    //             key: 4,
+    //             duration: 14,
+    //           },
+    //         ],
+    //       },
+    //       {
+    //         timestep: 200,
+    //         notes: [
+    //           {
+    //             key: 88,
+    //             duration: 4,
+    //           },
+    //           {
+    //             key: 65,
+    //             duration: 40,
+    //           },
+    //         ],
+    //       },
+    //     ],
+    //   },
+    // ],
+    // [
+    //   "blurr",
+    //   {
+    //     timestepSlices: [
+    //       {
+    //         timestep: 4,
+    //         notes: [
+    //           {
+    //             key: 54,
+    //             duration: 14,
+    //           },
+    //           {
+    //             key: 64,
+    //             duration: 12,
+    //           },
+    //         ],
+    //       },
+    //       {
+    //         timestep: 41,
+    //         notes: [
+    //           {
+    //             key: 14,
+    //             duration: 20,
+    //           },
+    //           {
+    //             key: 4,
+    //             duration: 14,
+    //           },
+    //         ],
+    //       },
+    //       {
+    //         timestep: 200,
+    //         notes: [
+    //           {
+    //             key: 88,
+    //             duration: 4,
+    //           },
+    //           {
+    //             key: 65,
+    //             duration: 40,
+    //           },
+    //         ],
+    //       },
+    //     ],
+    //   },
+    // ],
   ],
 } as GameContextType;
 
+const backingTrack = {
+  name: "jazzyyy",
+  fileUrl: "https://progressions-game.s3.amazonaws.com/sample-beats/alt_1.mp3",
+  bpm: 90,
+  musicalKey: "C",
+  author: "me",
+};
+
 const PregameDebug: React.FC = () => {
+  const backingTrackContext = useBackingTrackContextProvider(backingTrack);
   const [midiInputs] = useWebMidi();
   return (
     <div>
@@ -498,23 +320,24 @@ const PregameDebug: React.FC = () => {
                 samplePlayer: mockSamplePlayer,
               }}
             >
-              <KeyboardInputContext.Provider
-                value={{
-                  setDisableKeyboardInput: () => {},
-                  disableKeyboardInput: false,
-                  setShowKeyboardLabels: () => {},
-                  showKeyboardLabels: true,
-                }}
-              >
-                <InGameFrame title="AAA">
-                  <GameLeftPane />
-                  <PlaybackVotingView
-                    pushMessageToChannel={() => {}}
-                    stopSample={() => {}}
-                    isSamplePlayerLoaded={true}
-                  />
-                </InGameFrame>
-                {/* <DynamicContent>
+              <BackingTrackContext.Provider value={backingTrackContext}>
+                <KeyboardInputContext.Provider
+                  value={{
+                    setDisableKeyboardInput: () => {},
+                    disableKeyboardInput: false,
+                    setShowKeyboardLabels: () => {},
+                    showKeyboardLabels: true,
+                  }}
+                >
+                  <InGameFrame title="AAA">
+                    <GameLeftPane />
+                    <PlaybackVotingView
+                      pushMessageToChannel={() => {}}
+                      stopSample={() => {}}
+                      isSamplePlayerLoaded={true}
+                    />
+                  </InGameFrame>
+                  {/* <DynamicContent>
               <div>
                 <Keyboard
                   activeMidiList={[50]}
@@ -525,7 +348,8 @@ const PregameDebug: React.FC = () => {
                 />
               </div>
             </DynamicContent> */}
-              </KeyboardInputContext.Provider>
+                </KeyboardInputContext.Provider>
+              </BackingTrackContext.Provider>
             </ToneAudioContext.Provider>
           </PlayerContext.Provider>
         </GameSubContexts>

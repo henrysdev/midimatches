@@ -120,6 +120,7 @@ const PracticeRecordingView: React.FC<PracticeRecordingViewProps> = ({
             roundRecordingStartTime={roundRecordingStartTime}
             shouldRecord={true}
             isRecording={isRecording}
+            setIsSamplePlaying={setIsSamplePlaying}
           />
         ) : (
           <></>
