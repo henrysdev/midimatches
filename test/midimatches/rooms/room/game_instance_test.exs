@@ -158,6 +158,7 @@ defmodule Midimatches.GameInstanceTest do
 
     # TODO fix test... is flakey
     test "triggered by view timer timeouts for game_start view" do
+      TestHelpers.populate_backing_tracks_table()
       room_id = "1"
       game_id = "abc"
 

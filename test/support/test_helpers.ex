@@ -3,12 +3,30 @@ defmodule Midimatches.TestHelpers do
   This module provides convenience methods for writing unit tests for this project
   """
 
+  alias MidimatchesDb.{
+    BackingTrack,
+    BackingTracks
+  }
+
   alias Midimatches.{
     Rooms,
     Rooms.Room.GameInstance,
     Rooms.RoomServer,
     Types.Loop
   }
+
+  def populate_backing_tracks_table(count \\ 10) do
+    for _ <- 1..count do
+      %BackingTrack{
+        name: UUID.uuid4(),
+        file_url: UUID.uuid4(),
+        author: UUID.uuid4(),
+        bpm: 90,
+        musical_key: "Em"
+      }
+      |> BackingTracks.create_backing_track()
+    end
+  end
 
   def flush_user_cache do
     if :ets.whereis(:user_cache) != :undefined do
