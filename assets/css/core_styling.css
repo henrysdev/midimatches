@@ -927,6 +927,26 @@ strong {
   height: 100%;
 }
 
+.playback_progress_head {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  height: 100%;
+  width: 100%;
+  border-left: 2px solid red;
+  /* animation: playback_head_anim 3s infinite; */
+  /* animation-timing-function: linear; */
+}
+
+@keyframes playback_head_anim {
+  0% {
+    width: 100%;
+  }
+  100% {
+    width: 0%;
+  }
+}
+
 .cloaked_recording_fill {
   background-color: rgba(255, 255, 255, 0.5);
   -webkit-backdrop-filter: blur(6px);

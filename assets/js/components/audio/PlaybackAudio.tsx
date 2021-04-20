@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import * as Tone from "tone";
 
-import { Loop, Color } from "../../types";
-import { loopToEvents } from "../../utils";
+import { Loop, Color, Milliseconds } from "../../types";
+import { loopToEvents, currUtcTimestamp, secToMs } from "../../utils";
 import {
   Button,
   ContentButton,
@@ -67,9 +67,49 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
 
   useEffect(() => {
     if (!!autoPlayingId && autoPlayingId === playerId) {
-      playbackMusician(timestepSize, playNote);
+      setShouldPlay(true);
     }
   }, [autoPlayingId]);
+
+  const playerTimeRef = useRef(null) as any;
+  const [shouldPlay, setShouldPlay] = useState<boolean>(false);
+  const [manualPlayCount, setManualPlayCount] = useState<number>(0);
+
+  const cancelPrevTimer = () => {
+    if (!!playerTimeRef && !!playerTimeRef.current) {
+      clearInterval(playerTimeRef.current);
+    }
+  };
+
+  useEffect(() => {
+    cancelPrevTimer();
+
+    if (shouldPlay) {
+      playbackMusician(timestepSize, playNote);
+      setActivePlaybackTrack(playerId);
+      setProgress(0);
+
+      // playhead update interval
+      const playbackStartTime = currUtcTimestamp();
+      const timer = () =>
+        setInterval(() => {
+          const elapsedTime = currUtcTimestamp() - playbackStartTime;
+          const progress = elapsedTime / secToMs(recordingTime);
+          if (progress >= 0.99) {
+            completeListening(playerId);
+            setProgress(1.0);
+            setShouldPlay(false);
+          } else {
+            setProgress(progress);
+          }
+        }, 100);
+      playerTimeRef.current = timer();
+    }
+
+    return () => {
+      cancelPrevTimer();
+    };
+  }, [shouldPlay, manualPlayCount]);
 
   const playNote = (
     note: number,
@@ -95,8 +135,6 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
 
     const part = buildPart(recording, timestepSize, playNote);
 
-    startPlayheadProgress(startTime);
-
     if (!!samplePlayer && !!samplePlayer.loop) {
       console.log("Playback stage - set back to loop = false");
       samplePlayer.loop = false;
@@ -111,31 +149,10 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
     part.start(`+0.05`);
   };
 
-  const startPlayheadProgress = (startTime: number): void => {
-    setActivePlaybackTrack(playerId);
-    setProgress(0);
-
-    Tone.Transport.scheduleRepeat(
-      (currTime) => {
-        Tone.Draw.schedule(() => {
-          const progress = (currTime - startTime) / recordingTime;
-          if (progress >= 0.99) {
-            completeListening(playerId);
-            setProgress(1.0);
-          } else {
-            setProgress(progress);
-          }
-        }, currTime);
-      },
-      0.05,
-      "+0",
-      recordingTime
-    );
-  };
-
   const startManualPlayback = () => {
     if (!autoPlayingId) {
-      playbackMusician(timestepSize, playNote);
+      setShouldPlay(true);
+      setManualPlayCount((count) => count + 1);
     }
   };
 

@@ -6,6 +6,7 @@ import {
 } from "../constants";
 import { Milliseconds, Seconds, BackingTrackContextType } from "../types";
 import { msToSec, secToMs, currUtcTimestamp } from "../utils";
+import { sample } from "lodash";
 
 interface ScheduleDeadlines {
   sampleStartTime: Seconds;
@@ -46,7 +47,8 @@ export function scheduleRecordingDeadlines(
   startRecording: Function,
   stopRecording: Function,
   samplePlayer: any,
-  backingTrackContext: BackingTrackContextType
+  backingTrackContext: BackingTrackContextType,
+  setIsSamplePlaying: Function
 ): void {
   // get deadlines
   const deadlines = calcRecordingDeadlines(
@@ -63,7 +65,8 @@ export function scheduleRecordingDeadlines(
     startRecording,
     stopRecording,
     samplePlayer,
-    backingTrackContext
+    backingTrackContext,
+    setIsSamplePlaying
   );
 }
 
@@ -99,7 +102,8 @@ function scheduleRecordingAudioTimeline(
   startRecording: Function,
   stopRecording: Function,
   samplePlayer: any,
-  backingTrackContext: BackingTrackContextType
+  backingTrackContext: BackingTrackContextType,
+  setIsSamplePlaying: Function
 ): void {
   Tone.Transport.start("+0");
   if (!!samplePlayer && !samplePlayer.loop) {
@@ -116,6 +120,12 @@ function scheduleRecordingAudioTimeline(
     loopIterations,
     backingTrackContext
   );
+
+  // bug fix: redundant timer for updating UI when tab becomes background process
+  // https://github.com/henrysdev/midimatches/issues/280
+  setTimeout(() => {
+    setIsSamplePlaying(true);
+  }, sampleStartTime * 1000);
 
   // start sample (warmup)
   Tone.Transport.scheduleOnce((time: Seconds) => {

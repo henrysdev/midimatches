@@ -1,5 +1,12 @@
 import React, { useEffect, useMemo, useRef } from "react";
-import { Loop, TimestepSlice, Note, Color, Seconds } from "../../types";
+import {
+  Loop,
+  TimestepSlice,
+  Note,
+  Color,
+  Seconds,
+  Milliseconds,
+} from "../../types";
 import { useGameRulesContext, useBackingTrackContext } from "../../hooks";
 import { microsToMs, msToSec } from "../../utils";
 import { MAX_NOTE_NUMBER, MIN_NOTE_NUMBER } from "../../constants";
@@ -74,11 +81,11 @@ const RecordingVisual: React.FC<RecordingVisualProps> = ({
         (Empty Recording)
       </div>
       {isPlaying ? (
-        drawProgress(progress, firstPlayback)
+        drawProgress(progress, firstPlayback, recordingTime)
       ) : listenComplete ? (
         <></>
       ) : (
-        drawClockedRecording()
+        drawCloackedRecording()
       )}
     </div>
   ) : (
@@ -92,11 +99,11 @@ const RecordingVisual: React.FC<RecordingVisualProps> = ({
       ></canvas>
       <div className="piano_roll_playhead_container">
         {isPlaying ? (
-          drawProgress(progress, firstPlayback)
+          drawProgress(progress, firstPlayback, recordingTime)
         ) : listenComplete ? (
           <></>
         ) : (
-          drawClockedRecording()
+          drawCloackedRecording()
         )}
       </div>
     </div>
@@ -164,23 +171,29 @@ const drawNotePointOnCanvas = (
   canvasCtx.stroke();
 };
 
-const drawProgress = (progress: number, firstPlayback: boolean) => {
-  return (
+const drawProgress = (
+  progress: number,
+  firstPlayback: boolean,
+  recordingTime: Milliseconds
+) => {
+  return progress > 0 ? (
     <div
       className={
         firstPlayback
-          ? "playback_progress cloaked_recording_fill"
-          : "playback_progress"
+          ? "playback_progress_head cloaked_recording_fill"
+          : "playback_progress_head"
       }
       style={{
-        width: `${100 - progress * 100}%`,
-        borderLeft: `${progress > 0 && progress < 1 ? "2px solid red" : ""}`,
+        animation: `playback_head_anim ${recordingTime}s`,
+        animationTimingFunction: "linear",
       }}
     ></div>
+  ) : (
+    <></>
   );
 };
 
-const drawClockedRecording = () => {
+const drawCloackedRecording = () => {
   return (
     <div
       className={"playback_progress cloaked_recording_fill"}
