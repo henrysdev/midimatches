@@ -4,11 +4,13 @@ defmodule Midimatches.ViewTimerTest do
   alias Midimatches.{
     Rooms.Room.Game.ViewTimer,
     Rooms.Room.GameInstance,
+    TestHelpers,
     Types.GameRules,
     Types.Player
   }
 
   test "trigger view timeout and advanced views" do
+    TestHelpers.populate_backing_tracks_table()
     room_id = "1"
     game_id = "abc"
 

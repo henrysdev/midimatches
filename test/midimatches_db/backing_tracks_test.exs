@@ -6,6 +6,8 @@ defmodule MidimatchesDb.BackingTracksTest do
     BackingTracks
   }
 
+  alias Midimatches.TestHelpers
+
   test "create backing track" do
     backing_track = %BackingTrack{
       name: "jazzy",
@@ -34,7 +36,7 @@ defmodule MidimatchesDb.BackingTracksTest do
 
   describe "fetch random backing tracks" do
     test "for specified count" do
-      populate_backing_tracks_table(10)
+      TestHelpers.populate_backing_tracks_table(10)
 
       fetched_tracks = BackingTracks.fetch_random_backing_tracks(4)
 
@@ -42,24 +44,11 @@ defmodule MidimatchesDb.BackingTracksTest do
     end
 
     test "when count is greater than number of total tracks should return all tracks" do
-      populate_backing_tracks_table(10)
+      TestHelpers.populate_backing_tracks_table(10)
 
       fetched_tracks = BackingTracks.fetch_random_backing_tracks(40)
 
       assert length(fetched_tracks) == 10
-    end
-  end
-
-  defp populate_backing_tracks_table(count) do
-    for _ <- 1..count do
-      %BackingTrack{
-        name: UUID.uuid4(),
-        file_url: UUID.uuid4(),
-        author: UUID.uuid4(),
-        bpm: 90,
-        musical_key: "Em"
-      }
-      |> BackingTracks.create_backing_track()
     end
   end
 end
