@@ -19,6 +19,7 @@ const WarmUp: React.FC<WarmUpProps> = ({}) => {
       roundRecordingStartTime={0}
       shouldRecord={true}
       isRecording={false}
+      setIsSamplePlaying={() => {}}
     />
   ) : (
     <></>
