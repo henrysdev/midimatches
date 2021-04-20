@@ -5,9 +5,9 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.RoundStart do
 
   alias Midimatches.{
     Rooms.Room.GameInstance,
-    Utils,
     Types.GameRules,
-    Types.GameRules.ViewTimeouts
+    Types.GameRules.ViewTimeouts,
+    Utils
   }
 
   @spec advance_view(%GameInstance{}) :: %GameInstance{}

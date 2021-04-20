@@ -39,7 +39,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.Recording do
     number_of_recordings_with_content =
       recordings
       |> Map.to_list()
-      |> Enum.reject(fn {_key, %Loop{timestep_slices: ts}} -> length(ts) == 0 end)
+      |> Enum.reject(fn {_key, %Loop{timestep_slices: ts}} -> Enum.empty?(ts) end)
       |> length()
 
     current_sample_beat = Enum.at(sample_beats, round_num - 1)
