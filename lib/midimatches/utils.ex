@@ -190,4 +190,12 @@ defmodule Midimatches.Utils do
       user_alias: user_alias
     }
   end
+
+  @spec calc_sample_time(integer()) :: integer()
+  @doc """
+  Calculate the sample time for a sample in milliseconds
+  """
+  def calc_sample_time(bpm) do
+    floor(60 / bpm * 4 * 4 * 1000)
+  end
 end

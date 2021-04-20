@@ -1,6 +1,8 @@
 defmodule Midimatches.RecordingTest do
   use ExUnit.Case
 
+  alias MidimatchesDb.BackingTrack
+
   alias Midimatches.{
     Rooms.Room.GameInstance,
     Rooms.Room.Modes.FreeForAll.Views.Recording,
@@ -39,7 +41,15 @@ defmodule Midimatches.RecordingTest do
       game_view: :recording,
       contestants: contestants,
       recordings: %{},
-      sample_beats: []
+      sample_beats: [
+        %BackingTrack{
+          name: "footrack",
+          author: "barsician",
+          bpm: 110,
+          musical_key: "C",
+          file_url: "www.asdfasd.com/jalkasdg/das"
+        }
+      ]
     }
 
     %GameInstance{
