@@ -25,21 +25,20 @@ defmodule MidimatchesWeb.UserController do
   Get current session user
   """
   def self(conn, _params) do
-    session_user = get_session(conn, :user)
-
-    if is_nil(session_user) do
-      json(conn, %{
-        user: nil
-      })
-    else
+    if has_user_session?(conn) do
       curr_user =
-        session_user
+        conn
+        |> get_session(:user)
         |> handle_user_session(conn)
         |> Utils.server_to_client_user()
 
       conn
       |> json(%{
         user: curr_user
+      })
+    else
+      json(conn, %{
+        user: nil
       })
     end
   end
@@ -85,7 +84,7 @@ defmodule MidimatchesWeb.UserController do
         Db.Users.create_user(%Db.User{
           username: username,
           email: email,
-          # Bcrypt.add_hash(password, hash_key: :pass_hash).pass_hash
+          # password is hashed via bcrypt on insertion via a changeset
           pass_hash: password
         })
 
@@ -107,13 +106,11 @@ defmodule MidimatchesWeb.UserController do
   Upsert user
   """
   def upsert(conn, %{"user_alias" => user_alias}) do
-    session_user = get_session(conn, :user)
-
     user_id =
-      if is_nil(session_user) do
-        "nosession"
+      if has_user_session?(conn) do
+        get_session(conn, :user).user_id
       else
-        session_user.user_id
+        "nosession"
       end
 
     with {:ok, user_alias} <- parse_user_alias(user_alias, user_id) do
