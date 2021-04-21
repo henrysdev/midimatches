@@ -32,9 +32,29 @@ defmodule MidimatchesWeb.AccountController do
     end
   end
 
+  @spec update(Plug.Conn.t(), map) :: Plug.Conn.t()
+  @doc """
+  Update the account
+  """
+  def update(conn, %{"uuid" => uuid} = params) do
+    user_change_params = Map.delete(params, "uuid")
+    # TODO obtain user_id from authenticated session
+    case Db.Users.update_user(uuid, user_change_params) do
+      {:ok, updated_user} ->
+        # TODO logout the user on account update
+        conn
+        |> json(%{user: updated_user})
+
+      {:error, reason} ->
+        conn
+        |> put_status(:bad_request)
+        |> json(%{error: reason})
+    end
+  end
+
   @spec login(Plug.Conn.t(), map) :: Plug.Conn.t()
   @doc """
-  Attempt to login to a user account and start an authenticated session
+  Login to a user account and start an authenticated session
   """
   def login(conn, %{"username" => username, "password" => password}) do
     attempt_login(conn, %{username: username, password: password})
@@ -44,12 +64,19 @@ defmodule MidimatchesWeb.AccountController do
     attempt_login(conn, %{email: email, password: password})
   end
 
+  @spec logout(Plug.Conn.t(), map) :: Plug.Conn.t()
+  @doc """
+  End the current authenticated user session if one is active
+  """
+  def logout(conn, _params) do
+    # TODO remove auth session from conn struct
+    conn
+  end
+
   defp attempt_login(conn, user_params) do
     case Db.Users.get_user_by_creds(user_params) do
       {:ok, _found_user} ->
-        # Phoenix.Token.sign(MidimatchesWeb.Endpoint, "account_user_auth", found_user.uuid)
-        # conn = assign(conn, :account_user_auth_token)
-
+        # TODO assign auth session to conn struct
         conn
         |> json(%{})
 

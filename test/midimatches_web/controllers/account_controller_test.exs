@@ -2,11 +2,6 @@ defmodule MidimatchesWeb.AccountControllerTest do
   use MidimatchesWeb.ConnCase
   use MidimatchesDb.RepoCase
 
-  alias MidimatchesDb.{
-    Repo,
-    User
-  }
-
   describe "POST /api/account/create" do
     test "succeeds with valid params", %{conn: conn} do
       conn =
@@ -45,6 +40,75 @@ defmodule MidimatchesWeb.AccountControllerTest do
       }
 
       assert json_response(conn, 400) == expected_response
+    end
+  end
+
+  describe "PUT /api/account/" do
+    test "update succeeds with valid params", %{conn: conn} do
+      user_params = %{
+        "username" => "snoopydoo",
+        "password" => "asdgasdg111",
+        "email" => "jiu@jdid.5jd"
+      }
+
+      user_id = insert_user(user_params).uuid
+
+      conn =
+        session_conn()
+        |> put(
+          Routes.account_path(conn, :update, user_id, %{
+            username: "b4rtyy"
+          })
+        )
+
+      expected_user = %{
+        "user" => %{
+          "email" => "jiu@jdid.5jd",
+          "username" => "b4rtyy"
+        }
+      }
+
+      actual_user = json_response(conn, 200)
+
+      assertion_fields = ["username", "email"]
+
+      Enum.each(assertion_fields, fn field ->
+        assert Map.get(actual_user, field) == Map.get(expected_user, field)
+      end)
+    end
+
+    test "update does not succeed for uuid", %{conn: conn} do
+      user_params = %{
+        "username" => "snoopydoo",
+        "password" => "asdgasdg111",
+        "email" => "jiu@jdid.5jd"
+      }
+
+      user_id = insert_user(user_params).uuid
+      new_uuid = UUID.uuid4()
+
+      conn =
+        session_conn()
+        |> put(
+          Routes.account_path(conn, :update, user_id, %{
+            uuid: new_uuid
+          })
+        )
+
+      assert json_response(conn, 200)["uuid"] != new_uuid
+    end
+
+    test "update does not succeed when no user exists to update", %{conn: conn} do
+      conn =
+        session_conn()
+        |> put(
+          Routes.account_path(conn, :update, UUID.uuid4(), %{
+            password: "Asdgasdg"
+          })
+        )
+
+      resp = json_response(conn, 400)
+      assert resp == %{"error" => %{"not_found" => "user"}}
     end
   end
 
@@ -90,10 +154,5 @@ defmodule MidimatchesWeb.AccountControllerTest do
 
       assert json_response(conn, 401) == %{"error" => "invalid password"}
     end
-  end
-
-  def insert_user(%{} = user_params) do
-    User.changeset(%User{}, user_params)
-    |> Repo.insert!()
   end
 end

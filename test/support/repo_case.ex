@@ -3,6 +3,11 @@ defmodule MidimatchesDb.RepoCase do
 
   use ExUnit.CaseTemplate
 
+  alias MidimatchesDb.{
+    Repo,
+    User
+  }
+
   alias Ecto.Adapters.SQL.Sandbox
   alias MidimatchesDb.Repo
 
@@ -24,5 +29,10 @@ defmodule MidimatchesDb.RepoCase do
     end
 
     :ok
+  end
+
+  def insert_user(%{} = user_params) do
+    User.changeset(%User{}, user_params)
+    |> Repo.insert!()
   end
 end
