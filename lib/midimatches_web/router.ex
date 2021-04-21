@@ -41,6 +41,7 @@ defmodule MidimatchesWeb.Router do
 
     post "/account", AccountController, :create
     put "/account/:uuid", AccountController, :update
+    get "/account/:uuid", AccountController, :show
     post "/account/login", AccountController, :login
     post "/account/logout", AccountController, :logout
 

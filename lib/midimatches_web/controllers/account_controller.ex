@@ -45,6 +45,33 @@ defmodule MidimatchesWeb.AccountController do
         conn
         |> json(%{user: updated_user})
 
+      {:error, %{not_found: "user"}} ->
+        conn
+        |> put_status(:not_found)
+        |> json(%{error: "user not found"})
+
+      {:error, reason} ->
+        conn
+        |> put_status(:bad_request)
+        |> json(%{error: reason})
+    end
+  end
+
+  @spec show(Plug.Conn.t(), map) :: Plug.Conn.t()
+  @doc """
+  Get the user account for the specified user uuid
+  """
+  def show(conn, %{"uuid" => uuid}) do
+    case Db.Users.get_user_by(:uuid, uuid) do
+      {:ok, user} ->
+        conn
+        |> json(%{user: user})
+
+      {:error, %{not_found: "user"}} ->
+        conn
+        |> put_status(:not_found)
+        |> json(%{error: "user not found"})
+
       {:error, reason} ->
         conn
         |> put_status(:bad_request)

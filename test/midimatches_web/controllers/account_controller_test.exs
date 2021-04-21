@@ -43,7 +43,7 @@ defmodule MidimatchesWeb.AccountControllerTest do
     end
   end
 
-  describe "PUT /api/account/" do
+  describe "PUT /api/account/:uuid" do
     test "update succeeds with valid params", %{conn: conn} do
       user_params = %{
         "username" => "snoopydoo",
@@ -107,8 +107,8 @@ defmodule MidimatchesWeb.AccountControllerTest do
           })
         )
 
-      resp = json_response(conn, 400)
-      assert resp == %{"error" => %{"not_found" => "user"}}
+      resp = json_response(conn, 404)
+      assert resp == %{"error" => "user not found"}
     end
   end
 
@@ -153,6 +153,44 @@ defmodule MidimatchesWeb.AccountControllerTest do
         )
 
       assert json_response(conn, 401) == %{"error" => "invalid password"}
+    end
+  end
+
+  describe "GET /api/account/:uuid" do
+    test "successfully gets user at valid uuid", %{conn: conn} do
+      user_params = %{
+        "username" => "b4rt121",
+        "password" => "asdgasdg111",
+        "email" => "jiu@jdid.5jd"
+      }
+
+      uuid = insert_user(user_params).uuid
+
+      conn =
+        session_conn()
+        |> get(Routes.account_path(conn, :show, uuid))
+
+      expected_user = %{
+        "uuid" => uuid,
+        "username" => "b4rt121",
+        "email" => "jiu@jdid.5jd"
+      }
+
+      actual_user = json_response(conn, 200)["user"]
+
+      assertion_fields = ["username", "email", "uuid"]
+
+      Enum.each(assertion_fields, fn field ->
+        assert Map.get(actual_user, field) == Map.get(expected_user, field)
+      end)
+    end
+
+    test "unsuccessfully gets user when user not found", %{conn: conn} do
+      conn =
+        session_conn()
+        |> get(Routes.account_path(conn, :show, UUID.uuid4()))
+
+      assert json_response(conn, 404) == %{"error" => "user not found"}
     end
   end
 end
