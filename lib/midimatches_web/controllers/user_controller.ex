@@ -11,8 +11,6 @@ defmodule MidimatchesWeb.UserController do
     Utils
   }
 
-  alias MidimatchesDb, as: Db
-
   require Logger
 
   @min_user_alias_length 3
@@ -70,37 +68,6 @@ defmodule MidimatchesWeb.UserController do
     conn
     |> delete_session(:user)
     |> json(%{})
-  end
-
-  @spec create(Plug.Conn.t(), map) :: Plug.Conn.t()
-  @doc """
-  Create a new db user
-  """
-  def create(conn, %{
-        "username" => username,
-        "email" => email,
-        "password" => password
-      }) do
-    with {:ok, password} <- parse_password(password) do
-      created_user =
-        Db.Users.create_user(%Db.User{
-          username: username,
-          email: email,
-          # password is hashed via bcrypt on insertion via a changeset
-          pass_hash: password
-        })
-
-      conn
-      |> put_session(:user, created_user)
-      |> json(%{})
-    else
-      {:error, reason} ->
-        Logger.warn("create db user failed with error reason #{reason}")
-
-        conn
-        |> put_status(:bad_request)
-        |> json(%{error: reason})
-    end
   end
 
   @spec upsert(Plug.Conn.t(), map) :: Plug.Conn.t()
