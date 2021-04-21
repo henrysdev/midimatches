@@ -31,4 +31,32 @@ defmodule MidimatchesWeb.AccountController do
         |> json(%{error: changeset_error})
     end
   end
+
+  @spec login(Plug.Conn.t(), map) :: Plug.Conn.t()
+  @doc """
+  Attempt to login to a user account and start an authenticated session
+  """
+  def login(conn, %{"username" => username, "password" => password}) do
+    attempt_login(conn, %{username: username, password: password})
+  end
+
+  def login(conn, %{"email" => email, "password" => password}) do
+    attempt_login(conn, %{email: email, password: password})
+  end
+
+  defp attempt_login(conn, user_params) do
+    case Db.Users.get_user_by_creds(user_params) do
+      {:ok, _found_user} ->
+        # Phoenix.Token.sign(MidimatchesWeb.Endpoint, "account_user_auth", found_user.uuid)
+        # conn = assign(conn, :account_user_auth_token)
+
+        conn
+        |> json(%{})
+
+      {:error, reason} ->
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{error: reason})
+    end
+  end
 end

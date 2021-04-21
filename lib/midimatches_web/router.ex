@@ -39,6 +39,7 @@ defmodule MidimatchesWeb.Router do
     get "/user/sync", UserController, :sync
 
     post "/account/create", AccountController, :create
+    post "/account/login", AccountController, :login
 
     get "/samples/random", SampleController, :random
 
