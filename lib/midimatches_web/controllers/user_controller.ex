@@ -11,12 +11,12 @@ defmodule MidimatchesWeb.UserController do
     Utils
   }
 
-  alias MidimatchesDb, as: Db
-
   require Logger
 
   @min_user_alias_length 3
   @max_user_alias_length 10
+  @min_password_length 10
+  @max_password_length 32
 
   @type id() :: String.t()
 
@@ -68,37 +68,6 @@ defmodule MidimatchesWeb.UserController do
     conn
     |> delete_session(:user)
     |> json(%{})
-  end
-
-  @spec create(Plug.Conn.t(), map) :: Plug.Conn.t()
-  @doc """
-  Create a new db user
-  """
-  def create(conn, %{
-        "username" => username,
-        "email" => email,
-        "password" => password
-      }) do
-    with {:ok, password} <- parse_password(password) do
-      created_user =
-        Db.Users.create_user(%Db.User{
-          username: username,
-          email: email,
-          # password is hashed via bcrypt on insertion via a changeset
-          pass_hash: password
-        })
-
-      conn
-      |> put_session(:user, created_user)
-      |> json(%{})
-    else
-      {:error, reason} ->
-        Logger.warn("create db user failed with error reason #{reason}")
-
-        conn
-        |> put_status(:bad_request)
-        |> json(%{error: reason})
-    end
   end
 
   @spec upsert(Plug.Conn.t(), map) :: Plug.Conn.t()
@@ -218,7 +187,7 @@ defmodule MidimatchesWeb.UserController do
   defp validate_password_length(password) do
     password_len = String.length(password)
 
-    if password < @min_user_alias_length or password_len > @max_user_alias_length do
+    if password < @min_password_length or password_len > @max_password_length do
       {:error, invalid_value_error("password", :invalid_length)}
     else
       {:ok, password}
