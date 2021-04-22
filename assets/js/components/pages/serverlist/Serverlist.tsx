@@ -106,9 +106,33 @@ const Serverlist: React.FC<ServerlistProps> = ({
 
   return (
     <div style={{ height: "100%" }}>
-      <MediumLargeTitle centered={false}>
-        <span className="accent_bars">///</span>ROOM LIST
-      </MediumLargeTitle>
+      <div style={{ display: "flex" }}>
+        <div style={{ flex: 1 }}>
+          <MediumLargeTitle centered={false}>
+            <span className="accent_bars">///</span>ROOM LIST
+          </MediumLargeTitle>
+        </div>
+        <div style={{ flex: 2 }}>
+          <h4 style={{ textAlign: "right" }}>
+            Need Players?{" "}
+            <a
+              className="resource_link"
+              target="_blank"
+              href="https://discord.gg/yNQAp2JAxE"
+              style={{
+                padding: "4px",
+                borderRadius: "2px",
+                color: "white",
+                backgroundColor: "#7289da",
+                border: "1px solid white",
+              }}
+            >
+              Join the Discord
+            </a>
+          </h4>
+        </div>
+      </div>
+
       <div className="serverlist_flex_anchor">
         <div className="serverlist_create_room_wrapper ">
           <CreateRoomForm />
