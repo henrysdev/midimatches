@@ -85,10 +85,20 @@ const RecordingView: React.FC<RecordingViewProps> = ({
               <div style={{ width: 200 }}>
                 <div style={{ display: "flex" }}>
                   <div style={{ flex: 1 }}>
-                    <p className="centered_text">
+                    <p
+                      className="centered_text"
+                      style={{ whiteSpace: "nowrap" }}
+                    >
                       <strong className="large_instructions_text">
                         {backingTrack.name}
                       </strong>
+                    </p>
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <p style={{ whiteSpace: "nowrap" }}>
+                      <i className="large_instructions_text">
+                        {`(${backingTrack.musicalKey})`}
+                      </i>
                     </p>
                   </div>
                   {isSamplePlaying ? (

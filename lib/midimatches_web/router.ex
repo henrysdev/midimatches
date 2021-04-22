@@ -29,6 +29,7 @@ defmodule MidimatchesWeb.Router do
     get "/room/:room_id", PageController, :room
     get "/register", PageController, :register_player
     get "/practice", PageController, :practice
+    # get "/account/reset/:slug", PageController, :reset_password
   end
 
   scope "/api", MidimatchesWeb do
@@ -38,7 +39,11 @@ defmodule MidimatchesWeb.Router do
     post "/user", UserController, :upsert
     get "/user/sync", UserController, :sync
 
-    post "/account/create", AccountController, :create
+    post "/account", AccountController, :create
+    put "/account/:uuid", AccountController, :update
+    get "/account/:uuid", AccountController, :show
+    post "/account/login", AccountController, :login
+    post "/account/logout", AccountController, :logout
 
     get "/samples/random", SampleController, :random
 

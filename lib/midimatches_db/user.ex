@@ -17,6 +17,7 @@ defmodule MidimatchesDb.User do
     field(:email, :string)
     field(:password, :string)
     field(:uuid, Ecto.UUID, autogenerate: true)
+    field(:token_serial, :integer)
     # TODO add verified boolean flag for email
 
     timestamps()
@@ -26,13 +27,34 @@ defmodule MidimatchesDb.User do
   def changeset(user, attrs) do
     user
     |> cast(attrs, [:username, :email, :password])
+    |> validate_required_change_exclusion([:uuid, :token_serial])
     |> validate_required([:username, :email, :password])
+    |> field_validations()
+    |> hash_password()
+  end
+
+  def update_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:username, :email, :password])
+    |> validate_required_change_exclusion([:uuid, :token_serial])
+    |> validate_required_inclusion([:username, :email, :password])
+    |> field_validations()
+    |> hash_password()
+  end
+
+  def update_token_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:token_serial])
+    |> validate_required_change_exclusion([:username, :email, :password, :uuid])
+  end
+
+  defp field_validations(changeset) do
+    changeset
     |> validate_length(:username, min: @min_username_len, max: @max_username_len)
     |> validate_length(:password, min: @min_password_len, max: @max_password_len)
     |> validate_language(:username)
     |> unique_constraint(:unique_username_constraint, name: :unique_usernames)
     |> unique_constraint(:unique_uuid_constraint, name: :unique_uuids)
-    |> hash_password()
   end
 
   # TODO factor out these functions to imported module(s)
@@ -50,5 +72,35 @@ defmodule MidimatchesDb.User do
         []
       end
     end)
+  end
+
+  defp validate_required_inclusion(changeset, fields) do
+    if Enum.any?(fields, &present_field?(changeset, &1)) do
+      changeset
+    else
+      add_error(changeset, hd(fields), "One of these fields must be present: #{inspect(fields)}")
+    end
+  end
+
+  defp validate_required_change_exclusion(changeset, fields) do
+    if Enum.any?(fields, &present_change?(changeset, &1)) do
+      add_error(
+        changeset,
+        hd(fields),
+        "One of these change fields must not be present: #{inspect(fields)}"
+      )
+    else
+      changeset
+    end
+  end
+
+  defp present_field?(changeset, field) do
+    value = get_field(changeset, field)
+    value && value != ""
+  end
+
+  defp present_change?(changeset, field) do
+    value = get_change(changeset, field)
+    value && value != ""
   end
 end
