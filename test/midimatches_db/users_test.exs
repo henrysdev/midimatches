@@ -78,7 +78,10 @@ defmodule MidimatchesDb.UsersTest do
       resp = Users.update_user(user_id, %{uuid: new_uuid})
 
       assert resp ==
-               {:error, %{uuid: ["One of these change fields must not be present: [:uuid]"]}}
+               {:error,
+                %{
+                  uuid: ["One of these change fields must not be present: [:uuid, :token_serial]"]
+                }}
     end
 
     test "unsuccessfully via user uuid not found" do

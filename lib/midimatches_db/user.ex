@@ -17,6 +17,7 @@ defmodule MidimatchesDb.User do
     field(:email, :string)
     field(:password, :string)
     field(:uuid, Ecto.UUID, autogenerate: true)
+    field(:token_serial, :integer)
     # TODO add verified boolean flag for email
 
     timestamps()
@@ -26,7 +27,7 @@ defmodule MidimatchesDb.User do
   def changeset(user, attrs) do
     user
     |> cast(attrs, [:username, :email, :password])
-    |> validate_required_change_exclusion([:uuid])
+    |> validate_required_change_exclusion([:uuid, :token_serial])
     |> validate_required([:username, :email, :password])
     |> field_validations()
     |> hash_password()
@@ -35,10 +36,16 @@ defmodule MidimatchesDb.User do
   def update_changeset(user, attrs) do
     user
     |> cast(attrs, [:username, :email, :password])
-    |> validate_required_change_exclusion([:uuid])
+    |> validate_required_change_exclusion([:uuid, :token_serial])
     |> validate_required_inclusion([:username, :email, :password])
     |> field_validations()
     |> hash_password()
+  end
+
+  def update_token_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:token_serial])
+    |> validate_required_change_exclusion([:username, :email, :password, :uuid])
   end
 
   defp field_validations(changeset) do
