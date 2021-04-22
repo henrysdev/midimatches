@@ -66,6 +66,8 @@
   --header_bar_height: 40px;
   --footer_bar_height: 20px;
   --footer_background: var(--dark_gray);
+
+  --purple_color: rgb(185, 181, 255);
 }
 
 p {
@@ -1607,10 +1609,10 @@ strong {
 }
 
 .elixir_accent:link {
-  color: rgb(185, 181, 255);
+  color: var(--purple_color);
 }
 .elixir_accent:visited {
-  color: rgb(185, 181, 255);
+  color: var(--purple_color);
 }
 
 .browser_warning_content_wrapper {
