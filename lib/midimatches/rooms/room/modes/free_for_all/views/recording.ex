@@ -46,7 +46,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.Recording do
     sample_time = Utils.calc_sample_time(current_sample_beat.bpm)
 
     playback_voting_timeout =
-      max(ceil(sample_time * number_of_recordings_with_content * 1.5) + 5_000, 10_000)
+      max(ceil(sample_time * number_of_recordings_with_content * 1.3) + 5_000, 10_000)
 
     state = %GameInstance{
       state
