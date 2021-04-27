@@ -5,6 +5,7 @@ export { ServerlistPage } from "./serverlist/ServerlistPage";
 export { PracticePage } from "./practice/PracticePage";
 export { MenuPage } from "./menu/MenuPage";
 export { PrivacyPolicyPage } from "./privacy/PrivacyPolicyPage";
+export { TermsPage } from "./terms/TermsPage";
 
 export { PageWrapper } from "./PageWrapper";
 export { AdminAlert } from "./AdminAlert";

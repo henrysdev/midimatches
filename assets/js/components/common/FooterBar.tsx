@@ -19,12 +19,6 @@ const FooterBar: React.FC<FooterBarProps> = ({ playerAlias }) => {
         </a>
         <span className="accent_bars">/</span> */}
 
-        <a className="footer_bar_flex_item resource_link" href="/privacy">
-          Privacy
-        </a>
-
-        <span className="accent_bars">/</span>
-
         <a
           className="footer_bar_flex_item resource_link"
           target="_blank"
@@ -37,20 +31,30 @@ const FooterBar: React.FC<FooterBarProps> = ({ playerAlias }) => {
 
         <a
           className="footer_bar_flex_item resource_link"
-          href="mailto:henrysdev@gmail.com"
-        >
-          Email
-        </a>
-
-        <span className="accent_bars">/</span>
-
-        <a
-          className="footer_bar_flex_item resource_link"
           target="_blank"
           href="https://www.patreon.com/midimatches"
         >
           Patreon
         </a>
+
+        <span className="accent_bars">/</span>
+
+        <a className="footer_bar_flex_item resource_link" href="/privacy">
+          Privacy
+        </a>
+
+        <span className="accent_bars">/</span>
+
+        <a className="footer_bar_flex_item resource_link" href="/terms">
+          Terms
+        </a>
+
+        {/* <a
+          className="footer_bar_flex_item resource_link"
+          href="mailto:henrysdev@gmail.com"
+        >
+          Email
+        </a> */}
 
         {/* <span className="accent_bars">/</span>
         <a

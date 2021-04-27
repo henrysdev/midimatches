@@ -35,6 +35,11 @@ defmodule MidimatchesWeb.PageController do
     render(conn, "privacy.html")
   end
 
+  @spec terms(Plug.Conn.t(), any) :: Plug.Conn.t()
+  def terms(conn, _params) do
+    render(conn, "terms.html")
+  end
+
   @spec menu(Plug.Conn.t(), any) :: Plug.Conn.t()
   def menu(conn, _params) do
     if has_user_session?(conn) do

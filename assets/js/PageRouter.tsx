@@ -9,6 +9,7 @@ import {
   ServerlistPage,
   MenuPage,
   PrivacyPolicyPage,
+  TermsPage,
 } from "./components/pages/index";
 import { useBrowserCompatibilityContext } from "./hooks";
 import { MobileAboutPage } from "./components/pages/about/MobileAboutPage";
@@ -32,6 +33,7 @@ const PageRouter: React.FC = () => {
           <Route path="/practice" component={PracticePage} />
           <Route path="/register" component={RegisterPlayerPage} />
           <Route path="/privacy" component={PrivacyPolicyPage} />
+          <Route path="/terms" component={TermsPage} />
         </Switch>
       )}
     </BrowserRouter>
