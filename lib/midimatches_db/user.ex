@@ -17,7 +17,7 @@ defmodule MidimatchesDb.User do
     field(:email, :string)
     field(:password, :string)
     field(:uuid, Ecto.UUID, autogenerate: true)
-    field(:token_serial, :integer)
+    field(:token_serial, :integer, default: 0)
     # TODO add verified boolean flag for email
 
     timestamps()

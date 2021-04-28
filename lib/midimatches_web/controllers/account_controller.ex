@@ -5,6 +5,7 @@ defmodule MidimatchesWeb.AccountController do
   use MidimatchesWeb, :controller
 
   alias MidimatchesDb, as: Db
+  alias MidimatchesWeb.Auth
 
   require Logger
 
@@ -102,11 +103,12 @@ defmodule MidimatchesWeb.AccountController do
 
   defp attempt_login(conn, user_params) do
     case Db.Users.get_user_by_creds(user_params) do
-      {:ok, %Db.User{uuid: user_id}} ->
-        auth_token = new_auth_token(conn, user_id)
+      {:ok, %Db.User{} = user} ->
+        bearer_token = Auth.new_bearer_token(conn, user)
 
         conn
-        |> json(%{auth_token: auth_token})
+        |> assign(:user_bearer_token, bearer_token)
+        |> json(%{})
 
       {:error, reason} ->
         conn
@@ -114,29 +116,4 @@ defmodule MidimatchesWeb.AccountController do
         |> json(%{error: reason})
     end
   end
-
-  # TODO move to plugs
-  defp new_auth_token(conn, user_id) do
-    session_id = "12"
-    Phoenix.Token.sign(conn, "acct_auth_token", user_id: user_id, session_id: session_id)
-    # TODO
-    # 1. generate a session identifier
-    # 2. store session identifier in user's row in db
-    # 3. encode session identifier with user_id in token
-    # Phoenix.Token.sign(conn, "acct_auth_token", user_id)
-  end
-
-  # defp valid_auth_token?(conn, token) do
-  #   # TODO
-  #   # 1. decode session identifier and user_id from token
-  #   # 2. check that session identifier matches user's session identifier in DB
-  #   # 3. if they match, token is valid. If they don't match, token is invalid.
-  #   # TODO decode and check identifier against DB. If identifier is wrong, it is invalid.
-  #   curr_session_id = "13"
-
-  #   case Phoenix.Token.verify(conn, "acct_auth_token", token, max_age: 86400) do
-  #     {:ok, [user_id: _user_id, session_id: ^curr_session_id]} -> false
-  #     {:error, _reason} -> false
-  #   end
-  # end
 end

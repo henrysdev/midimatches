@@ -7,13 +7,18 @@ defmodule MidimatchesWeb.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug :auth_user
-    plug :put_user_token
+    plug :auth_user_socket
+    plug :put_user_socket_token
   end
 
   pipeline :api do
     plug :accepts, ["json"]
     plug :fetch_session
+  end
+
+  # TODO integrate into API pipeline
+  pipeline :auth do
+    plug :verify_bearer_token
   end
 
   scope "/", MidimatchesWeb do
@@ -39,16 +44,13 @@ defmodule MidimatchesWeb.Router do
     get "/user/self", UserController, :self
     post "/user", UserController, :upsert
     get "/user/sync", UserController, :sync
-
-    post "/account", AccountController, :create
-    put "/account/:uuid", AccountController, :update
-    get "/account/:uuid", AccountController, :show
-    post "/account/login", AccountController, :login
-    post "/account/logout", AccountController, :logout
-
     get "/samples/random", SampleController, :random
-
     post "/room", RoomController, :create
+    post "/", AccountController, :create
+    put "/:uuid", AccountController, :update
+    get "/:uuid", AccountController, :show
+    post "/login", AccountController, :login
+    post "/logout", AccountController, :logout
   end
 
   # Enables LiveDashboard only for development
@@ -69,20 +71,6 @@ defmodule MidimatchesWeb.Router do
     scope "/" do
       pipe_through :browser
       live_dashboard "/dashboard", metrics: MidimatchesWeb.Telemetry
-    end
-  end
-
-  defp auth_user(conn, _) do
-    user_id = Midimatches.Utils.gen_uuid()
-    conn |> assign(:current_user, %{id: user_id})
-  end
-
-  defp put_user_token(conn, _) do
-    if current_user = conn.assigns[:current_user] do
-      token = Phoenix.Token.sign(conn, "user socket", current_user.id)
-      assign(conn, :user_token, token)
-    else
-      conn
     end
   end
 end

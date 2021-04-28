@@ -131,8 +131,7 @@ defmodule MidimatchesWeb.AccountControllerTest do
           })
         )
 
-      resp = json_response(conn, 200)
-      assert Map.has_key?(resp, "auth_token")
+      assert json_response(conn, 200) == %{}
     end
 
     test "unsuccessful login", %{conn: conn} do
