@@ -15,7 +15,30 @@ defmodule MidimatchesDb.Users do
   Insert a new user
   """
   def create_user(%{} = user_params) when is_map(user_params) do
+    user_params =
+      user_params
+      |> map_to_string_keys()
+      |> Map.put("registered", true)
+
     user_changeset = User.changeset(%User{}, user_params)
+
+    case Repo.insert(user_changeset) do
+      {:error, changeset} -> {:error, traverse_errors(changeset)}
+      {:ok, record} -> {:ok, record}
+    end
+  end
+
+  @spec create_unregistered_user(map()) :: {:ok, %User{}} | {:error, any()}
+  @doc """
+  Insert a new unregistered user
+  """
+  def create_unregistered_user(%{} = user_params) when is_map(user_params) do
+    user_params =
+      user_params
+      |> map_to_string_keys()
+      |> Map.put("registered", false)
+
+    user_changeset = User.unregistered_changeset(%User{}, user_params)
 
     case Repo.insert(user_changeset) do
       {:error, changeset} -> {:error, traverse_errors(changeset)}
@@ -28,6 +51,11 @@ defmodule MidimatchesDb.Users do
   Update an existing user
   """
   def update_user(user_id, %{} = user_params) when is_map(user_params) do
+    user_params =
+      user_params
+      |> map_to_string_keys()
+      |> Map.delete("registered")
+
     with {:ok, found_user} <- get_user_by(:uuid, user_id),
          {change, user_params} <- build_update_changeset(found_user, user_params),
          changeset <- User.update_changeset(change, user_params),
@@ -83,7 +111,13 @@ defmodule MidimatchesDb.Users do
       |> Ecto.Changeset.change(user_params)
 
     {change, user_params}
-    # |> User.update_changeset(user_params)
+  end
+
+  @spec map_to_string_keys(map()) :: map()
+  defp map_to_string_keys(atoms_map) when is_map(atoms_map) do
+    for {key, val} <- atoms_map, into: %{} do
+      {to_string(key), to_string(val)}
+    end
   end
 
   @spec get_user_by(any(), any()) :: {:ok, %User{}} | {:error, any()}

@@ -1,5 +1,6 @@
 defmodule Midimatches.UserCacheTest do
   use ExUnit.Case
+  use MidimatchesDb.RepoCase
 
   alias Midimatches.{
     TestHelpers,
@@ -12,131 +13,113 @@ defmodule Midimatches.UserCacheTest do
     :ok
   end
 
-  test "init cache creates user cache ets table" do
-    cache_exists? = :ets.whereis(:user_cache) != :undefined
-    assert cache_exists?
-  end
-
   describe "upsert user" do
     test "for a new user to the user cache" do
-      user_id = "abc123"
-
       user = %User{
-        user_id: user_id,
         user_alias: "foobarzoo"
       }
 
-      assert user == UserCache.upsert_user(user)
-      assert :ets.lookup(:user_cache, user_id) == [{user_id, user}]
+      upserted_user = UserCache.upsert_user(user)
     end
 
     test "for an existing user to the user cache" do
-      user_id = "abc123"
-
       orig_user = %User{
-        user_id: user_id,
         user_alias: "foobarzoo"
       }
 
-      updated_user = %User{
-        user_id: user_id,
-        user_alias: "barzeeedo"
-      }
+      orig_inserted_user = UserCache.upsert_user(orig_user)
+      found_orig_user = UserCache.get_user_by_id(orig_inserted_user.user_id)
 
-      UserCache.upsert_user(orig_user)
-      assert :ets.lookup(:user_cache, user_id) == [{user_id, orig_user}]
+      assert found_orig_user.user_alias == orig_user.user_alias
 
-      UserCache.upsert_user(updated_user)
-      assert :ets.lookup(:user_cache, user_id) == [{user_id, updated_user}]
+      upserted_user = UserCache.upsert_user(%User{found_orig_user | user_alias: "barzeeedo"})
+      found_upserted_user = UserCache.get_user_by_id(orig_inserted_user.user_id)
+
+      assert found_upserted_user.user_alias == "barzeeedo"
     end
   end
 
   describe "get a user" do
     test "that exists in the user cache" do
-      user_id = "abc123"
-
       user = %User{
-        user_id: user_id,
         user_alias: "foobarzoo"
       }
 
-      found_user_before = UserCache.get_user_by_id("abc123")
+      found_user_before = UserCache.get_user_by_id(UUID.uuid4())
       assert(is_nil(found_user_before))
-      UserCache.upsert_user(user)
 
-      found_user_after = UserCache.get_user_by_id("abc123")
+      user_id = UserCache.upsert_user(user).user_id
+
+      found_user_after = UserCache.get_user_by_id(user_id)
       assert(!is_nil(found_user_after))
     end
 
     test "that does not exist in the user cache" do
-      assert(is_nil(UserCache.get_user_by_id("abc123")))
+      assert(is_nil(UserCache.get_user_by_id(UUID.uuid4())))
     end
-  end
-
-  test "delete a user from the user cache" do
-    user_id = "abc123"
-
-    user = %User{
-      user_id: user_id,
-      user_alias: "foobarzoo"
-    }
-
-    UserCache.upsert_user(user)
-
-    found_user_before = UserCache.get_user_by_id("abc123")
-    assert(!is_nil(found_user_before))
-
-    UserCache.delete_user_by_id(user_id)
-
-    found_user_after = UserCache.get_user_by_id("abc123")
-    assert(is_nil(found_user_after))
   end
 
   test "checks that user exists in user cache" do
-    user_id = "abc123"
-
     user = %User{
-      user_id: user_id,
       user_alias: "foobarzoo"
     }
 
-    assert UserCache.user_id_exists?(user_id) == false
-    UserCache.upsert_user(user)
-    assert UserCache.user_id_exists?(user_id) == true
+    assert UserCache.user_id_exists?(UUID.uuid4()) == false
+    upserted_user = UserCache.upsert_user(user)
+    assert UserCache.user_id_exists?(upserted_user.user_id) == true
   end
 
-  describe "get or insert" do
-    test "a new user into the user cache" do
-      user_id = "abc123"
+  # test "delete a user from the user cache" do
+  #   user_id = UUID.uuid4()
 
-      user = %User{
-        user_id: user_id,
-        user_alias: "foobarzoo"
-      }
+  #   user = %User{
+  #     user_id: user_id,
+  #     user_alias: "foobarzoo"
+  #   }
 
-      returned_user = UserCache.get_or_insert_user(user)
+  #   UserCache.upsert_user(user)
 
-      assert returned_user == user
-    end
+  #   found_user_before = UserCache.get_user_by_id(user_id)
+  #   assert(!is_nil(found_user_before))
 
-    test "an existing user into the user cache" do
-      user_id = "abc123"
+  #   UserCache.delete_user_by_id(user_id)
 
-      user = %User{
-        user_id: user_id,
-        user_alias: "foobarzoo"
-      }
+  #   found_user_after = UserCache.get_user_by_id(user_id)
+  #   assert(is_nil(found_user_after))
+  # end
 
-      updated_user = %User{
-        user_id: user_id,
-        user_alias: "flabbergast"
-      }
+  # describe "get or insert" do
+  #   test "a new user into the user cache" do
+  #     user_id = UUID.uuid4()
 
-      UserCache.upsert_user(user)
+  #     user = %User{
+  #       user_id: user_id,
+  #       user_alias: "foobarzoo"
+  #     }
 
-      returned_user = UserCache.get_or_insert_user(updated_user)
+  #     returned_user = UserCache.get_or_insert_user(user)
 
-      assert returned_user == user
-    end
-  end
+  #     assert returned_user == user
+  #   end
+
+  #   test "an existing user into the user cache" do
+  #     user_id = UUID.uuid4()
+
+  #     user = %User{
+  #       user_id: user_id,
+  #       user_alias: "foobarzoo"
+  #     }
+
+  #     updated_user = %User{
+  #       user_id: user_id,
+  #       user_alias: "flabbergast"
+  #     }
+
+  #     UserCache.upsert_user(user)
+
+  #     returned_user = UserCache.get_or_insert_user(updated_user)
+
+  #     assert returned_user == user
+  #   end
+  # end
 end

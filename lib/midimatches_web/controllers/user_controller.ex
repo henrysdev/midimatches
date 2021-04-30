@@ -4,6 +4,8 @@ defmodule MidimatchesWeb.UserController do
   """
   use MidimatchesWeb, :controller
 
+  alias MidimatchesDb, as: Db
+
   alias Midimatches.{
     ProfanityFilter,
     Types.User,
@@ -26,11 +28,10 @@ defmodule MidimatchesWeb.UserController do
   """
   def self(conn, _params) do
     if has_user_session?(conn) do
-      curr_user =
+      {curr_user, conn} =
         conn
         |> get_session(:user)
         |> handle_user_session(conn)
-        |> Utils.server_to_client_user()
 
       conn
       |> json(%{
@@ -50,9 +51,22 @@ defmodule MidimatchesWeb.UserController do
   end
 
   defp handle_user_session(session_user, conn) when is_map(session_user) do
-    struct(User, session_user)
-    |> update_remote_ip(conn)
-    |> UserCache.get_or_insert_user()
+    %{user_id: user_id} = struct(User, session_user)
+
+    if UserCache.user_id_exists?(user_id) do
+      user =
+        user_id
+        |> UserCache.get_user_by_id()
+        |> Utils.server_to_client_user()
+
+      {user, conn}
+    else
+      UserCache.delete_user_by_id()
+      conn = delete_session(conn, :user)
+      {nil, conn}
+    end
+
+    # UserCache.get_or_insert_user(session_user)
   end
 
   @spec reset(Plug.Conn.t(), map) :: Plug.Conn.t()
@@ -92,7 +106,6 @@ defmodule MidimatchesWeb.UserController do
 
         updated_user =
           %User{existing_user | user_alias: user_alias}
-          |> update_remote_ip(conn)
           |> UserCache.upsert_user()
 
         Logger.info("existing user updated alias user_id=#{user_id} user_alias=#{user_alias}")
@@ -102,12 +115,17 @@ defmodule MidimatchesWeb.UserController do
         |> json(%{})
       else
         # create and insert new user
-        user_id = Utils.gen_uuid()
+        # user_id = Utils.gen_uuid()
+        # new_user =
+        #   %User{user_alias: user_alias}
+        #   |> UserCache.upsert_user()
 
-        new_user =
-          %User{user_alias: user_alias, user_id: user_id}
-          |> update_remote_ip(conn)
-          |> UserCache.upsert_user()
+        # TODO abstract further in UserCache layer or Users
+        {:ok, new_db_user} =
+          %{username: user_alias}
+          |> Db.Users.create_unregistered_user()
+
+        new_user = Utils.db_user_to_user(new_db_user)
 
         Logger.info("new user upserted with user_id=#{user_id} user_alias=#{user_alias}")
 
@@ -192,10 +210,5 @@ defmodule MidimatchesWeb.UserController do
     else
       {:ok, password}
     end
-  end
-
-  defp update_remote_ip(%User{} = user, conn) do
-    remote_ip = to_string(:inet_parse.ntoa(conn.remote_ip))
-    %User{user | remote_ip: remote_ip}
   end
 end

@@ -13,6 +13,8 @@ defmodule MidimatchesWeb.RoomChannelTest do
     UserCache
   }
 
+  @user_id UUID.uuid4()
+
   setup do
     TestHelpers.teardown_rooms()
     on_exit(fn -> TestHelpers.teardown_rooms() end)
@@ -20,14 +22,14 @@ defmodule MidimatchesWeb.RoomChannelTest do
     Rooms.add_room("1", "foo")
 
     UserCache.upsert_user(%User{
-      user_id: "id2",
+      user_id: @user_id,
       user_alias: "sinbad"
     })
 
     {:ok, _, socket} =
       UserSocket
       |> socket()
-      |> subscribe_and_join(RoomChannel, "room:1", %{"user_id" => "id2"})
+      |> subscribe_and_join(RoomChannel, "room:1", %{"user_id" => @user_id})
       |> enter_room("id1")
 
     %{socket: socket}
@@ -53,12 +55,12 @@ defmodule MidimatchesWeb.RoomChannelTest do
   # end
 
   test "client gets error when non existent room joined", %{socket: socket} do
-    {:error, reason} = RoomChannel.join("room:3", %{"user_id" => "id2"}, socket)
+    {:error, reason} = RoomChannel.join("room:3", %{"user_id" => @user_id}, socket)
     assert reason =~ "room_id"
   end
 
   test "client gets error when user_id not found", %{socket: socket} do
-    {:error, reason} = RoomChannel.join("room:1", %{"user_id" => "___"}, socket)
+    {:error, reason} = RoomChannel.join("room:1", %{"user_id" => UUID.uuid4()}, socket)
     assert reason =~ "user_id"
   end
 

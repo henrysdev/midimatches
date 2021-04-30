@@ -16,6 +16,8 @@ defmodule Midimatches.Utils do
     Types.WinResult
   }
 
+  alias MidimatchesDb, as: Db
+
   @type id() :: String.t()
   @type freq_pair() :: {id(), number()}
 
@@ -197,5 +199,30 @@ defmodule Midimatches.Utils do
   """
   def calc_sample_time(bpm) do
     floor(60 / bpm * 4 * 4 * 1000)
+  end
+
+  @spec user_to_db_user(%User{}) :: %Db.User{}
+  @doc """
+  Cast a user struct to a db user struct
+  """
+  def user_to_db_user(%User{
+        user_id: user_id,
+        user_alias: user_alias
+      }) do
+    %Db.User{
+      uuid: user_id,
+      username: user_alias
+    }
+  end
+
+  @spec db_user_to_user(%Db.User{}) :: %User{}
+  @doc """
+  Cast a db user struct to a user struct
+  """
+  def db_user_to_user(%Db.User{uuid: uuid, username: username}) do
+    %User{
+      user_id: uuid,
+      user_alias: username
+    }
   end
 end

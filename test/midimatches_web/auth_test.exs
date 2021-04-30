@@ -1,6 +1,5 @@
 defmodule MidimatchesWeb.AuthTest do
   use MidimatchesWeb.ConnCase
-  use MidimatchesDb.RepoCase
 
   alias MidimatchesDb, as: Db
   alias MidimatchesWeb.Auth

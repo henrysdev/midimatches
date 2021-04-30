@@ -23,6 +23,7 @@ defmodule MidimatchesWeb.ConnCase do
       import Plug.Conn
       import Phoenix.ConnTest
       import MidimatchesWeb.ConnCase
+      use MidimatchesDb.RepoCase
 
       alias MidimatchesWeb.Router.Helpers, as: Routes
 

@@ -34,6 +34,14 @@ defmodule MidimatchesDb.User do
     |> hash_password()
   end
 
+  def unregistered_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:username])
+    |> validate_required_change_exclusion([:uuid, :token_serial])
+    |> validate_required([:username, :registered])
+    |> field_validations()
+  end
+
   def update_changeset(user, attrs) do
     user
     |> cast(attrs, [:username, :email, :password])

@@ -1,6 +1,5 @@
 defmodule MidimatchesWeb.AccountControllerTest do
   use MidimatchesWeb.ConnCase
-  use MidimatchesDb.RepoCase
 
   describe "POST /api/account/create" do
     test "succeeds with valid params", %{conn: conn} do

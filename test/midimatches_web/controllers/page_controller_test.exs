@@ -61,7 +61,7 @@ defmodule MidimatchesWeb.PageControllerTest do
   describe "performs banned redirect" do
     test "from /menu page", %{conn: _conn} do
       conn =
-        %User{user_id: "ididididi", user_alias: "banme"}
+        %User{user_id: UUID.uuid4(), user_alias: "banme"}
         |> setup_banned_user()
         |> get("/menu")
 
@@ -70,7 +70,7 @@ defmodule MidimatchesWeb.PageControllerTest do
 
     test "from /rooms page", %{conn: _conn} do
       conn =
-        %User{user_id: "ididididi", user_alias: "banme"}
+        %User{user_id: UUID.uuid4(), user_alias: "banme"}
         |> setup_banned_user()
         |> get("/rooms")
 
@@ -79,7 +79,7 @@ defmodule MidimatchesWeb.PageControllerTest do
 
     test "from /room/xyz page", %{conn: _conn} do
       conn =
-        %User{user_id: "ididididi", user_alias: "banme"}
+        %User{user_id: UUID.uuid4(), user_alias: "banme"}
         |> setup_banned_user()
         |> get("/room/xyz")
 
@@ -88,7 +88,7 @@ defmodule MidimatchesWeb.PageControllerTest do
 
     test "from /practice page", %{conn: _conn} do
       conn =
-        %User{user_id: "ididididi", user_alias: "banme"}
+        %User{user_id: UUID.uuid4(), user_alias: "banme"}
         |> setup_banned_user()
         |> get("/room/xyz")
 
@@ -97,7 +97,7 @@ defmodule MidimatchesWeb.PageControllerTest do
 
     test "from /register page", %{conn: _conn} do
       conn =
-        %User{user_id: "ididididi", user_alias: "banme"}
+        %User{user_id: UUID.uuid4(), user_alias: "banme"}
         |> setup_banned_user()
         |> get("/register")
 

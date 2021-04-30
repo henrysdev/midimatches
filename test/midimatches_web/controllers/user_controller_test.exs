@@ -5,7 +5,7 @@ defmodule MidimatchesWeb.UserControllerTest do
     UserCache
   }
 
-  use MidimatchesWeb.ConnCase, async: true
+  use MidimatchesWeb.ConnCase
 
   setup do
     on_exit(fn -> TestHelpers.flush_user_cache() end)
@@ -13,7 +13,7 @@ defmodule MidimatchesWeb.UserControllerTest do
   end
 
   test "GET /api/user/self", %{conn: conn} do
-    user_id = "b4rt"
+    user_id = UUID.uuid4()
     user = %User{user_id: user_id, user_alias: "chumbawumba"}
     UserCache.upsert_user(user)
 
@@ -23,12 +23,12 @@ defmodule MidimatchesWeb.UserControllerTest do
       |> get(Routes.user_path(conn, :self))
 
     assert json_response(conn, 200) == %{
-             "user" => %{"user_id" => "b4rt", "user_alias" => "chumbawumba"}
+             "user" => %{"user_id" => user_id, "user_alias" => "chumbawumba"}
            }
   end
 
   test "GET /api/user/reset", %{conn: conn} do
-    user_id = "b4rt"
+    user_id = UUID.uuid4()
     user = %User{user_id: user_id, user_alias: "chumbawumba"}
     UserCache.upsert_user(user)
     assert !is_nil(UserCache.get_user_by_id(user_id))
@@ -45,7 +45,7 @@ defmodule MidimatchesWeb.UserControllerTest do
 
   describe "POST /api/user" do
     test "valid insert new user", %{conn: conn} do
-      user_alias = "helloworld"
+      user_alias = "helloworldz"
 
       conn =
         session_conn()
@@ -66,15 +66,15 @@ defmodule MidimatchesWeb.UserControllerTest do
     end
 
     test "valid update existing user", %{conn: conn} do
-      user_id = "b4rt"
       user_alias = "chumbawumba"
 
-      user = %User{
-        user_id: user_id,
+      user_params = %User{
         user_alias: user_alias
       }
 
-      UserCache.upsert_user(user)
+      user = UserCache.upsert_user(user_params)
+
+      user_id = user.user_id
 
       conn =
         session_conn()
@@ -87,7 +87,7 @@ defmodule MidimatchesWeb.UserControllerTest do
     end
 
     test "invalid user_alias due to invalid length", %{conn: conn} do
-      user_id = "b4rt"
+      user_id = UUID.uuid4()
       user_alias = "chumbawumba"
 
       user = %User{
@@ -109,7 +109,7 @@ defmodule MidimatchesWeb.UserControllerTest do
     end
 
     test "invalid user_alias due to profanity", %{conn: conn} do
-      user_id = "b4rt"
+      user_id = UUID.uuid4()
       user_alias = "chumbawumba"
 
       user = %User{
