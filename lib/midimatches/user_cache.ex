@@ -51,7 +51,7 @@ defmodule Midimatches.UserCache do
     end
   end
 
-  @spec delete_user_by_id(id()) :: boolean()
+  @spec delete_user_by_id(id()) :: :ok | nil
   @doc """
   Delete the user with the given user_id
   """
