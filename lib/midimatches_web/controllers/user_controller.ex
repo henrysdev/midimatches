@@ -4,8 +4,6 @@ defmodule MidimatchesWeb.UserController do
   """
   use MidimatchesWeb, :controller
 
-  alias MidimatchesDb, as: Db
-
   alias Midimatches.{
     ProfanityFilter,
     Types.User,
@@ -116,16 +114,9 @@ defmodule MidimatchesWeb.UserController do
         |> json(%{})
       else
         # create and insert new user
-        # new_user =
-        #   %User{user_alias: user_alias}
-        #   |> UserCache.upsert_user()
-
-        # TODO abstract further in UserCache layer or Users
-        {:ok, new_db_user} =
-          %{username: user_alias}
-          |> Db.Users.create_unregistered_user()
-
-        new_user = Utils.db_user_to_user(new_db_user)
+        new_user =
+          %User{user_alias: user_alias}
+          |> UserCache.upsert_user()
 
         Logger.info("new user upserted with user_id=#{user_id} user_alias=#{user_alias}")
 
