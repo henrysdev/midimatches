@@ -60,7 +60,10 @@ defmodule Midimatches.Admin do
   """
   def list_banned_users do
     BannedUsers.list_banned_users()
-    |> Enum.map(&UserCache.get_user_by_id/1)
+    |> Enum.map(fn user_id ->
+      {:ok, user} = UserCache.get_user_by_id(user_id)
+      user
+    end)
   end
 
   @spec list_active_users() :: list(User)
@@ -69,7 +72,10 @@ defmodule Midimatches.Admin do
   """
   def list_active_users do
     PresenceTracker.get_tracked_conns()
-    |> Enum.map(fn {user_id, _meta} -> UserCache.get_user_by_id(user_id) end)
+    |> Enum.map(fn {user_id, _meta} ->
+      {:ok, user} = UserCache.get_user_by_id(user_id)
+      user
+    end)
     |> Enum.reject(&is_nil(&1))
   end
 

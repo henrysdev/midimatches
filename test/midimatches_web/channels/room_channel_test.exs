@@ -19,7 +19,7 @@ defmodule MidimatchesWeb.RoomChannelTest do
 
     Rooms.add_room("1", "foo")
 
-    %User{user_id: user_id} =
+    {:ok, %User{user_id: user_id}} =
       UserCache.upsert_user(%User{
         user_alias: "sinbad"
       })

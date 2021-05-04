@@ -9,7 +9,7 @@ defmodule MidimatchesWeb.RoomControllerTest do
   describe "POST /api/room" do
     test "valid request", %{conn: _conn} do
       user_params = %User{user_alias: "foobar"}
-      user = UserCache.upsert_user(user_params)
+      {:ok, user} = UserCache.upsert_user(user_params)
 
       conn =
         session_conn()
@@ -25,7 +25,7 @@ defmodule MidimatchesWeb.RoomControllerTest do
 
     test "invalid roon_name value due to length", %{conn: _conn} do
       user_params = %User{user_alias: "foobar"}
-      user = UserCache.upsert_user(user_params)
+      {:ok, user} = UserCache.upsert_user(user_params)
 
       conn =
         session_conn()
@@ -44,7 +44,7 @@ defmodule MidimatchesWeb.RoomControllerTest do
 
     test "invalid roon_name value due to profanity", %{conn: _conn} do
       user_params = %User{user_alias: "foobar"}
-      user = UserCache.upsert_user(user_params)
+      {:ok, user} = UserCache.upsert_user(user_params)
 
       conn =
         session_conn()
@@ -63,7 +63,7 @@ defmodule MidimatchesWeb.RoomControllerTest do
 
     test "invalid max_players value", %{conn: _conn} do
       user_params = %User{user_alias: "foobar"}
-      user = UserCache.upsert_user(user_params)
+      {:ok, user} = UserCache.upsert_user(user_params)
 
       conn =
         session_conn()
@@ -82,7 +82,7 @@ defmodule MidimatchesWeb.RoomControllerTest do
 
     test "invalid num_rounds value", %{conn: _conn} do
       user_params = %User{user_alias: "foobar"}
-      user = UserCache.upsert_user(user_params)
+      {:ok, user} = UserCache.upsert_user(user_params)
 
       conn =
         session_conn()

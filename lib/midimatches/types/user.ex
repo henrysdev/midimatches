@@ -10,5 +10,6 @@ defmodule Midimatches.Types.User do
     field(:user_id, String.t())
     field(:user_alias, String.t(), enforce: true)
     field(:remote_ip, String.t())
+    field(:registered?, boolean(), default: false)
   end
 end

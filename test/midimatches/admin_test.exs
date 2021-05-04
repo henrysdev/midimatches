@@ -107,7 +107,7 @@ defmodule Midimatches.AdminTest do
         user_alias: "bronco"
       }
 
-      %User{user_id: user_id} = user = UserCache.upsert_user(user_params)
+      {:ok, %User{user_id: user_id} = user} = UserCache.upsert_user(user_params)
 
       {:ok, _, _socket} =
         UserSocket

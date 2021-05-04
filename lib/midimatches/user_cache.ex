@@ -13,8 +13,9 @@ defmodule Midimatches.UserCache do
   require Logger
 
   @type id() :: String.t()
+  @type db_response() :: {:ok, term()} | {:error, term()}
 
-  @spec upsert_user(%User{}) :: %User{}
+  @spec upsert_user(%User{}) :: db_response()
   @doc """
   Upserts a user in the user cache keyed by user_id
   """
@@ -22,44 +23,51 @@ defmodule Midimatches.UserCache do
     if !is_nil(user_id) and user_id_exists?(user_id) do
       case Db.Users.update_user(user_id, %{username: user_alias}) do
         {:ok, db_user} ->
-          Utils.db_user_to_user(db_user)
+          {:ok, Utils.db_user_to_user(db_user)}
 
         {:error, reason} ->
           Logger.error(reason)
-          nil
+          {:error, reason}
       end
     else
       case Db.Users.create_unregistered_user(%{username: user_alias}) do
         {:ok, db_user} ->
-          Utils.db_user_to_user(db_user)
+          {:ok, Utils.db_user_to_user(db_user)}
 
         {:error, reason} ->
           Logger.error(reason)
-          nil
+          {:error, reason}
       end
     end
   end
 
-  @spec get_user_by_id(id()) :: %User{} | nil
+  @spec get_user_by_id(id()) :: db_response()
   @doc """
   Get the user value for the provided user_id
   """
   def get_user_by_id(user_id) do
     case Db.Users.get_user_by(:uuid, user_id) do
-      {:ok, db_user} -> Utils.db_user_to_user(db_user)
-      _ -> nil
+      {:ok, user} -> {:ok, user |> Utils.db_user_to_user()}
+      other -> other
     end
+
+    # case Db.Users.get_user_by(:uuid, user_id) do
+    #   {:ok, db_user} -> Utils.db_user_to_user(db_user)
+    #   _ -> nil
+    # end
   end
 
-  @spec delete_user_by_id(id()) :: :ok | nil
+  @spec delete_user_by_id(id()) :: db_response()
   @doc """
   Delete the user with the given user_id
   """
   def delete_user_by_id(user_id) do
-    case Db.Users.delete_user_by_id(user_id) do
-      {:ok, ^user_id} -> :ok
-      _ -> nil
-    end
+    Db.Users.delete_user_by_id(user_id)
+
+    # case Db.Users.delete_user_by_id(user_id) do
+    #   {:ok, ^user_id} -> :ok
+    #   _ -> nil
+    # end
   end
 
   @spec user_id_exists?(id()) :: boolean()
@@ -73,7 +81,7 @@ defmodule Midimatches.UserCache do
     end
   end
 
-  @spec get_or_insert_user(%User{}) :: %User{}
+  @spec get_or_insert_user(%User{}) :: db_response()
   @doc """
   If a version of the given user already exists in the cache, returns it. Otherwise, insert the
   provided user and return it.
@@ -83,7 +91,6 @@ defmodule Midimatches.UserCache do
       get_user_by_id(user_id)
     else
       upsert_user(user)
-      user
     end
   end
 end
