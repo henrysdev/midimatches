@@ -15,11 +15,14 @@ defmodule Midimatches.UserCacheTest do
 
   describe "upsert user" do
     test "for a new user to the user cache" do
+      user_alias = "foobarzooa"
+
       user = %User{
-        user_alias: "foobarzoo"
+        user_alias: user_alias
       }
 
       upserted_user = UserCache.upsert_user(user)
+      assert %User{user_alias: ^user_alias} = upserted_user
     end
 
     test "for an existing user to the user cache" do
@@ -32,7 +35,7 @@ defmodule Midimatches.UserCacheTest do
 
       assert found_orig_user.user_alias == orig_user.user_alias
 
-      upserted_user = UserCache.upsert_user(%User{found_orig_user | user_alias: "barzeeedo"})
+      UserCache.upsert_user(%User{found_orig_user | user_alias: "barzeeedo"})
       found_upserted_user = UserCache.get_user_by_id(orig_inserted_user.user_id)
 
       assert found_upserted_user.user_alias == "barzeeedo"

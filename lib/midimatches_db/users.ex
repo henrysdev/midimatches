@@ -8,6 +8,8 @@ defmodule MidimatchesDb.Users do
     User
   }
 
+  import Ecto.Query
+
   @type id() :: String.t()
 
   @spec create_user(map()) :: {:ok, %User{}} | {:error, any()}
@@ -65,6 +67,20 @@ defmodule MidimatchesDb.Users do
       {:error, %Ecto.Changeset{} = reason} ->
         {:error, traverse_errors(reason)}
 
+      {:error, reason} ->
+        {:error, reason}
+    end
+  end
+
+  @spec delete_user_by_id(id()) :: {:ok, id()} | {:error, any()}
+  @doc """
+  Delete an existing user
+  """
+  def delete_user_by_id(user_id) do
+    with {:ok, %User{uuid: uuid} = found_user} <- get_user_by(:uuid, user_id),
+         {1, nil} <- Repo.delete_all(from(user in User, where: user.uuid == ^uuid)) do
+      {:ok, uuid}
+    else
       {:error, reason} ->
         {:error, reason}
     end

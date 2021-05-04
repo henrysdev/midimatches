@@ -8,9 +8,9 @@ defmodule Midimatches.UserCache do
     Utils
   }
 
-  require Logger
-
   alias MidimatchesDb, as: Db
+
+  require Logger
 
   @type id() :: String.t()
 
@@ -18,7 +18,7 @@ defmodule Midimatches.UserCache do
   @doc """
   Upserts a user in the user cache keyed by user_id
   """
-  def upsert_user(%User{user_alias: user_alias, user_id: user_id} = user) do
+  def upsert_user(%User{user_alias: user_alias, user_id: user_id}) do
     if !is_nil(user_id) and user_id_exists?(user_id) do
       case Db.Users.update_user(user_id, %{username: user_alias}) do
         {:ok, db_user} ->
@@ -34,7 +34,6 @@ defmodule Midimatches.UserCache do
           Utils.db_user_to_user(db_user)
 
         {:error, reason} ->
-          IO.inspect({:error_for_upsert_create_for, user_alias, :reason, reason})
           Logger.error(reason)
           nil
       end
@@ -57,7 +56,10 @@ defmodule Midimatches.UserCache do
   Delete the user with the given user_id
   """
   def delete_user_by_id(user_id) do
-    # TODO implement DB delete
+    case Db.Users.delete_user_by_id(user_id) do
+      {:ok, ^user_id} -> :ok
+      _ -> nil
+    end
   end
 
   @spec user_id_exists?(id()) :: boolean()
