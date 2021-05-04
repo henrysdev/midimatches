@@ -2,7 +2,6 @@ defmodule Midimatches.UserCache do
   @moduledoc """
   API wrapper around the users db table for anonymous users
   """
-  use GenServer
 
   alias Midimatches.{
     Types.User,
@@ -14,27 +13,6 @@ defmodule Midimatches.UserCache do
   alias MidimatchesDb, as: Db
 
   @type id() :: String.t()
-
-  # TODO remove ETS table part
-  def init(arg) do
-    if :ets.whereis(:user_cache) == :undefined do
-      :ets.new(:user_cache, [
-        :set,
-        :public,
-        :named_table,
-        {:read_concurrency, true},
-        {:write_concurrency, true}
-      ])
-    else
-      :ok
-    end
-
-    {:ok, arg}
-  end
-
-  def start_link(arg) do
-    GenServer.start_link(__MODULE__, arg, name: __MODULE__)
-  end
 
   @spec upsert_user(%User{}) :: %User{}
   @doc """
@@ -56,6 +34,7 @@ defmodule Midimatches.UserCache do
           Utils.db_user_to_user(db_user)
 
         {:error, reason} ->
+          IO.inspect({:error_for_upsert_create_for, user_alias, :reason, reason})
           Logger.error(reason)
           nil
       end

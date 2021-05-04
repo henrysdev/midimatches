@@ -103,14 +103,11 @@ defmodule Midimatches.AdminTest do
 
   describe "list active users" do
     test "returns the correct active users" do
-      user_id = UUID.uuid4()
-
-      user = %User{
-        user_id: user_id,
+      user_params = %User{
         user_alias: "bronco"
       }
 
-      UserCache.upsert_user(user)
+      %User{user_id: user_id} = user = UserCache.upsert_user(user_params)
 
       {:ok, _, _socket} =
         UserSocket

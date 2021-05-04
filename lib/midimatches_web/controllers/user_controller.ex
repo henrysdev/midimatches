@@ -59,9 +59,10 @@ defmodule MidimatchesWeb.UserController do
         |> UserCache.get_user_by_id()
         |> Utils.server_to_client_user()
 
+      # put_session(conn, :user, user)
       {user, conn}
     else
-      UserCache.delete_user_by_id()
+      UserCache.delete_user_by_id(user_id)
       conn = delete_session(conn, :user)
       {nil, conn}
     end
@@ -115,7 +116,6 @@ defmodule MidimatchesWeb.UserController do
         |> json(%{})
       else
         # create and insert new user
-        # user_id = Utils.gen_uuid()
         # new_user =
         #   %User{user_alias: user_alias}
         #   |> UserCache.upsert_user()
