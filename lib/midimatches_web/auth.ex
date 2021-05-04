@@ -8,6 +8,8 @@ defmodule MidimatchesWeb.Auth do
 
   alias MidimatchesDb, as: Db
 
+  @max_token_age 864_000
+
   @spec new_bearer_token(Plug.Conn.t(), MidimatchesDb.User.t()) :: Plug.Conn.t()
   def new_bearer_token(conn, %Db.User{uuid: user_id}) do
     {:ok, new_token_serial} = Db.Users.user_increment_session(user_id)
@@ -23,10 +25,8 @@ defmodule MidimatchesWeb.Auth do
 
   @spec verify_bearer_token(Plug.Conn.t(), any()) :: Plug.Conn.t()
   def verify_bearer_token(conn, _ \\ nil) do
-    if bearer_token = conn.assigns[:user_bearer_token] do
-      case Phoenix.Token.verify(MidimatchesWeb.Endpoint, "user bearer token", bearer_token,
-             max_age: 864_000
-           ) do
+    if has_bearer_token?(conn) do
+      case conn.assigns[:user_bearer_token] |> verify_phx_token() do
         {:ok, [user_id: user_id, session_id: session_id]} ->
           if fresh_token?(user_id, session_id) do
             assign(conn, :auth_user_id, user_id)
@@ -34,12 +34,34 @@ defmodule MidimatchesWeb.Auth do
             auth_error(conn)
           end
 
-        {:error, _reason} ->
+        _ ->
           auth_error(conn)
       end
     else
       auth_error(conn)
     end
+  end
+
+  @spec has_bearer_token?(Plug.Conn.t()) :: boolean()
+  def has_bearer_token?(conn) do
+    conn.assigns[:user_bearer_token] != nil
+  end
+
+  @spec valid_bearer_token?(any()) :: boolean()
+  def valid_bearer_token?(bearer_token) do
+    case verify_phx_token(bearer_token) do
+      {:ok, [user_id: user_id, session_id: session_id]} ->
+        fresh_token?(user_id, session_id)
+
+      _ ->
+        false
+    end
+  end
+
+  defp verify_phx_token(token) do
+    Phoenix.Token.verify(MidimatchesWeb.Endpoint, "user bearer token", token,
+      max_age: @max_token_age
+    )
   end
 
   defp auth_error(conn) do
