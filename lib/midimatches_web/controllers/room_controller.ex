@@ -11,8 +11,6 @@ defmodule MidimatchesWeb.RoomController do
     Types.GameRules
   }
 
-  alias MidimatchesWeb.Auth
-
   require Logger
 
   @max_players 10

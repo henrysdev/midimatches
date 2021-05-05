@@ -62,7 +62,7 @@ defmodule MidimatchesDb.User do
     |> validate_length(:username, min: @min_username_len, max: @max_username_len)
     |> validate_length(:password, min: @min_password_len, max: @max_password_len)
     |> validate_language(:username)
-    |> unique_constraint(:unique_username_constraint, name: :unique_usernames)
+    |> unique_constraint(:username, message: "is unavailable", name: :username_unavailable)
     |> unique_constraint(:unique_uuid_constraint, name: :unique_uuids)
   end
 
