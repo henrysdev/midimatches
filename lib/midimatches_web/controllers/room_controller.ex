@@ -11,6 +11,8 @@ defmodule MidimatchesWeb.RoomController do
     Types.GameRules
   }
 
+  alias MidimatchesWeb.Auth
+
   require Logger
 
   @max_players 10
@@ -34,7 +36,7 @@ defmodule MidimatchesWeb.RoomController do
           "num_rounds" => num_rounds
         }
       ) do
-    if has_user_session?(conn) do
+    if Auth.has_user_session?(conn) do
       user_id = get_session(conn, :user).user_id
 
       with {:ok, room_name} <- parse_room_name(room_name, user_id),

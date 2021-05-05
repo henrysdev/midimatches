@@ -10,6 +10,8 @@ defmodule MidimatchesWeb.UserController do
     Utils
   }
 
+  alias MidimatchesWeb.Auth
+
   require Logger
 
   @type id() :: String.t()
@@ -19,10 +21,9 @@ defmodule MidimatchesWeb.UserController do
   Get current session user
   """
   def self(conn, _params) do
-    if has_user_session?(conn) do
+    if Auth.has_user_session?(conn) do
       {curr_user, conn} =
-        conn
-        |> get_session(:user)
+        conn.assigns[:auth_user]
         |> handle_user_session(conn)
 
       conn
@@ -56,7 +57,7 @@ defmodule MidimatchesWeb.UserController do
     else
       case UserCache.delete_user_by_id(user_id) do
         {:ok, _} ->
-          {nil, delete_session(conn, :user)}
+          {nil, delete_session(conn, :user_bearer_token)}
 
         {:error, _reason} ->
           {nil, conn}
@@ -69,19 +70,21 @@ defmodule MidimatchesWeb.UserController do
   Reset user session
   """
   def reset(conn, _params) do
-    user_id =
-      conn
-      |> get_session(:user)
-      |> (& &1.user_id).()
+    if user = conn.assigns[:auth_user] do
+      case UserCache.delete_user_by_id(user.user_id) do
+        {:ok, _any} ->
+          IO.inspect({:RESET_DELETED_USER_BY_ID})
 
-    case UserCache.delete_user_by_id(user_id) do
-      {:ok, _any} ->
-        conn
-        |> delete_session(:user)
-        |> json(%{})
+          conn
+          |> clear_session()
+          |> json(%{})
 
-      {:error, reason} ->
-        bad_json_request(conn, reason)
+        {:error, reason} ->
+          Logger.error(reason)
+          bad_json_request(conn, reason)
+      end
+    else
+      json(conn, %{})
     end
   end
 
@@ -90,43 +93,43 @@ defmodule MidimatchesWeb.UserController do
   Upsert user
   """
   def upsert(conn, %{"user_alias" => user_alias}) do
-    user_id =
-      if has_user_session?(conn) do
-        get_session(conn, :user).user_id
-      else
-        "nosession"
-      end
+    # user_id =
+    #   if Auth.has_user_session?(conn) do
+    #     conn.assigns[:auth_user].user_id
+    #   else
+    #     "nosession"
+    #   end
 
-    if has_user_session?(conn) do
+    if Auth.has_user_session?(conn) do
       # updates an existing user
-      with {:ok, existing_user} <-
-             get_session(conn, :user)
-             |> (& &1.user_id).()
-             |> UserCache.get_user_by_id(),
+      with {:ok, %User{user_id: user_id} = existing_user} <-
+             conn.assigns[:auth_user].user_id |> UserCache.get_user_by_id(),
            {:ok, updated_user} <-
              %User{existing_user | user_alias: user_alias}
              |> UserCache.upsert_user() do
         Logger.info("existing user updated alias user_id=#{user_id} user_alias=#{user_alias}")
 
         conn
-        |> put_session(:user, updated_user)
+        |> Auth.put_bearer_token(user_id)
+        |> assign(:auth_user, updated_user)
         |> json(%{})
       else
         {:error, reason} ->
-          conn
-          |> bad_json_request(reason)
+          Logger.error(reason)
+          bad_json_request(conn, reason)
       end
     else
       # creates a new user
       case UserCache.upsert_user(%User{user_alias: user_alias}) do
-        {:ok, new_user} ->
+        {:ok, %User{user_id: new_user_id} = new_user} ->
           conn
-          |> put_session(:user, new_user)
+          |> Auth.put_bearer_token(new_user_id)
+          |> assign(:auth_user, new_user)
           |> json(%{})
 
         {:error, reason} ->
-          conn
-          |> bad_json_request(reason)
+          Logger.error(reason)
+          bad_json_request(conn, reason)
       end
     end
   end

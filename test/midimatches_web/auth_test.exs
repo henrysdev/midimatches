@@ -7,7 +7,7 @@ defmodule MidimatchesWeb.AuthTest do
   test "creates new bearer token", %{conn: conn} do
     user = create_default_user()
 
-    updated_assigns = Auth.new_bearer_token(conn, user).assigns
+    updated_assigns = Auth.put_bearer_token(conn, user.uuid).assigns
 
     assert %{user_bearer_token: _} = updated_assigns
   end

@@ -103,11 +103,9 @@ defmodule MidimatchesWeb.AccountController do
 
   defp attempt_login(conn, user_params) do
     case Db.Users.get_user_by_creds(user_params) do
-      {:ok, %Db.User{} = user} ->
-        bearer_token = Auth.new_bearer_token(conn, user)
-
+      {:ok, %Db.User{uuid: user_id}} ->
         conn
-        |> assign(:user_bearer_token, bearer_token)
+        |> Auth.put_bearer_token(user_id)
         |> json(%{})
 
       {:error, reason} ->
