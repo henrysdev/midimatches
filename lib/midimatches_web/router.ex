@@ -29,7 +29,7 @@ defmodule MidimatchesWeb.Router do
   end
 
   pipeline :registered_user_api_auth do
-    plug :auth_conn, [:return_auth_error]
+    plug :auth_conn, [:registered_only, :return_auth_error]
   end
 
   scope "/", MidimatchesWeb do

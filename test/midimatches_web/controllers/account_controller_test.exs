@@ -1,6 +1,8 @@
 defmodule MidimatchesWeb.AccountControllerTest do
   use MidimatchesWeb.ConnCase
 
+  alias MidimatchesWeb.Auth
+
   describe "POST /api/account/create" do
     test "succeeds with valid params", %{conn: conn} do
       conn =
@@ -43,27 +45,33 @@ defmodule MidimatchesWeb.AccountControllerTest do
   end
 
   describe "PUT /api/account/:uuid" do
-    test "update succeeds with valid params", %{conn: conn} do
+    test "update succeeds with valid params", %{conn: _conn} do
+      username = "sNo00ydo0"
+
       user_params = %{
-        "username" => "snoopydoo",
+        "username" => username,
         "password" => "asdgasdg111",
-        "email" => "jiu@jdid.5jd"
+        "email" => "jaa@jdid.5jd"
       }
 
-      user_id = insert_user(user_params).uuid
+      {:ok, user} = MidimatchesDb.Users.create_user(user_params)
 
       conn =
         session_conn()
-        |> put(
-          Routes.account_path(conn, :update, user_id, %{
-            username: "b4rtyy"
+        |> Auth.put_bearer_token(user.uuid)
+
+      conn =
+        put(
+          conn,
+          Routes.account_path(conn, :update, user.uuid, %{
+            username: "b__Asdg"
           })
         )
 
       expected_user = %{
         "user" => %{
           "email" => "jiu@jdid.5jd",
-          "username" => "b4rtyy"
+          "username" => "b__Asdg"
         }
       }
 
@@ -76,19 +84,33 @@ defmodule MidimatchesWeb.AccountControllerTest do
       end)
     end
 
-    test "update does not succeed for uuid", %{conn: conn} do
+    test "update does not succeed for uuid", %{conn: _conn} do
+      new_uuid = UUID.uuid4()
+
       user_params = %{
         "username" => "snoopydoo",
         "password" => "asdgasdg111",
         "email" => "jiu@jdid.5jd"
       }
 
-      user_id = insert_user(user_params).uuid
-      new_uuid = UUID.uuid4()
+      {:ok, user} = MidimatchesDb.Users.create_user(user_params)
+      user_id = user.uuid
 
       conn =
         session_conn()
-        |> put(
+        |> Auth.put_bearer_token(user.uuid)
+
+      conn =
+        put(
+          conn,
+          Routes.account_path(conn, :update, user.uuid, %{
+            username: "b__Asdg"
+          })
+        )
+
+      conn =
+        put(
+          conn,
           Routes.account_path(conn, :update, user_id, %{
             uuid: new_uuid
           })
@@ -97,10 +119,23 @@ defmodule MidimatchesWeb.AccountControllerTest do
       assert json_response(conn, 200)["uuid"] != new_uuid
     end
 
-    test "update does not succeed when no user exists to update", %{conn: conn} do
+    test "update does not succeed when no user exists to update", %{conn: _conn} do
+      user_params = %{
+        "username" => "snoopydoo",
+        "password" => "asdgasdg111",
+        "email" => "jiu@jdid.5jd"
+      }
+
+      {:ok, user} = MidimatchesDb.Users.create_user(user_params)
+      user_id = user.uuid
+
       conn =
         session_conn()
-        |> put(
+        |> Auth.put_bearer_token(user_id)
+
+      conn =
+        put(
+          conn,
           Routes.account_path(conn, :update, UUID.uuid4(), %{
             password: "Asdgasdg"
           })
@@ -112,17 +147,22 @@ defmodule MidimatchesWeb.AccountControllerTest do
   end
 
   describe "POST /api/account/login" do
-    test "successful login", %{conn: conn} do
+    test "successful login", %{conn: _conn} do
       user_params = %{
         "username" => "b4rt121",
         "password" => "asdgasdg111",
         "email" => "jiu@jdid.5jd"
       }
 
-      insert_user(user_params)
+      {:ok, user} = MidimatchesDb.Users.create_user(user_params)
+      user_id = user.uuid
 
       conn =
         session_conn()
+        |> Auth.put_bearer_token(user_id)
+
+      conn =
+        conn
         |> post(
           Routes.account_path(conn, :login, %{
             "username" => "b4rt121",
@@ -156,22 +196,27 @@ defmodule MidimatchesWeb.AccountControllerTest do
   end
 
   describe "GET /api/account/:uuid" do
-    test "successfully gets user at valid uuid", %{conn: conn} do
+    test "successfully gets user at valid uuid", %{conn: _conn} do
       user_params = %{
-        "username" => "b4rt121",
+        "username" => "b33t121",
         "password" => "asdgasdg111",
         "email" => "jiu@jdid.5jd"
       }
 
-      uuid = insert_user(user_params).uuid
+      {:ok, user} = MidimatchesDb.Users.create_user(user_params)
+      user_id = user.uuid
 
       conn =
         session_conn()
-        |> get(Routes.account_path(conn, :show, uuid))
+        |> Auth.put_bearer_token(user_id)
+
+      conn =
+        conn
+        |> get(Routes.account_path(conn, :show, user_id))
 
       expected_user = %{
-        "uuid" => uuid,
-        "username" => "b4rt121",
+        "uuid" => user_id,
+        "username" => "b33t121",
         "email" => "jiu@jdid.5jd"
       }
 
@@ -184,9 +229,22 @@ defmodule MidimatchesWeb.AccountControllerTest do
       end)
     end
 
-    test "unsuccessfully gets user when user not found", %{conn: conn} do
+    test "unsuccessfully gets user when user not found", %{conn: _conn} do
+      user_params = %{
+        "username" => "bd3t121",
+        "password" => "asdgasdg111",
+        "email" => "jiu@jdid.5jd"
+      }
+
+      {:ok, user} = MidimatchesDb.Users.create_user(user_params)
+      user_id = user.uuid
+
       conn =
         session_conn()
+        |> Auth.put_bearer_token(user_id)
+
+      conn =
+        conn
         |> get(Routes.account_path(conn, :show, UUID.uuid4()))
 
       assert json_response(conn, 404) == %{"error" => "user not found"}

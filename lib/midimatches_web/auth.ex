@@ -26,8 +26,7 @@ defmodule MidimatchesWeb.Auth do
         session_id: new_token_serial
       )
 
-    conn
-    |> put_session(:user_bearer_token, token)
+    put_session(conn, :user_bearer_token, token)
   end
 
   @spec auth_conn(Plug.Conn.t(), list(atom)) :: Plug.Conn.t()
@@ -41,41 +40,51 @@ defmodule MidimatchesWeb.Auth do
       case verify_phx_token(bearer_token) do
         {:ok, [user_id: user_id, session_id: token_session]} ->
           case Db.Users.get_user_by(:uuid, user_id) do
-            {:ok, %Db.User{token_serial: user_session} = user} ->
-              if user_session == token_session do
-                auth_user =
-                  user
-                  |> Utils.db_user_to_user()
-                  |> Utils.server_to_client_user()
+            {:ok, %Db.User{token_serial: user_session, registered: registered?} = user} ->
+              if :registered_only not in opts or (:registered_only in opts and registered?) do
+                if user_session == token_session do
+                  auth_user =
+                    user
+                    |> Utils.db_user_to_user()
+                    |> Utils.server_to_client_user()
 
-                conn
-                |> assign(:auth_user, auth_user)
+                  conn
+                  |> assign(:auth_user, auth_user)
+                else
+                  reason = "auth token session no longer valid"
+                  auth_failure_fallback(conn, opts, reason)
+                end
               else
-                Logger.error("auth token session expired")
-                auth_failure_fallback(conn, opts)
+                reason = "auth token for a user with insufficient access level"
+                auth_failure_fallback(conn, opts, reason)
               end
 
             {:error, reason} ->
-              Logger.error(reason)
+              auth_failure_fallback(conn, opts, reason)
           end
 
         {:error, reason} ->
-          Logger.error(reason)
-          auth_failure_fallback(conn, opts)
+          auth_failure_fallback(conn, opts, reason)
       end
     else
       auth_failure_fallback(conn, opts)
     end
   end
 
-  defp auth_failure_fallback(conn, opts) do
+  defp auth_failure_fallback(conn, opts, reason \\ nil) do
+    if is_nil(reason) do
+      :ok
+    else
+      Logger.error(reason)
+    end
+
     cond do
-      Enum.member?(opts, :redirect_to_login) ->
+      :redirect_to_login in opts ->
         conn
         |> redirect(to: Routes.page_path(conn, :register_player, destination: conn.request_path))
         |> halt()
 
-      Enum.member?(opts, :return_auth_error) ->
+      :return_auth_error in opts ->
         auth_error(conn)
 
       true ->
@@ -88,7 +97,7 @@ defmodule MidimatchesWeb.Auth do
     conn.assigns[:user_bearer_token] != nil
   end
 
-  defp verify_phx_token(token) do
+  def verify_phx_token(token) do
     Phoenix.Token.verify(MidimatchesWeb.Endpoint, "user bearer token", token,
       max_age: @max_token_age
     )

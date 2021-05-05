@@ -50,11 +50,6 @@ defmodule Midimatches.UserCache do
       {:ok, user} -> {:ok, user |> Utils.db_user_to_user()}
       other -> other
     end
-
-    # case Db.Users.get_user_by(:uuid, user_id) do
-    #   {:ok, db_user} -> Utils.db_user_to_user(db_user)
-    #   _ -> nil
-    # end
   end
 
   @spec delete_user_by_id(id()) :: db_response()
@@ -63,11 +58,6 @@ defmodule Midimatches.UserCache do
   """
   def delete_user_by_id(user_id) do
     Db.Users.delete_user_by_id(user_id)
-
-    # case Db.Users.delete_user_by_id(user_id) do
-    #   {:ok, ^user_id} -> :ok
-    #   _ -> nil
-    # end
   end
 
   @spec user_id_exists?(id()) :: boolean()

@@ -73,8 +73,6 @@ defmodule MidimatchesWeb.UserController do
     if user = conn.assigns[:auth_user] do
       case UserCache.delete_user_by_id(user.user_id) do
         {:ok, _any} ->
-          IO.inspect({:RESET_DELETED_USER_BY_ID})
-
           conn
           |> clear_session()
           |> json(%{})
@@ -93,13 +91,6 @@ defmodule MidimatchesWeb.UserController do
   Upsert user
   """
   def upsert(conn, %{"user_alias" => user_alias}) do
-    # user_id =
-    #   if Auth.has_user_session?(conn) do
-    #     conn.assigns[:auth_user].user_id
-    #   else
-    #     "nosession"
-    #   end
-
     if Auth.has_user_session?(conn) do
       # updates an existing user
       with {:ok, %User{user_id: user_id} = existing_user} <-

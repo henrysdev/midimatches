@@ -12,13 +12,19 @@ defmodule MidimatchesWeb.PageController do
 
   @spec index(Plug.Conn.t(), any) :: Plug.Conn.t()
   def index(conn, _params) do
-    success_behavior = fn conn ->
+    if Auth.has_user_session?(conn) do
+      success_behavior = fn conn ->
+        redirect(conn,
+          to: Routes.page_path(conn, :menu)
+        )
+      end
+
+      redirect_if_banned(conn, success_behavior)
+    else
       redirect(conn,
-        to: Routes.page_path(conn, :menu)
+        to: Routes.page_path(conn, :about)
       )
     end
-
-    redirect_if_banned(conn, success_behavior)
   end
 
   @spec about(Plug.Conn.t(), any) :: Plug.Conn.t()
@@ -38,14 +44,12 @@ defmodule MidimatchesWeb.PageController do
 
   @spec menu(Plug.Conn.t(), any) :: Plug.Conn.t()
   def menu(conn, _params) do
-    success_behavior = fn conn -> render(conn, "menu.html") end
-    redirect_if_banned(conn, success_behavior)
+    redirect_if_banned(conn, fn conn -> render(conn, "menu.html") end)
   end
 
   @spec serverlist(Plug.Conn.t(), any) :: Plug.Conn.t()
   def serverlist(conn, _params) do
-    success_behavior = fn conn -> render(conn, "serverlist.html") end
-    redirect_if_banned(conn, success_behavior)
+    redirect_if_banned(conn, fn conn -> render(conn, "serverlist.html") end)
   end
 
   @spec room_play(Plug.Conn.t(), map) :: Plug.Conn.t()

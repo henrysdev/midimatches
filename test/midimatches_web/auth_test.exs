@@ -4,41 +4,55 @@ defmodule MidimatchesWeb.AuthTest do
   alias MidimatchesDb, as: Db
   alias MidimatchesWeb.Auth
 
-  test "creates new bearer token", %{conn: conn} do
+  test "creates new bearer token", %{conn: _conn} do
+    conn = session_conn()
     user = create_default_user()
 
-    updated_assigns = Auth.put_bearer_token(conn, user.uuid).assigns
+    conn =
+      conn
+      |> Auth.put_bearer_token(user.uuid)
 
-    assert %{user_bearer_token: _} = updated_assigns
+    bearer_token = get_session(conn, :user_bearer_token)
+
+    assert !is_nil(bearer_token)
   end
 
-  test "verifies a bearer token", %{conn: conn} do
+  test "verifies a bearer token", %{conn: _conn} do
+    conn = session_conn()
     user = create_default_user()
-    conn = add_token(conn, user)
 
-    assigns = Auth.verify_bearer_token(conn, %{}).assigns
+    conn =
+      conn
+      |> Auth.put_bearer_token(user.uuid)
+      |> Auth.auth_conn()
 
-    assert %{user_bearer_token: conn.assigns.user_bearer_token, auth_user_id: user.uuid} ==
-             assigns
+    bearer_token = get_session(conn, :user_bearer_token)
+
+    conn = Auth.auth_conn(conn)
+
+    assert %{auth_user: _} = conn.assigns
+    assert !is_nil(bearer_token)
   end
 
-  test "invalidates bearer token", %{conn: conn} do
+  test "invalidates bearer token", %{conn: _conn} do
+    conn = session_conn()
     user = create_default_user()
-    conn = add_token(conn, user)
 
-    orig_bearer_token = conn.assigns.user_bearer_token
+    conn =
+      conn
+      |> Auth.put_bearer_token(user.uuid)
+      |> Auth.auth_conn()
+
+    orig_bearer_token = get_session(conn, :user_bearer_token)
+
+    conn = Auth.auth_conn(conn)
+
+    assert %{auth_user: _} = conn.assigns
+    assert !is_nil(orig_bearer_token)
 
     Db.Users.user_increment_session(user.uuid)
 
-    assigns = Auth.verify_bearer_token(conn, %{}).assigns
-
-    assert :auth_user_id not in assigns
-
-    assert %{user_bearer_token: ^orig_bearer_token} = assigns
-  end
-
-  defp add_token(conn, user) do
-    Auth.new_bearer_token(conn, user)
+    Auth.auth_conn(conn)
   end
 
   defp create_default_user do

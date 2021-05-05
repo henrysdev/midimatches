@@ -36,39 +36,33 @@ defmodule MidimatchesWeb.RoomController do
           "num_rounds" => num_rounds
         }
       ) do
-    if Auth.has_user_session?(conn) do
-      user_id = get_session(conn, :user).user_id
+    user_id = conn.assigns[:auth_user].user_id
 
-      with {:ok, room_name} <- parse_room_name(room_name, user_id),
-           {:ok, max_players} <- parse_max_players(max_players),
-           {:ok, num_rounds} <- parse_num_rounds(num_rounds) do
-        room_config = %RoomConfig{
-          room_name: room_name,
-          server: %GameRules{
-            max_players: max_players,
-            rounds_to_win: num_rounds
-          }
+    with {:ok, room_name} <- parse_room_name(room_name, user_id),
+         {:ok, max_players} <- parse_max_players(max_players),
+         {:ok, num_rounds} <- parse_num_rounds(num_rounds) do
+      room_config = %RoomConfig{
+        room_name: room_name,
+        server: %GameRules{
+          max_players: max_players,
+          rounds_to_win: num_rounds
         }
+      }
 
-        room_id = Rooms.configure_room(room_config)
+      room_id = Rooms.configure_room(room_config)
 
-        # TODO persist room
-        link_to_room = Routes.page_path(conn, :room, room_id)
+      # TODO persist room
+      link_to_room = Routes.page_path(conn, :room, room_id)
+
+      conn
+      |> json(%{link_to_room: link_to_room})
+    else
+      {:error, reason} ->
+        Logger.warn("create room failed with error reason #{reason}")
 
         conn
-        |> json(%{link_to_room: link_to_room})
-      else
-        {:error, reason} ->
-          Logger.warn("create room failed with error reason #{reason}")
-
-          conn
-          |> put_status(:bad_request)
-          |> json(%{error: reason})
-      end
-    else
-      conn
-      |> put_status(401)
-      |> json(%{error: "no authorized user session"})
+        |> put_status(:bad_request)
+        |> json(%{error: reason})
     end
   end
 

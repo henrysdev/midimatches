@@ -18,7 +18,7 @@ defmodule MidimatchesWeb.UserControllerTest do
 
     conn =
       session_conn()
-      |> put_session(:user, user)
+      |> assign(:auth_user, user)
       |> get(Routes.user_path(conn, :self))
 
     assert json_response(conn, 200) == %{
@@ -34,11 +34,11 @@ defmodule MidimatchesWeb.UserControllerTest do
 
     conn =
       session_conn()
-      |> put_session(:user, user)
+      |> assign(:auth_user, user)
       |> get(Routes.user_path(conn, :reset))
 
     assert json_response(conn, 200) == %{}
-    assert is_nil(get_session(conn, :user))
+    assert is_nil(get_session(conn, :auth_user))
     assert {:error, %{not_found: "user"}} == UserCache.get_user_by_id(user_id)
   end
 
@@ -50,10 +50,8 @@ defmodule MidimatchesWeb.UserControllerTest do
         session_conn()
         |> post(Routes.user_path(conn, :upsert, %{"user_alias" => user_alias}))
 
-      user_id =
-        conn
-        |> get_session(:user)
-        |> (& &1.user_id).()
+      {:ok, user} = MidimatchesDb.Users.get_user_by(:username, user_alias)
+      user_id = user.uuid
 
       {:ok, user} = UserCache.get_user_by_id(user_id)
 
@@ -69,19 +67,17 @@ defmodule MidimatchesWeb.UserControllerTest do
     test "valid update existing user", %{conn: conn} do
       user_alias = "hellow4zz"
 
-      user_params = %User{
-        user_alias: user_alias
-      }
-
-      {:ok, %User{user_id: user_id} = user} = UserCache.upsert_user(user_params)
+      {:ok, %User{user_id: user_id} = user} =
+        UserCache.upsert_user(%User{
+          user_alias: user_alias
+        })
 
       conn =
         session_conn()
-        |> put_session(:user, user)
+        |> assign(:auth_user, user)
         |> post(Routes.user_path(conn, :upsert, %{"user_alias" => user_alias}))
 
       assert json_response(conn, 200) == %{}
-      assert get_session(conn, :user) |> (& &1.user_id).() == user_id
       {:ok, user} = UserCache.get_user_by_id(user_id)
       assert user.user_alias == user_alias
     end
@@ -95,7 +91,7 @@ defmodule MidimatchesWeb.UserControllerTest do
 
       conn =
         session_conn()
-        |> put_session(:user, user)
+        |> assign(:auth_user, user)
         |> post(
           Routes.user_path(conn, :upsert, %{"user_alias" => "asljdkf;alskjdf;lkajsd;flkjasd;lf"})
         )
@@ -117,7 +113,7 @@ defmodule MidimatchesWeb.UserControllerTest do
 
       conn =
         session_conn()
-        |> put_session(:user, user)
+        |> assign(:auth_user, user)
         |> post(Routes.user_path(conn, :upsert, %{"user_alias" => "hell"}))
 
       resp = json_response(conn, 400)

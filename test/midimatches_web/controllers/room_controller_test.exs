@@ -6,6 +6,8 @@ defmodule MidimatchesWeb.RoomControllerTest do
     UserCache
   }
 
+  alias MidimatchesWeb.Auth
+
   describe "POST /api/room" do
     test "valid request", %{conn: _conn} do
       user_params = %User{user_alias: "foobar"}
@@ -13,7 +15,7 @@ defmodule MidimatchesWeb.RoomControllerTest do
 
       conn =
         session_conn()
-        |> put_session(:user, user)
+        |> Auth.put_bearer_token(user.user_id)
         |> post("/api/room", %{
           "room_name" => "absdf",
           "max_players" => 4,
@@ -29,7 +31,7 @@ defmodule MidimatchesWeb.RoomControllerTest do
 
       conn =
         session_conn()
-        |> put_session(:user, user)
+        |> Auth.put_bearer_token(user.user_id)
         |> post("/api/room", %{
           "room_name" => "ab",
           "max_players" => 4,
@@ -48,7 +50,7 @@ defmodule MidimatchesWeb.RoomControllerTest do
 
       conn =
         session_conn()
-        |> put_session(:user, user)
+        |> Auth.put_bearer_token(user.user_id)
         |> post("/api/room", %{
           "room_name" => "abg hell",
           "max_players" => 4,
@@ -67,7 +69,7 @@ defmodule MidimatchesWeb.RoomControllerTest do
 
       conn =
         session_conn()
-        |> put_session(:user, user)
+        |> Auth.put_bearer_token(user.user_id)
         |> post("/api/room", %{
           "room_name" => "absdf",
           "max_players" => 9999,
@@ -86,7 +88,7 @@ defmodule MidimatchesWeb.RoomControllerTest do
 
       conn =
         session_conn()
-        |> put_session(:user, user)
+        |> Auth.put_bearer_token(user.user_id)
         |> post("/api/room", %{
           "room_name" => "absdf",
           "max_players" => 3,

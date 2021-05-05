@@ -22,8 +22,9 @@ defmodule MidimatchesWeb.AccountController do
         } = user_params
       ) do
     case Db.Users.create_user(user_params) do
-      {:ok, created_user} ->
+      {:ok, %Db.User{uuid: user_id} = created_user} ->
         conn
+        |> Auth.put_bearer_token(user_id)
         |> json(%{user: created_user})
 
       {:error, changeset_error} ->
@@ -39,11 +40,11 @@ defmodule MidimatchesWeb.AccountController do
   """
   def update(conn, %{"uuid" => uuid} = params) do
     user_change_params = Map.delete(params, "uuid")
-    # TODO obtain user_id from authenticated session
+
     case Db.Users.update_user(uuid, user_change_params) do
-      {:ok, updated_user} ->
-        # TODO logout the user on account update
+      {:ok, %Db.User{uuid: user_id} = updated_user} ->
         conn
+        |> Auth.put_bearer_token(user_id)
         |> json(%{user: updated_user})
 
       {:error, %{not_found: "user"}} ->

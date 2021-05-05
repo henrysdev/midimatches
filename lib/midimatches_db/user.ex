@@ -27,7 +27,7 @@ defmodule MidimatchesDb.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:username, :email, :password])
+    |> cast(attrs, [:username, :email, :password, :registered])
     |> validate_required_change_exclusion([:uuid, :token_serial])
     |> validate_required([:username, :email, :password])
     |> field_validations()
