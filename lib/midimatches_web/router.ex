@@ -7,8 +7,8 @@ defmodule MidimatchesWeb.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug :auth_user
-    plug :put_user_token
+    plug :auth_user_socket
+    plug :put_user_socket_token
   end
 
   pipeline :api do
@@ -16,39 +16,66 @@ defmodule MidimatchesWeb.Router do
     plug :fetch_session
   end
 
+  pipeline :public_pages_auth do
+    plug :auth_conn
+  end
+
+  pipeline :user_pages_auth do
+    plug :auth_conn, [:redirect_to_login]
+  end
+
+  pipeline :public_api_auth do
+    plug :auth_conn
+  end
+
+  pipeline :registered_user_api_auth do
+    plug :auth_conn, [:registered_only, :return_auth_error]
+  end
+
   scope "/", MidimatchesWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
-    get "/about", PageController, :about
-    get "/privacy", PageController, :privacy
-    get "/terms", PageController, :terms
-    get "/menu", PageController, :menu
-    get "/rooms", PageController, :serverlist
-    get "/room/:room_id/play", PageController, :room_play
-    get "/room/:room_id/watch", PageController, :room_watch
-    get "/room/:room_id", PageController, :room
-    get "/register", PageController, :register_player
-    get "/practice", PageController, :practice
-    # get "/account/reset/:slug", PageController, :reset_password
+    scope "/" do
+      pipe_through :public_pages_auth
+      get "/", PageController, :index
+      get "/about", PageController, :about
+      get "/privacy", PageController, :privacy
+      get "/terms", PageController, :terms
+      get "/register", PageController, :register_player
+    end
+
+    scope "/" do
+      pipe_through :user_pages_auth
+      get "/menu", PageController, :menu
+      get "/rooms", PageController, :serverlist
+      get "/room/:room_id/play", PageController, :room_play
+      get "/room/:room_id/watch", PageController, :room_watch
+      get "/room/:room_id", PageController, :room
+      get "/practice", PageController, :practice
+    end
   end
 
   scope "/api", MidimatchesWeb do
     pipe_through :api
 
-    get "/user/self", UserController, :self
-    post "/user", UserController, :upsert
     get "/user/sync", UserController, :sync
 
-    post "/account", AccountController, :create
-    put "/account/:uuid", AccountController, :update
-    get "/account/:uuid", AccountController, :show
-    post "/account/login", AccountController, :login
-    post "/account/logout", AccountController, :logout
+    scope "/" do
+      pipe_through :public_api_auth
+      get "/user/self", UserController, :self
+      post "/user", UserController, :upsert
+      get "/samples/random", SampleController, :random
+      post "/room", RoomController, :create
+      post "/", AccountController, :create
+      post "/login", AccountController, :login
+    end
 
-    get "/samples/random", SampleController, :random
-
-    post "/room", RoomController, :create
+    scope "/" do
+      pipe_through :registered_user_api_auth
+      put "/:uuid", AccountController, :update
+      get "/:uuid", AccountController, :show
+      post "/logout", AccountController, :logout
+    end
   end
 
   # Enables LiveDashboard only for development
@@ -63,26 +90,13 @@ defmodule MidimatchesWeb.Router do
 
     scope "/api", MidimatchesWeb do
       pipe_through :api
+      pipe_through :public_api_auth
       get "/user/reset", UserController, :reset
     end
 
     scope "/" do
       pipe_through :browser
       live_dashboard "/dashboard", metrics: MidimatchesWeb.Telemetry
-    end
-  end
-
-  defp auth_user(conn, _) do
-    user_id = Midimatches.Utils.gen_uuid()
-    conn |> assign(:current_user, %{id: user_id})
-  end
-
-  defp put_user_token(conn, _) do
-    if current_user = conn.assigns[:current_user] do
-      token = Phoenix.Token.sign(conn, "user socket", current_user.id)
-      assign(conn, :user_token, token)
-    else
-      conn
     end
   end
 end

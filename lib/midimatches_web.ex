@@ -49,6 +49,7 @@ defmodule MidimatchesWeb do
 
       import Plug.Conn
       import Phoenix.Controller
+      import MidimatchesWeb.Auth
     end
   end
 

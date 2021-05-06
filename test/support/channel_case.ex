@@ -23,6 +23,8 @@ defmodule MidimatchesWeb.ChannelCase do
       import Phoenix.ChannelTest
       import MidimatchesWeb.ChannelCase
 
+      use MidimatchesDb.RepoCase
+
       # The default endpoint for testing
       @endpoint MidimatchesWeb.Endpoint
     end

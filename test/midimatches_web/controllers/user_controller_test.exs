@@ -5,7 +5,7 @@ defmodule MidimatchesWeb.UserControllerTest do
     UserCache
   }
 
-  use MidimatchesWeb.ConnCase, async: true
+  use MidimatchesWeb.ConnCase
 
   setup do
     on_exit(fn -> TestHelpers.flush_user_cache() end)
@@ -13,121 +13,114 @@ defmodule MidimatchesWeb.UserControllerTest do
   end
 
   test "GET /api/user/self", %{conn: conn} do
-    user_id = "b4rt"
-    user = %User{user_id: user_id, user_alias: "chumbawumba"}
-    UserCache.upsert_user(user)
+    user_alias = "chnumbawumba"
+    {:ok, user} = UserCache.upsert_user(%User{user_alias: user_alias})
 
     conn =
       session_conn()
-      |> put_session(:user, user)
+      |> assign(:auth_user, user)
       |> get(Routes.user_path(conn, :self))
 
     assert json_response(conn, 200) == %{
-             "user" => %{"user_id" => "b4rt", "user_alias" => "chumbawumba"}
+             "user" => %{"user_id" => user.user_id, "user_alias" => user_alias}
            }
   end
 
   test "GET /api/user/reset", %{conn: conn} do
-    user_id = "b4rt"
-    user = %User{user_id: user_id, user_alias: "chumbawumba"}
-    UserCache.upsert_user(user)
-    assert !is_nil(UserCache.get_user_by_id(user_id))
+    user_params = %User{user_alias: "zhumbawu"}
+    {:ok, %User{user_id: user_id} = user} = UserCache.upsert_user(user_params)
+    {:ok, found_user} = UserCache.get_user_by_id(user_id)
+    assert !is_nil(found_user)
 
     conn =
       session_conn()
-      |> put_session(:user, user)
+      |> assign(:auth_user, user)
       |> get(Routes.user_path(conn, :reset))
 
     assert json_response(conn, 200) == %{}
-    assert is_nil(get_session(conn, :user))
-    assert is_nil(UserCache.get_user_by_id(user_id))
+    assert is_nil(get_session(conn, :auth_user))
+    assert {:error, %{not_found: "user"}} == UserCache.get_user_by_id(user_id)
   end
 
   describe "POST /api/user" do
     test "valid insert new user", %{conn: conn} do
-      user_alias = "helloworld"
+      user_alias = "hellowozz"
 
       conn =
         session_conn()
         |> post(Routes.user_path(conn, :upsert, %{"user_alias" => user_alias}))
 
-      user_id =
-        conn
-        |> get_session(:user)
-        |> (& &1.user_id).()
+      {:ok, user} = MidimatchesDb.Users.get_user_by(:username, user_alias)
+      user_id = user.uuid
+
+      {:ok, user} = UserCache.get_user_by_id(user_id)
 
       assert %User{
                user_id: ^user_id,
                user_alias: ^user_alias,
                remote_ip: _
-             } = UserCache.get_user_by_id(user_id)
+             } = user
 
       assert json_response(conn, 200) == %{}
     end
 
     test "valid update existing user", %{conn: conn} do
-      user_id = "b4rt"
-      user_alias = "chumbawumba"
+      user_alias = "hellow4zz"
 
-      user = %User{
-        user_id: user_id,
-        user_alias: user_alias
-      }
-
-      UserCache.upsert_user(user)
+      {:ok, %User{user_id: user_id} = user} =
+        UserCache.upsert_user(%User{
+          user_alias: user_alias
+        })
 
       conn =
         session_conn()
-        |> put_session(:user, user)
-        |> post(Routes.user_path(conn, :upsert, %{"user_alias" => "helloworld"}))
+        |> assign(:auth_user, user)
+        |> post(Routes.user_path(conn, :upsert, %{"user_alias" => user_alias}))
 
       assert json_response(conn, 200) == %{}
-      assert get_session(conn, :user) |> (& &1.user_id).() == user_id
-      assert UserCache.get_user_by_id(user_id).user_alias == "helloworld"
+      {:ok, user} = UserCache.get_user_by_id(user_id)
+      assert user.user_alias == user_alias
     end
 
     test "invalid user_alias due to invalid length", %{conn: conn} do
-      user_id = "b4rt"
-      user_alias = "chumbawumba"
-
-      user = %User{
-        user_id: user_id,
-        user_alias: user_alias
+      user_params = %User{
+        user_alias: "khumbawumba"
       }
 
-      UserCache.upsert_user(user)
+      {:ok, user} = UserCache.upsert_user(user_params)
 
       conn =
         session_conn()
-        |> put_session(:user, user)
-        |> post(Routes.user_path(conn, :upsert, %{"user_alias" => ""}))
+        |> assign(:auth_user, user)
+        |> post(
+          Routes.user_path(conn, :upsert, %{"user_alias" => "asljdkf;alskjdf;lkajsd;flkjasd;lf"})
+        )
 
       resp = json_response(conn, 400)
-      error = resp["error"]
-      assert error =~ "user_alias"
-      assert error =~ "invalid_length"
+      error_str = resp["error"] |> inspect()
+      assert error_str =~ "username"
+      assert error_str =~ "should be at most 20"
     end
 
     test "invalid user_alias due to profanity", %{conn: conn} do
-      user_id = "b4rt"
-      user_alias = "chumbawumba"
+      user_alias = "bhumbawumba"
 
-      user = %User{
-        user_id: user_id,
+      user_params = %User{
         user_alias: user_alias
       }
 
-      UserCache.upsert_user(user)
+      {:ok, user} = UserCache.upsert_user(user_params)
 
       conn =
         session_conn()
-        |> put_session(:user, user)
+        |> assign(:auth_user, user)
         |> post(Routes.user_path(conn, :upsert, %{"user_alias" => "hell"}))
 
       resp = json_response(conn, 400)
-      error = resp["error"]
-      assert error =~ "user_alias"
-      assert error =~ "profanity"
+
+      error_str = resp["error"] |> inspect()
+      assert error_str =~ "username"
+      assert error_str =~ "profane"
     end
   end
 end

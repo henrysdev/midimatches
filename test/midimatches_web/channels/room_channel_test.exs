@@ -19,18 +19,18 @@ defmodule MidimatchesWeb.RoomChannelTest do
 
     Rooms.add_room("1", "foo")
 
-    UserCache.upsert_user(%User{
-      user_id: "id2",
-      user_alias: "sinbad"
-    })
+    {:ok, %User{user_id: user_id}} =
+      UserCache.upsert_user(%User{
+        user_alias: "sinbad"
+      })
 
     {:ok, _, socket} =
       UserSocket
       |> socket()
-      |> subscribe_and_join(RoomChannel, "room:1", %{"user_id" => "id2"})
+      |> subscribe_and_join(RoomChannel, "room:1", %{"user_id" => user_id})
       |> enter_room("id1")
 
-    %{socket: socket}
+    %{socket: socket, user_id: user_id}
   end
 
   # test "client joins existing room successfully", %{socket: socket} do
@@ -52,13 +52,13 @@ defmodule MidimatchesWeb.RoomChannelTest do
   #   assert expected_num_musicians == 2
   # end
 
-  test "client gets error when non existent room joined", %{socket: socket} do
-    {:error, reason} = RoomChannel.join("room:3", %{"user_id" => "id2"}, socket)
+  test "client gets error when non existent room joined", %{socket: socket, user_id: user_id} do
+    {:error, reason} = RoomChannel.join("room:3", %{"user_id" => user_id}, socket)
     assert reason =~ "room_id"
   end
 
-  test "client gets error when user_id not found", %{socket: socket} do
-    {:error, reason} = RoomChannel.join("room:1", %{"user_id" => "___"}, socket)
+  test "client gets error when user_id not found", %{socket: socket, user_id: _user_id} do
+    {:error, reason} = RoomChannel.join("room:1", %{"user_id" => UUID.uuid4()}, socket)
     assert reason =~ "user_id"
   end
 

@@ -8,6 +8,8 @@ defmodule MidimatchesDb.Users do
     User
   }
 
+  import Ecto.Query
+
   @type id() :: String.t()
 
   @spec create_user(map()) :: {:ok, %User{}} | {:error, any()}
@@ -15,7 +17,30 @@ defmodule MidimatchesDb.Users do
   Insert a new user
   """
   def create_user(%{} = user_params) when is_map(user_params) do
+    user_params =
+      user_params
+      |> map_to_string_keys()
+      |> Map.put("registered", true)
+
     user_changeset = User.changeset(%User{}, user_params)
+
+    case Repo.insert(user_changeset) do
+      {:error, changeset} -> {:error, traverse_errors(changeset)}
+      {:ok, record} -> {:ok, record}
+    end
+  end
+
+  @spec create_unregistered_user(map()) :: {:ok, %User{}} | {:error, any()}
+  @doc """
+  Insert a new unregistered user
+  """
+  def create_unregistered_user(%{} = user_params) when is_map(user_params) do
+    user_params =
+      user_params
+      |> map_to_string_keys()
+      |> Map.put("registered", false)
+
+    user_changeset = User.unregistered_changeset(%User{}, user_params)
 
     case Repo.insert(user_changeset) do
       {:error, changeset} -> {:error, traverse_errors(changeset)}
@@ -28,8 +53,14 @@ defmodule MidimatchesDb.Users do
   Update an existing user
   """
   def update_user(user_id, %{} = user_params) when is_map(user_params) do
+    user_params =
+      user_params
+      |> map_to_string_keys()
+      |> Map.delete("registered")
+
     with {:ok, found_user} <- get_user_by(:uuid, user_id),
-         changeset <- build_update_changeset(found_user, user_params),
+         {change, user_params} <- build_update_changeset(found_user, user_params),
+         changeset <- User.update_changeset(change, user_params),
          {:ok, updated_model} <- Repo.update(changeset) do
       {:ok, updated_model}
     else
@@ -41,19 +72,68 @@ defmodule MidimatchesDb.Users do
     end
   end
 
-  defp build_update_changeset(found_user, raw_user_params) do
+  @spec delete_user_by_id(id()) :: {:ok, id()} | {:error, any()}
+  @doc """
+  Delete an existing user
+  """
+  def delete_user_by_id(user_id) do
+    with {:ok, %User{uuid: uuid} = _found_user} <- get_user_by(:uuid, user_id),
+         {1, nil} <- Repo.delete_all(from(user in User, where: user.uuid == ^uuid)) do
+      {:ok, uuid}
+    else
+      {:error, reason} ->
+        {:error, reason}
+    end
+  end
+
+  @spec user_increment_session(id()) :: {:ok, %User{}} | {:error, any()}
+  @doc """
+  Incremenet a user's token session
+  """
+  def user_increment_session(user_id) do
+    with {:ok, found_user} <- get_user_by(:uuid, user_id),
+         {change, user_params} <-
+           build_update_changeset(found_user, %{"token_serial" => found_user.token_serial + 1}, [
+             "token_serial"
+           ]),
+         changeset <- User.update_token_changeset(change, user_params),
+         {:ok, %User{token_serial: token_serial}} <- Repo.update(changeset) do
+      {:ok, token_serial}
+    else
+      {:error, %Ecto.Changeset{} = reason} ->
+        {:error, traverse_errors(reason)}
+
+      {:error, reason} ->
+        {:error, reason}
+    end
+  end
+
+  defp build_update_changeset(
+         found_user,
+         raw_user_params,
+         accepted_keys \\ ["username", "email", "password", "uuid"]
+       ) do
     user_params =
       for {key, val} <- raw_user_params, into: %{} do
-        if key in ["username", "email", "password", "uuid"] do
+        if key in accepted_keys do
           {String.to_atom(key), val}
         else
           {key, val}
         end
       end
 
-    found_user
-    |> Ecto.Changeset.change(user_params)
-    |> User.update_changeset(user_params)
+    change =
+      found_user
+      |> Ecto.Changeset.change(user_params)
+
+    {change, user_params}
+  end
+
+  @spec map_to_string_keys(map()) :: map()
+  defp map_to_string_keys(atoms_map) when is_map(atoms_map) do
+    for {key, val} <- atoms_map, into: %{} do
+      {to_string(key), to_string(val)}
+    end
   end
 
   @spec get_user_by(any(), any()) :: {:ok, %User{}} | {:error, any()}

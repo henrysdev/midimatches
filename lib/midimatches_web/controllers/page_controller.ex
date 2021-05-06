@@ -8,9 +8,11 @@ defmodule MidimatchesWeb.PageController do
     Rooms.RoomServer
   }
 
+  alias MidimatchesWeb.Auth
+
   @spec index(Plug.Conn.t(), any) :: Plug.Conn.t()
   def index(conn, _params) do
-    if has_user_session?(conn) do
+    if Auth.has_user_session?(conn) do
       success_behavior = fn conn ->
         redirect(conn,
           to: Routes.page_path(conn, :menu)
@@ -42,27 +44,12 @@ defmodule MidimatchesWeb.PageController do
 
   @spec menu(Plug.Conn.t(), any) :: Plug.Conn.t()
   def menu(conn, _params) do
-    if has_user_session?(conn) do
-      success_behavior = fn conn -> render(conn, "menu.html") end
-      redirect_if_banned(conn, success_behavior)
-    else
-      redirect(conn,
-        to: Routes.page_path(conn, :register_player, destination: "/menu")
-      )
-    end
+    redirect_if_banned(conn, fn conn -> render(conn, "menu.html") end)
   end
 
   @spec serverlist(Plug.Conn.t(), any) :: Plug.Conn.t()
   def serverlist(conn, _params) do
-    if has_user_session?(conn) do
-      success_behavior = fn conn -> render(conn, "serverlist.html") end
-
-      redirect_if_banned(conn, success_behavior)
-    else
-      redirect(conn,
-        to: Routes.page_path(conn, :register_player, destination: "/rooms")
-      )
-    end
+    redirect_if_banned(conn, fn conn -> render(conn, "serverlist.html") end)
   end
 
   @spec room_play(Plug.Conn.t(), map) :: Plug.Conn.t()
@@ -98,27 +85,21 @@ defmodule MidimatchesWeb.PageController do
   end
 
   defp room_page(%Plug.Conn{} = conn, room_id, player_role) do
-    if has_user_session?(conn) do
-      success_behavior = fn conn ->
-        if Rooms.room_exists?(room_id) do
-          room_server = Pids.fetch!({:room_server, room_id})
+    success_behavior = fn conn ->
+      if Rooms.room_exists?(room_id) do
+        room_server = Pids.fetch!({:room_server, room_id})
 
-          if RoomServer.full?(room_server) and player_role == :player do
-            render(conn, "full_room.html", room_id: room_id)
-          else
-            render(conn, "room.html", player_role: player_role)
-          end
+        if RoomServer.full?(room_server) and player_role == :player do
+          render(conn, "full_room.html", room_id: room_id)
         else
-          render(conn, "missing_room.html")
+          render(conn, "room.html", player_role: player_role)
         end
+      else
+        render(conn, "missing_room.html")
       end
-
-      redirect_if_banned(conn, success_behavior)
-    else
-      redirect(conn,
-        to: Routes.page_path(conn, :register_player, destination: "/room/#{room_id}")
-      )
     end
+
+    redirect_if_banned(conn, success_behavior)
   end
 
   @spec register_player(Plug.Conn.t(), map) :: Plug.Conn.t()
@@ -134,7 +115,7 @@ defmodule MidimatchesWeb.PageController do
         _ -> "/menu"
       end
 
-    if has_user_session?(conn) do
+    if Auth.has_user_session?(conn) do
       success_behavior = fn conn ->
         render(conn, "register_player.html", destination: destination)
       end
@@ -150,24 +131,21 @@ defmodule MidimatchesWeb.PageController do
   Routes to page that renders a single player practice game mode.
   """
   def practice(conn, _params) do
-    if has_user_session?(conn) do
-      success_behavior = fn conn -> render(conn, "practice.html") end
-      redirect_if_banned(conn, success_behavior)
-    else
-      redirect(conn,
-        to: Routes.page_path(conn, :register_player, destination: "/practice")
-      )
-    end
+    success_behavior = fn conn -> render(conn, "practice.html") end
+    redirect_if_banned(conn, success_behavior)
   end
 
+  # TODO move to plug
   @spec redirect_if_banned(Plug.Conn.t(), (Plug.Conn.t() -> Plug.Conn.t())) :: Plug.Conn.t()
   defp redirect_if_banned(conn, success_behavior) do
-    user_id = get_session(conn, :user).user_id
-
-    if BannedUsers.banned?(user_id) do
-      # # TODO implement a banned page and redirect to this
-      # redirect(conn, to: Routes.page_path(conn, :about))
-      render(conn, "banned.html")
+    if user = conn.assigns[:auth_user] do
+      if BannedUsers.banned?(user.user_id) do
+        # # TODO implement a banned page and redirect to this
+        # redirect(conn, to: Routes.page_path(conn, :about))
+        render(conn, "banned.html")
+      else
+        success_behavior.(conn)
+      end
     else
       success_behavior.(conn)
     end

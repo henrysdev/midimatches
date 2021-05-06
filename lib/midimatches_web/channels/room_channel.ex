@@ -60,10 +60,11 @@ defmodule MidimatchesWeb.RoomChannel do
       audience_member? = RoomServer.audience_member?(room_server, user_id)
 
       if UserCache.user_id_exists?(user_id) do
-        player =
+        {:ok, user} =
           user_id
           |> UserCache.get_user_by_id()
-          |> Utils.user_to_player()
+
+        player = Utils.user_to_player(user)
 
         {:ok,
          socket
@@ -178,10 +179,11 @@ defmodule MidimatchesWeb.RoomChannel do
           }
         } = socket
       ) do
-    player =
+    {:ok, user} =
       player_id
       |> UserCache.get_user_by_id()
-      |> Utils.user_to_player()
+
+    player = Utils.user_to_player(user)
 
     chat_message = %ChatMessage{
       sender_id: player_id,

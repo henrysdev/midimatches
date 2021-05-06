@@ -23,6 +23,7 @@ defmodule MidimatchesWeb.ConnCase do
       import Plug.Conn
       import Phoenix.ConnTest
       import MidimatchesWeb.ConnCase
+      use MidimatchesDb.RepoCase
 
       alias MidimatchesWeb.Router.Helpers, as: Routes
 
@@ -30,7 +31,7 @@ defmodule MidimatchesWeb.ConnCase do
       @endpoint MidimatchesWeb.Endpoint
 
       def session_conn do
-        build_conn() |> Plug.Test.init_test_session(%{})
+        build_conn() |> Plug.Test.init_test_session(%{}) |> Plug.Conn.fetch_session()
       end
     end
   end

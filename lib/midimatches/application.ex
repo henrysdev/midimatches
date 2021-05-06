@@ -9,8 +9,7 @@ defmodule Midimatches.Application do
     BannedUsers,
     RoomsGarbageCollector,
     ServerlistUpdater,
-    Types.Configs,
-    UserCache
+    Types.Configs
   }
 
   alias MidimatchesWeb.PresenceTracker
@@ -25,7 +24,6 @@ defmodule Midimatches.Application do
       # Start a worker by calling: Midimatches.Worker.start_link(arg)
       {DynamicSupervisor, strategy: :one_for_one, name: Midimatches.Rooms},
       {Registry, keys: :unique, name: ProcessRegistry},
-      {UserCache, []},
       {BannedUsers, []},
       {ServerlistUpdater, [{3_000}]},
       {RoomsGarbageCollector, []},

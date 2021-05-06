@@ -178,4 +178,26 @@ defmodule MidimatchesDb.UsersTest do
       assert resp == {:error, "invalid password"}
     end
   end
+
+  describe "delete user by id" do
+    test "successfully for an existing user" do
+      user_username = "jazzyman99"
+      user_password = "abcdef1234!"
+      user_email = "ebaasdg@gmasgd.com"
+
+      user_params = %{
+        username: user_username,
+        password: user_password,
+        email: user_email
+      }
+
+      {:ok, %User{uuid: uuid}} = Users.create_user(user_params)
+
+      assert Users.delete_user_by_id(uuid) == {:ok, uuid}
+    end
+
+    test "unsuccessfully for a user that does not exist" do
+      assert Users.delete_user_by_id(UUID.uuid4()) == {:error, %{not_found: "user"}}
+    end
+  end
 end

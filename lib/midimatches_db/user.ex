@@ -17,7 +17,8 @@ defmodule MidimatchesDb.User do
     field(:email, :string)
     field(:password, :string)
     field(:uuid, Ecto.UUID, autogenerate: true)
-    field(:token_serial, :integer)
+    field(:token_serial, :integer, default: 0)
+    field(:registered, :boolean, default: false)
     # TODO add verified boolean flag for email
 
     timestamps()
@@ -26,11 +27,19 @@ defmodule MidimatchesDb.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:username, :email, :password])
+    |> cast(attrs, [:username, :email, :password, :registered])
     |> validate_required_change_exclusion([:uuid, :token_serial])
     |> validate_required([:username, :email, :password])
     |> field_validations()
     |> hash_password()
+  end
+
+  def unregistered_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:username])
+    |> validate_required_change_exclusion([:uuid, :token_serial])
+    |> validate_required([:username, :registered])
+    |> field_validations()
   end
 
   def update_changeset(user, attrs) do
@@ -53,7 +62,7 @@ defmodule MidimatchesDb.User do
     |> validate_length(:username, min: @min_username_len, max: @max_username_len)
     |> validate_length(:password, min: @min_password_len, max: @max_password_len)
     |> validate_language(:username)
-    |> unique_constraint(:unique_username_constraint, name: :unique_usernames)
+    |> unique_constraint(:username, message: "is unavailable", name: :username_unavailable)
     |> unique_constraint(:unique_uuid_constraint, name: :unique_uuids)
   end
 

@@ -8,6 +8,8 @@ defmodule MidimatchesWeb.PageControllerTest do
     UserCache
   }
 
+  alias MidimatchesWeb.Auth
+
   setup do
     on_exit(fn ->
       TestHelpers.flush_user_cache()
@@ -17,23 +19,36 @@ defmodule MidimatchesWeb.PageControllerTest do
     :ok
   end
 
-  test "GET /", %{conn: conn} do
-    conn = get(conn, "/")
+  test "GET / not logged in", %{conn: _conn} do
+    conn =
+      session_conn()
+      |> get("/")
+
     assert html_response(conn, 302) =~ "/about"
+  end
+
+  test "GET / with user", %{conn: _conn} do
+    user_params = %User{user_alias: "zfoobar"}
+    {:ok, user} = UserCache.upsert_user(user_params)
+
+    conn =
+      session_conn()
+      |> Auth.put_bearer_token(user.user_id)
+      |> get("/")
+
+    assert html_response(conn, 302) =~ "/menu"
   end
 
   test "GET /room/:room_id/play alias redirect", %{conn: conn} do
     conn = get(conn, "/room/xyz/play")
     resp = html_response(conn, 302)
-    assert resp =~ "/room/xyz"
-    assert resp =~ "audience=false"
+    assert resp =~ "destination=%2Froom%2Fxyz%2Fplay"
   end
 
   test "GET /room/:room_id/watch alias redirect", %{conn: conn} do
     conn = get(conn, "/room/xyz/watch")
     resp = html_response(conn, 302)
-    assert resp =~ "/room/xyz"
-    assert resp =~ "audience=true"
+    assert resp =~ "destination=%2Froom%2Fxyz%2Fwatch"
   end
 
   describe "GET /register" do
@@ -61,7 +76,7 @@ defmodule MidimatchesWeb.PageControllerTest do
   describe "performs banned redirect" do
     test "from /menu page", %{conn: _conn} do
       conn =
-        %User{user_id: "ididididi", user_alias: "banme"}
+        %User{user_alias: "banme"}
         |> setup_banned_user()
         |> get("/menu")
 
@@ -70,7 +85,7 @@ defmodule MidimatchesWeb.PageControllerTest do
 
     test "from /rooms page", %{conn: _conn} do
       conn =
-        %User{user_id: "ididididi", user_alias: "banme"}
+        %User{user_alias: "banme1"}
         |> setup_banned_user()
         |> get("/rooms")
 
@@ -79,7 +94,7 @@ defmodule MidimatchesWeb.PageControllerTest do
 
     test "from /room/xyz page", %{conn: _conn} do
       conn =
-        %User{user_id: "ididididi", user_alias: "banme"}
+        %User{user_alias: "banme2"}
         |> setup_banned_user()
         |> get("/room/xyz")
 
@@ -88,7 +103,7 @@ defmodule MidimatchesWeb.PageControllerTest do
 
     test "from /practice page", %{conn: _conn} do
       conn =
-        %User{user_id: "ididididi", user_alias: "banme"}
+        %User{user_alias: "banme3"}
         |> setup_banned_user()
         |> get("/room/xyz")
 
@@ -97,7 +112,7 @@ defmodule MidimatchesWeb.PageControllerTest do
 
     test "from /register page", %{conn: _conn} do
       conn =
-        %User{user_id: "ididididi", user_alias: "banme"}
+        %User{user_alias: "banme"}
         |> setup_banned_user()
         |> get("/register")
 
@@ -105,12 +120,13 @@ defmodule MidimatchesWeb.PageControllerTest do
     end
   end
 
-  @spec setup_banned_user(%User{}) :: Plug.Conn.t()
-  defp setup_banned_user(%User{user_id: user_id} = user) do
-    UserCache.upsert_user(user)
+  @spec setup_banned_user(map()) :: Plug.Conn.t()
+  defp setup_banned_user(user_params) do
+    {:ok, %User{user_id: user_id} = user} = UserCache.upsert_user(user_params)
     BannedUsers.add_banned_user(user_id)
 
     session_conn()
-    |> put_session(:user, user)
+    |> Auth.put_bearer_token(user_id)
+    |> assign(:auth_user, user)
   end
 end

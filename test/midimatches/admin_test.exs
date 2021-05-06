@@ -61,13 +61,15 @@ defmodule Midimatches.AdminTest do
   describe "alert user" do
     test "with just a message to the single connected user" do
       message_text = "ahem. Hellooooo enjoy the gameeee"
-      MidimatchesWeb.Endpoint.subscribe("user:abc123")
-      resp = Admin.alert_user("abc123", message_text)
+      user_id = UUID.uuid4()
+      topic = "user:" <> user_id
+      MidimatchesWeb.Endpoint.subscribe(topic)
+      resp = Admin.alert_user(user_id, message_text)
 
       assert resp == :ok
 
       assert_receive %Phoenix.Socket.Broadcast{
-        topic: "user:abc123",
+        topic: ^topic,
         event: "admin_alert",
         payload: %{
           admin_message: %AdminMessage{message_text: "ahem. Hellooooo enjoy the gameeee"}
@@ -77,15 +79,17 @@ defmodule Midimatches.AdminTest do
 
     test "with a message and alert lifetime to the single connected user" do
       message_text = "ahem. Hellooooo enjoy the gameeee"
+      user_id = UUID.uuid4()
       alert_lifetime = 10_000
+      topic = "user:" <> user_id
 
-      MidimatchesWeb.Endpoint.subscribe("user:abc123")
-      resp = Admin.alert_user("abc123", message_text, alert_lifetime)
+      MidimatchesWeb.Endpoint.subscribe(topic)
+      resp = Admin.alert_user(user_id, message_text, alert_lifetime)
 
       assert resp == :ok
 
       assert_receive %Phoenix.Socket.Broadcast{
-        topic: "user:abc123",
+        topic: ^topic,
         event: "admin_alert",
         payload: %{
           admin_message: %AdminMessage{
@@ -99,14 +103,11 @@ defmodule Midimatches.AdminTest do
 
   describe "list active users" do
     test "returns the correct active users" do
-      user_id = "abc123"
-
-      user = %User{
-        user_id: user_id,
+      user_params = %User{
         user_alias: "bronco"
       }
 
-      UserCache.upsert_user(user)
+      {:ok, %User{user_id: user_id} = user} = UserCache.upsert_user(user_params)
 
       {:ok, _, _socket} =
         UserSocket

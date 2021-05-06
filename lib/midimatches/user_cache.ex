@@ -1,59 +1,63 @@
 defmodule Midimatches.UserCache do
   @moduledoc """
-  API wrapper around the user_cache ets table
+  API wrapper around the users db table for anonymous users
   """
-  use GenServer
 
-  alias Midimatches.Types.User
+  alias Midimatches.{
+    Types.User,
+    Utils
+  }
+
+  alias MidimatchesDb, as: Db
+
+  require Logger
 
   @type id() :: String.t()
+  @type db_response() :: {:ok, term()} | {:error, term()}
 
-  def init(arg) do
-    if :ets.whereis(:user_cache) == :undefined do
-      :ets.new(:user_cache, [
-        :set,
-        :public,
-        :named_table,
-        {:read_concurrency, true},
-        {:write_concurrency, true}
-      ])
-    else
-      :ok
-    end
-
-    {:ok, arg}
-  end
-
-  def start_link(arg) do
-    GenServer.start_link(__MODULE__, arg, name: __MODULE__)
-  end
-
-  @spec upsert_user(%User{}) :: %User{}
+  @spec upsert_user(%User{}) :: db_response()
   @doc """
   Upserts a user in the user cache keyed by user_id
   """
-  def upsert_user(%User{user_id: user_id} = user) do
-    :ets.insert(:user_cache, {user_id, user})
-    user
+  def upsert_user(%User{user_alias: user_alias, user_id: user_id}) do
+    if !is_nil(user_id) and user_id_exists?(user_id) do
+      case Db.Users.update_user(user_id, %{username: user_alias}) do
+        {:ok, db_user} ->
+          {:ok, Utils.db_user_to_user(db_user)}
+
+        {:error, reason} ->
+          Logger.error(reason)
+          {:error, reason}
+      end
+    else
+      case Db.Users.create_unregistered_user(%{username: user_alias}) do
+        {:ok, db_user} ->
+          {:ok, Utils.db_user_to_user(db_user)}
+
+        {:error, reason} ->
+          Logger.error(reason)
+          {:error, reason}
+      end
+    end
   end
 
-  @spec get_user_by_id(id()) :: %User{} | nil
+  @spec get_user_by_id(id()) :: db_response()
   @doc """
   Get the user value for the provided user_id
   """
   def get_user_by_id(user_id) do
-    case :ets.lookup(:user_cache, user_id) do
-      [] -> nil
-      [{found_user_id, user}] when found_user_id == user_id -> user
+    case Db.Users.get_user_by(:uuid, user_id) do
+      {:ok, user} -> {:ok, user |> Utils.db_user_to_user()}
+      other -> other
     end
   end
 
-  @spec delete_user_by_id(id()) :: boolean()
+  @spec delete_user_by_id(id()) :: db_response()
   @doc """
   Delete the user with the given user_id
   """
   def delete_user_by_id(user_id) do
-    :ets.delete(:user_cache, user_id)
+    Db.Users.delete_user_by_id(user_id)
   end
 
   @spec user_id_exists?(id()) :: boolean()
@@ -61,10 +65,13 @@ defmodule Midimatches.UserCache do
   Returns truthy whether or not a user exists in the cache for a given user_id
   """
   def user_id_exists?(user_id) do
-    :ets.member(:user_cache, user_id)
+    case Db.Users.get_user_by(:uuid, user_id) do
+      {:ok, %Db.User{}} -> true
+      _ -> false
+    end
   end
 
-  @spec get_or_insert_user(%User{}) :: %User{}
+  @spec get_or_insert_user(%User{}) :: db_response()
   @doc """
   If a version of the given user already exists in the cache, returns it. Otherwise, insert the
   provided user and return it.
@@ -74,7 +81,6 @@ defmodule Midimatches.UserCache do
       get_user_by_id(user_id)
     else
       upsert_user(user)
-      user
     end
   end
 end

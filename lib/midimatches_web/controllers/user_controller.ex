@@ -5,18 +5,14 @@ defmodule MidimatchesWeb.UserController do
   use MidimatchesWeb, :controller
 
   alias Midimatches.{
-    ProfanityFilter,
     Types.User,
     UserCache,
     Utils
   }
 
-  require Logger
+  alias MidimatchesWeb.Auth
 
-  @min_user_alias_length 3
-  @max_user_alias_length 10
-  @min_password_length 10
-  @max_password_length 32
+  require Logger
 
   @type id() :: String.t()
 
@@ -25,12 +21,10 @@ defmodule MidimatchesWeb.UserController do
   Get current session user
   """
   def self(conn, _params) do
-    if has_user_session?(conn) do
-      curr_user =
-        conn
-        |> get_session(:user)
+    if Auth.has_user_session?(conn) do
+      {curr_user, conn} =
+        conn.assigns[:auth_user]
         |> handle_user_session(conn)
-        |> Utils.server_to_client_user()
 
       conn
       |> json(%{
@@ -50,9 +44,25 @@ defmodule MidimatchesWeb.UserController do
   end
 
   defp handle_user_session(session_user, conn) when is_map(session_user) do
-    struct(User, session_user)
-    |> update_remote_ip(conn)
-    |> UserCache.get_or_insert_user()
+    %{user_id: user_id} = struct(User, session_user)
+
+    if UserCache.user_id_exists?(user_id) do
+      case UserCache.get_user_by_id(user_id) do
+        {:ok, user} ->
+          {Utils.server_to_client_user(user), conn}
+
+        {:error, _reason} ->
+          {nil, conn}
+      end
+    else
+      case UserCache.delete_user_by_id(user_id) do
+        {:ok, _} ->
+          {nil, delete_session(conn, :user_bearer_token)}
+
+        {:error, _reason} ->
+          {nil, conn}
+      end
+    end
   end
 
   @spec reset(Plug.Conn.t(), map) :: Plug.Conn.t()
@@ -60,14 +70,20 @@ defmodule MidimatchesWeb.UserController do
   Reset user session
   """
   def reset(conn, _params) do
-    conn
-    |> get_session(:user)
-    |> (& &1.user_id).()
-    |> UserCache.delete_user_by_id()
+    if user = conn.assigns[:auth_user] do
+      case UserCache.delete_user_by_id(user.user_id) do
+        {:ok, _any} ->
+          conn
+          |> clear_session()
+          |> json(%{})
 
-    conn
-    |> delete_session(:user)
-    |> json(%{})
+        {:error, reason} ->
+          Logger.error(reason)
+          bad_json_request(conn, reason)
+      end
+    else
+      json(conn, %{})
+    end
   end
 
   @spec upsert(Plug.Conn.t(), map) :: Plug.Conn.t()
@@ -75,53 +91,37 @@ defmodule MidimatchesWeb.UserController do
   Upsert user
   """
   def upsert(conn, %{"user_alias" => user_alias}) do
-    user_id =
-      if has_user_session?(conn) do
-        get_session(conn, :user).user_id
-      else
-        "nosession"
-      end
-
-    with {:ok, user_alias} <- parse_user_alias(user_alias, user_id) do
-      if has_user_session?(conn) do
-        # update an existing user
-        existing_user =
-          get_session(conn, :user)
-          |> (& &1.user_id).()
-          |> UserCache.get_user_by_id()
-
-        updated_user =
-          %User{existing_user | user_alias: user_alias}
-          |> update_remote_ip(conn)
-          |> UserCache.upsert_user()
-
+    if Auth.has_user_session?(conn) do
+      # updates an existing user
+      with {:ok, %User{user_id: user_id} = existing_user} <-
+             conn.assigns[:auth_user].user_id |> UserCache.get_user_by_id(),
+           {:ok, updated_user} <-
+             %User{existing_user | user_alias: user_alias}
+             |> UserCache.upsert_user() do
         Logger.info("existing user updated alias user_id=#{user_id} user_alias=#{user_alias}")
 
         conn
-        |> put_session(:user, updated_user)
+        |> Auth.put_bearer_token(user_id)
+        |> assign(:auth_user, updated_user)
         |> json(%{})
       else
-        # create and insert new user
-        user_id = Utils.gen_uuid()
-
-        new_user =
-          %User{user_alias: user_alias, user_id: user_id}
-          |> update_remote_ip(conn)
-          |> UserCache.upsert_user()
-
-        Logger.info("new user upserted with user_id=#{user_id} user_alias=#{user_alias}")
-
-        conn
-        |> put_session(:user, new_user)
-        |> json(%{})
+        {:error, reason} ->
+          Logger.error(reason)
+          bad_json_request(conn, reason)
       end
     else
-      {:error, reason} ->
-        Logger.error("update user failed with error reason #{reason}")
+      # creates a new user
+      case UserCache.upsert_user(%User{user_alias: user_alias}) do
+        {:ok, %User{user_id: new_user_id} = new_user} ->
+          conn
+          |> Auth.put_bearer_token(new_user_id)
+          |> assign(:auth_user, new_user)
+          |> json(%{})
 
-        conn
-        |> put_status(:bad_request)
-        |> json(%{error: reason})
+        {:error, reason} ->
+          Logger.error(reason)
+          bad_json_request(conn, reason)
+      end
     end
   end
 
@@ -139,63 +139,5 @@ defmodule MidimatchesWeb.UserController do
       first_hop_delta_time: first_hop_delta_time,
       server_time: server_time
     })
-  end
-
-  @spec parse_user_alias(String.t(), id()) :: {:error, String.t()} | {:ok, String.t()}
-  def parse_user_alias(user_alias, user_id) do
-    with {:ok, user_alias} <- validate_user_alias_length(user_alias),
-         {:ok, user_alias} <- validate_user_alias_profanity(user_alias, user_id) do
-      {:ok, user_alias}
-    else
-      {:error, reason} ->
-        {:error, reason}
-    end
-  end
-
-  defp validate_user_alias_length(user_alias) do
-    user_alias_len = String.length(user_alias)
-
-    if user_alias_len < @min_user_alias_length or user_alias_len > @max_user_alias_length do
-      {:error, invalid_value_error("user_alias", :invalid_length)}
-    else
-      {:ok, user_alias}
-    end
-  end
-
-  defp validate_user_alias_profanity(user_alias, user_id) do
-    if ProfanityFilter.contains_profanity?(user_alias) do
-      Logger.warn(
-        "[PROFANITY_ALERT]: user_id=#{user_id} tried to change user to user_alias=#{user_alias}"
-      )
-
-      {:error, invalid_value_error("user_alias", :profanity)}
-    else
-      {:ok, user_alias}
-    end
-  end
-
-  @spec parse_password(String.t()) :: {:error, String.t()} | {:ok, String.t()}
-  def parse_password(password) do
-    with {:ok, password} <- validate_password_length(password) do
-      {:ok, password}
-    else
-      {:error, reason} ->
-        {:error, reason}
-    end
-  end
-
-  defp validate_password_length(password) do
-    password_len = String.length(password)
-
-    if password < @min_password_length or password_len > @max_password_length do
-      {:error, invalid_value_error("password", :invalid_length)}
-    else
-      {:ok, password}
-    end
-  end
-
-  defp update_remote_ip(%User{} = user, conn) do
-    remote_ip = to_string(:inet_parse.ntoa(conn.remote_ip))
-    %User{user | remote_ip: remote_ip}
   end
 end

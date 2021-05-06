@@ -1,16 +1,20 @@
 defmodule MidimatchesWeb.ControllerHelpers do
-  import Plug.Conn
   @moduledoc false
 
-  @type input_rule() :: :bad_value | :invalid_length | :profanity | :out_of_valid_range
+  import Plug.Conn
+  import Phoenix.Controller
 
-  @spec has_user_session?(Plug.Conn.t()) :: boolean()
-  def has_user_session?(conn) do
-    !(conn |> get_session(:user) |> is_nil())
-  end
+  @type input_rule() :: :bad_value | :invalid_length | :profanity | :out_of_valid_range
 
   @spec invalid_value_error(String.t(), input_rule()) :: String.t()
   def invalid_value_error(field, violated_rule \\ :bad_value) do
     "invalid value for #{field} (#{violated_rule})"
+  end
+
+  @spec bad_json_request(Plug.Conn.t(), any()) :: Plug.Conn.t()
+  def bad_json_request(conn, error_reason) do
+    conn
+    |> put_status(:bad_request)
+    |> json(%{error: inspect(error_reason)})
   end
 end

@@ -29,11 +29,11 @@ defmodule Midimatches.TestHelpers do
   end
 
   def flush_user_cache do
-    if :ets.whereis(:user_cache) != :undefined do
-      :ets.match_delete(:user_cache, {:"$1", :"$2"})
-    else
-      :ok
-    end
+    # if :ets.whereis(:user_cache) != :undefined do
+    #   :ets.match_delete(:user_cache, {:"$1", :"$2"})
+    # else
+    #   :ok
+    # end
   end
 
   def flush_banned_users do
