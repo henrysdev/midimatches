@@ -35,9 +35,7 @@ defmodule MidimatchesWeb.AccountControllerTest do
         )
 
       expected_response = %{
-        "error" => %{
-          "password" => ["should be at least 10 character(s)"]
-        }
+        "error" => "%{password: [\"should be at least 10 character(s)\"]}"
       }
 
       assert json_response(conn, 400) == expected_response
@@ -142,7 +140,7 @@ defmodule MidimatchesWeb.AccountControllerTest do
         )
 
       resp = json_response(conn, 404)
-      assert resp == %{"error" => "user not found"}
+      assert resp == %{"error" => "%{not_found: \"user\"}"}
     end
   end
 
@@ -191,7 +189,7 @@ defmodule MidimatchesWeb.AccountControllerTest do
           })
         )
 
-      assert json_response(conn, 401) == %{"error" => "invalid password"}
+      assert json_response(conn, 401) == %{"error" => "\"invalid password\""}
     end
   end
 
@@ -247,7 +245,7 @@ defmodule MidimatchesWeb.AccountControllerTest do
         conn
         |> get(Routes.account_path(conn, :show, UUID.uuid4()))
 
-      assert json_response(conn, 404) == %{"error" => "user not found"}
+      assert json_response(conn, 404) == %{"error" => "%{not_found: \"user\"}"}
     end
   end
 end

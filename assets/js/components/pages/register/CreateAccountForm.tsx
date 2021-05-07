@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 
-import { UpdateUserPayload, CreateAccountPayload } from "../../../types";
+import { CreateAccountPayload } from "../../../types";
 import {
   MAX_PLAYER_ALIAS_LENGTH,
   MIN_PLAYER_ALIAS_LENGTH,
@@ -62,7 +62,7 @@ const CreateAccountForm: React.FC<CreateAccountFormProps> = ({
   const [badRequest, setBadRequest] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!!loaded && !!data && !!data.error) {
+    if (!!loadError || (!!loaded && !!data && !!data.error)) {
       setBadRequest(true);
     } else if (!!loaded) {
       setReadyToContinue(true);
@@ -216,7 +216,7 @@ const CreateAccountForm: React.FC<CreateAccountFormProps> = ({
 
             {loaded && badRequest ? (
               <div className="warning_alert roboto_font">
-                Update user failed: {data.error}
+                Create account failed: {data.error}
               </div>
             ) : (
               <></>

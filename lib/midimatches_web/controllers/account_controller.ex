@@ -28,9 +28,7 @@ defmodule MidimatchesWeb.AccountController do
         |> json(%{user: created_user})
 
       {:error, changeset_error} ->
-        conn
-        |> put_status(:bad_request)
-        |> json(%{error: changeset_error})
+        bad_json_request(conn, changeset_error)
     end
   end
 
@@ -47,15 +45,11 @@ defmodule MidimatchesWeb.AccountController do
         |> Auth.put_bearer_token(user_id)
         |> json(%{user: updated_user})
 
-      {:error, %{not_found: "user"}} ->
-        conn
-        |> put_status(:not_found)
-        |> json(%{error: "user not found"})
+      {:error, %{not_found: "user"} = reason} ->
+        bad_json_request(conn, reason, :not_found)
 
       {:error, reason} ->
-        conn
-        |> put_status(:bad_request)
-        |> json(%{error: reason})
+        bad_json_request(conn, reason)
     end
   end
 
@@ -69,15 +63,11 @@ defmodule MidimatchesWeb.AccountController do
         conn
         |> json(%{user: user})
 
-      {:error, %{not_found: "user"}} ->
-        conn
-        |> put_status(:not_found)
-        |> json(%{error: "user not found"})
+      {:error, %{not_found: "user"} = reason} ->
+        bad_json_request(conn, reason, :not_found)
 
       {:error, reason} ->
-        conn
-        |> put_status(:bad_request)
-        |> json(%{error: reason})
+        bad_json_request(conn, reason)
     end
   end
 
@@ -102,6 +92,7 @@ defmodule MidimatchesWeb.AccountController do
     conn
   end
 
+  @spec attempt_login(Plug.Conn.t(), map) :: Plug.Conn.t()
   defp attempt_login(conn, user_params) do
     case Db.Users.get_user_by_creds(user_params) do
       {:ok, %Db.User{uuid: user_id}} ->
@@ -110,9 +101,7 @@ defmodule MidimatchesWeb.AccountController do
         |> json(%{})
 
       {:error, reason} ->
-        conn
-        |> put_status(:unauthorized)
-        |> json(%{error: reason})
+        bad_json_request(conn, reason, :unauthorized)
     end
   end
 end

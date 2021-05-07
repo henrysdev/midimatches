@@ -12,9 +12,9 @@ defmodule MidimatchesWeb.ControllerHelpers do
   end
 
   @spec bad_json_request(Plug.Conn.t(), any()) :: Plug.Conn.t()
-  def bad_json_request(conn, error_reason) do
+  def bad_json_request(conn, error_reason, status \\ :bad_request) do
     conn
-    |> put_status(:bad_request)
+    |> put_status(status)
     |> json(%{error: inspect(error_reason)})
   end
 end

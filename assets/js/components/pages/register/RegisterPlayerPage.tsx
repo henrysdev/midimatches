@@ -11,11 +11,12 @@ import {
   ComputerButton,
 } from "../../common";
 import { CreateAccountForm } from "./CreateAccountForm";
+import { AccountLoginForm } from "./AccountLoginForm";
 
 enum RegistrationView {
   MAIN,
   CREATE_ACCOUNT,
-  SIGN_IN,
+  LOGIN,
   PLAY_WITHOUT_SAVE,
 }
 
@@ -75,11 +76,12 @@ const RegisterPlayerPage: React.FC = () => {
                   <div className="main_menu_btn">
                     <ComputerButton
                       callback={() =>
-                        setRegistrationView(RegistrationView.SIGN_IN)
+                        setRegistrationView(RegistrationView.LOGIN)
                       }
                       extraClasses={["register_button"]}
+                      extraStyles={{ whiteSpace: "nowrap" }}
                     >
-                      SIGN IN
+                      LOGIN
                     </ComputerButton>
                   </div>
                   <div className="main_menu_btn">
@@ -90,7 +92,7 @@ const RegisterPlayerPage: React.FC = () => {
                       extraClasses={["register_button"]}
                       extraStyles={{ whiteSpace: "nowrap" }}
                     >
-                      PLAY WITHOUT SAVE
+                      PLAY WITHOUT ACCOUNT
                     </ComputerButton>
                   </div>
                 </div>
@@ -99,6 +101,13 @@ const RegisterPlayerPage: React.FC = () => {
               return (
                 <div>
                   <CreateAccountForm setReadyToContinue={setReadyToContinue} />
+                  {backButton}
+                </div>
+              );
+            case RegistrationView.LOGIN:
+              return (
+                <div>
+                  <AccountLoginForm setReadyToContinue={setReadyToContinue} />
                   {backButton}
                 </div>
               );

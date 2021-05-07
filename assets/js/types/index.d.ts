@@ -167,6 +167,11 @@ export interface CreateAccountPayload {
   email: string;
 }
 
+export interface AccountLoginPayload {
+  username: string;
+  password: string;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // Contexts                                                                  //
 ///////////////////////////////////////////////////////////////////////////////
