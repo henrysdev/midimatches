@@ -161,6 +161,12 @@ export interface UpdateUserPayload {
   user_alias: string;
 }
 
+export interface CreateAccountPayload {
+  username: string;
+  password: string;
+  email: string;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // Contexts                                                                  //
 ///////////////////////////////////////////////////////////////////////////////

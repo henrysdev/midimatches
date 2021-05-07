@@ -66,11 +66,12 @@ defmodule MidimatchesWeb.Router do
       post "/user", UserController, :upsert
       get "/samples/random", SampleController, :random
       post "/room", RoomController, :create
-      post "/", AccountController, :create
-      post "/login", AccountController, :login
+
+      post "/account/login", AccountController, :login
+      post "/account", AccountController, :create
     end
 
-    scope "/" do
+    scope "/account" do
       pipe_through :registered_user_api_auth
       put "/:uuid", AccountController, :update
       get "/:uuid", AccountController, :show

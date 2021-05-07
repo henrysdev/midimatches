@@ -1714,3 +1714,7 @@ strong {
   left: calc((var(--sound_wave_bar_width) * 9) + 1px);
   animation-duration: 442ms;
 }
+
+.text_light {
+  color: var(--text_light);
+}

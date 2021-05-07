@@ -1,152 +1,118 @@
-import { Channel, Socket } from "phoenix";
 import React, { useEffect, useState, useMemo } from "react";
 
-import { unmarshalBody } from "../../../utils";
-import { UpdateUserPayload, RoomState } from "../../../types";
+import { useCurrentUserContext, useSocketContext } from "../../../hooks";
+import { PageWrapper } from "../";
+import { PlayWithoutSaveForm } from "./PlayWithoutSaveForm";
 import {
-  SERVERLIST_UPDATE_EVENT,
-  MAX_PLAYER_ALIAS_LENGTH,
-  MIN_PLAYER_ALIAS_LENGTH,
-} from "../../../constants";
-import {
-  FullWidthButton,
   MediumLargeTitle,
-  ComputerButton,
+  MediumTitle,
   InlineWidthInputSubmit,
   VinylLoadingSpinner,
+  ComputerButton,
 } from "../../common";
-import {
-  useLoadUpdateUser,
-  useCurrentUserContext,
-  useSocketContext,
-} from "../../../hooks";
-import { PageWrapper } from "../";
+import { CreateAccountForm } from "./CreateAccountForm";
+
+enum RegistrationView {
+  MAIN,
+  CREATE_ACCOUNT,
+  SIGN_IN,
+  PLAY_WITHOUT_SAVE,
+}
 
 const RegisterPlayerPage: React.FC = () => {
-  const [alias, setAlias] = useState<string>("");
-  const [urlDestination, setUrlDestination] = useState<string>("/menu");
-
   const { user: currentUser } = useCurrentUserContext();
   const { socket } = useSocketContext();
 
+  const [urlDestination, setUrlDestination] = useState<string>("/menu");
+  const [readyToContinue, setReadyToContinue] = useState<boolean>(false);
   useEffect(() => {
     const windowRef = window as any;
     setUrlDestination(windowRef.urlDestination);
   }, []);
-
-  const handleChange = (e: any) => {
-    setAlias(e.target.value);
-  };
-
-  const trimmedAlias = useMemo(() => {
-    return alias.trim();
-  }, [alias]);
-
-  const requestBody = useMemo((): UpdateUserPayload => {
-    return {
-      user_alias: trimmedAlias,
-    };
-  }, [trimmedAlias]);
-
-  const {
-    data,
-    loading = false,
-    loaded = false,
-    loadError = false,
-    submitRequest,
-  } = useLoadUpdateUser();
-
-  const [badRequest, setBadRequest] = useState<boolean>(false);
-
   useEffect(() => {
-    if (!!loaded && !!data && !!data.error) {
-      setBadRequest(true);
-    } else if (!!loaded) {
+    if (readyToContinue) {
       window.location.href = urlDestination;
     }
-  }, [loaded]);
+  }, [readyToContinue]);
 
-  const { submitDisabled, showAliasLengthRule } = useMemo(() => {
-    const submitDisabled =
-      !trimmedAlias || trimmedAlias.length < MIN_PLAYER_ALIAS_LENGTH;
-    const showAliasLengthRule =
-      submitDisabled && !!trimmedAlias && trimmedAlias.length > 0;
-    return { submitDisabled, showAliasLengthRule };
-  }, [trimmedAlias]);
+  const [registrationView, setRegistrationView] = useState<RegistrationView>(
+    RegistrationView.MAIN
+  );
 
-  const handleSubmitForm = (e: any) => {
-    e.preventDefault();
-    if (!submitDisabled) {
-      submitRequest(requestBody);
-    }
-  };
+  const backButton = (
+    <div className="main_menu_btn_group">
+      <div className="main_menu_btn">
+        <ComputerButton
+          callback={() => setRegistrationView(RegistrationView.MAIN)}
+          extraClasses={["register_button"]}
+          extraStyles={{ whiteSpace: "nowrap" }}
+        >
+          {"< GO BACK"}
+        </ComputerButton>
+      </div>
+    </div>
+  );
 
   return (
     <PageWrapper socket={socket} currentUser={currentUser}>
       <div className="narrow_center_container computer_frame outset_3d_border_deep">
         <br />
-        <MediumLargeTitle>
-          <span className="accent_bars">///</span>PICK A NAME
-        </MediumLargeTitle>
-        <div className="register_content_wrapper inset_3d_border_deep inline_screen">
-          {loading ? (
-            <VinylLoadingSpinner />
-          ) : loadError ? (
-            <div className="warning_alert roboto_font">
-              Failed to get response from server
-            </div>
-          ) : (
-            <form
-              className="register_player_form"
-              autoComplete="off"
-              onKeyDown={(e: any) => {
-                if (e.key === "Enter") {
-                  handleSubmitForm(e);
-                }
-              }}
-              onSubmit={(e: any) => {
-                e.stopPropagation();
-                handleSubmitForm(e);
-              }}
-            >
-              <fieldset>
-                <input
-                  className="inline_width_text_input roboto_font"
-                  type="text"
-                  id="user_alias"
-                  name="user_alias"
-                  placeholder="Enter player name..."
-                  maxLength={MAX_PLAYER_ALIAS_LENGTH}
-                  onChange={handleChange}
-                />
-                {showAliasLengthRule ? (
-                  <div className="alias_length_warning roboto_font">
-                    Alias must be at least 3 characters long
+        {(() => {
+          switch (registrationView) {
+            case RegistrationView.MAIN:
+              return (
+                <div className="main_menu_btn_group">
+                  <div className="main_menu_btn">
+                    <ComputerButton
+                      callback={() =>
+                        setRegistrationView(RegistrationView.CREATE_ACCOUNT)
+                      }
+                      extraClasses={["register_button"]}
+                    >
+                      CREATE ACCOUNT
+                    </ComputerButton>
                   </div>
-                ) : (
-                  <></>
-                )}
-                <input
-                  hidden={true}
-                  onChange={() => {}}
-                  value={urlDestination}
-                  name="url_destination"
-                />
-                <InlineWidthInputSubmit
-                  label="SUBMIT"
-                  disabled={submitDisabled}
-                />
-              </fieldset>
-              {loaded && badRequest ? (
-                <div className="warning_alert roboto_font">
-                  Update user failed: {data.error}
+                  <div className="main_menu_btn">
+                    <ComputerButton
+                      callback={() =>
+                        setRegistrationView(RegistrationView.SIGN_IN)
+                      }
+                      extraClasses={["register_button"]}
+                    >
+                      SIGN IN
+                    </ComputerButton>
+                  </div>
+                  <div className="main_menu_btn">
+                    <ComputerButton
+                      callback={() =>
+                        setRegistrationView(RegistrationView.PLAY_WITHOUT_SAVE)
+                      }
+                      extraClasses={["register_button"]}
+                      extraStyles={{ whiteSpace: "nowrap" }}
+                    >
+                      PLAY WITHOUT SAVE
+                    </ComputerButton>
+                  </div>
                 </div>
-              ) : (
-                <></>
-              )}
-            </form>
-          )}
-        </div>
+              );
+            case RegistrationView.CREATE_ACCOUNT:
+              return (
+                <div>
+                  <CreateAccountForm setReadyToContinue={setReadyToContinue} />
+                  {backButton}
+                </div>
+              );
+            case RegistrationView.PLAY_WITHOUT_SAVE:
+              return (
+                <div>
+                  <PlayWithoutSaveForm
+                    setReadyToContinue={setReadyToContinue}
+                  />
+                  {backButton}
+                </div>
+              );
+          }
+        })()}
       </div>
     </PageWrapper>
   );
