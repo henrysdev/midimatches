@@ -14,9 +14,8 @@ import { CreateAccountForm } from "./CreateAccountForm";
 import { AccountLoginForm } from "./AccountLoginForm";
 
 enum RegistrationView {
-  MAIN,
-  CREATE_ACCOUNT,
   LOGIN,
+  CREATE_ACCOUNT,
   PLAY_WITHOUT_SAVE,
 }
 
@@ -37,14 +36,14 @@ const RegisterPlayerPage: React.FC = () => {
   }, [readyToContinue]);
 
   const [registrationView, setRegistrationView] = useState<RegistrationView>(
-    RegistrationView.MAIN
+    RegistrationView.LOGIN
   );
 
   const backButton = (
     <div className="main_menu_btn_group">
       <div className="main_menu_btn">
         <ComputerButton
-          callback={() => setRegistrationView(RegistrationView.MAIN)}
+          callback={() => setRegistrationView(RegistrationView.LOGIN)}
           extraClasses={["register_button"]}
           extraStyles={{ whiteSpace: "nowrap" }}
         >
@@ -58,70 +57,80 @@ const RegisterPlayerPage: React.FC = () => {
     <PageWrapper socket={socket} currentUser={currentUser}>
       <div className="narrow_center_container computer_frame outset_3d_border_deep">
         <br />
-        {(() => {
-          switch (registrationView) {
-            case RegistrationView.MAIN:
-              return (
-                <div className="main_menu_btn_group">
-                  <div className="main_menu_btn">
-                    <ComputerButton
-                      callback={() =>
-                        setRegistrationView(RegistrationView.CREATE_ACCOUNT)
-                      }
-                      extraClasses={["register_button"]}
-                    >
-                      CREATE ACCOUNT
-                    </ComputerButton>
+        <div className="main_menu_btn_group">
+          {(() => {
+            switch (registrationView) {
+              case RegistrationView.CREATE_ACCOUNT:
+                return (
+                  <div>
+                    <CreateAccountForm
+                      setReadyToContinue={setReadyToContinue}
+                    />
                   </div>
-                  <div className="main_menu_btn">
-                    <ComputerButton
-                      callback={() =>
-                        setRegistrationView(RegistrationView.LOGIN)
-                      }
-                      extraClasses={["register_button"]}
-                      extraStyles={{ whiteSpace: "nowrap" }}
-                    >
-                      LOGIN
-                    </ComputerButton>
+                );
+              case RegistrationView.LOGIN:
+                return (
+                  <div>
+                    <AccountLoginForm setReadyToContinue={setReadyToContinue} />
                   </div>
-                  <div className="main_menu_btn">
-                    <ComputerButton
-                      callback={() =>
-                        setRegistrationView(RegistrationView.PLAY_WITHOUT_SAVE)
-                      }
-                      extraClasses={["register_button"]}
-                      extraStyles={{ whiteSpace: "nowrap" }}
-                    >
-                      PLAY WITHOUT ACCOUNT
-                    </ComputerButton>
+                );
+              case RegistrationView.PLAY_WITHOUT_SAVE:
+                return (
+                  <div>
+                    <PlayWithoutSaveForm
+                      setReadyToContinue={setReadyToContinue}
+                    />
                   </div>
-                </div>
-              );
-            case RegistrationView.CREATE_ACCOUNT:
-              return (
-                <div>
-                  <CreateAccountForm setReadyToContinue={setReadyToContinue} />
-                  {backButton}
-                </div>
-              );
-            case RegistrationView.LOGIN:
-              return (
-                <div>
-                  <AccountLoginForm setReadyToContinue={setReadyToContinue} />
-                  {backButton}
-                </div>
-              );
-            case RegistrationView.PLAY_WITHOUT_SAVE:
-              return (
-                <div>
-                  <PlayWithoutSaveForm
-                    setReadyToContinue={setReadyToContinue}
-                  />
-                  {backButton}
-                </div>
-              );
-          }
-        })()}
+                );
+            }
+          })()}
+          <div className="developer_about_tagline_flex_wrapper">
+            <div className="developer_about_tagline text_light">
+              <strong>OR...</strong>
+            </div>
+          </div>
+          {registrationView !== RegistrationView.LOGIN ? (
+            <div className="main_menu_btn">
+              <ComputerButton
+                callback={() => setRegistrationView(RegistrationView.LOGIN)}
+                extraClasses={["register_button"]}
+              >
+                ACCOUNT LOGIN
+              </ComputerButton>
+            </div>
+          ) : (
+            <></>
+          )}
+          {registrationView !== RegistrationView.CREATE_ACCOUNT ? (
+            <div className="main_menu_btn">
+              <ComputerButton
+                callback={() =>
+                  setRegistrationView(RegistrationView.CREATE_ACCOUNT)
+                }
+                extraClasses={["register_button"]}
+              >
+                CREATE ACCOUNT
+              </ComputerButton>
+            </div>
+          ) : (
+            <></>
+          )}
+          {registrationView !== RegistrationView.PLAY_WITHOUT_SAVE ? (
+            <div className="main_menu_btn">
+              <ComputerButton
+                callback={() =>
+                  setRegistrationView(RegistrationView.PLAY_WITHOUT_SAVE)
+                }
+                extraClasses={["register_button"]}
+                extraStyles={{ whiteSpace: "nowrap" }}
+              >
+                PLAY WITHOUT SAVE
+              </ComputerButton>
+            </div>
+          ) : (
+            <></>
+          )}
+        </div>
       </div>
     </PageWrapper>
   );

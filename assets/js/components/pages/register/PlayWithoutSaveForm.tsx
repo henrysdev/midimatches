@@ -111,10 +111,7 @@ const PlayWithoutSaveForm: React.FC<PlayWithoutSaveFormProps> = ({
               ) : (
                 <></>
               )}
-              <InlineWidthInputSubmit
-                label="CONTINUE"
-                disabled={submitDisabled}
-              />
+              <InlineWidthInputSubmit label="PLAY!" disabled={submitDisabled} />
             </fieldset>
             {loaded && badRequest ? (
               <div className="warning_alert roboto_font">

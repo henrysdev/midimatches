@@ -161,7 +161,7 @@ const CreateAccountForm: React.FC<CreateAccountFormProps> = ({
             </fieldset>
             <br />
             <fieldset>
-              <label className="roboto_font">Email</label>
+              <label className="roboto_font">Email (for password resets)</label>
               <input
                 className="inline_width_text_input roboto_font"
                 type="text"
@@ -221,15 +221,15 @@ const CreateAccountForm: React.FC<CreateAccountFormProps> = ({
             ) : (
               <></>
             )}
+            {/* <div className="developer_about_tagline_flex_wrapper">
+              <div className="developer_about_tagline text_light">
+                <strong>Note:</strong> Email addresses are used strictly for
+                account verification and password resets.
+              </div>
+            </div> */}
             <InlineWidthInputSubmit label="CREATE" disabled={submitDisabled} />
           </form>
         )}
-      </div>
-      <div className="developer_about_tagline_flex_wrapper">
-        <div className="developer_about_tagline text_light">
-          <strong>Note:</strong> Email addresses are used strictly for account
-          verification and password resets.
-        </div>
       </div>
     </div>
   );

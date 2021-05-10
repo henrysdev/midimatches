@@ -132,10 +132,7 @@ const AccountLoginForm: React.FC<AccountLoginFormProps> = ({
             ) : (
               <></>
             )}
-            <InlineWidthInputSubmit
-              label="CONTINUE"
-              disabled={submitDisabled}
-            />
+            <InlineWidthInputSubmit label="SIGN IN" disabled={submitDisabled} />
           </form>
         )}
       </div>
