@@ -41,21 +41,28 @@ defmodule MidimatchesWeb.AccountController do
   Update the account
   """
   def update(conn, %{"uuid" => uuid} = params) do
-    user_change_params =
-      params
-      |> Map.delete("uuid")
-      |> Map.delete("password")
+    user_id = conn.assigns[:auth_user].user_id
 
-    case Db.Users.update_user(uuid, user_change_params) do
-      {:ok, %Db.User{uuid: ^uuid} = updated_user} ->
-        conn
-        |> json(%{user: updated_user})
+    if user_id == uuid do
+      user_change_params =
+        params
+        |> Map.delete("uuid")
+        |> Map.delete("password")
 
-      {:error, %{not_found: "user"} = reason} ->
-        bad_json_request(conn, reason, :not_found)
+      case Db.Users.update_user(uuid, user_change_params) do
+        {:ok, %Db.User{uuid: ^uuid} = updated_user} ->
+          conn
+          |> json(%{user: updated_user})
 
-      {:error, reason} ->
-        bad_json_request(conn, reason)
+        {:error, %{not_found: "user"} = reason} ->
+          bad_json_request(conn, reason, :not_found)
+
+        {:error, reason} ->
+          bad_json_request(conn, reason)
+      end
+    else
+      reason = "not authorized to make changes to requested user"
+      bad_json_request(conn, reason, :unauthorized)
     end
   end
 

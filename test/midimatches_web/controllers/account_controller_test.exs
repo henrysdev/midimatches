@@ -139,8 +139,11 @@ defmodule MidimatchesWeb.AccountControllerTest do
           })
         )
 
-      resp = json_response(conn, 404)
-      assert resp == %{"error" => "%{not_found: \"user\"}"}
+      resp = json_response(conn, 401)
+
+      assert resp == %{
+               "error" => "\"not authorized to make changes to requested user\""
+             }
     end
   end
 
