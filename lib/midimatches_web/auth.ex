@@ -22,15 +22,20 @@ defmodule MidimatchesWeb.Auth do
 
   @spec put_bearer_token(Plug.Conn.t(), id()) :: Plug.Conn.t()
   def put_bearer_token(conn, user_id) do
-    {:ok, new_token_serial} = Db.Users.user_increment_session(user_id)
+    case Db.Users.user_increment_session(user_id) do
+      {:ok, new_token_serial} ->
+        token =
+          Phoenix.Token.sign(MidimatchesWeb.Endpoint, "user bearer token",
+            user_id: user_id,
+            session_id: new_token_serial
+          )
 
-    token =
-      Phoenix.Token.sign(MidimatchesWeb.Endpoint, "user bearer token",
-        user_id: user_id,
-        session_id: new_token_serial
-      )
+        put_session(conn, :user_bearer_token, token)
 
-    put_session(conn, :user_bearer_token, token)
+      {:error, reason} ->
+        Logger.error(reason)
+        conn
+    end
   end
 
   @spec auth_conn(Plug.Conn.t(), list(atom)) :: Plug.Conn.t()

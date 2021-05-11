@@ -11,13 +11,13 @@ defmodule MidimatchesWeb.AccountControllerTest do
           Routes.account_path(conn, :create, %{
             "username" => "b4rt121",
             "password" => "asdgasdg111",
-            "email" => "asga@asdg.com"
+            "email" => "asga1@asdg.com"
           })
         )
 
       assert %{
                "user" => %{
-                 "email" => "asga@asdg.com",
+                 "email" => "asga1@asdg.com",
                  "username" => "b4rt121"
                }
              } = json_response(conn, 200)
@@ -30,7 +30,7 @@ defmodule MidimatchesWeb.AccountControllerTest do
           Routes.account_path(conn, :create, %{
             "username" => "b4rt121",
             "password" => "ads",
-            "email" => "asga@asdg.com"
+            "email" => "asga2@asdg.com"
           })
         )
 
@@ -49,7 +49,7 @@ defmodule MidimatchesWeb.AccountControllerTest do
       user_params = %{
         "username" => username,
         "password" => "asdgasdg111",
-        "email" => "jaa@jdid.5jd"
+        "email" => "jaa11@jdid.5jd"
       }
 
       {:ok, user} = MidimatchesDb.Users.create_user(user_params)
@@ -68,7 +68,7 @@ defmodule MidimatchesWeb.AccountControllerTest do
 
       expected_user = %{
         "user" => %{
-          "email" => "jiu@jdid.5jd",
+          "email" => "jiu9@jdid.5jd",
           "username" => "b__Asdg"
         }
       }
@@ -88,7 +88,7 @@ defmodule MidimatchesWeb.AccountControllerTest do
       user_params = %{
         "username" => "snoopydoo",
         "password" => "asdgasdg111",
-        "email" => "jiu@jdid.5jd"
+        "email" => "jiu8@jdid.5jd"
       }
 
       {:ok, user} = MidimatchesDb.Users.create_user(user_params)
@@ -121,7 +121,7 @@ defmodule MidimatchesWeb.AccountControllerTest do
       user_params = %{
         "username" => "snoopydoo",
         "password" => "asdgasdg111",
-        "email" => "jiu@jdid.5jd"
+        "email" => "jiu7@jdid.5jd"
       }
 
       {:ok, user} = MidimatchesDb.Users.create_user(user_params)
@@ -149,7 +149,7 @@ defmodule MidimatchesWeb.AccountControllerTest do
       user_params = %{
         "username" => "b4rt121",
         "password" => "asdgasdg111",
-        "email" => "jiu@jdid.5jd"
+        "email" => "jiu55@jdid.5jd"
       }
 
       {:ok, user} = MidimatchesDb.Users.create_user(user_params)
@@ -175,7 +175,7 @@ defmodule MidimatchesWeb.AccountControllerTest do
       user_params = %{
         "username" => "b4rt121",
         "password" => "asdgasdg111",
-        "email" => "jiu@jdid.5jd"
+        "email" => "jiu4@jdid.5jd"
       }
 
       insert_user(user_params)
@@ -198,7 +198,7 @@ defmodule MidimatchesWeb.AccountControllerTest do
       user_params = %{
         "username" => "b33t121",
         "password" => "asdgasdg111",
-        "email" => "jiu@jdid.5jd"
+        "email" => "jiu3@jdid.5jd"
       }
 
       {:ok, user} = MidimatchesDb.Users.create_user(user_params)
@@ -215,7 +215,7 @@ defmodule MidimatchesWeb.AccountControllerTest do
       expected_user = %{
         "uuid" => user_id,
         "username" => "b33t121",
-        "email" => "jiu@jdid.5jd"
+        "email" => "jiu3@jdid.5jd"
       }
 
       actual_user = json_response(conn, 200)["user"]
@@ -231,7 +231,7 @@ defmodule MidimatchesWeb.AccountControllerTest do
       user_params = %{
         "username" => "bd3t121",
         "password" => "asdgasdg111",
-        "email" => "jiu@jdid.5jd"
+        "email" => "jiu1@jdid.5jd"
       }
 
       {:ok, user} = MidimatchesDb.Users.create_user(user_params)
