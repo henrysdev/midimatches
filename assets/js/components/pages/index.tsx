@@ -7,6 +7,7 @@ export { MenuPage } from "./menu/MenuPage";
 export { PrivacyPolicyPage } from "./privacy/PrivacyPolicyPage";
 export { TermsPage } from "./terms/TermsPage";
 export { ResetPasswordPage } from "./account/ResetPasswordPage";
+export { RecoverAccountPage } from "./account/RecoverAccountPage";
 
 export { PageWrapper } from "./PageWrapper";
 export { AdminAlert } from "./AdminAlert";

@@ -135,9 +135,18 @@ defmodule MidimatchesWeb.PageController do
     redirect_if_banned(conn, success_behavior)
   end
 
+  @spec recover_account(Plug.Conn.t(), map) :: Plug.Conn.t()
+  @doc """
+  Routes to page where a user can attempt to recover their account via password reset
+  """
+  def recover_account(conn, _params) do
+    success_behavior = fn conn -> render(conn, "recover_account.html") end
+    redirect_if_banned(conn, success_behavior)
+  end
+
   @spec reset_password(Plug.Conn.t(), map) :: Plug.Conn.t()
   @doc """
-  Routest to page where a user can reset their password
+  Routes to page where a user can reset their password
   """
   def reset_password(conn, %{"reset_token" => reset_token}) do
     case Auth.parse_reset_token(reset_token) do

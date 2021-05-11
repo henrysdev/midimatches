@@ -50,6 +50,7 @@ const PlayWithoutSaveForm: React.FC<PlayWithoutSaveFormProps> = ({
     if (!!loadError && !!data) {
       setBadRequest(true);
     } else if (!!loaded) {
+      setBadRequest(false);
       setReadyToContinue(true);
     }
   }, [loaded, loadError, httpStatus]);

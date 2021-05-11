@@ -42,6 +42,7 @@ defmodule MidimatchesWeb.Router do
       get "/privacy", PageController, :privacy
       get "/terms", PageController, :terms
       get "/enter", PageController, :enter_player
+      get "/account/recover", PageController, :recover_account
       get "/account/reset/:reset_token", PageController, :reset_password
     end
 
@@ -69,6 +70,7 @@ defmodule MidimatchesWeb.Router do
       post "/room", RoomController, :create
 
       post "/account/login", AccountController, :login
+      post "/account/recovery", AccountController, :recovery
       post "/account", AccountController, :create
     end
 

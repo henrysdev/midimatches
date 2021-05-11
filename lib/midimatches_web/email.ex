@@ -14,6 +14,7 @@ defmodule MidimatchesWeb.Email do
 
   @from_address "midimatches@gmail.com"
 
+  @spec password_reset_email(String.t(), String.t(), String.t()) :: :ok | {:error, any()}
   def password_reset_email(recipient_email, username, user_id) do
     reset_slug = Auth.gen_reset_token(user_id)
 

@@ -5,7 +5,11 @@ defmodule MidimatchesWeb.AccountController do
   use MidimatchesWeb, :controller
 
   alias MidimatchesDb, as: Db
-  alias MidimatchesWeb.Auth
+
+  alias MidimatchesWeb.{
+    Auth,
+    Email
+  }
 
   require Logger
 
@@ -115,6 +119,22 @@ defmodule MidimatchesWeb.AccountController do
       {:error, %{not_found: "user"} = reason} ->
         bad_json_request(conn, reason, :not_found)
 
+      {:error, reason} ->
+        bad_json_request(conn, reason)
+    end
+  end
+
+  @spec recovery(Plug.Conn.t(), map) :: Plug.Conn.t()
+  @doc """
+  Trigger account recovery via email password reset
+  """
+  def recovery(conn, %{"email" => email, "username" => username}) do
+    query_args = [{:email, email}, {:username, username}]
+
+    with {:ok, %Db.User{uuid: user_id}} <- Db.Users.get_user_by(query_args),
+         :ok <- Email.password_reset_email(email, username, user_id) do
+      json(conn, %{})
+    else
       {:error, reason} ->
         bad_json_request(conn, reason)
     end

@@ -1286,6 +1286,14 @@ strong {
   text-shadow: none;
 }
 
+.success_alert {
+  margin: 8px;
+  padding: 8px;
+  background-color: rgb(195, 244, 202);
+  color: green;
+  text-shadow: none;
+}
+
 .hidden_div {
   visibility: hidden;
 }
@@ -1570,6 +1578,21 @@ strong {
 .footer_bar_flex_item {
   flex: 1;
   color: var(--text_light);
+}
+
+.accent_link:link {
+  font-family: "Roboto", sans-serif;
+  font-weight: 600;
+  color: var(--current_player_color);
+  font-style: normal;
+  text-decoration: none;
+}
+
+.accent_link:visited {
+  font-family: "Roboto", sans-serif;
+  color: var(--current_player_color);
+  font-style: normal;
+  text-decoration: none;
 }
 
 .resource_link:link {

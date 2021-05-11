@@ -146,6 +146,12 @@ defmodule MidimatchesDb.Users do
     |> treat_nil_as_error("user")
   end
 
+  def get_user_by(query_args) when is_list(query_args) do
+    User
+    |> Repo.get_by(query_args)
+    |> treat_nil_as_error("user")
+  end
+
   @spec get_user_by_creds(map()) :: {:ok, %User{}} | {:error, any()}
   @doc """
   Returns the existing user from users table if credentials are valid

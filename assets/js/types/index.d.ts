@@ -176,6 +176,11 @@ export interface UpdatePasswordPayload {
   password: string;
 }
 
+export interface RecoverAccountPayload {
+  username: string;
+  email: string;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // Contexts                                                                  //
 ///////////////////////////////////////////////////////////////////////////////

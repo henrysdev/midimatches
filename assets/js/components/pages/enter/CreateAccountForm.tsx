@@ -66,6 +66,7 @@ const CreateAccountForm: React.FC<CreateAccountFormProps> = ({
     if (!!loadError && !!data) {
       setBadRequest(true);
     } else if (!!loaded) {
+      setBadRequest(false);
       setReadyToContinue(true);
     }
   }, [loaded, loadError, httpStatus]);
