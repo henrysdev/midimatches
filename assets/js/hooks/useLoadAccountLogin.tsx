@@ -5,6 +5,7 @@ import { CreateAccountPayload, AccountLoginPayload } from "../types";
 export function useLoadAccountLogin(): any {
   const {
     data,
+    httpStatus,
     loading = false,
     loaded = false,
     loadError = false,
@@ -20,5 +21,5 @@ export function useLoadAccountLogin(): any {
     fetchData(fetch, `/api/account/login`, requestOptions);
   };
 
-  return { submitRequest, data, loading, loaded, loadError };
+  return { submitRequest, data, httpStatus, loading, loaded, loadError };
 }

@@ -84,8 +84,7 @@ defmodule MidimatchesDb.UserTest do
       changeset_error = traverse_errors(changeset)
 
       expected_error = %{
-        username: ["should be at most 20 character(s)"],
-        password: ["should be at most 32 character(s)"]
+        username: ["should be at most 20 character(s)"]
       }
 
       assert !changeset.valid?

@@ -2,6 +2,7 @@ defmodule MidimatchesWeb.Email do
   @moduledoc """
   Provides email functionalities for interacting with email provider
   """
+  alias MidimatchesWeb.Auth
   alias MidimatchesWeb.Router.Helpers, as: Routes
 
   alias SendGrid.{
@@ -12,11 +13,9 @@ defmodule MidimatchesWeb.Email do
   require Logger
 
   @from_address "midimatches@gmail.com"
-  @token_secret Application.get_env(:midimatches, :token_secret)
 
   def password_reset_email(recipient_email, username, user_id) do
-    reset_slug =
-      Phoenix.Token.encrypt(MidimatchesWeb.Endpoint, @token_secret, %{"user_id" => user_id})
+    reset_slug = Auth.gen_reset_token(user_id)
 
     reset_link =
       MidimatchesWeb.Endpoint.url() <>

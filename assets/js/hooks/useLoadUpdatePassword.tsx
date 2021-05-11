@@ -4,6 +4,7 @@ import { UpdatePasswordPayload } from "../types";
 export function useLoadUpdatePassword(): any {
   const {
     data,
+    httpStatus,
     loading = false,
     loaded = false,
     loadError = false,
@@ -19,5 +20,5 @@ export function useLoadUpdatePassword(): any {
     fetchData(fetch, `/api/account/password`, requestOptions);
   };
 
-  return { submitRequest, data, loading, loaded, loadError };
+  return { submitRequest, data, httpStatus, loading, loaded, loadError };
 }

@@ -55,6 +55,7 @@ const CreateRoomForm: React.FC = () => {
 
   const {
     data,
+    httpStatus,
     loading = false,
     loaded = false,
     loadError = false,
@@ -64,12 +65,12 @@ const CreateRoomForm: React.FC = () => {
   const [badRequest, setBadRequest] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!!loaded && !!data && !!data.error) {
+    if (!!loadError && !!data) {
       setBadRequest(true);
     } else if (!!loaded && !!data && !!data.linkToRoom) {
       window.location.href = data.linkToRoom;
     }
-  }, [loaded]);
+  }, [loaded, loadError, httpStatus]);
 
   const submitDisabled = useMemo(() => {
     return !trimmedRoomName || trimmedRoomName.length < MIN_ROOM_NAME_LENGTH;
@@ -88,10 +89,6 @@ const CreateRoomForm: React.FC = () => {
       {loading ? (
         <div className="relative_anchor">
           <VinylLoadingSpinner />
-        </div>
-      ) : loadError ? (
-        <div className="warning_alert roboto_font">
-          Failed to get response from server
         </div>
       ) : (
         <form
@@ -150,9 +147,9 @@ const CreateRoomForm: React.FC = () => {
               disabled={submitDisabled}
             />
           </fieldset>
-          {loaded && badRequest ? (
+          {badRequest ? (
             <div className="warning_alert roboto_font">
-              Room creation failed: {data.error}
+              Room creation failed: {`${httpStatus} ${JSON.stringify(data)}`}
             </div>
           ) : (
             <></>

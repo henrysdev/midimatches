@@ -53,6 +53,7 @@ const CreateAccountForm: React.FC<CreateAccountFormProps> = ({
 
   const {
     data,
+    httpStatus,
     loading = false,
     loaded = false,
     loadError = false,
@@ -62,12 +63,12 @@ const CreateAccountForm: React.FC<CreateAccountFormProps> = ({
   const [badRequest, setBadRequest] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!!loadError || (!!loaded && !!data && !!data.error)) {
+    if (!!loadError && !!data) {
       setBadRequest(true);
     } else if (!!loaded) {
       setReadyToContinue(true);
     }
-  }, [loaded]);
+  }, [loaded, loadError, httpStatus]);
 
   const {
     submitDisabled,
@@ -121,10 +122,6 @@ const CreateAccountForm: React.FC<CreateAccountFormProps> = ({
       <div className="register_content_wrapper inset_3d_border_deep inline_screen">
         {loading ? (
           <VinylLoadingSpinner />
-        ) : loadError ? (
-          <div className="warning_alert roboto_font">
-            Failed to get response from server
-          </div>
         ) : (
           <form
             className="register_player_form"
@@ -214,9 +211,9 @@ const CreateAccountForm: React.FC<CreateAccountFormProps> = ({
               )}
             </fieldset>
 
-            {loaded && badRequest ? (
+            {badRequest ? (
               <div className="warning_alert roboto_font">
-                Create account failed: {data.error}
+                Create account failed: {`${httpStatus} ${JSON.stringify(data)}`}
               </div>
             ) : (
               <></>

@@ -37,12 +37,14 @@ defmodule MidimatchesWeb.AccountController do
   Update the account
   """
   def update(conn, %{"uuid" => uuid} = params) do
-    user_change_params = Map.delete(params, "uuid")
+    user_change_params =
+      params
+      |> Map.delete("uuid")
+      |> Map.delete("password")
 
     case Db.Users.update_user(uuid, user_change_params) do
-      {:ok, %Db.User{uuid: user_id} = updated_user} ->
+      {:ok, %Db.User{uuid: ^uuid} = updated_user} ->
         conn
-        |> Auth.put_bearer_token(user_id)
         |> json(%{user: updated_user})
 
       {:error, %{not_found: "user"} = reason} ->

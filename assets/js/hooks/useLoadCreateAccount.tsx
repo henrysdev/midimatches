@@ -5,6 +5,7 @@ import { CreateAccountPayload } from "../types";
 export function useLoadCreateAccount(): any {
   const {
     data,
+    httpStatus,
     loading = false,
     loaded = false,
     loadError = false,
@@ -20,5 +21,5 @@ export function useLoadCreateAccount(): any {
     fetchData(fetch, `/api/account/`, requestOptions);
   };
 
-  return { submitRequest, data, loading, loaded, loadError };
+  return { submitRequest, data, httpStatus, loading, loaded, loadError };
 }

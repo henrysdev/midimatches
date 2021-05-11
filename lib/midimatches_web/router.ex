@@ -74,10 +74,10 @@ defmodule MidimatchesWeb.Router do
 
     scope "/account" do
       pipe_through :registered_user_api_auth
+      put "/password", AccountController, :update_password
       put "/:uuid", AccountController, :update
       get "/:uuid", AccountController, :show
       post "/logout", AccountController, :logout
-      put "/password", AccountController, :update_password
     end
   end
 

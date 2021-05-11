@@ -106,6 +106,11 @@ defmodule MidimatchesWeb.Auth do
     conn.assigns[:user_bearer_token] != nil
   end
 
+  @spec gen_reset_token(id()) :: any()
+  def gen_reset_token(user_id) do
+    Phoenix.Token.encrypt(MidimatchesWeb.Endpoint, @reset_token_secret, %{"user_id" => user_id})
+  end
+
   @spec parse_reset_token(any()) :: {:ok, any()} | {:error, any()}
   def parse_reset_token(reset_token) do
     Phoenix.Token.decrypt(MidimatchesWeb.Endpoint, @reset_token_secret, reset_token,

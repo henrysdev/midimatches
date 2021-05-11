@@ -5,6 +5,7 @@ import { UpdateUserPayload } from "../types";
 export function useLoadUpdateUser(): any {
   const {
     data,
+    httpStatus,
     loading = false,
     loaded = false,
     loadError = false,
@@ -20,5 +21,5 @@ export function useLoadUpdateUser(): any {
     fetchData(fetch, `/api/user`, requestOptions);
   };
 
-  return { submitRequest, data, loading, loaded, loadError };
+  return { submitRequest, data, httpStatus, loading, loaded, loadError };
 }

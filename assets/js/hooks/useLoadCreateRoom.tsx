@@ -5,6 +5,7 @@ import { CreateRoomPayload } from "../types";
 export function useLoadCreateRoom(): any {
   const {
     data,
+    httpStatus,
     loading = false,
     loaded = false,
     loadError = false,
@@ -20,5 +21,5 @@ export function useLoadCreateRoom(): any {
     fetchData(fetch, `/api/room`, requestOptions);
   };
 
-  return { submitRequest, data, loading, loaded, loadError };
+  return { submitRequest, data, httpStatus, loading, loaded, loadError };
 }

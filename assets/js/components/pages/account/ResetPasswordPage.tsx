@@ -8,12 +8,7 @@ const ResetPasswordPage: React.FC = () => {
   const { user: currentUser } = useCurrentUserContext();
   const { socket } = useSocketContext();
 
-  // const [urlDestination, setUrlDestination] = useState<string>("/menu");
   const [readyToContinue, setReadyToContinue] = useState<boolean>(false);
-  // useEffect(() => {
-  //   const windowRef = window as any;
-  //   setUrlDestination(windowRef.urlDestination);
-  // }, []);
   useEffect(() => {
     if (readyToContinue) {
       window.location.href = "/menu";

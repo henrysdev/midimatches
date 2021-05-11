@@ -66,6 +66,7 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
 
   const {
     data,
+    httpStatus,
     loading = false,
     loaded = false,
     loadError = false,
@@ -75,12 +76,12 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
   const [badRequest, setBadRequest] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!!loadError || (!!loaded && !!data && !!data.error)) {
+    if (!!loadError && !!data) {
       setBadRequest(true);
     } else if (!!loaded) {
       setReadyToContinue(true);
     }
-  }, [loaded]);
+  }, [loaded, loadError, httpStatus]);
 
   const handleSubmitForm = (e: any) => {
     e.preventDefault();
@@ -97,10 +98,6 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
       <div className="register_content_wrapper inset_3d_border_deep inline_screen">
         {loading ? (
           <VinylLoadingSpinner />
-        ) : loadError ? (
-          <div className="warning_alert roboto_font">
-            Failed to get response from server
-          </div>
         ) : (
           <form
             className="register_player_form"
@@ -157,9 +154,10 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
                 <></>
               )}
 
-              {loaded && badRequest ? (
+              {badRequest ? (
                 <div className="warning_alert roboto_font">
-                  Update password failed: {data.error}
+                  Update password failed:{" "}
+                  {`${httpStatus} ${JSON.stringify(data)}`}
                 </div>
               ) : (
                 <></>

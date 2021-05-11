@@ -73,6 +73,38 @@ defmodule MidimatchesWeb.PageControllerTest do
     end
   end
 
+  describe "GET /account/reset/:reset_token" do
+    test "renders react app for valid token", %{conn: _conn} do
+      user_params = %User{user_alias: "zfoobar"}
+      {:ok, user} = UserCache.upsert_user(user_params)
+      user_id = user.user_id
+
+      reset_token = Auth.gen_reset_token(user_id)
+
+      conn =
+        session_conn()
+        |> Auth.put_bearer_token(user_id)
+        |> get("/account/reset/#{reset_token}")
+
+      assert html_response(conn, 200) =~ "<div id=\"react-app\"></div>"
+    end
+
+    test "renders invalid reset link page for invalid token", %{conn: _conn} do
+      user_params = %User{user_alias: "zfoobar"}
+      {:ok, user} = UserCache.upsert_user(user_params)
+      user_id = user.user_id
+
+      reset_token = UUID.uuid4()
+
+      conn =
+        session_conn()
+        |> Auth.put_bearer_token(user_id)
+        |> get("/account/reset/#{reset_token}")
+
+      assert html_response(conn, 200) =~ "Invalid Password Reset"
+    end
+  end
+
   describe "performs banned redirect" do
     test "from /menu page", %{conn: _conn} do
       conn =

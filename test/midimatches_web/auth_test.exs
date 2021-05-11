@@ -55,6 +55,14 @@ defmodule MidimatchesWeb.AuthTest do
     Auth.auth_conn(conn)
   end
 
+  test "create and validate reset token" do
+    user_id = UUID.uuid4()
+
+    reset_token = Auth.gen_reset_token(user_id)
+
+    assert {:ok, %{"user_id" => ^user_id}} = Auth.parse_reset_token(reset_token)
+  end
+
   defp create_default_user do
     user_params = %{
       username: "jazzyman",

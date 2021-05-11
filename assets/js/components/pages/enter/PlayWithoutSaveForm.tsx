@@ -37,6 +37,7 @@ const PlayWithoutSaveForm: React.FC<PlayWithoutSaveFormProps> = ({
 
   const {
     data,
+    httpStatus,
     loading = false,
     loaded = false,
     loadError = false,
@@ -46,12 +47,12 @@ const PlayWithoutSaveForm: React.FC<PlayWithoutSaveFormProps> = ({
   const [badRequest, setBadRequest] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!!loaded && !!data && !!data.error) {
+    if (!!loadError && !!data) {
       setBadRequest(true);
     } else if (!!loaded) {
       setReadyToContinue(true);
     }
-  }, [loaded]);
+  }, [loaded, loadError, httpStatus]);
 
   const { submitDisabled, showAliasLengthRule } = useMemo(() => {
     const submitDisabled =
@@ -76,10 +77,6 @@ const PlayWithoutSaveForm: React.FC<PlayWithoutSaveFormProps> = ({
       <div className="register_content_wrapper inset_3d_border_deep inline_screen">
         {loading ? (
           <VinylLoadingSpinner />
-        ) : loadError ? (
-          <div className="warning_alert roboto_font">
-            Failed to get response from server
-          </div>
         ) : (
           <form
             className="register_player_form"
@@ -113,9 +110,9 @@ const PlayWithoutSaveForm: React.FC<PlayWithoutSaveFormProps> = ({
               )}
               <InlineWidthInputSubmit label="PLAY!" disabled={submitDisabled} />
             </fieldset>
-            {loaded && badRequest ? (
+            {badRequest ? (
               <div className="warning_alert roboto_font">
-                Update user failed: {data.error}
+                Create player failed: {`${httpStatus} ${JSON.stringify(data)}`}
               </div>
             ) : (
               <></>
