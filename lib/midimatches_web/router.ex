@@ -41,7 +41,7 @@ defmodule MidimatchesWeb.Router do
       get "/about", PageController, :about
       get "/privacy", PageController, :privacy
       get "/terms", PageController, :terms
-      get "/register", PageController, :register_player
+      get "/enter", PageController, :enter_player
       get "/account/reset/:reset_token", PageController, :reset_password
     end
 

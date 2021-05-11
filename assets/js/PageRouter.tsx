@@ -5,7 +5,7 @@ import {
   AboutPage,
   PracticePage,
   RoomPage,
-  RegisterPlayerPage,
+  EnterPlayerPage,
   ServerlistPage,
   MenuPage,
   PrivacyPolicyPage,
@@ -32,7 +32,7 @@ const PageRouter: React.FC = () => {
           <Route path="/rooms" component={ServerlistPage} />
           <Route path="/room" component={RoomPage} />
           <Route path="/practice" component={PracticePage} />
-          <Route path="/register" component={RegisterPlayerPage} />
+          <Route path="/enter" component={EnterPlayerPage} />
           <Route path="/privacy" component={PrivacyPolicyPage} />
           <Route path="/terms" component={TermsPage} />
           <Route path="/account/reset" component={ResetPasswordPage} />

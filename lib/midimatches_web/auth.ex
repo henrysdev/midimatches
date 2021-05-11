@@ -90,7 +90,7 @@ defmodule MidimatchesWeb.Auth do
     cond do
       :redirect_to_login in opts ->
         conn
-        |> redirect(to: Routes.page_path(conn, :register_player, destination: conn.request_path))
+        |> redirect(to: Routes.page_path(conn, :enter_player, destination: conn.request_path))
         |> halt()
 
       :return_auth_error in opts ->

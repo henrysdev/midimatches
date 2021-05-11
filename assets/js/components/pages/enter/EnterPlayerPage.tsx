@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 
 import { useCurrentUserContext, useSocketContext } from "../../../hooks";
-import { PageWrapper } from "../";
+import { PageWrapper } from "..";
 import { PlayWithoutSaveForm } from "./PlayWithoutSaveForm";
 import {
   MediumLargeTitle,
@@ -19,7 +19,7 @@ enum RegistrationView {
   PLAY_WITHOUT_SAVE,
 }
 
-const RegisterPlayerPage: React.FC = () => {
+const EnterPlayerPage: React.FC = () => {
   const { user: currentUser } = useCurrentUserContext();
   const { socket } = useSocketContext();
 
@@ -135,4 +135,4 @@ const RegisterPlayerPage: React.FC = () => {
     </PageWrapper>
   );
 };
-export { RegisterPlayerPage };
+export { EnterPlayerPage };

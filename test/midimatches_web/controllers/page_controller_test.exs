@@ -51,24 +51,24 @@ defmodule MidimatchesWeb.PageControllerTest do
     assert resp =~ "destination=%2Froom%2Fxyz%2Fwatch"
   end
 
-  describe "GET /register" do
+  describe "GET /enter" do
     test "menu dest", %{conn: conn} do
-      conn = get(conn, "/register", destination: "/menu")
+      conn = get(conn, "/enter", destination: "/menu")
       assert html_response(conn, 200) =~ "urlDestination"
     end
 
     test "servers dest", %{conn: conn} do
-      conn = get(conn, "/register", destination: "/rooms", user_alias: "abkd")
+      conn = get(conn, "/enter", destination: "/rooms", user_alias: "abkd")
       assert html_response(conn, 200) =~ "urlDestination"
     end
 
     test "room dest", %{conn: conn} do
-      conn = get(conn, "/register", destination: "/room/1idjd3", user_alias: "abkd")
+      conn = get(conn, "/enter", destination: "/room/1idjd3", user_alias: "abkd")
       assert html_response(conn, 200) =~ "urlDestination"
     end
 
     test "practice dest", %{conn: conn} do
-      conn = get(conn, "/register", destination: "/practice", user_alias: "abkd")
+      conn = get(conn, "/enter", destination: "/practice", user_alias: "abkd")
       assert html_response(conn, 200) =~ "urlDestination"
     end
   end
@@ -110,11 +110,11 @@ defmodule MidimatchesWeb.PageControllerTest do
       assert html_response(conn, 200) =~ "Temporary Ban"
     end
 
-    test "from /register page", %{conn: _conn} do
+    test "from /enter page", %{conn: _conn} do
       conn =
         %User{user_alias: "banme"}
         |> setup_banned_user()
-        |> get("/register")
+        |> get("/enter")
 
       assert html_response(conn, 200) =~ "Temporary Ban"
     end

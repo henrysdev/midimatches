@@ -33,7 +33,7 @@ const MenuPage: React.FC = () => {
           </div>
           <div className="main_menu_btn">
             <ComputerButton
-              callback={() => (window.location.href = "/register")}
+              callback={() => (window.location.href = "/enter")}
               extraClasses={["register_button"]}
             >
               CHANGE NAME

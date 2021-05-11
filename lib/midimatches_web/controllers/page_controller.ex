@@ -102,13 +102,13 @@ defmodule MidimatchesWeb.PageController do
     redirect_if_banned(conn, success_behavior)
   end
 
-  @spec register_player(Plug.Conn.t(), map) :: Plug.Conn.t()
+  @spec enter_player(Plug.Conn.t(), map) :: Plug.Conn.t()
   @doc """
   Page containing user registration form. This prompt is encountered if the acting
   user does not have a player in their session cookie yet. The destination field ensures
   that after they register, they are resolved to the correct destination.
   """
-  def register_player(conn, params) do
+  def enter_player(conn, params) do
     destination =
       case params do
         %{"destination" => destination} -> destination
@@ -117,12 +117,12 @@ defmodule MidimatchesWeb.PageController do
 
     if Auth.has_user_session?(conn) do
       success_behavior = fn conn ->
-        render(conn, "register_player.html", destination: destination)
+        render(conn, "enter_player.html", destination: destination)
       end
 
       redirect_if_banned(conn, success_behavior)
     else
-      render(conn, "register_player.html", destination: destination)
+      render(conn, "enter_player.html", destination: destination)
     end
   end
 
