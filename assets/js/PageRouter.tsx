@@ -10,6 +10,7 @@ import {
   MenuPage,
   PrivacyPolicyPage,
   TermsPage,
+  ResetPasswordPage,
 } from "./components/pages/index";
 import { useBrowserCompatibilityContext } from "./hooks";
 import { MobileAboutPage } from "./components/pages/about/MobileAboutPage";
@@ -34,6 +35,7 @@ const PageRouter: React.FC = () => {
           <Route path="/register" component={RegisterPlayerPage} />
           <Route path="/privacy" component={PrivacyPolicyPage} />
           <Route path="/terms" component={TermsPage} />
+          <Route path="/account/reset" component={ResetPasswordPage} />
         </Switch>
       )}
     </BrowserRouter>

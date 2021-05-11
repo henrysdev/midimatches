@@ -27,7 +27,7 @@ defmodule Midimatches.MixProject do
   def application do
     [
       mod: {Midimatches.Application, []},
-      extra_applications: [:logger, :runtime_tools, :logger_file_backend]
+      extra_applications: [:logger, :runtime_tools, :logger_file_backend, :sendgrid]
     ]
   end
 
@@ -66,7 +66,8 @@ defmodule Midimatches.MixProject do
       {:phoenix_ecto, "~> 4.1"},
       {:ecto_sql, "~> 3.6"},
       {:postgrex, ">= 0.0.0"},
-      {:bcrypt_elixir, "~> 2.0"}
+      {:bcrypt_elixir, "~> 2.0"},
+      {:sendgrid, "~> 2.0"}
     ]
   end
 

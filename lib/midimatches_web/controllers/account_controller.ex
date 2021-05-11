@@ -92,6 +92,32 @@ defmodule MidimatchesWeb.AccountController do
     conn
   end
 
+  @spec update_password(Plug.Conn.t(), map) :: Plug.Conn.t()
+  @doc """
+  Update the current user's password and create a new bearer token
+  """
+  def update_password(
+        conn,
+        %{
+          "password" => _password
+        } = user_params
+      ) do
+    user_id = conn.assigns[:auth_user].user_id
+
+    case Db.Users.update_user(user_id, user_params) do
+      {:ok, %Db.User{uuid: user_id} = _updated_user} ->
+        conn
+        |> Auth.put_bearer_token(user_id)
+        |> json(%{})
+
+      {:error, %{not_found: "user"} = reason} ->
+        bad_json_request(conn, reason, :not_found)
+
+      {:error, reason} ->
+        bad_json_request(conn, reason)
+    end
+  end
+
   @spec attempt_login(Plug.Conn.t(), map) :: Plug.Conn.t()
   defp attempt_login(conn, user_params) do
     case Db.Users.get_user_by_creds(user_params) do

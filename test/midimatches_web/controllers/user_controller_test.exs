@@ -26,21 +26,21 @@ defmodule MidimatchesWeb.UserControllerTest do
            }
   end
 
-  test "GET /api/user/reset", %{conn: conn} do
-    user_params = %User{user_alias: "zhumbawu"}
-    {:ok, %User{user_id: user_id} = user} = UserCache.upsert_user(user_params)
-    {:ok, found_user} = UserCache.get_user_by_id(user_id)
-    assert !is_nil(found_user)
+  # test "GET /api/user/reset", %{conn: conn} do
+  #   user_params = %User{user_alias: "zhumbawu"}
+  #   {:ok, %User{user_id: user_id} = user} = UserCache.upsert_user(user_params)
+  #   {:ok, found_user} = UserCache.get_user_by_id(user_id)
+  #   assert !is_nil(found_user)
 
-    conn =
-      session_conn()
-      |> assign(:auth_user, user)
-      |> get(Routes.user_path(conn, :reset))
+  #   conn =
+  #     session_conn()
+  #     |> assign(:auth_user, user)
+  #     |> get(Routes.user_path(conn, :reset))
 
-    assert json_response(conn, 200) == %{}
-    assert is_nil(get_session(conn, :auth_user))
-    assert {:error, %{not_found: "user"}} == UserCache.get_user_by_id(user_id)
-  end
+  #   assert json_response(conn, 200) == %{}
+  #   assert is_nil(get_session(conn, :auth_user))
+  #   assert {:error, %{not_found: "user"}} == UserCache.get_user_by_id(user_id)
+  # end
 
   describe "POST /api/user" do
     test "valid insert new user", %{conn: conn} do

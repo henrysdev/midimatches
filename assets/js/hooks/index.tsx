@@ -21,4 +21,5 @@ export { useRecorder } from "./useRecorder";
 export { useBackingTrackContextProvider } from "./useBackingTrackContextProvider";
 export { useLoadCreateAccount } from "./useLoadCreateAccount";
 export { useLoadAccountLogin } from "./useLoadAccountLogin";
+export { useLoadUpdatePassword } from "./useLoadUpdatePassword";
 export * from "./context";

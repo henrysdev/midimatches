@@ -42,6 +42,7 @@ defmodule MidimatchesWeb.Router do
       get "/privacy", PageController, :privacy
       get "/terms", PageController, :terms
       get "/register", PageController, :register_player
+      get "/account/reset/:reset_token", PageController, :reset_password
     end
 
     scope "/" do
@@ -76,6 +77,7 @@ defmodule MidimatchesWeb.Router do
       put "/:uuid", AccountController, :update
       get "/:uuid", AccountController, :show
       post "/logout", AccountController, :logout
+      put "/password", AccountController, :update_password
     end
   end
 

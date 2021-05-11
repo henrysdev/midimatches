@@ -19,12 +19,17 @@ config :midimatches, MidimatchesWeb.Endpoint,
 config :midimatches,
   custom_telemetrics: false,
   ecto_repos: [MidimatchesDb.Repo],
-  rooms_config: "config/app_scheme/dev/config.json"
+  rooms_config: "config/app_scheme/dev/config.json",
+  token_secret: System.get_env("TOKEN_SECRET")
 
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
+
+# Configure sendgrid mailer
+config :sendgrid,
+  api_key: {:system, "SENDGRID_API_KEY"}
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason

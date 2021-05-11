@@ -12,7 +12,11 @@ defmodule MidimatchesWeb.Auth do
 
   require Logger
 
-  @max_token_age 864_000
+  # bearer tokens are invalidated at session cadence.
+  @max_token_age :infinity
+
+  @reset_token_secret Application.get_env(:midimatches, :token_secret)
+  @max_reset_token_age 21_600
 
   @type id() :: String.t()
 
@@ -95,6 +99,13 @@ defmodule MidimatchesWeb.Auth do
   @spec has_bearer_token?(Plug.Conn.t()) :: boolean()
   def has_bearer_token?(conn) do
     conn.assigns[:user_bearer_token] != nil
+  end
+
+  @spec parse_reset_token(any()) :: {:ok, any()} | {:error, any()}
+  def parse_reset_token(reset_token) do
+    Phoenix.Token.decrypt(MidimatchesWeb.Endpoint, @reset_token_secret, reset_token,
+      max_age: @max_reset_token_age
+    )
   end
 
   def verify_phx_token(token) do

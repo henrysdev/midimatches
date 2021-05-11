@@ -135,6 +135,22 @@ defmodule MidimatchesWeb.PageController do
     redirect_if_banned(conn, success_behavior)
   end
 
+  @spec reset_password(Plug.Conn.t(), map) :: Plug.Conn.t()
+  @doc """
+  Routest to page where a user can reset their password
+  """
+  def reset_password(conn, %{"reset_token" => reset_token}) do
+    case Auth.parse_reset_token(reset_token) do
+      {:ok, %{"user_id" => user_id}} ->
+        conn
+        |> Auth.put_bearer_token(user_id)
+        |> render("password_reset.html")
+
+      {:error, _} ->
+        render(conn, "invalid_password_reset.html")
+    end
+  end
+
   # TODO move to plug
   @spec redirect_if_banned(Plug.Conn.t(), (Plug.Conn.t() -> Plug.Conn.t())) :: Plug.Conn.t()
   defp redirect_if_banned(conn, success_behavior) do
