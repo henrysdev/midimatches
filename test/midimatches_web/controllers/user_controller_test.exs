@@ -22,7 +22,11 @@ defmodule MidimatchesWeb.UserControllerTest do
       |> get(Routes.user_path(conn, :self))
 
     assert json_response(conn, 200) == %{
-             "user" => %{"user_id" => user.user_id, "user_alias" => user_alias}
+             "user" => %{
+               "user_id" => user.user_id,
+               "user_alias" => user_alias,
+               "registered" => false
+             }
            }
   end
 

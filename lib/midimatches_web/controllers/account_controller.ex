@@ -101,8 +101,17 @@ defmodule MidimatchesWeb.AccountController do
   End the current authenticated user session if one is active
   """
   def logout(conn, _params) do
-    # TODO update user to increment token serial
-    conn
+    user_id = conn.assigns[:auth_user].user_id
+
+    case Db.Users.user_increment_session(user_id) do
+      {:ok, _} ->
+        conn
+        |> clear_session()
+        |> json(%{})
+
+      {:error, reason} ->
+        bad_json_request(conn, reason)
+    end
   end
 
   @spec update_password(Plug.Conn.t(), map) :: Plug.Conn.t()

@@ -290,6 +290,7 @@ export interface Player {
 export interface User {
   userAlias: string;
   userId: string;
+  registered: boolean;
 }
 
 interface PlayerScore {

@@ -185,11 +185,13 @@ defmodule Midimatches.Utils do
   """
   def server_to_client_user(%User{
         user_id: user_id,
-        user_alias: user_alias
+        user_alias: user_alias,
+        registered?: registered?
       }) do
     %ClientUser{
       user_id: user_id,
-      user_alias: user_alias
+      user_alias: user_alias,
+      registered: registered?
     }
   end
 
@@ -219,10 +221,11 @@ defmodule Midimatches.Utils do
   @doc """
   Cast a db user struct to a user struct
   """
-  def db_user_to_user(%Db.User{uuid: uuid, username: username}) do
+  def db_user_to_user(%Db.User{uuid: uuid, username: username, registered: registered}) do
     %User{
       user_id: uuid,
-      user_alias: username
+      user_alias: username,
+      registered?: registered
     }
   end
 end

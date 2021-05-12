@@ -24,6 +24,10 @@ defmodule MidimatchesWeb.Router do
     plug :auth_conn, [:redirect_to_login]
   end
 
+  pipeline :registered_user_pages_auth do
+    plug :auth_conn, [:registered_only, :redirect_to_login]
+  end
+
   pipeline :public_api_auth do
     plug :auth_conn
   end
@@ -54,6 +58,11 @@ defmodule MidimatchesWeb.Router do
       get "/room/:room_id/watch", PageController, :room_watch
       get "/room/:room_id", PageController, :room
       get "/practice", PageController, :practice
+    end
+
+    scope "/" do
+      pipe_through :registered_user_pages_auth
+      get "/account", PageController, :account
     end
   end
 

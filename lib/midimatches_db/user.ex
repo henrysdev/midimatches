@@ -11,7 +11,7 @@ defmodule MidimatchesDb.User do
   @min_password_len 10
   @max_password_len 256
 
-  @derive {Jason.Encoder, only: [:username, :email, :uuid]}
+  @derive {Jason.Encoder, only: [:username, :email, :uuid, :registered]}
   schema "users" do
     field(:username, :string)
     field(:email, :string)
