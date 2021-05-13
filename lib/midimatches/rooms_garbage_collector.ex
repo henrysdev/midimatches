@@ -14,8 +14,8 @@ defmodule Midimatches.RoomsGarbageCollector do
 
   use GenServer
 
-  # 1 hour cadence
-  @default_gc_cadence 3_600_000
+  # 1 day (ms)
+  @default_gc_cadence 86_400_000
 
   def start_link(args) do
     GenServer.start_link(RoomsGarbageCollector, args)

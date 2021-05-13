@@ -5,9 +5,13 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.RoundEnd do
 
   alias Midimatches.{
     Rooms.Room.GameInstance,
+    Types.PlayerOutcome,
+    Types.RoundRecord,
     Types.WinResult,
     Utils
   }
+
+  alias MidimatchesDb, as: Db
 
   @type id() :: String.t()
   @type scores_map() :: %{required(id) => number}
@@ -69,5 +73,68 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.RoundEnd do
     scores
     |> Map.to_list()
     |> Utils.build_win_result()
+  end
+
+  @spec build_round_record(%GameInstance{}) :: %RoundRecord{}
+  @doc """
+  Build a round record to preserve round-specific data for later persistence
+  """
+  def build_round_record(%GameInstance{
+        round_num: round_num,
+        sample_beats: sample_beats,
+        round_winners: round_winners,
+        player_ids_set: player_ids_set,
+        votes: votes
+      }) do
+    %Db.BackingTrack{
+      uuid: backing_track_uuid
+    } = Enum.at(sample_beats, round_num - 1)
+
+    round_outcomes = build_round_outcomes(round_winners, player_ids_set, votes)
+
+    %RoundRecord{
+      round_num: round_num,
+      round_outcomes: round_outcomes,
+      backing_track_id: backing_track_uuid
+    }
+  end
+
+  @spec build_round_outcomes(%WinResult{}, any(), any()) :: list(PlayerOutcome)
+  defp build_round_outcomes(round_winners, player_ids_set, votes) do
+    winning_player_ids_set = MapSet.new(round_winners.winners)
+
+    winner_outcome =
+      if MapSet.size(winning_player_ids_set) > 1 do
+        :tied
+      else
+        :won
+      end
+
+    num_votes_per_player =
+      votes
+      |> Map.values()
+      |> Enum.frequencies()
+
+    player_ids_set
+    |> Enum.to_list()
+    |> Enum.map(fn player_id ->
+      num_points = Map.get(num_votes_per_player, player_id, 0)
+
+      if MapSet.member?(winning_player_ids_set, player_id) do
+        %PlayerOutcome{
+          player_id: player_id,
+          event_type: :round,
+          outcome: winner_outcome,
+          num_points: num_points
+        }
+      else
+        %PlayerOutcome{
+          player_id: player_id,
+          event_type: :round,
+          outcome: :lost,
+          num_points: num_points
+        }
+      end
+    end)
   end
 end

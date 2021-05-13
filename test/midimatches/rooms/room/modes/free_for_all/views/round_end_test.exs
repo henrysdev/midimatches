@@ -5,8 +5,12 @@ defmodule Midimatches.RoundEndTest do
     Rooms.Room.GameInstance,
     Rooms.Room.Modes.FreeForAll.Views.RoundEnd,
     Types.Player,
+    Types.PlayerOutcome,
+    Types.RoundRecord,
     Types.WinResult
   }
+
+  alias MidimatchesDb, as: Db
 
   test "advance view to next round (aka round_start)" do
     players =
@@ -83,25 +87,7 @@ defmodule Midimatches.RoundEndTest do
   end
 
   test "advance view to game_end" do
-    players =
-      MapSet.new([
-        %Player{
-          player_id: "1",
-          player_alias: "foo"
-        },
-        %Player{
-          player_id: "2",
-          player_alias: "zoo"
-        },
-        %Player{
-          player_id: "3",
-          player_alias: "fee"
-        },
-        %Player{
-          player_id: "4",
-          player_alias: "fum"
-        }
-      ])
+    players = default_players()
 
     contestants = ["1", "2", "3", "4"]
     player_ids_set = MapSet.new(contestants)
@@ -150,5 +136,151 @@ defmodule Midimatches.RoundEndTest do
     }
 
     assert actual_win_result == expected_win_result
+  end
+
+  test "build round record for winner" do
+    game_state = default_game_state()
+    sample_beats = game_state.sample_beats
+
+    %Db.BackingTrack{
+      uuid: backing_track_id
+    } = Enum.at(sample_beats, 0)
+
+    round_record = RoundEnd.build_round_record(game_state)
+
+    assert round_record == %RoundRecord{
+             round_num: 1,
+             round_outcomes: [
+               %PlayerOutcome{
+                 player_id: "1",
+                 event_type: :round,
+                 outcome: :lost,
+                 num_points: 0
+               },
+               %PlayerOutcome{
+                 player_id: "2",
+                 event_type: :round,
+                 outcome: :won,
+                 num_points: 3
+               },
+               %PlayerOutcome{
+                 player_id: "3",
+                 event_type: :round,
+                 outcome: :lost,
+                 num_points: 1
+               },
+               %PlayerOutcome{
+                 player_id: "4",
+                 event_type: :round,
+                 outcome: :lost,
+                 num_points: 0
+               }
+             ],
+             backing_track_id: backing_track_id
+           }
+  end
+
+  test "build round record for tie" do
+    game_state = default_game_state()
+    sample_beats = game_state.sample_beats
+
+    %Db.BackingTrack{
+      uuid: backing_track_id
+    } = Enum.at(sample_beats, 0)
+
+    votes = %{"1" => "2", "2" => "3", "3" => "2", "4" => "3"}
+
+    round_winners = %WinResult{
+      winners: ["2", "3"],
+      num_points: 2
+    }
+
+    game_state = %GameInstance{game_state | votes: votes, round_winners: round_winners}
+
+    round_record = RoundEnd.build_round_record(game_state)
+
+    assert round_record == %RoundRecord{
+             round_num: 1,
+             round_outcomes: [
+               %PlayerOutcome{
+                 player_id: "1",
+                 event_type: :round,
+                 outcome: :lost,
+                 num_points: 0
+               },
+               %PlayerOutcome{
+                 player_id: "2",
+                 event_type: :round,
+                 outcome: :tied,
+                 num_points: 2
+               },
+               %PlayerOutcome{
+                 player_id: "3",
+                 event_type: :round,
+                 outcome: :tied,
+                 num_points: 2
+               },
+               %PlayerOutcome{
+                 player_id: "4",
+                 event_type: :round,
+                 outcome: :lost,
+                 num_points: 0
+               }
+             ],
+             backing_track_id: backing_track_id
+           }
+  end
+
+  defp default_players do
+    MapSet.new([
+      %Player{
+        player_id: "1",
+        player_alias: "foo"
+      },
+      %Player{
+        player_id: "2",
+        player_alias: "zoo"
+      },
+      %Player{
+        player_id: "3",
+        player_alias: "fee"
+      },
+      %Player{
+        player_id: "4",
+        player_alias: "fum"
+      }
+    ])
+  end
+
+  defp default_game_state() do
+    players = default_players()
+    contestants = ["1", "2", "3", "4"]
+    player_ids_set = MapSet.new(contestants)
+    scores = %{"1" => 0, "2" => 4, "3" => 2, "4" => 2}
+    votes = %{"1" => "2", "2" => "3", "3" => "2", "4" => "2"}
+    backing_track_id = UUID.uuid4()
+
+    %GameInstance{
+      room_id: "1",
+      game_id: "abc",
+      players: players,
+      player_ids_set: player_ids_set,
+      game_view: :round_end,
+      contestants: contestants,
+      recordings: %{},
+      scores: scores,
+      votes: votes,
+      game_winners: nil,
+      round_winners: %WinResult{
+        winners: ["2"],
+        num_points: 3
+      },
+      round_num: 1,
+      sample_beats: [
+        %Db.BackingTrack{
+          uuid: backing_track_id
+        }
+      ]
+    }
   end
 end
