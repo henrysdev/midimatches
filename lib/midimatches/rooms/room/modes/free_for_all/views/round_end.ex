@@ -11,8 +11,6 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.RoundEnd do
     Utils
   }
 
-  alias MidimatchesDb, as: Db
-
   @type id() :: String.t()
   @type scores_map() :: %{required(id) => number}
 
@@ -24,6 +22,8 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.RoundEnd do
           game_rules: %{rounds_to_win: rounds_to_win}
         } = state
       ) do
+    state = record_round(state)
+
     if round_num < rounds_to_win do
       reset_round(state)
     else
@@ -42,6 +42,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.RoundEnd do
         view_counter: view_counter,
         scores: scores,
         sample_beats: sample_beats,
+        round_records: round_records,
         round_num: round_num
       }) do
     %GameInstance{
@@ -55,6 +56,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.RoundEnd do
       contestants: contestants,
       scores: scores,
       sample_beats: sample_beats,
+      round_records: round_records,
       round_num: round_num + 1
     }
   end
@@ -75,6 +77,12 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.RoundEnd do
     |> Utils.build_win_result()
   end
 
+  @spec record_round(%GameInstance{}) :: %GameInstance{}
+  def record_round(%GameInstance{round_records: round_records} = state) do
+    new_round_record = build_round_record(state)
+    %GameInstance{state | round_records: [new_round_record | round_records]}
+  end
+
   @spec build_round_record(%GameInstance{}) :: %RoundRecord{}
   @doc """
   Build a round record to preserve round-specific data for later persistence
@@ -86,9 +94,16 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.RoundEnd do
         player_ids_set: player_ids_set,
         votes: votes
       }) do
-    %Db.BackingTrack{
-      uuid: backing_track_uuid
-    } = Enum.at(sample_beats, round_num - 1)
+    backing_track =
+      sample_beats
+      |> Enum.at(round_num - 1, nil)
+
+    backing_track_uuid =
+      if is_nil(backing_track) do
+        nil
+      else
+        backing_track.uuid
+      end
 
     round_outcomes = build_round_outcomes(round_winners, player_ids_set, votes)
 

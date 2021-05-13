@@ -5,6 +5,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllLogic do
 
   alias Midimatches.{
     Rooms.Room.GameInstance,
+    Rooms.Room.Modes.FreeForAll.FreeForAllServer,
     Rooms.Room.Modes.FreeForAll.Views,
     Types.GameRules,
     Types.Player,
@@ -19,6 +20,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllLogic do
           view_change?: boolean(),
           state: %GameInstance{}
         }
+  @type game_end_reason :: :game_completed | :game_canceled
 
   @spec start_game(%GameRules{}, MapSet.t(Player), MapSet.t(Player), id(), id()) ::
           %GameInstance{}
@@ -50,6 +52,11 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllLogic do
       scores: player_ids_list |> Enum.map(&{&1, 0}) |> Map.new(),
       view_deadline: Utils.calc_future_timestamp(game_rules.view_timeouts.game_start)
     }
+  end
+
+  @spec end_game(%GameInstance{}, game_end_reason()) :: :ok
+  def end_game(%GameInstance{} = state, reason) do
+    FreeForAllServer.back_to_room_lobby(state)
   end
 
   @spec add_player(%GameInstance{}, %Player{}) :: instruction_map()

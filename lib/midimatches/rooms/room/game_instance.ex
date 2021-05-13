@@ -49,7 +49,7 @@ defmodule Midimatches.Rooms.Room.GameInstance do
     field(:audience_member_ids_set, MapSet.t(id()), default: MapSet.new())
 
     # historical records for recording game
-    field(:round_records, list(RoundRecord))
+    field(:round_records, list(RoundRecord), default: [])
   end
 
   def child_spec(opts) do

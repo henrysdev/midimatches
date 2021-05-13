@@ -51,6 +51,19 @@ defmodule Midimatches.RoundEndTest do
 
     contestants = ["1", "2", "3", "4", "5", "6", "7", "8"]
     player_ids_set = MapSet.new(contestants)
+    backing_track_id = UUID.uuid4()
+
+    sample_beats = [
+      %Db.BackingTrack{
+        uuid: backing_track_id
+      },
+      %Db.BackingTrack{
+        uuid: backing_track_id
+      },
+      %Db.BackingTrack{
+        uuid: backing_track_id
+      }
+    ]
 
     game_server_state = %GameInstance{
       room_id: "1",
@@ -61,7 +74,11 @@ defmodule Midimatches.RoundEndTest do
       contestants: contestants,
       recordings: %{},
       game_winners: %WinResult{winners: ["2"], num_points: 2},
-      sample_beats: []
+      round_winners: %WinResult{
+        winners: contestants,
+        num_points: 1
+      },
+      sample_beats: sample_beats
     }
 
     actual_game_state = RoundEnd.advance_view(game_server_state)
@@ -80,7 +97,63 @@ defmodule Midimatches.RoundEndTest do
       votes: %{},
       game_winners: nil,
       round_num: 2,
-      sample_beats: []
+      round_records: [
+        %RoundRecord{
+          backing_track_id: backing_track_id,
+          round_num: 1,
+          round_outcomes: [
+            %PlayerOutcome{
+              event_type: :round,
+              num_points: 0,
+              outcome: :tied,
+              player_id: "1"
+            },
+            %PlayerOutcome{
+              event_type: :round,
+              num_points: 0,
+              outcome: :tied,
+              player_id: "2"
+            },
+            %PlayerOutcome{
+              event_type: :round,
+              num_points: 0,
+              outcome: :tied,
+              player_id: "3"
+            },
+            %PlayerOutcome{
+              event_type: :round,
+              num_points: 0,
+              outcome: :tied,
+              player_id: "4"
+            },
+            %PlayerOutcome{
+              event_type: :round,
+              num_points: 0,
+              outcome: :tied,
+              player_id: "5"
+            },
+            %PlayerOutcome{
+              event_type: :round,
+              num_points: 0,
+              outcome: :tied,
+              player_id: "6"
+            },
+            %PlayerOutcome{
+              event_type: :round,
+              num_points: 0,
+              outcome: :tied,
+              player_id: "7"
+            },
+            %PlayerOutcome{
+              event_type: :round,
+              num_points: 0,
+              outcome: :tied,
+              player_id: "8"
+            }
+          ]
+        }
+      ],
+      sample_beats: sample_beats
     }
 
     assert actual_game_state == expected_game_state
@@ -91,8 +164,9 @@ defmodule Midimatches.RoundEndTest do
 
     contestants = ["1", "2", "3", "4"]
     player_ids_set = MapSet.new(contestants)
-
-    scores = %{"1" => 0, "2" => 4, "3" => 2, "4" => 2}
+    scores = %{"1" => 0, "2" => 2, "3" => 2, "4" => 2}
+    votes = %{"1" => "2", "2" => "3", "3" => "4"}
+    backing_track_id = UUID.uuid4()
 
     game_server_state = %GameInstance{
       room_id: "1",
@@ -103,17 +177,66 @@ defmodule Midimatches.RoundEndTest do
       contestants: contestants,
       recordings: %{},
       scores: scores,
+      votes: votes,
+      round_winners: %WinResult{
+        winners: ["2", "3", "4"],
+        num_points: 2
+      },
       game_winners: nil,
       round_num: 3,
-      sample_beats: []
+      sample_beats: [
+        %Db.BackingTrack{
+          uuid: UUID.uuid4()
+        },
+        %Db.BackingTrack{
+          uuid: UUID.uuid4()
+        },
+        %Db.BackingTrack{
+          uuid: backing_track_id
+        }
+      ]
     }
 
     actual_game_state = RoundEnd.advance_view(game_server_state)
 
+    round_records = [
+      %RoundRecord{
+        backing_track_id: backing_track_id,
+        round_num: 3,
+        round_outcomes: [
+          %PlayerOutcome{
+            event_type: :round,
+            num_points: 0,
+            outcome: :lost,
+            player_id: "1"
+          },
+          %PlayerOutcome{
+            event_type: :round,
+            num_points: 1,
+            outcome: :tied,
+            player_id: "2"
+          },
+          %PlayerOutcome{
+            event_type: :round,
+            num_points: 1,
+            outcome: :tied,
+            player_id: "3"
+          },
+          %PlayerOutcome{
+            event_type: :round,
+            num_points: 1,
+            outcome: :tied,
+            player_id: "4"
+          }
+        ]
+      }
+    ]
+
     expected_game_state = %GameInstance{
       game_server_state
       | game_view: :game_end,
-        game_winners: %WinResult{winners: ["2"], num_points: 4}
+        game_winners: %WinResult{winners: ["2", "3", "4"], num_points: 2},
+        round_records: round_records
     }
 
     assert actual_game_state == expected_game_state
