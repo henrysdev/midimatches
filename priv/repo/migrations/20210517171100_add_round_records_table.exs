@@ -3,8 +3,9 @@ defmodule MidimatchesDb.Repo.Migrations.AddRoundRecordsTable do
 
   def up do
     create table(:round_records) do
+      add :game_record_id, references(:game_records)
       add :round_num, :integer, null: false
-      add :backing_track_id, :id, null: false
+      add :backing_track_uuid, :uuid, null: false
 
       timestamps(type: :utc_datetime_usec)
     end
