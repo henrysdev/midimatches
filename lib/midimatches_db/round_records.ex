@@ -4,6 +4,7 @@ defmodule MidimatchesDb.RoundRecords do
   """
 
   alias MidimatchesDb.{
+    GameRecord,
     RoundRecord,
     Repo
   }
@@ -14,5 +15,11 @@ defmodule MidimatchesDb.RoundRecords do
   """
   def create_round_record(%RoundRecord{} = round_record) do
     Repo.insert!(round_record)
+  end
+
+  @spec add_round_record_for_game(%RoundRecord{}, %GameRecord{}) :: %RoundRecord{}
+  def add_round_record_for_game(round_record, game_record) do
+    round_record = Ecto.build_assoc(game_record, :round_records, round_record)
+    create_round_record(round_record)
   end
 end

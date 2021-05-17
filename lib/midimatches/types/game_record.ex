@@ -10,7 +10,7 @@ defmodule Midimatches.Types.GameRecord do
   use TypedStruct
 
   @type id() :: String.t()
-  @type game_end_reason :: :game_completed | :game_canceled
+  @type game_end_reason :: :completed | :canceled
 
   typedstruct do
     field(:game_outcomes, list(PlayerOutcome), enforce: true)

@@ -235,7 +235,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllServer do
       ) do
     # end game if not enough players left to play
     if MapSet.size(players) < min_players do
-      FreeForAllLogic.end_game(state, :game_canceled)
+      FreeForAllLogic.end_game(state, :canceled)
     else
       state
     end

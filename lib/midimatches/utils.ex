@@ -256,23 +256,17 @@ defmodule Midimatches.Utils do
     }
   end
 
-  @spec player_outcome_to_db_player_outcome(%PlayerOutcome{}, id()) :: %Db.PlayerOutcome{}
+  @spec player_outcome_to_db_player_outcome(%PlayerOutcome{}) :: %Db.PlayerOutcome{}
   @doc """
   Cast a player outcome to a db player outcome
   """
-  def player_outcome_to_db_player_outcome(
-        %PlayerOutcome{
-          player_id: player_uuid,
-          event_type: event_type,
-          outcome: outcome,
-          num_points: num_points
-        },
-        event_id
-      ) do
+  def player_outcome_to_db_player_outcome(%PlayerOutcome{
+        player_id: player_uuid,
+        outcome: outcome,
+        num_points: num_points
+      }) do
     %Db.PlayerOutcome{
       player_uuid: player_uuid,
-      event_type: event_type,
-      event_id: event_id,
       outcome: outcome,
       num_points: num_points
     }

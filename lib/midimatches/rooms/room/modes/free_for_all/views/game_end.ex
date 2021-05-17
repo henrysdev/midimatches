@@ -12,11 +12,11 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.GameEnd do
     Types.WinResult
   }
 
-  @type game_end_reason :: :game_completed | :game_canceled
+  @type game_end_reason :: :completed | :canceled
 
   @spec advance_view(%GameInstance{}) :: %GameInstance{}
   def advance_view(%GameInstance{game_view: :game_end} = state) do
-    FreeForAllLogic.end_game(state, :game_completed)
+    FreeForAllLogic.end_game(state, :completed)
     state
   end
 

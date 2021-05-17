@@ -12,6 +12,8 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllLogic do
     Utils
   }
 
+  alias MidimatchesDb, as: Db
+
   require Logger
 
   @type id() :: String.t()
@@ -20,7 +22,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllLogic do
           view_change?: boolean(),
           state: %GameInstance{}
         }
-  @type game_end_reason :: :game_completed | :game_canceled
+  @type game_end_reason :: :completed | :canceled
 
   @spec start_game(%GameRules{}, MapSet.t(Player), MapSet.t(Player), id(), id()) ::
           %GameInstance{}
@@ -196,12 +198,43 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllLogic do
 
   @spec end_game(%GameInstance{}, game_end_reason()) :: :ok
   def end_game(%GameInstance{} = state, reason) do
-    _game_record = Views.GameEnd.build_game_record(state, reason)
-    # TODO
-    # 1. cast game record to db.game_record struct and write to database and get back game_id
-    # 2. cast round record to db.round_record struct and write to database
-    # 3. cast player outcomes to db.player_outcome structs and write to database
-    # - have a DB level function that takes a GameRecord object
+    # TODO change Repo.insert! to Repo.insert and wrap in with block
+
+    game_record = Views.GameEnd.build_game_record(state, reason)
+
+    IO.inspect({:GAME_RECORD, game_record})
+
+    # insert game record
+    inserted_game_record =
+      game_record
+      |> Utils.game_record_to_db_game_record()
+      |> Db.GameRecords.create_game_record()
+
+    # insert game outcomes
+    game_record.game_outcomes
+    |> Enum.each(fn outcome ->
+      outcome
+      |> Utils.player_outcome_to_db_player_outcome()
+      |> Db.PlayerOutcomes.add_player_outcome_for_game(inserted_game_record)
+    end)
+
+    # insert round records
+    game_record.round_records
+    |> Enum.each(fn round_record ->
+      inserted_round_record =
+        round_record
+        |> Utils.round_record_to_db_round_record()
+        |> Db.RoundRecords.add_round_record_for_game(inserted_game_record)
+
+      # insert round outcomes
+      round_record.round_outcomes
+      |> Enum.each(fn outcome ->
+        outcome
+        |> Utils.player_outcome_to_db_player_outcome()
+        |> Db.PlayerOutcomes.add_player_outcome_for_round(inserted_round_record)
+      end)
+    end)
+
     FreeForAllServer.back_to_room_lobby(state)
   end
 end
