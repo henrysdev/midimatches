@@ -6,8 +6,6 @@ defmodule MidimatchesDb.Repo.Migrations.AddGameRecordsTable do
 
     create table(:game_records) do
       add :game_end_reason, :game_end_reason, null: false
-      add :game_start_time, :utc_datetime_usec, null: false
-      add :game_end_time, :utc_datetime_usec, null: false
 
       timestamps(type: :utc_datetime_usec)
     end

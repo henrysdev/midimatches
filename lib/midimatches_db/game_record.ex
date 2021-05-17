@@ -4,10 +4,8 @@ defmodule MidimatchesDb.GameRecord do
   use Ecto.Schema
   import Ecto.Changeset
 
-  schema "game_record" do
+  schema "game_records" do
     field(:game_end_reason, Ecto.Enum, values: [:completed, :canceled])
-    field(:game_start_time, :utc_datetime_usec)
-    field(:game_end_time, :utc_datetime_usec)
 
     timestamps()
   end
@@ -15,7 +13,7 @@ defmodule MidimatchesDb.GameRecord do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:game_end_reason, :game_start_time, :game_end_time])
+    |> cast(attrs, [:game_end_reason])
     |> validate_required([:game_end_reason])
   end
 end
