@@ -10,13 +10,11 @@ defmodule Midimatches.Types.GameRecord do
   use TypedStruct
 
   @type id() :: String.t()
+  @type game_end_reason :: :game_completed | :game_canceled
 
   typedstruct do
-    field(:room_id, id(), enforce: true)
-    # from :game_winners, :players, and :scores
     field(:game_outcomes, list(PlayerOutcome), enforce: true)
-    # catchall to write game rules as JSON blob
-    field(:game_rules, %GameRules{}, enforce: true)
+    field(:game_end_reason, game_end_reason(), enforce: true)
     field(:round_records, %RoundRecord{}, enforce: true)
   end
 end

@@ -54,11 +54,6 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllLogic do
     }
   end
 
-  @spec end_game(%GameInstance{}, game_end_reason()) :: :ok
-  def end_game(%GameInstance{} = state, reason) do
-    FreeForAllServer.back_to_room_lobby(state)
-  end
-
   @spec add_player(%GameInstance{}, %Player{}) :: instruction_map()
   def add_player(
         %GameInstance{players: players} = state,
@@ -190,7 +185,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllLogic do
         Views.GameEnd.advance_view(state)
 
       _ ->
-        Logger.warn("unrecognized game_view encountered: #{game_view}")
+        Logger.error("unrecognized game_view encountered: #{game_view}")
         state
     end
     |> as_instruction(sync?: true, view_change?: true)
@@ -198,4 +193,15 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllLogic do
 
   def as_instruction(%GameInstance{} = state, sync?: sync?, view_change?: view_change?),
     do: %{sync_clients?: sync?, view_change?: view_change?, state: state}
+
+  @spec end_game(%GameInstance{}, game_end_reason()) :: :ok
+  def end_game(%GameInstance{} = state, reason) do
+    _game_record = Views.GameEnd.build_game_record(state, reason)
+    # TODO
+    # 1. cast game record to db.game_record struct and write to database and get back game_id
+    # 2. cast round record to db.round_record struct and write to database
+    # 3. cast player outcomes to db.player_outcome structs and write to database
+    # - have a DB level function that takes a GameRecord object
+    FreeForAllServer.back_to_room_lobby(state)
+  end
 end
