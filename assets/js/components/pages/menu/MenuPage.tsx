@@ -35,10 +35,12 @@ const MenuPage: React.FC = () => {
           </div>
           <div className="main_menu_btn">
             <ComputerButton
-              callback={() => (window.location.href = "/account")}
+              callback={() => {
+                window.location.href = !!registered ? "/account" : "/enter";
+              }}
               extraClasses={["register_button"]}
             >
-              {!!registered ? "ACCOUNT" : "REGISTER"}
+              ACCOUNT
             </ComputerButton>
           </div>
           <div className="main_menu_btn">
@@ -46,7 +48,7 @@ const MenuPage: React.FC = () => {
               callback={() => (window.location.href = "/about")}
               extraClasses={["register_button"]}
             >
-              HELP
+              ABOUT
             </ComputerButton>
           </div>
         </div>

@@ -32,6 +32,7 @@
   );
 
   --danger_bg_color: rgb(245, 187, 187);
+  --extra_danger_bg_color: rgb(200, 61, 61);
 
   --text_light: rgb(232, 232, 232);
   --text_light_outline: rgb(216, 205, 139);
@@ -169,6 +170,10 @@ body {
   background-color: var(--main_theme_color);
 }
 
+.danger_button {
+  background-color: var(--danger_bg_color);
+}
+
 .banner_button {
   box-shadow: 0 5px 13px rgb(0 0 0 / 8%);
   padding: 8px;
@@ -205,7 +210,7 @@ body {
   padding: 4px;
   margin: 8px;
   background-color: var(--main_theme_color);
-  width: 64px;
+  width: 72px;
   cursor: pointer;
   height: 24px;
   border-radius: 10px;
@@ -1627,6 +1632,10 @@ strong {
 
 .good_bulleted_list li {
   color: var(--bright_green);
+  padding-left: 8px;
+  line-height: 1.4;
+  font-family: "Roboto", sans-serif;
+  font-size: 1.2em;
 }
 
 .accent_link {

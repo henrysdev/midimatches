@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 
-import { useLoad, useLoadCreateRoom } from "../../../hooks";
+import { useLoadCreateRoom } from "../../../hooks";
 import {
   MediumTitle,
   InlineWidthInputSubmit,

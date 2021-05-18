@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 
-import { MediumLargeTitle, ComputerButton } from "../../common";
+import {
+  MediumLargeTitle,
+  ComputerButton,
+  FixedLeftBackButton,
+} from "../../common";
 import {
   useCurrentUserContext,
   useSocketContext,
@@ -32,12 +36,31 @@ const AccountPage: React.FC = () => {
 
   return (
     <PageWrapper socket={socket} currentUser={currentUser}>
-      <div className="narrow_menu_container computer_frame outset_3d_border_deep">
+      <div className="narrow_center_container computer_frame outset_3d_border_deep">
+        <div style={{ padding: "8px", position: "absolute" }}>
+          <FixedLeftBackButton
+            callback={() => (window.location.href = "/menu")}
+            buttonText={"< MENU"}
+          />
+        </div>
+
         <br />
         <MediumLargeTitle>
           <span className="accent_bars">///</span>ACCOUNT
         </MediumLargeTitle>
+        <br />
         <div className="main_menu_btn_group">
+          {!!currentUser ? (
+            <div>
+              <p className="text_light">
+                Username: {currentUser.userAlias}
+                <br />
+                UserID: {currentUser.userId}
+              </p>
+            </div>
+          ) : (
+            <></>
+          )}
           <div className="main_menu_btn">
             <ComputerButton
               callback={() => {
@@ -46,6 +69,17 @@ const AccountPage: React.FC = () => {
               extraClasses={["register_button"]}
             >
               LOG OUT
+            </ComputerButton>
+          </div>
+          <div className="main_menu_btn">
+            <ComputerButton
+              callback={() => {
+                // deleteAccountRequest();
+              }}
+              extraClasses={["register_button"]}
+              extraStyles={{ backgroundColor: "var(--extra_danger_bg_color)" }}
+            >
+              DELETE ACCOUNT
             </ComputerButton>
           </div>
         </div>
@@ -57,6 +91,7 @@ const AccountPage: React.FC = () => {
       ) : (
         <></>
       )}
+      {/* </div> */}
     </PageWrapper>
   );
 };

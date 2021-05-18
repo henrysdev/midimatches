@@ -133,22 +133,28 @@ const PlayWithoutSaveForm: React.FC<PlayWithoutSaveFormProps> = ({
         style={{ padding: "8px", margin: "16px", borderRadius: "10px" }}
       >
         <p>
-          Note: You will <strong>NOT</strong> have access to
-          <ul className="good_bulleted_list">
-            <li>
-              <strong>• Claiming your username</strong>
-            </li>
-            <li>
-              <strong>• Player stats</strong>
-            </li>
-            <li>
-              <strong>• Leaderboard participation</strong>
-            </li>
-            <li>
-              <strong>• Lots of future features...</strong>
-            </li>
-          </ul>
-          <br />
+          Note: You will <strong style={{ color: "red" }}>NOT</strong> have
+          access to
+        </p>
+        <ul className="good_bulleted_list">
+          <li>
+            <strong>• Claiming your username</strong>
+          </li>
+          <li>
+            <strong>• Leaderboard ranking</strong>
+          </li>
+          <li>
+            <strong>• Player stats </strong>
+          </li>
+          {/* <li>
+            <strong>• Room creation </strong>
+          </li> */}
+          <li>
+            <strong>• Many features under development...</strong>
+          </li>
+        </ul>
+        <br />
+        <p>
           If you'd like these features, consider{" "}
           <a className="accent_link" onClick={() => setCreateAccountView()}>
             creating an account

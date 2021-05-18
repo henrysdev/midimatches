@@ -12,8 +12,9 @@ import {
   InlineWidthInputSubmit,
   VinylLoadingSpinner,
   ComputerButton,
+  FixedLeftBackButton,
 } from "../../common";
-import { useLoadAccountLogin } from "../../../hooks";
+import { useLoadAccountLogin, useCurrentUserContext } from "../../../hooks";
 
 interface AccountLoginFormProps {
   setReadyToContinue: Function;
@@ -77,8 +78,19 @@ const AccountLoginForm: React.FC<AccountLoginFormProps> = ({
     }
   };
 
+  const { user: currentUser } = useCurrentUserContext();
+
   return (
     <div>
+      {!!currentUser ? (
+        <FixedLeftBackButton
+          buttonText={"< MENU"}
+          callback={() => (window.location.href = "/menu")}
+        />
+      ) : (
+        <></>
+      )}
+
       <br />
       <MediumLargeTitle>
         <span className="accent_bars">///</span>ACCOUNT LOGIN

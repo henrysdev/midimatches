@@ -37,9 +37,9 @@ const PageRouter: React.FC = () => {
           <Route path="/enter" component={EnterPlayerPage} />
           <Route path="/privacy" component={PrivacyPolicyPage} />
           <Route path="/terms" component={TermsPage} />
-          <Route path="/account" component={AccountPage} />
           <Route path="/account/recover" component={RecoverAccountPage} />
           <Route path="/account/reset" component={ResetPasswordPage} />
+          <Route path="/account" component={AccountPage} />
         </Switch>
       )}
     </BrowserRouter>

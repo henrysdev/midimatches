@@ -118,7 +118,7 @@ defmodule MidimatchesWeb.PageController do
     if Auth.has_user_session?(conn) do
       success_behavior = fn conn ->
         if Auth.has_registered_user_session?(conn) do
-          redirect(conn, to: Routes.page_path(conn, :menu))
+          redirect(conn, to: Routes.page_path(conn, :account))
         else
           render(conn, "enter_player.html", destination: destination)
         end
