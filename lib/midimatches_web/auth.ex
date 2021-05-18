@@ -149,4 +149,13 @@ defmodule MidimatchesWeb.Auth do
   def has_user_session?(conn) do
     !(conn.assigns[:auth_user] |> is_nil())
   end
+
+  @spec has_registered_user_session?(Plug.Conn.t()) :: boolean
+  def has_registered_user_session?(conn) do
+    if has_user_session?(conn) do
+      conn.assigns[:auth_user].registered
+    else
+      false
+    end
+  end
 end

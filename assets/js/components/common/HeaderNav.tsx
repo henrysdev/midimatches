@@ -26,8 +26,8 @@ const HeaderNav: React.FC<HeaderNavProps> = ({
             href="/menu"
             className="navbar_action resource_link audiowide_font"
           >
-            <MaterialIcon iconName="menu" className="navbar_icon" />
-            MENU
+            {/* <MaterialIcon iconName="menu" className="navbar_icon" /> */}
+            {"< MAIN MENU"}
           </a>
         )}
       </div>
