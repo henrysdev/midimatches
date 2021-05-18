@@ -8,11 +8,11 @@ defmodule MidimatchesDb.GameRecords do
     Repo
   }
 
-  @spec create_game_record(%GameRecord{}) :: %GameRecord{}
+  @spec create_game_record(%GameRecord{}) :: {:ok, %GameRecord{}} | {:error, any()}
   @doc """
   Insert a new game record
   """
   def create_game_record(%GameRecord{} = game_record) do
-    Repo.insert!(game_record)
+    Repo.insert(game_record)
   end
 end

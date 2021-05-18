@@ -4,9 +4,7 @@ defmodule MidimatchesDb.PlayerOutcomes do
   """
 
   alias MidimatchesDb.{
-    GameRecord,
     PlayerOutcome,
-    RoundRecord,
     Repo
   }
 
@@ -15,38 +13,32 @@ defmodule MidimatchesDb.PlayerOutcomes do
   Insert a new player outcome
   """
   def create_player_outcome(%PlayerOutcome{} = player_outcome) do
-    Repo.insert!(player_outcome)
+    Repo.insert(player_outcome)
   end
 
-  @spec add_player_outcome_for_game(%PlayerOutcome{}, %GameRecord{}) :: %PlayerOutcome{}
+  @spec bulk_create_player_outcomes(list(%PlayerOutcome{})) :: :ok | {:error, any()}
   @doc """
-  Associate and insert a new player outcome for a game
+  Insert multiple player outcomes
   """
-  def add_player_outcome_for_game(
-        %PlayerOutcome{} = player_outcome,
-        %GameRecord{id: game_id}
-      ) do
-    %PlayerOutcome{
-      player_outcome
-      | event_id: game_id,
-        event_type: :game
-    }
-    |> create_player_outcome()
-  end
+  def bulk_create_player_outcomes(player_outcomes) when is_list(player_outcomes) do
+    if length(player_outcomes) > 0 do
+      errors =
+        player_outcomes
+        |> Stream.map(&create_player_outcome/1)
+        |> Enum.reduce([], fn response, acc ->
+          case response do
+            {:error, reason} -> [reason | acc]
+            _ -> acc
+          end
+        end)
 
-  @spec add_player_outcome_for_round(%PlayerOutcome{}, %RoundRecord{}) :: %PlayerOutcome{}
-  @doc """
-  Associate and insert a new player outcome for a round
-  """
-  def add_player_outcome_for_round(
-        %PlayerOutcome{} = player_outcome,
-        %RoundRecord{id: round_id}
-      ) do
-    %PlayerOutcome{
-      player_outcome
-      | event_id: round_id,
-        event_type: :round
-    }
-    |> create_player_outcome()
+      if length(errors) > 0 do
+        {:error, errors}
+      else
+        :ok
+      end
+    else
+      :ok
+    end
   end
 end

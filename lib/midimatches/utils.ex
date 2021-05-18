@@ -23,6 +23,7 @@ defmodule Midimatches.Utils do
 
   @type id() :: String.t()
   @type freq_pair() :: {id(), number()}
+  @type event_type() :: :game | :round
 
   @spec build_win_result(list(freq_pair)) :: %WinResult{}
   def build_win_result(freq_list) when freq_list == [] do
@@ -256,19 +257,27 @@ defmodule Midimatches.Utils do
     }
   end
 
-  @spec player_outcome_to_db_player_outcome(%PlayerOutcome{}) :: %Db.PlayerOutcome{}
+  @spec player_outcome_to_db_player_outcome(%PlayerOutcome{}, event_type(), id()) ::
+          %Db.PlayerOutcome{}
   @doc """
   Cast a player outcome to a db player outcome
   """
-  def player_outcome_to_db_player_outcome(%PlayerOutcome{
-        player_id: player_uuid,
-        outcome: outcome,
-        num_points: num_points
-      }) do
+  def player_outcome_to_db_player_outcome(
+        %PlayerOutcome{
+          player_id: player_uuid,
+          outcome: outcome,
+          num_points: num_points
+        },
+        event_type,
+        event_id
+      )
+      when event_type in [:round, :game] do
     %Db.PlayerOutcome{
       player_uuid: player_uuid,
       outcome: outcome,
-      num_points: num_points
+      num_points: num_points,
+      event_type: event_type,
+      event_id: event_id
     }
   end
 end

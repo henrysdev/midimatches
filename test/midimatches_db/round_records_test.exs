@@ -11,8 +11,7 @@ defmodule MidimatchesDb.RoundRecordsTest do
   }
 
   test "create a round record" do
-    game =
-      %GameRecord{id: game_record_id} =
+    {:ok, %GameRecord{id: game_record_id} = game} =
       GameRecords.create_game_record(%GameRecord{
         game_end_reason: :completed
       })
@@ -33,7 +32,7 @@ defmodule MidimatchesDb.RoundRecordsTest do
 
     round_record = Ecto.build_assoc(game, :round_records, round_record)
 
-    inserted_round_record = RoundRecords.create_round_record(round_record)
+    {:ok, inserted_round_record} = RoundRecords.create_round_record(round_record)
 
     expected_round_record = %RoundRecord{
       game_record_id: game_record_id,

@@ -11,7 +11,7 @@ defmodule MidimatchesDb.GameRecordsTest do
       game_end_reason: :canceled
     }
 
-    inserted_game_record = GameRecords.create_game_record(game_record)
+    {:ok, inserted_game_record} = GameRecords.create_game_record(game_record)
 
     expected_game_record = %GameRecord{
       game_end_reason: :canceled

@@ -7,8 +7,10 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllLogic do
     Rooms.Room.GameInstance,
     Rooms.Room.Modes.FreeForAll.FreeForAllServer,
     Rooms.Room.Modes.FreeForAll.Views,
+    Types.GameRecord,
     Types.GameRules,
     Types.Player,
+    Types.RoundRecord,
     Utils
   }
 
@@ -198,43 +200,77 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllLogic do
 
   @spec end_game(%GameInstance{}, game_end_reason()) :: :ok
   def end_game(%GameInstance{} = state, reason) do
-    # TODO change Repo.insert! to Repo.insert and wrap in with block
-
     game_record = Views.GameEnd.build_game_record(state, reason)
 
-    IO.inspect({:GAME_RECORD, game_record})
+    save_game_record(game_record)
 
-    # insert game record
-    inserted_game_record =
+    FreeForAllServer.back_to_room_lobby(state)
+  end
+
+  @spec save_game_record(%GameRecord{}) :: :ok
+  def save_game_record(
+        %GameRecord{game_outcomes: game_outcomes, round_records: round_records} = game_record
+      ) do
+    create_game_record_db_resp =
       game_record
       |> Utils.game_record_to_db_game_record()
       |> Db.GameRecords.create_game_record()
 
-    # insert game outcomes
-    game_record.game_outcomes
-    |> Enum.each(fn outcome ->
-      outcome
-      |> Utils.player_outcome_to_db_player_outcome()
-      |> Db.PlayerOutcomes.add_player_outcome_for_game(inserted_game_record)
-    end)
+    case create_game_record_db_resp do
+      {:ok, inserted_game_record} ->
+        save_game_outcomes(game_outcomes, inserted_game_record)
 
-    # insert round records
-    game_record.round_records
-    |> Enum.each(fn round_record ->
-      inserted_round_record =
-        round_record
-        |> Utils.round_record_to_db_round_record()
-        |> Db.RoundRecords.add_round_record_for_game(inserted_game_record)
+        round_records
+        |> Enum.reverse()
+        |> Enum.each(&save_round_record(&1, inserted_game_record))
 
-      # insert round outcomes
-      round_record.round_outcomes
-      |> Enum.each(fn outcome ->
+      {:error, reason} ->
+        Logger.error(reason)
+    end
+  end
+
+  @spec save_round_record(%RoundRecord{}, %Db.GameRecord{}) :: :ok | {:error, any()}
+  defp save_round_record(
+         %RoundRecord{round_outcomes: round_outcomes} = round_record,
+         %Db.GameRecord{} = inserted_game_record
+       ) do
+    create_round_record_db_resp =
+      round_record
+      |> Utils.round_record_to_db_round_record()
+      |> Db.RoundRecords.add_round_record_for_game(inserted_game_record)
+
+    case create_round_record_db_resp do
+      {:ok, inserted_round_record} ->
+        save_round_outcomes(round_outcomes, inserted_round_record)
+
+      {:error, reason} ->
+        Logger.error(reason)
+    end
+  end
+
+  @spec save_round_outcomes(list(PlayerOutcome), %Db.RoundRecord{}) :: :ok | {:error, any()}
+  defp save_round_outcomes(round_outcomes, %Db.RoundRecord{id: round_id}) do
+    save_player_outcomes(round_outcomes, :round, round_id)
+  end
+
+  @spec save_game_outcomes(list(PlayerOutcome), %Db.GameRecord{}) :: :ok | {:error, any()}
+  defp save_game_outcomes(game_outcomes, %Db.GameRecord{id: game_id}) do
+    save_player_outcomes(game_outcomes, :game, game_id)
+  end
+
+  defp save_player_outcomes(player_outcomes, event_type, event_id)
+       when event_type in [:round, :game] do
+    player_outcomes_to_insert =
+      Enum.map(player_outcomes, fn outcome ->
         outcome
-        |> Utils.player_outcome_to_db_player_outcome()
-        |> Db.PlayerOutcomes.add_player_outcome_for_round(inserted_round_record)
+        |> Utils.player_outcome_to_db_player_outcome(event_type, event_id)
       end)
-    end)
 
-    FreeForAllServer.back_to_room_lobby(state)
+    db_resp = Db.PlayerOutcomes.bulk_create_player_outcomes(player_outcomes_to_insert)
+
+    case db_resp do
+      {:error, reason} -> Logger.error(reason)
+      _ -> :ok
+    end
   end
 end
