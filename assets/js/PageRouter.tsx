@@ -17,6 +17,7 @@ import {
 import { useBrowserCompatibilityContext } from "./hooks";
 import { MobileAboutPage } from "./components/pages/about/MobileAboutPage";
 import { MobilePrivacyPolicyPage } from "./components/pages/privacy/MobilePrivacyPolicyPage";
+import { MobileTermsPolicyPage } from "./components/pages/terms/MobileTermsPage";
 
 const PageRouter: React.FC = () => {
   const { isMobileDevice } = useBrowserCompatibilityContext();
@@ -26,6 +27,7 @@ const PageRouter: React.FC = () => {
         <Switch>
           <Route exact path="/about" component={MobileAboutPage} />
           <Route path="/privacy" component={MobilePrivacyPolicyPage} />
+          <Route path="/terms" component={MobileTermsPolicyPage} />
         </Switch>
       ) : (
         <Switch>
