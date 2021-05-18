@@ -11,15 +11,19 @@ import {
   MediumLargeTitle,
   InlineWidthInputSubmit,
   VinylLoadingSpinner,
+  BackButton,
+  FixedLeftBackButton,
 } from "../../common";
 import { useLoadCreateAccount } from "../../../hooks";
 
 interface CreateAccountFormProps {
   setReadyToContinue: Function;
+  setLoginView: Function;
 }
 
 const CreateAccountForm: React.FC<CreateAccountFormProps> = ({
   setReadyToContinue,
+  setLoginView,
 }) => {
   const [alias, setAlias] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -117,6 +121,8 @@ const CreateAccountForm: React.FC<CreateAccountFormProps> = ({
 
   return (
     <div>
+      <FixedLeftBackButton callback={() => setLoginView()} />
+      <br />
       <MediumLargeTitle>
         <span className="accent_bars">///</span>CREATE ACCOUNT
       </MediumLargeTitle>

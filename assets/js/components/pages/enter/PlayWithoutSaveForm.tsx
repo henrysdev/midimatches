@@ -9,15 +9,18 @@ import {
   MediumLargeTitle,
   InlineWidthInputSubmit,
   VinylLoadingSpinner,
+  FixedLeftBackButton,
 } from "../../common";
 import { useLoadUpdateUser } from "../../../hooks";
 
 interface PlayWithoutSaveFormProps {
   setReadyToContinue: Function;
+  setLoginView: Function;
 }
 
 const PlayWithoutSaveForm: React.FC<PlayWithoutSaveFormProps> = ({
   setReadyToContinue,
+  setLoginView,
 }) => {
   const [alias, setAlias] = useState<string>("");
 
@@ -72,6 +75,8 @@ const PlayWithoutSaveForm: React.FC<PlayWithoutSaveFormProps> = ({
 
   return (
     <div>
+      <FixedLeftBackButton callback={() => setLoginView()} />
+      <br />
       <MediumLargeTitle>
         <span className="accent_bars">///</span>PLAY WITHOUT SAVE
       </MediumLargeTitle>

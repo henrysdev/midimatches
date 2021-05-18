@@ -13,7 +13,7 @@ import {
 import { CreateAccountForm } from "./CreateAccountForm";
 import { AccountLoginForm } from "./AccountLoginForm";
 
-enum RegistrationView {
+export enum RegistrationView {
   LOGIN,
   CREATE_ACCOUNT,
   PLAY_WITHOUT_SAVE,
@@ -55,8 +55,10 @@ const EnterPlayerPage: React.FC = () => {
 
   return (
     <PageWrapper socket={socket} currentUser={currentUser}>
-      <div className="narrow_center_container computer_frame outset_3d_border_deep">
-        <br />
+      <div
+        style={{ overflowY: "auto" }}
+        className="narrow_center_container computer_frame outset_3d_border_deep"
+      >
         <div className="main_menu_btn_group">
           {(() => {
             switch (registrationView) {
@@ -65,13 +67,24 @@ const EnterPlayerPage: React.FC = () => {
                   <div>
                     <CreateAccountForm
                       setReadyToContinue={setReadyToContinue}
+                      setLoginView={() =>
+                        setRegistrationView(RegistrationView.LOGIN)
+                      }
                     />
                   </div>
                 );
               case RegistrationView.LOGIN:
                 return (
                   <div>
-                    <AccountLoginForm setReadyToContinue={setReadyToContinue} />
+                    <AccountLoginForm
+                      setReadyToContinue={setReadyToContinue}
+                      setCreateAccountView={() =>
+                        setRegistrationView(RegistrationView.CREATE_ACCOUNT)
+                      }
+                      setPlayWithoutSaveView={() =>
+                        setRegistrationView(RegistrationView.PLAY_WITHOUT_SAVE)
+                      }
+                    />
                   </div>
                 );
               case RegistrationView.PLAY_WITHOUT_SAVE:
@@ -79,57 +92,14 @@ const EnterPlayerPage: React.FC = () => {
                   <div>
                     <PlayWithoutSaveForm
                       setReadyToContinue={setReadyToContinue}
+                      setLoginView={() =>
+                        setRegistrationView(RegistrationView.LOGIN)
+                      }
                     />
                   </div>
                 );
             }
           })()}
-          <div className="developer_about_tagline_flex_wrapper">
-            <div className="developer_about_tagline text_light">
-              <strong>OR...</strong>
-            </div>
-          </div>
-          {registrationView !== RegistrationView.LOGIN ? (
-            <div className="main_menu_btn">
-              <ComputerButton
-                callback={() => setRegistrationView(RegistrationView.LOGIN)}
-                extraClasses={["register_button"]}
-              >
-                ACCOUNT LOGIN
-              </ComputerButton>
-            </div>
-          ) : (
-            <></>
-          )}
-          {registrationView !== RegistrationView.CREATE_ACCOUNT ? (
-            <div className="main_menu_btn">
-              <ComputerButton
-                callback={() =>
-                  setRegistrationView(RegistrationView.CREATE_ACCOUNT)
-                }
-                extraClasses={["register_button"]}
-              >
-                CREATE ACCOUNT
-              </ComputerButton>
-            </div>
-          ) : (
-            <></>
-          )}
-          {registrationView !== RegistrationView.PLAY_WITHOUT_SAVE ? (
-            <div className="main_menu_btn">
-              <ComputerButton
-                callback={() =>
-                  setRegistrationView(RegistrationView.PLAY_WITHOUT_SAVE)
-                }
-                extraClasses={["register_button"]}
-                extraStyles={{ whiteSpace: "nowrap" }}
-              >
-                PLAY WITHOUT SAVE
-              </ComputerButton>
-            </div>
-          ) : (
-            <></>
-          )}
         </div>
       </div>
     </PageWrapper>

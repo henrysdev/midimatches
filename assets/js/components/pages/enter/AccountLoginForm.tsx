@@ -11,15 +11,20 @@ import {
   MediumLargeTitle,
   InlineWidthInputSubmit,
   VinylLoadingSpinner,
+  ComputerButton,
 } from "../../common";
 import { useLoadAccountLogin } from "../../../hooks";
 
 interface AccountLoginFormProps {
   setReadyToContinue: Function;
+  setCreateAccountView: Function;
+  setPlayWithoutSaveView: Function;
 }
 
 const AccountLoginForm: React.FC<AccountLoginFormProps> = ({
   setReadyToContinue,
+  setCreateAccountView,
+  setPlayWithoutSaveView,
 }) => {
   const [alias, setAlias] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -74,6 +79,7 @@ const AccountLoginForm: React.FC<AccountLoginFormProps> = ({
 
   return (
     <div>
+      <br />
       <MediumLargeTitle>
         <span className="accent_bars">///</span>ACCOUNT LOGIN
       </MediumLargeTitle>
@@ -136,6 +142,34 @@ const AccountLoginForm: React.FC<AccountLoginFormProps> = ({
             </a>
           </form>
         )}
+      </div>
+      <div className="developer_about_tagline_flex_wrapper">
+        <div className="developer_about_tagline text_light">
+          <strong>DON'T HAVE AN ACCOUNT?</strong>
+        </div>
+      </div>
+
+      <div className="main_menu_btn">
+        <ComputerButton
+          callback={() => setCreateAccountView()}
+          extraClasses={["register_button"]}
+        >
+          CREATE ACCOUNT
+        </ComputerButton>
+      </div>
+      <div className="developer_about_tagline_flex_wrapper">
+        <div className="developer_about_tagline text_light">
+          <strong>OR...</strong>
+        </div>
+      </div>
+      <div className="main_menu_btn">
+        <ComputerButton
+          callback={() => setPlayWithoutSaveView()}
+          extraClasses={["register_button"]}
+          extraStyles={{ whiteSpace: "nowrap" }}
+        >
+          PLAY WITHOUT SAVE
+        </ComputerButton>
       </div>
     </div>
   );

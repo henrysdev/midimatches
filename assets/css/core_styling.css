@@ -194,6 +194,36 @@ body {
   box-shadow: none;
 }
 
+.back_button_wrapper {
+  height: 50px;
+}
+
+.back_button {
+  box-shadow: 0 5px 13px rgb(0 0 0 / 8%);
+  padding: 4px;
+  margin: 8px;
+  background-color: var(--main_theme_color);
+  width: 64px;
+  cursor: pointer;
+  height: 24px;
+  border-radius: 10px;
+  white-space: nowrap;
+
+  border-bottom: 8px solid var(--main_theme_shade_1);
+  border-right: 8px solid var(--main_theme_shade_2);
+  border-top: 8px solid var(--main_theme_shade_4);
+  border-left: 8px solid var(--main_theme_shade_3);
+}
+
+.back_button:active {
+  /* background-color: var(--outside_content_active); */
+  border-bottom: 5px solid var(--main_theme_shade_1);
+  border-right: 5px solid var(--main_theme_shade_2);
+  border-top: 5px solid var(--main_theme_shade_4);
+  border-left: 5px solid var(--main_theme_shade_3);
+  box-shadow: none;
+}
+
 .content_button {
   margin-top: 8px;
   padding: 8px;
@@ -581,6 +611,12 @@ input:checked + .slider:before {
 }
 
 .narrow_center_container {
+  max-width: 600px;
+  margin: auto;
+  /* padding: 16px; */
+}
+
+.narrow_menu_container {
   max-width: 400px;
   margin: auto;
   /* padding: 16px; */

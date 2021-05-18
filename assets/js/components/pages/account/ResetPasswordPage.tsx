@@ -17,7 +17,7 @@ const ResetPasswordPage: React.FC = () => {
 
   return (
     <PageWrapper socket={socket} currentUser={currentUser}>
-      <div className="narrow_center_container computer_frame outset_3d_border_deep">
+      <div className="narrow_menu_container computer_frame outset_3d_border_deep">
         <br />
         <div className="main_menu_btn_group">
           <ResetPasswordForm setReadyToContinue={setReadyToContinue} />
