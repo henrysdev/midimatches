@@ -16,11 +16,13 @@ import { useLoadUpdateUser } from "../../../hooks";
 interface PlayWithoutSaveFormProps {
   setReadyToContinue: Function;
   setLoginView: Function;
+  setCreateAccountView: Function;
 }
 
 const PlayWithoutSaveForm: React.FC<PlayWithoutSaveFormProps> = ({
   setReadyToContinue,
   setLoginView,
+  setCreateAccountView,
 }) => {
   const [alias, setAlias] = useState<string>("");
 
@@ -125,6 +127,33 @@ const PlayWithoutSaveForm: React.FC<PlayWithoutSaveFormProps> = ({
             )}
           </form>
         )}
+      </div>
+      <div
+        className="inset_3d_border_shallow inline_screen"
+        style={{ padding: "8px", margin: "16px", borderRadius: "10px" }}
+      >
+        <p>
+          Note: You will <strong>NOT</strong> have access to
+          <ul className="good_bulleted_list">
+            <li>
+              <strong>• Claiming your username</strong>
+            </li>
+            <li>
+              <strong>• Player stats</strong>
+            </li>
+            <li>
+              <strong>• Leaderboard participation</strong>
+            </li>
+            <li>
+              <strong>• Lots of future features...</strong>
+            </li>
+          </ul>
+          <br />
+          If you'd like these features, consider{" "}
+          <a className="accent_link" onClick={() => setCreateAccountView()}>
+            creating an account
+          </a>
+        </p>
       </div>
     </div>
   );

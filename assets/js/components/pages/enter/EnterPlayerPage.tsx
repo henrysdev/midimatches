@@ -39,20 +39,6 @@ const EnterPlayerPage: React.FC = () => {
     RegistrationView.LOGIN
   );
 
-  const backButton = (
-    <div className="main_menu_btn_group">
-      <div className="main_menu_btn">
-        <ComputerButton
-          callback={() => setRegistrationView(RegistrationView.LOGIN)}
-          extraClasses={["register_button"]}
-          extraStyles={{ whiteSpace: "nowrap" }}
-        >
-          {"< GO BACK"}
-        </ComputerButton>
-      </div>
-    </div>
-  );
-
   return (
     <PageWrapper socket={socket} currentUser={currentUser}>
       <div
@@ -94,6 +80,9 @@ const EnterPlayerPage: React.FC = () => {
                       setReadyToContinue={setReadyToContinue}
                       setLoginView={() =>
                         setRegistrationView(RegistrationView.LOGIN)
+                      }
+                      setCreateAccountView={() =>
+                        setRegistrationView(RegistrationView.CREATE_ACCOUNT)
                       }
                     />
                   </div>

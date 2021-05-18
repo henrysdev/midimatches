@@ -232,7 +232,9 @@ const Serverlist: React.FC<ServerlistProps> = ({
                         ) : status === RoomStatus.IN_GAME ? (
                           <div style={{ color: "blue" }}>In Game</div>
                         ) : (
-                          <div style={{ color: "#1aeb13" }}>Pregame</div>
+                          <div style={{ color: "var(--bright_green)" }}>
+                            Pregame
+                          </div>
                         )}
                       </td>
                       <td>{`${room.numCurrPlayers} / ${room.gameRules.maxPlayers}`}</td>

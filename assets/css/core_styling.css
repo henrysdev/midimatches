@@ -68,6 +68,8 @@
   --footer_background: var(--dark_gray);
 
   --purple_color: rgb(185, 181, 255);
+
+  --bright_green: #1aeb13;
 }
 
 p {
@@ -1585,6 +1587,13 @@ strong {
   padding: 16px;
 }
 
+.important_info_note {
+  text-align: left;
+  font-family: "Roboto", sans-serif;
+  /* bottom: 16px; */
+  padding: 16px;
+}
+
 .large_instructions_text {
   font-size: 1.2em;
   color: var(--text_light);
@@ -1616,19 +1625,32 @@ strong {
   color: var(--text_light);
 }
 
+.good_bulleted_list li {
+  color: var(--bright_green);
+}
+
+.accent_link {
+  font-family: "Roboto", sans-serif;
+  font-weight: 600;
+  color: var(--current_player_color);
+  font-style: normal;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .accent_link:link {
   font-family: "Roboto", sans-serif;
   font-weight: 600;
   color: var(--current_player_color);
   font-style: normal;
-  text-decoration: none;
+  text-decoration: underline;
 }
 
 .accent_link:visited {
   font-family: "Roboto", sans-serif;
   color: var(--current_player_color);
   font-style: normal;
-  text-decoration: none;
+  text-decoration: underline;
 }
 
 .resource_link:link {

@@ -85,7 +85,7 @@ const CreateRoomForm: React.FC = () => {
 
   return (
     <div className="create_room_wrapper inset_3d_border_shallow inline_screen">
-      <MediumTitle centered={false}>NEW ROOM</MediumTitle>
+      <MediumTitle centered={false}>CREATE NEW ROOM</MediumTitle>
       {loading ? (
         <div className="relative_anchor">
           <VinylLoadingSpinner />
