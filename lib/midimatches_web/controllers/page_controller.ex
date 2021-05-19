@@ -102,13 +102,13 @@ defmodule MidimatchesWeb.PageController do
     redirect_if_banned(conn, success_behavior)
   end
 
-  @spec register_player(Plug.Conn.t(), map) :: Plug.Conn.t()
+  @spec enter_player(Plug.Conn.t(), map) :: Plug.Conn.t()
   @doc """
   Page containing user registration form. This prompt is encountered if the acting
   user does not have a player in their session cookie yet. The destination field ensures
   that after they register, they are resolved to the correct destination.
   """
-  def register_player(conn, params) do
+  def enter_player(conn, params) do
     destination =
       case params do
         %{"destination" => destination} -> destination
@@ -117,12 +117,16 @@ defmodule MidimatchesWeb.PageController do
 
     if Auth.has_user_session?(conn) do
       success_behavior = fn conn ->
-        render(conn, "register_player.html", destination: destination)
+        if Auth.has_registered_user_session?(conn) do
+          redirect(conn, to: Routes.page_path(conn, :account))
+        else
+          render(conn, "enter_player.html", destination: destination)
+        end
       end
 
       redirect_if_banned(conn, success_behavior)
     else
-      render(conn, "register_player.html", destination: destination)
+      render(conn, "enter_player.html", destination: destination)
     end
   end
 
@@ -133,6 +137,40 @@ defmodule MidimatchesWeb.PageController do
   def practice(conn, _params) do
     success_behavior = fn conn -> render(conn, "practice.html") end
     redirect_if_banned(conn, success_behavior)
+  end
+
+  @spec account(Plug.Conn.t(), map) :: Plug.Conn.t()
+  @doc """
+  Routes to account page
+  """
+  def account(conn, _params) do
+    success_behavior = fn conn -> render(conn, "account.html") end
+    redirect_if_banned(conn, success_behavior)
+  end
+
+  @spec recover_account(Plug.Conn.t(), map) :: Plug.Conn.t()
+  @doc """
+  Routes to page where a user can attempt to recover their account via password reset
+  """
+  def recover_account(conn, _params) do
+    success_behavior = fn conn -> render(conn, "recover_account.html") end
+    redirect_if_banned(conn, success_behavior)
+  end
+
+  @spec reset_password(Plug.Conn.t(), map) :: Plug.Conn.t()
+  @doc """
+  Routes to page where a user can reset their password
+  """
+  def reset_password(conn, %{"reset_token" => reset_token}) do
+    case Auth.parse_reset_token(reset_token) do
+      {:ok, %{"user_id" => user_id}} ->
+        conn
+        |> Auth.put_bearer_token(user_id)
+        |> render("password_reset.html")
+
+      {:error, _} ->
+        render(conn, "invalid_password_reset.html")
+    end
   end
 
   # TODO move to plug

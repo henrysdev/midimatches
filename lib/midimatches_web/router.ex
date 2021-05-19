@@ -24,6 +24,10 @@ defmodule MidimatchesWeb.Router do
     plug :auth_conn, [:redirect_to_login]
   end
 
+  pipeline :registered_user_pages_auth do
+    plug :auth_conn, [:registered_only, :redirect_to_login]
+  end
+
   pipeline :public_api_auth do
     plug :auth_conn
   end
@@ -41,7 +45,9 @@ defmodule MidimatchesWeb.Router do
       get "/about", PageController, :about
       get "/privacy", PageController, :privacy
       get "/terms", PageController, :terms
-      get "/register", PageController, :register_player
+      get "/enter", PageController, :enter_player
+      get "/account/recover", PageController, :recover_account
+      get "/account/reset/:reset_token", PageController, :reset_password
     end
 
     scope "/" do
@@ -52,6 +58,11 @@ defmodule MidimatchesWeb.Router do
       get "/room/:room_id/watch", PageController, :room_watch
       get "/room/:room_id", PageController, :room
       get "/practice", PageController, :practice
+    end
+
+    scope "/" do
+      pipe_through :registered_user_pages_auth
+      get "/account", PageController, :account
     end
   end
 
@@ -66,14 +77,18 @@ defmodule MidimatchesWeb.Router do
       post "/user", UserController, :upsert
       get "/samples/random", SampleController, :random
       post "/room", RoomController, :create
-      post "/", AccountController, :create
-      post "/login", AccountController, :login
+
+      post "/account/login", AccountController, :login
+      post "/account/recovery", AccountController, :recovery
+      post "/account", AccountController, :create
     end
 
-    scope "/" do
+    scope "/account" do
       pipe_through :registered_user_api_auth
+      put "/password", AccountController, :update_password
       put "/:uuid", AccountController, :update
       get "/:uuid", AccountController, :show
+      delete "/:uuid", AccountController, :delete
       post "/logout", AccountController, :logout
     end
   end

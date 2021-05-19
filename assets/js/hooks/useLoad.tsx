@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { unmarshalBody } from "../utils";
 
+const successStatusCodes = [200, 201, 202, 203, 204, 205, 206];
+
 export function useLoad(defaultdata = {}) {
   const [loadStatus, setLoadStatus] = useState({
     data: defaultdata,
+    httpStatus: undefined,
     loading: false,
     loaded: false,
     loadError: false,
@@ -12,19 +15,27 @@ export function useLoad(defaultdata = {}) {
   function setLoading(): void {
     setLoadStatus({
       data: loadStatus.data,
+      httpStatus: undefined,
       loading: true,
       loaded: false,
       loadError: false,
     });
   }
 
-  function setDone(data: any): void {
-    setLoadStatus({ data, loading: false, loaded: true, loadError: false });
+  function setDone(data: any, httpStatus: any): void {
+    setLoadStatus({
+      data,
+      httpStatus,
+      loading: false,
+      loaded: true,
+      loadError: false,
+    });
   }
 
-  function setFailed(): void {
+  function setFailed(httpStatus: any, errorData: any = defaultdata): void {
     setLoadStatus({
-      data: defaultdata,
+      data: errorData,
+      httpStatus,
       loading: false,
       loadError: true,
       loaded: false,
@@ -36,16 +47,19 @@ export function useLoad(defaultdata = {}) {
 
     try {
       const response = await loader(...rest);
+      const httpStatusCode = (await response.status) || 500;
       const data = await response.json();
       const formattedData = unmarshalBody(data);
 
       if (!formattedData) {
-        setFailed();
+        setFailed(httpStatusCode);
+      } else if (!successStatusCodes.includes(httpStatusCode)) {
+        setFailed(httpStatusCode, formattedData);
       } else {
-        setDone(formattedData);
+        setDone(formattedData, httpStatusCode);
       }
     } catch (e) {
-      setFailed();
+      setFailed(500);
     }
   }
 
@@ -54,14 +68,17 @@ export function useLoad(defaultdata = {}) {
 
     try {
       const data = await loader(...rest);
+      const httpStatusCode = (await data.status) || 500;
 
       if (!data) {
-        setFailed();
+        setFailed(httpStatusCode);
+      } else if (!successStatusCodes.includes(httpStatusCode)) {
+        setFailed(httpStatusCode, data);
       } else {
-        setDone(data);
+        setDone(data, httpStatusCode);
       }
     } catch (e) {
-      setFailed();
+      setFailed(500);
     }
   }
 

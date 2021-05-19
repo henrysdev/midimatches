@@ -26,3 +26,5 @@ export { FooterBar } from "./FooterBar";
 export { ArrowButton } from "./ArrowButton";
 export { Modal } from "./Modal";
 export { CenteredFrontWindow } from "./CenteredFrontWindow";
+export { BackButton } from "./BackButton";
+export { FixedLeftBackButton } from "./FixedLeftBackButton";

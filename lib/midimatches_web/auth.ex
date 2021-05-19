@@ -12,21 +12,30 @@ defmodule MidimatchesWeb.Auth do
 
   require Logger
 
-  @max_token_age 864_000
+  # bearer tokens are invalidated at session cadence.
+  @max_token_age :infinity
+
+  @reset_token_secret Application.get_env(:midimatches, :token_secret)
+  @max_reset_token_age 21_600
 
   @type id() :: String.t()
 
   @spec put_bearer_token(Plug.Conn.t(), id()) :: Plug.Conn.t()
   def put_bearer_token(conn, user_id) do
-    {:ok, new_token_serial} = Db.Users.user_increment_session(user_id)
+    case Db.Users.user_increment_session(user_id) do
+      {:ok, new_token_serial} ->
+        token =
+          Phoenix.Token.sign(MidimatchesWeb.Endpoint, "user bearer token",
+            user_id: user_id,
+            session_id: new_token_serial
+          )
 
-    token =
-      Phoenix.Token.sign(MidimatchesWeb.Endpoint, "user bearer token",
-        user_id: user_id,
-        session_id: new_token_serial
-      )
+        put_session(conn, :user_bearer_token, token)
 
-    put_session(conn, :user_bearer_token, token)
+      {:error, reason} ->
+        Logger.error(reason)
+        conn
+    end
   end
 
   @spec auth_conn(Plug.Conn.t(), list(atom)) :: Plug.Conn.t()
@@ -81,7 +90,7 @@ defmodule MidimatchesWeb.Auth do
     cond do
       :redirect_to_login in opts ->
         conn
-        |> redirect(to: Routes.page_path(conn, :register_player, destination: conn.request_path))
+        |> redirect(to: Routes.page_path(conn, :enter_player, destination: conn.request_path))
         |> halt()
 
       :return_auth_error in opts ->
@@ -95,6 +104,18 @@ defmodule MidimatchesWeb.Auth do
   @spec has_bearer_token?(Plug.Conn.t()) :: boolean()
   def has_bearer_token?(conn) do
     conn.assigns[:user_bearer_token] != nil
+  end
+
+  @spec gen_reset_token(id()) :: any()
+  def gen_reset_token(user_id) do
+    Phoenix.Token.encrypt(MidimatchesWeb.Endpoint, @reset_token_secret, %{"user_id" => user_id})
+  end
+
+  @spec parse_reset_token(any()) :: {:ok, any()} | {:error, any()}
+  def parse_reset_token(reset_token) do
+    Phoenix.Token.decrypt(MidimatchesWeb.Endpoint, @reset_token_secret, reset_token,
+      max_age: @max_reset_token_age
+    )
   end
 
   def verify_phx_token(token) do
@@ -127,5 +148,14 @@ defmodule MidimatchesWeb.Auth do
   @spec has_user_session?(Plug.Conn.t()) :: boolean()
   def has_user_session?(conn) do
     !(conn.assigns[:auth_user] |> is_nil())
+  end
+
+  @spec has_registered_user_session?(Plug.Conn.t()) :: boolean
+  def has_registered_user_session?(conn) do
+    if has_user_session?(conn) do
+      conn.assigns[:auth_user].registered
+    else
+      false
+    end
   end
 end

@@ -233,9 +233,9 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllServer do
   def check_game_empty(
         %GameInstance{players: players, game_rules: %GameRules{min_players: min_players}} = state
       ) do
-    # reset room if not enough players to play
+    # end game if not enough players left to play
     if MapSet.size(players) < min_players do
-      back_to_room_lobby(state)
+      FreeForAllLogic.end_game(state, :canceled)
     else
       state
     end

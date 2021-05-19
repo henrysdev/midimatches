@@ -161,6 +161,31 @@ export interface UpdateUserPayload {
   user_alias: string;
 }
 
+export interface CreateAccountPayload {
+  username: string;
+  password: string;
+  email: string;
+}
+
+export interface AccountLoginPayload {
+  username: string;
+  password: string;
+}
+
+export interface UpdatePasswordPayload {
+  old_password?: string;
+  password: string;
+}
+
+export interface RecoverAccountPayload {
+  username: string;
+  email: string;
+}
+
+export interface DeleteAccountPayload {
+  password: string;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // Contexts                                                                  //
 ///////////////////////////////////////////////////////////////////////////////
@@ -270,6 +295,7 @@ export interface Player {
 export interface User {
   userAlias: string;
   userId: string;
+  registered: boolean;
 }
 
 interface PlayerScore {

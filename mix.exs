@@ -27,7 +27,7 @@ defmodule Midimatches.MixProject do
   def application do
     [
       mod: {Midimatches.Application, []},
-      extra_applications: [:logger, :runtime_tools, :logger_file_backend]
+      extra_applications: [:logger, :runtime_tools, :logger_file_backend, :sendgrid]
     ]
   end
 
@@ -40,7 +40,7 @@ defmodule Midimatches.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.5.5"},
+      {:phoenix, "== 1.5.8"},
       {:phoenix_html, "~> 2.11"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_dashboard, "~> 0.2"},
@@ -66,7 +66,8 @@ defmodule Midimatches.MixProject do
       {:phoenix_ecto, "~> 4.1"},
       {:ecto_sql, "~> 3.6"},
       {:postgrex, ">= 0.0.0"},
-      {:bcrypt_elixir, "~> 2.0"}
+      {:bcrypt_elixir, "~> 2.0"},
+      {:sendgrid, "~> 2.0"}
     ]
   end
 

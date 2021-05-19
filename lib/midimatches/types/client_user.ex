@@ -9,5 +9,6 @@ defmodule Midimatches.Types.ClientUser do
   typedstruct do
     field(:user_id, String.t(), enforce: true)
     field(:user_alias, String.t(), enforce: true)
+    field(:registered, boolean(), default: false)
   end
 end

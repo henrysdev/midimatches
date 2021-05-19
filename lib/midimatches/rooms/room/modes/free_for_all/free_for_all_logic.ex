@@ -5,11 +5,16 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllLogic do
 
   alias Midimatches.{
     Rooms.Room.GameInstance,
+    Rooms.Room.Modes.FreeForAll.FreeForAllServer,
     Rooms.Room.Modes.FreeForAll.Views,
+    Types.GameRecord,
     Types.GameRules,
     Types.Player,
+    Types.RoundRecord,
     Utils
   }
+
+  alias MidimatchesDb, as: Db
 
   require Logger
 
@@ -19,6 +24,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllLogic do
           view_change?: boolean(),
           state: %GameInstance{}
         }
+  @type game_end_reason :: :completed | :canceled
 
   @spec start_game(%GameRules{}, MapSet.t(Player), MapSet.t(Player), id(), id()) ::
           %GameInstance{}
@@ -183,7 +189,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllLogic do
         Views.GameEnd.advance_view(state)
 
       _ ->
-        Logger.warn("unrecognized game_view encountered: #{game_view}")
+        Logger.error("unrecognized game_view encountered: #{game_view}")
         state
     end
     |> as_instruction(sync?: true, view_change?: true)
@@ -191,4 +197,80 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllLogic do
 
   def as_instruction(%GameInstance{} = state, sync?: sync?, view_change?: view_change?),
     do: %{sync_clients?: sync?, view_change?: view_change?, state: state}
+
+  @spec end_game(%GameInstance{}, game_end_reason()) :: :ok
+  def end_game(%GameInstance{} = state, reason) do
+    game_record = Views.GameEnd.build_game_record(state, reason)
+
+    save_game_record(game_record)
+
+    FreeForAllServer.back_to_room_lobby(state)
+  end
+
+  @spec save_game_record(%GameRecord{}) :: :ok
+  def save_game_record(
+        %GameRecord{game_outcomes: game_outcomes, round_records: round_records} = game_record
+      ) do
+    create_game_record_db_resp =
+      game_record
+      |> Utils.game_record_to_db_game_record()
+      |> Db.GameRecords.create_game_record()
+
+    case create_game_record_db_resp do
+      {:ok, inserted_game_record} ->
+        save_game_outcomes(game_outcomes, inserted_game_record)
+
+        round_records
+        |> Enum.reverse()
+        |> Enum.each(&save_round_record(&1, inserted_game_record))
+
+      {:error, reason} ->
+        Logger.error(reason)
+    end
+  end
+
+  @spec save_round_record(%RoundRecord{}, %Db.GameRecord{}) :: :ok | {:error, any()}
+  defp save_round_record(
+         %RoundRecord{round_outcomes: round_outcomes} = round_record,
+         %Db.GameRecord{} = inserted_game_record
+       ) do
+    create_round_record_db_resp =
+      round_record
+      |> Utils.round_record_to_db_round_record()
+      |> Db.RoundRecords.add_round_record_for_game(inserted_game_record)
+
+    case create_round_record_db_resp do
+      {:ok, inserted_round_record} ->
+        save_round_outcomes(round_outcomes, inserted_round_record)
+
+      {:error, reason} ->
+        Logger.error(reason)
+    end
+  end
+
+  @spec save_round_outcomes(list(PlayerOutcome), %Db.RoundRecord{}) :: :ok | {:error, any()}
+  defp save_round_outcomes(round_outcomes, %Db.RoundRecord{id: round_id}) do
+    save_player_outcomes(round_outcomes, :round, round_id)
+  end
+
+  @spec save_game_outcomes(list(PlayerOutcome), %Db.GameRecord{}) :: :ok | {:error, any()}
+  defp save_game_outcomes(game_outcomes, %Db.GameRecord{id: game_id}) do
+    save_player_outcomes(game_outcomes, :game, game_id)
+  end
+
+  defp save_player_outcomes(player_outcomes, event_type, event_id)
+       when event_type in [:round, :game] do
+    player_outcomes_to_insert =
+      Enum.map(player_outcomes, fn outcome ->
+        outcome
+        |> Utils.player_outcome_to_db_player_outcome(event_type, event_id)
+      end)
+
+    db_resp = Db.PlayerOutcomes.bulk_create_player_outcomes(player_outcomes_to_insert)
+
+    case db_resp do
+      {:error, reason} -> Logger.error(reason)
+      _ -> :ok
+    end
+  end
 end

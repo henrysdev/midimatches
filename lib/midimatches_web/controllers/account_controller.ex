@@ -5,7 +5,11 @@ defmodule MidimatchesWeb.AccountController do
   use MidimatchesWeb, :controller
 
   alias MidimatchesDb, as: Db
-  alias MidimatchesWeb.Auth
+
+  alias MidimatchesWeb.{
+    Auth,
+    Email
+  }
 
   require Logger
 
@@ -28,9 +32,7 @@ defmodule MidimatchesWeb.AccountController do
         |> json(%{user: created_user})
 
       {:error, changeset_error} ->
-        conn
-        |> put_status(:bad_request)
-        |> json(%{error: changeset_error})
+        bad_json_request(conn, changeset_error)
     end
   end
 
@@ -38,24 +40,29 @@ defmodule MidimatchesWeb.AccountController do
   @doc """
   Update the account
   """
-  def update(conn, %{"uuid" => uuid} = params) do
-    user_change_params = Map.delete(params, "uuid")
+  def update(conn, %{"uuid" => requested_user_id} = params) do
+    user_id = conn.assigns[:auth_user].user_id
 
-    case Db.Users.update_user(uuid, user_change_params) do
-      {:ok, %Db.User{uuid: user_id} = updated_user} ->
-        conn
-        |> Auth.put_bearer_token(user_id)
-        |> json(%{user: updated_user})
+    if user_id == requested_user_id do
+      user_change_params =
+        params
+        |> Map.delete("uuid")
+        |> Map.delete("password")
 
-      {:error, %{not_found: "user"}} ->
-        conn
-        |> put_status(:not_found)
-        |> json(%{error: "user not found"})
+      case Db.Users.update_user(requested_user_id, user_change_params) do
+        {:ok, %Db.User{uuid: ^requested_user_id} = updated_user} ->
+          conn
+          |> json(%{user: updated_user})
 
-      {:error, reason} ->
-        conn
-        |> put_status(:bad_request)
-        |> json(%{error: reason})
+        {:error, %{not_found: "user"} = reason} ->
+          bad_json_request(conn, reason, :not_found)
+
+        {:error, reason} ->
+          bad_json_request(conn, reason)
+      end
+    else
+      reason = "not authorized to make changes to requested user"
+      bad_json_request(conn, reason, :unauthorized)
     end
   end
 
@@ -69,15 +76,11 @@ defmodule MidimatchesWeb.AccountController do
         conn
         |> json(%{user: user})
 
-      {:error, %{not_found: "user"}} ->
-        conn
-        |> put_status(:not_found)
-        |> json(%{error: "user not found"})
+      {:error, %{not_found: "user"} = reason} ->
+        bad_json_request(conn, reason, :not_found)
 
       {:error, reason} ->
-        conn
-        |> put_status(:bad_request)
-        |> json(%{error: reason})
+        bad_json_request(conn, reason)
     end
   end
 
@@ -98,10 +101,120 @@ defmodule MidimatchesWeb.AccountController do
   End the current authenticated user session if one is active
   """
   def logout(conn, _params) do
-    # TODO update user to increment token serial
-    conn
+    user_id = conn.assigns[:auth_user].user_id
+
+    case Db.Users.user_increment_session(user_id) do
+      {:ok, _} ->
+        conn
+        |> clear_session()
+        |> json(%{})
+
+      {:error, reason} ->
+        bad_json_request(conn, reason)
+    end
   end
 
+  @spec update_password(Plug.Conn.t(), map) :: Plug.Conn.t()
+  @doc """
+  Update the current user's password. If old credentials not provided, it's a password reset
+  so also create a new bearer token.
+  """
+  def update_password(
+        conn,
+        %{
+          "old_password" => old_password,
+          "password" => _password
+        } = user_params
+      ) do
+    user_id = conn.assigns[:auth_user].user_id
+    username = conn.assigns[:auth_user].user_alias
+    old_creds = %{username: username, password: old_password}
+
+    user_params =
+      user_params
+      |> Map.delete("old_password")
+      |> Map.delete("username")
+
+    with {:ok, _found_user} <- Db.Users.get_user_by_creds(old_creds),
+         {:ok, _updated_user} <-
+           Db.Users.update_user(user_id, user_params) do
+      conn
+      |> json(%{})
+    else
+      {:error, %{not_found: "user"} = reason} ->
+        bad_json_request(conn, reason, :not_found)
+
+      {:error, reason} ->
+        bad_json_request(conn, reason)
+    end
+  end
+
+  def update_password(
+        conn,
+        %{
+          "password" => _password
+        } = user_params
+      ) do
+    user_id = conn.assigns[:auth_user].user_id
+
+    case Db.Users.update_user(user_id, user_params) do
+      {:ok, %Db.User{uuid: user_id} = _updated_user} ->
+        conn
+        |> Auth.put_bearer_token(user_id)
+        |> json(%{})
+
+      {:error, %{not_found: "user"} = reason} ->
+        bad_json_request(conn, reason, :not_found)
+
+      {:error, reason} ->
+        bad_json_request(conn, reason)
+    end
+  end
+
+  @spec recovery(Plug.Conn.t(), map) :: Plug.Conn.t()
+  @doc """
+  Trigger account recovery via email password reset
+  """
+  def recovery(conn, %{"email" => email, "username" => username}) do
+    query_args = [{:email, email}, {:username, username}]
+
+    with {:ok, %Db.User{uuid: user_id}} <- Db.Users.get_user_by(query_args),
+         :ok <- Email.password_reset_email(email, username, user_id) do
+      json(conn, %{})
+    else
+      {:error, reason} ->
+        bad_json_request(conn, reason)
+    end
+  end
+
+  @spec delete(Plug.Conn.t(), map) :: Plug.Conn.t()
+  @doc """
+  Delete an account
+  """
+  def delete(conn, %{"uuid" => requested_user_id, "password" => password}) do
+    user_id = conn.assigns[:auth_user].user_id
+    creds = %{uuid: user_id, password: password}
+
+    with true <- user_id == requested_user_id,
+         {:ok, _found_user} <- Db.Users.get_user_by_creds(creds),
+         {:ok, _updated_user} <-
+           Db.Users.delete_user_by_id(user_id) do
+      conn
+      |> json(%{})
+    else
+      false ->
+        reason = "not authorized to make changes to requested user"
+        bad_json_request(conn, reason, :unauthorized)
+
+      {:error, %{not_found: "user"} = reason} ->
+        bad_json_request(conn, reason, :not_found)
+
+      {:error, reason} ->
+        bad_json_request(conn, reason)
+    end
+  end
+
+  @spec attempt_login(Plug.Conn.t(), map) :: Plug.Conn.t()
   defp attempt_login(conn, user_params) do
     case Db.Users.get_user_by_creds(user_params) do
       {:ok, %Db.User{uuid: user_id}} ->
@@ -110,9 +223,7 @@ defmodule MidimatchesWeb.AccountController do
         |> json(%{})
 
       {:error, reason} ->
-        conn
-        |> put_status(:unauthorized)
-        |> json(%{error: reason})
+        bad_json_request(conn, reason, :unauthorized)
     end
   end
 end

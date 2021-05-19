@@ -57,6 +57,8 @@ defmodule MidimatchesDb.Users do
       user_params
       |> map_to_string_keys()
       |> Map.delete("registered")
+      |> Map.delete("uuid")
+      |> Map.delete("token_serial")
 
     with {:ok, found_user} <- get_user_by(:uuid, user_id),
          {change, user_params} <- build_update_changeset(found_user, user_params),
@@ -146,6 +148,12 @@ defmodule MidimatchesDb.Users do
     |> treat_nil_as_error("user")
   end
 
+  def get_user_by(query_args) when is_list(query_args) do
+    User
+    |> Repo.get_by(query_args)
+    |> treat_nil_as_error("user")
+  end
+
   @spec get_user_by_creds(map()) :: {:ok, %User{}} | {:error, any()}
   @doc """
   Returns the existing user from users table if credentials are valid
@@ -159,6 +167,12 @@ defmodule MidimatchesDb.Users do
   def get_user_by_creds(%{email: email, password: password}) do
     User
     |> Repo.get_by(email: email)
+    |> Bcrypt.check_pass(password, hash_key: :password)
+  end
+
+  def get_user_by_creds(%{uuid: uuid, password: password}) do
+    User
+    |> Repo.get_by(uuid: uuid)
     |> Bcrypt.check_pass(password, hash_key: :password)
   end
 

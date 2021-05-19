@@ -11,7 +11,10 @@ defmodule Midimatches.Utils do
     Types.ClientRoomGameJoin,
     Types.ClientRoomState,
     Types.ClientUser,
+    Types.GameRecord,
     Types.Player,
+    Types.PlayerOutcome,
+    Types.RoundRecord,
     Types.User,
     Types.WinResult
   }
@@ -20,6 +23,7 @@ defmodule Midimatches.Utils do
 
   @type id() :: String.t()
   @type freq_pair() :: {id(), number()}
+  @type event_type() :: :game | :round
 
   @spec build_win_result(list(freq_pair)) :: %WinResult{}
   def build_win_result(freq_list) when freq_list == [] do
@@ -185,11 +189,13 @@ defmodule Midimatches.Utils do
   """
   def server_to_client_user(%User{
         user_id: user_id,
-        user_alias: user_alias
+        user_alias: user_alias,
+        registered?: registered?
       }) do
     %ClientUser{
       user_id: user_id,
-      user_alias: user_alias
+      user_alias: user_alias,
+      registered: registered?
     }
   end
 
@@ -219,10 +225,59 @@ defmodule Midimatches.Utils do
   @doc """
   Cast a db user struct to a user struct
   """
-  def db_user_to_user(%Db.User{uuid: uuid, username: username}) do
+  def db_user_to_user(%Db.User{uuid: uuid, username: username, registered: registered}) do
     %User{
       user_id: uuid,
-      user_alias: username
+      user_alias: username,
+      registered?: registered
+    }
+  end
+
+  @spec game_record_to_db_game_record(%GameRecord{}) :: %Db.GameRecord{}
+  @doc """
+  Cast a game record to a db game record
+  """
+  def game_record_to_db_game_record(%GameRecord{game_end_reason: game_end_reason}) do
+    %Db.GameRecord{
+      game_end_reason: game_end_reason
+    }
+  end
+
+  @spec round_record_to_db_round_record(%RoundRecord{}) :: %Db.RoundRecord{}
+  @doc """
+  Cast a round record to a db round record
+  """
+  def round_record_to_db_round_record(%RoundRecord{
+        round_num: round_num,
+        backing_track_id: backing_track_id
+      }) do
+    %Db.RoundRecord{
+      round_num: round_num,
+      backing_track_uuid: backing_track_id
+    }
+  end
+
+  @spec player_outcome_to_db_player_outcome(%PlayerOutcome{}, event_type(), id()) ::
+          %Db.PlayerOutcome{}
+  @doc """
+  Cast a player outcome to a db player outcome
+  """
+  def player_outcome_to_db_player_outcome(
+        %PlayerOutcome{
+          player_id: player_uuid,
+          outcome: outcome,
+          num_points: num_points
+        },
+        event_type,
+        event_id
+      )
+      when event_type in [:round, :game] do
+    %Db.PlayerOutcome{
+      player_uuid: player_uuid,
+      outcome: outcome,
+      num_points: num_points,
+      event_type: event_type,
+      event_id: event_id
     }
   end
 end

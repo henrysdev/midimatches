@@ -70,17 +70,10 @@ defmodule MidimatchesWeb.UserController do
   Reset user session
   """
   def reset(conn, _params) do
-    if user = conn.assigns[:auth_user] do
-      case UserCache.delete_user_by_id(user.user_id) do
-        {:ok, _any} ->
-          conn
-          |> clear_session()
-          |> json(%{})
-
-        {:error, reason} ->
-          Logger.error(reason)
-          bad_json_request(conn, reason)
-      end
+    if _user = conn.assigns[:auth_user] do
+      conn
+      |> clear_session()
+      |> json(%{})
     else
       json(conn, %{})
     end

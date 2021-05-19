@@ -5,6 +5,8 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.RoundEnd do
 
   alias Midimatches.{
     Rooms.Room.GameInstance,
+    Types.PlayerOutcome,
+    Types.RoundRecord,
     Types.WinResult,
     Utils
   }
@@ -20,6 +22,8 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.RoundEnd do
           game_rules: %{rounds_to_win: rounds_to_win}
         } = state
       ) do
+    state = record_round(state)
+
     if round_num < rounds_to_win do
       reset_round(state)
     else
@@ -38,6 +42,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.RoundEnd do
         view_counter: view_counter,
         scores: scores,
         sample_beats: sample_beats,
+        round_records: round_records,
         round_num: round_num
       }) do
     %GameInstance{
@@ -51,6 +56,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.RoundEnd do
       contestants: contestants,
       scores: scores,
       sample_beats: sample_beats,
+      round_records: round_records,
       round_num: round_num + 1
     }
   end
@@ -69,5 +75,81 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.RoundEnd do
     scores
     |> Map.to_list()
     |> Utils.build_win_result()
+  end
+
+  @spec record_round(%GameInstance{}) :: %GameInstance{}
+  def record_round(%GameInstance{round_records: round_records} = state) do
+    new_round_record = build_round_record(state)
+    %GameInstance{state | round_records: [new_round_record | round_records]}
+  end
+
+  @spec build_round_record(%GameInstance{}) :: %RoundRecord{}
+  @doc """
+  Build a round record to preserve round-specific data for later persistence
+  """
+  def build_round_record(%GameInstance{
+        round_num: round_num,
+        sample_beats: sample_beats,
+        round_winners: round_winners,
+        player_ids_set: player_ids_set,
+        votes: votes
+      }) do
+    backing_track =
+      sample_beats
+      |> Enum.at(round_num - 1, nil)
+
+    backing_track_uuid =
+      if is_nil(backing_track) do
+        nil
+      else
+        backing_track.uuid
+      end
+
+    round_outcomes = build_round_outcomes(round_winners, player_ids_set, votes)
+
+    %RoundRecord{
+      round_num: round_num,
+      round_outcomes: round_outcomes,
+      backing_track_id: backing_track_uuid
+    }
+  end
+
+  @spec build_round_outcomes(%WinResult{}, any(), any()) :: list(PlayerOutcome)
+  defp build_round_outcomes(round_winners, player_ids_set, votes) do
+    winning_player_ids_set = MapSet.new(round_winners.winners)
+
+    winner_outcome =
+      if MapSet.size(winning_player_ids_set) > 1 do
+        :tied
+      else
+        :won
+      end
+
+    num_votes_per_player =
+      votes
+      |> Map.values()
+      |> Enum.frequencies()
+
+    player_ids_set
+    |> Enum.to_list()
+    |> Enum.map(fn player_id ->
+      num_points = Map.get(num_votes_per_player, player_id, 0)
+
+      if MapSet.member?(winning_player_ids_set, player_id) do
+        %PlayerOutcome{
+          player_id: player_id,
+          event_type: :round,
+          outcome: winner_outcome,
+          num_points: num_points
+        }
+      else
+        %PlayerOutcome{
+          player_id: player_id,
+          event_type: :round,
+          outcome: :lost,
+          num_points: num_points
+        }
+      end
+    end)
   end
 end

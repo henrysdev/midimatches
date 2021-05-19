@@ -9,9 +9,9 @@ defmodule MidimatchesDb.User do
   @min_username_len 3
   @max_username_len 20
   @min_password_len 10
-  @max_password_len 32
+  @max_password_len 256
 
-  @derive {Jason.Encoder, only: [:username, :email, :uuid]}
+  @derive {Jason.Encoder, only: [:username, :email, :uuid, :registered]}
   schema "users" do
     field(:username, :string)
     field(:email, :string)
@@ -64,6 +64,7 @@ defmodule MidimatchesDb.User do
     |> validate_language(:username)
     |> unique_constraint(:username, message: "is unavailable", name: :username_unavailable)
     |> unique_constraint(:unique_uuid_constraint, name: :unique_uuids)
+    |> unique_constraint(:unique_email_constraint, name: :unique_emails)
   end
 
   # TODO factor out these functions to imported module(s)

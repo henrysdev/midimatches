@@ -7,7 +7,7 @@ defmodule Midimatches.Rooms.Room.GameInstance do
 
   alias __MODULE__
 
-  alias MidimatchesDb.BackingTrack
+  alias MidimatchesDb, as: Db
 
   alias Midimatches.{
     Pids,
@@ -15,6 +15,7 @@ defmodule Midimatches.Rooms.Room.GameInstance do
     Rooms.RoomServer,
     Types.GameRules,
     Types.Player,
+    Types.RoundRecord,
     Types.WinResult
   }
 
@@ -29,7 +30,7 @@ defmodule Midimatches.Rooms.Room.GameInstance do
     field(:players, MapSet.t(Player), enforce: true)
     field(:room_id, id(), enforce: true)
     field(:game_id, id(), enforce: true)
-    field(:sample_beats, list(BackingTrack), enforce: true)
+    field(:sample_beats, list(Db.BackingTrack), enforce: true)
 
     field(:game_rules, %GameRules{}, default: %GameRules{})
     field(:game_view, game_view(), default: :game_start)
@@ -46,6 +47,9 @@ defmodule Midimatches.Rooms.Room.GameInstance do
     field(:view_deadline, integer(), default: -1)
     field(:audience_members, MapSet.t(Player), default: MapSet.new())
     field(:audience_member_ids_set, MapSet.t(id()), default: MapSet.new())
+
+    # historical records for recording game
+    field(:round_records, list(RoundRecord), default: [])
   end
 
   def child_spec(opts) do
@@ -60,6 +64,14 @@ defmodule Midimatches.Rooms.Room.GameInstance do
 
   def start_link(args, module \\ FreeForAllServer) do
     module.start_link(args)
+  end
+
+  @spec client_event(pid(), tuple()) :: :ok
+  @doc """
+  Catchall endpoint for accepting game-mode specific client events to be processed.
+  """
+  def client_event(pid, event) do
+    GenServer.call(pid, {:client_event, event})
   end
 
   @spec get_current_view(pid()) :: atom()
@@ -109,14 +121,6 @@ defmodule Midimatches.Rooms.Room.GameInstance do
   """
   def drop_audience_member(pid, player_id) do
     GenServer.cast(pid, {:drop_audience_member, player_id})
-  end
-
-  @spec client_event(pid(), tuple()) :: :ok
-  @doc """
-  Catchall endpoint for accepting game-mode specific client events to be processed.
-  """
-  def client_event(pid, event) do
-    GenServer.call(pid, {:client_event, event})
   end
 
   @spec back_to_room_lobby(%GameInstance{}) :: :ok

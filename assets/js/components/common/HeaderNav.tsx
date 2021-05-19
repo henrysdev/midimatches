@@ -26,8 +26,8 @@ const HeaderNav: React.FC<HeaderNavProps> = ({
             href="/menu"
             className="navbar_action resource_link audiowide_font"
           >
-            <MaterialIcon iconName="menu" className="navbar_icon" />
-            MENU
+            <MaterialIcon iconName="home" className="navbar_icon" />
+            {"MENU"}
           </a>
         )}
       </div>
@@ -53,7 +53,7 @@ const HeaderNav: React.FC<HeaderNavProps> = ({
           }}
         >
           {!!playerAlias ? (
-            <a href="/register">
+            <a href="/enter">
               <p className="current_player_badge">
                 name: <strong>{playerAlias}</strong>
               </p>

@@ -45,6 +45,9 @@ export const MAX_CHARS_PER_CHAT_MESSAGE = 160;
 export const MIN_PLAYER_ALIAS_LENGTH = 3;
 export const MAX_PLAYER_ALIAS_LENGTH = 10;
 
+export const MIN_PLAYER_PASSWORD_LENGTH = 10;
+export const MAX_PLAYER_PASSWORD_LENGTH = 256;
+
 export const MIN_C_OCTAVE = 1;
 export const MAX_C_OCTAVE = 7;
 export const MIDDLE_C_OCTAVE = 3;

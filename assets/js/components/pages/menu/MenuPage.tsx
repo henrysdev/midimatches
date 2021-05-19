@@ -7,9 +7,11 @@ import { PageWrapper } from "../";
 const MenuPage: React.FC = () => {
   const { user: currentUser } = useCurrentUserContext();
   const { socket } = useSocketContext();
+  const { registered } = currentUser;
+
   return (
     <PageWrapper socket={socket} currentUser={currentUser}>
-      <div className="narrow_center_container computer_frame outset_3d_border_deep">
+      <div className="narrow_menu_container computer_frame outset_3d_border_deep">
         <br />
         <MediumLargeTitle>
           <span className="accent_bars">///</span>PLAYER MENU
@@ -33,10 +35,12 @@ const MenuPage: React.FC = () => {
           </div>
           <div className="main_menu_btn">
             <ComputerButton
-              callback={() => (window.location.href = "/register")}
+              callback={() => {
+                window.location.href = !!registered ? "/account" : "/enter";
+              }}
               extraClasses={["register_button"]}
             >
-              CHANGE NAME
+              ACCOUNT
             </ComputerButton>
           </div>
           <div className="main_menu_btn">

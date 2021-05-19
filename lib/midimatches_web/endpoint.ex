@@ -8,8 +8,8 @@ defmodule MidimatchesWeb.Endpoint do
     store: :cookie,
     key: "_midimatches_key",
     signing_salt: "5ZjS55tN",
-    # 1000 year session cookie
-    max_age: 24 * 60 * 60 * 365 * 1000
+    # 10 day session cookie
+    max_age: 24 * 60 * 60 * 10
   ]
 
   socket "/socket", MidimatchesWeb.UserSocket,

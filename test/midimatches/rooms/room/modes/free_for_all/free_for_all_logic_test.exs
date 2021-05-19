@@ -1,6 +1,8 @@
 defmodule Midimatches.FreeForAllLogicTest do
   use ExUnit.Case
 
+  use MidimatchesDb.RepoCase
+
   alias MidimatchesDb.BackingTrack
 
   alias Midimatches.{
@@ -695,5 +697,67 @@ defmodule Midimatches.FreeForAllLogicTest do
     }
 
     assert actual_state == expected_state
+  end
+
+  test "save game record" do
+    game_record = %Midimatches.Types.GameRecord{
+      game_end_reason: :completed,
+      game_outcomes: [
+        %Midimatches.Types.PlayerOutcome{
+          event_type: :game,
+          num_points: 2,
+          outcome: :won,
+          player_id: "51777c03-e155-4f86-bd6d-40cb470f867d"
+        },
+        %Midimatches.Types.PlayerOutcome{
+          event_type: :game,
+          num_points: 1,
+          outcome: :lost,
+          player_id: "e643d352-c1b2-4636-9331-73faedb5e71b"
+        }
+      ],
+      round_records: [
+        %Midimatches.Types.RoundRecord{
+          backing_track_id: "2cd44c1b-4c7f-4eee-984a-ab1bd54ae823",
+          round_num: 2,
+          round_outcomes: [
+            %Midimatches.Types.PlayerOutcome{
+              event_type: :round,
+              num_points: 1,
+              outcome: :tied,
+              player_id: "51777c03-e155-4f86-bd6d-40cb470f867d"
+            },
+            %Midimatches.Types.PlayerOutcome{
+              event_type: :round,
+              num_points: 1,
+              outcome: :tied,
+              player_id: "e643d352-c1b2-4636-9331-73faedb5e71b"
+            }
+          ]
+        },
+        %Midimatches.Types.RoundRecord{
+          backing_track_id: "30f8cf65-c26c-41ba-bd64-028a0db5a425",
+          round_num: 1,
+          round_outcomes: [
+            %Midimatches.Types.PlayerOutcome{
+              event_type: :round,
+              num_points: 1,
+              outcome: :won,
+              player_id: "51777c03-e155-4f86-bd6d-40cb470f867d"
+            },
+            %Midimatches.Types.PlayerOutcome{
+              event_type: :round,
+              num_points: 0,
+              outcome: :lost,
+              player_id: "e643d352-c1b2-4636-9331-73faedb5e71b"
+            }
+          ]
+        }
+      ]
+    }
+
+    resp = FreeForAllLogic.save_game_record(game_record)
+
+    assert resp == :ok
   end
 end

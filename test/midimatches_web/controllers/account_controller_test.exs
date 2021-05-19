@@ -2,6 +2,7 @@ defmodule MidimatchesWeb.AccountControllerTest do
   use MidimatchesWeb.ConnCase
 
   alias MidimatchesWeb.Auth
+  alias MidimatchesDb, as: Db
 
   describe "POST /api/account/create" do
     test "succeeds with valid params", %{conn: conn} do
@@ -11,13 +12,13 @@ defmodule MidimatchesWeb.AccountControllerTest do
           Routes.account_path(conn, :create, %{
             "username" => "b4rt121",
             "password" => "asdgasdg111",
-            "email" => "asga@asdg.com"
+            "email" => "asga1@asdg.com"
           })
         )
 
       assert %{
                "user" => %{
-                 "email" => "asga@asdg.com",
+                 "email" => "asga1@asdg.com",
                  "username" => "b4rt121"
                }
              } = json_response(conn, 200)
@@ -30,14 +31,12 @@ defmodule MidimatchesWeb.AccountControllerTest do
           Routes.account_path(conn, :create, %{
             "username" => "b4rt121",
             "password" => "ads",
-            "email" => "asga@asdg.com"
+            "email" => "asga2@asdg.com"
           })
         )
 
       expected_response = %{
-        "error" => %{
-          "password" => ["should be at least 10 character(s)"]
-        }
+        "error" => "%{password: [\"should be at least 10 character(s)\"]}"
       }
 
       assert json_response(conn, 400) == expected_response
@@ -51,10 +50,10 @@ defmodule MidimatchesWeb.AccountControllerTest do
       user_params = %{
         "username" => username,
         "password" => "asdgasdg111",
-        "email" => "jaa@jdid.5jd"
+        "email" => "jaa11@jdid.5jd"
       }
 
-      {:ok, user} = MidimatchesDb.Users.create_user(user_params)
+      {:ok, user} = Db.Users.create_user(user_params)
 
       conn =
         session_conn()
@@ -70,7 +69,7 @@ defmodule MidimatchesWeb.AccountControllerTest do
 
       expected_user = %{
         "user" => %{
-          "email" => "jiu@jdid.5jd",
+          "email" => "jiu9@jdid.5jd",
           "username" => "b__Asdg"
         }
       }
@@ -90,10 +89,10 @@ defmodule MidimatchesWeb.AccountControllerTest do
       user_params = %{
         "username" => "snoopydoo",
         "password" => "asdgasdg111",
-        "email" => "jiu@jdid.5jd"
+        "email" => "jiu8@jdid.5jd"
       }
 
-      {:ok, user} = MidimatchesDb.Users.create_user(user_params)
+      {:ok, user} = Db.Users.create_user(user_params)
       user_id = user.uuid
 
       conn =
@@ -123,10 +122,10 @@ defmodule MidimatchesWeb.AccountControllerTest do
       user_params = %{
         "username" => "snoopydoo",
         "password" => "asdgasdg111",
-        "email" => "jiu@jdid.5jd"
+        "email" => "jiu7@jdid.5jd"
       }
 
-      {:ok, user} = MidimatchesDb.Users.create_user(user_params)
+      {:ok, user} = Db.Users.create_user(user_params)
       user_id = user.uuid
 
       conn =
@@ -141,8 +140,131 @@ defmodule MidimatchesWeb.AccountControllerTest do
           })
         )
 
-      resp = json_response(conn, 404)
-      assert resp == %{"error" => "user not found"}
+      resp = json_response(conn, 401)
+
+      assert resp == %{
+               "error" => "\"not authorized to make changes to requested user\""
+             }
+    end
+  end
+
+  describe "PUT /api/account/password" do
+    test "update password succeeds for a password reset", %{conn: _conn} do
+      username = "sNo00ydo0"
+      email = "jaa11@jdid.5jd"
+      old_password = "asdgasdg111"
+      new_password = "floorfloorfloor111"
+
+      {:ok, %Db.User{uuid: user_id, token_serial: old_token_serial}} =
+        Db.Users.create_user(%{
+          "username" => username,
+          "password" => old_password,
+          "email" => email
+        })
+
+      conn =
+        session_conn()
+        |> Auth.put_bearer_token(user_id)
+
+      conn =
+        put(
+          conn,
+          Routes.account_path(conn, :update_password, %{
+            password: new_password
+          })
+        )
+
+      expected_user = %{
+        "user" => %{
+          "email" => email,
+          "username" => username,
+          "password" => new_password,
+          "token_serial" => old_token_serial + 1
+        }
+      }
+
+      actual_user = json_response(conn, 200)
+
+      assertion_fields = ["username", "email", "password", "token_serial"]
+
+      Enum.each(assertion_fields, fn field ->
+        assert Map.get(actual_user, field) == Map.get(expected_user, field)
+      end)
+    end
+
+    test "update password succeeds with params for a standard password change", %{conn: _conn} do
+      username = "sNo00ydo0"
+      email = "jaa11@jdid.5jd"
+      old_password = "asdgasdg111"
+      new_password = "floorfloorfloor111"
+
+      {:ok, %Db.User{uuid: user_id, token_serial: old_token_serial}} =
+        Db.Users.create_user(%{
+          "username" => username,
+          "password" => old_password,
+          "email" => email
+        })
+
+      conn =
+        session_conn()
+        |> Auth.put_bearer_token(user_id)
+
+      conn =
+        put(
+          conn,
+          Routes.account_path(conn, :update_password, %{
+            old_password: old_password,
+            password: new_password
+          })
+        )
+
+      expected_user = %{
+        "user" => %{
+          "email" => email,
+          "username" => username,
+          "password" => new_password,
+          "token_serial" => old_token_serial
+        }
+      }
+
+      actual_user = json_response(conn, 200)
+
+      assertion_fields = ["username", "email", "password"]
+
+      Enum.each(assertion_fields, fn field ->
+        assert Map.get(actual_user, field) == Map.get(expected_user, field)
+      end)
+    end
+
+    test "update password fails when credentials are wrong for password change", %{conn: _conn} do
+      username = "sNo00ydo0"
+      email = "jaa11@jdid.5jd"
+      old_password = "asdgasdg111"
+      new_password = "floorfloorfloor111"
+
+      user_params = %{
+        "username" => username,
+        "password" => old_password,
+        "email" => email
+      }
+
+      {:ok, user} = Db.Users.create_user(user_params)
+
+      conn =
+        session_conn()
+        |> Auth.put_bearer_token(user.uuid)
+
+      conn =
+        put(
+          conn,
+          Routes.account_path(conn, :update_password, %{
+            old_password: "a_bad_password+thats00wrong",
+            password: new_password
+          })
+        )
+
+      actual_error = json_response(conn, 400)
+      assert actual_error == %{"error" => "\"invalid password\""}
     end
   end
 
@@ -151,10 +273,10 @@ defmodule MidimatchesWeb.AccountControllerTest do
       user_params = %{
         "username" => "b4rt121",
         "password" => "asdgasdg111",
-        "email" => "jiu@jdid.5jd"
+        "email" => "jiu55@jdid.5jd"
       }
 
-      {:ok, user} = MidimatchesDb.Users.create_user(user_params)
+      {:ok, user} = Db.Users.create_user(user_params)
       user_id = user.uuid
 
       conn =
@@ -177,7 +299,7 @@ defmodule MidimatchesWeb.AccountControllerTest do
       user_params = %{
         "username" => "b4rt121",
         "password" => "asdgasdg111",
-        "email" => "jiu@jdid.5jd"
+        "email" => "jiu4@jdid.5jd"
       }
 
       insert_user(user_params)
@@ -191,7 +313,7 @@ defmodule MidimatchesWeb.AccountControllerTest do
           })
         )
 
-      assert json_response(conn, 401) == %{"error" => "invalid password"}
+      assert json_response(conn, 401) == %{"error" => "\"invalid password\""}
     end
   end
 
@@ -200,10 +322,10 @@ defmodule MidimatchesWeb.AccountControllerTest do
       user_params = %{
         "username" => "b33t121",
         "password" => "asdgasdg111",
-        "email" => "jiu@jdid.5jd"
+        "email" => "jiu3@jdid.5jd"
       }
 
-      {:ok, user} = MidimatchesDb.Users.create_user(user_params)
+      {:ok, user} = Db.Users.create_user(user_params)
       user_id = user.uuid
 
       conn =
@@ -217,7 +339,7 @@ defmodule MidimatchesWeb.AccountControllerTest do
       expected_user = %{
         "uuid" => user_id,
         "username" => "b33t121",
-        "email" => "jiu@jdid.5jd"
+        "email" => "jiu3@jdid.5jd"
       }
 
       actual_user = json_response(conn, 200)["user"]
@@ -233,10 +355,10 @@ defmodule MidimatchesWeb.AccountControllerTest do
       user_params = %{
         "username" => "bd3t121",
         "password" => "asdgasdg111",
-        "email" => "jiu@jdid.5jd"
+        "email" => "jiu1@jdid.5jd"
       }
 
-      {:ok, user} = MidimatchesDb.Users.create_user(user_params)
+      {:ok, user} = Db.Users.create_user(user_params)
       user_id = user.uuid
 
       conn =
@@ -247,7 +369,91 @@ defmodule MidimatchesWeb.AccountControllerTest do
         conn
         |> get(Routes.account_path(conn, :show, UUID.uuid4()))
 
-      assert json_response(conn, 404) == %{"error" => "user not found"}
+      assert json_response(conn, 404) == %{"error" => "%{not_found: \"user\"}"}
+    end
+  end
+
+  describe "DELETE /api/account/:uuid" do
+    test "successfully deletes user by user_id", %{conn: _conn} do
+      password = "asdgasdg111"
+
+      {:ok, %Db.User{uuid: user_id}} =
+        Db.Users.create_user(%{
+          "username" => "b33t121",
+          "password" => password,
+          "email" => "jiu3@jdid.5jd"
+        })
+
+      conn =
+        session_conn()
+        |> Auth.put_bearer_token(user_id)
+
+      conn =
+        conn
+        |> delete(Routes.account_path(conn, :delete, user_id, %{password: password}))
+
+      resp = json_response(conn, 200)
+
+      assert resp == %{}
+
+      assert Db.Users.get_user_by(:uuid, user_id) == {:error, %{not_found: "user"}}
+    end
+
+    test "unsuccessfully attempts to delete a user because of wrong password", %{conn: _conn} do
+      password = "asdgasdg111"
+
+      {:ok, %Db.User{uuid: user_id}} =
+        Db.Users.create_user(%{
+          "username" => "b33t121",
+          "password" => password,
+          "email" => "jiu3@jdid.5jd"
+        })
+
+      conn =
+        session_conn()
+        |> Auth.put_bearer_token(user_id)
+
+      conn =
+        conn
+        |> delete(Routes.account_path(conn, :delete, user_id, %{password: "awrongpassword"}))
+
+      resp = json_response(conn, 400)
+
+      assert resp == %{"error" => "\"invalid password\""}
+    end
+
+    test "unsuccessfully attempts to delete a user at an id outside different than bearer", %{
+      conn: _conn
+    } do
+      password = "asdgasdg111"
+
+      {:ok, %Db.User{uuid: user_id}} =
+        Db.Users.create_user(%{
+          "username" => "b33t121",
+          "password" => password,
+          "email" => "jiu3@jdid.5jd"
+        })
+
+      {:ok, %Db.User{uuid: another_user_id}} =
+        Db.Users.create_user(%{
+          "username" => "user2",
+          "password" => "somepassword",
+          "email" => "hnghgng"
+        })
+
+      conn =
+        session_conn()
+        |> Auth.put_bearer_token(user_id)
+
+      conn =
+        conn
+        |> delete(
+          Routes.account_path(conn, :delete, another_user_id, %{password: "awrongpassword"})
+        )
+
+      resp = json_response(conn, 401)
+
+      assert resp == %{"error" => "\"not authorized to make changes to requested user\""}
     end
   end
 end
