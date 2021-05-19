@@ -88,6 +88,7 @@ defmodule MidimatchesWeb.Router do
       put "/password", AccountController, :update_password
       put "/:uuid", AccountController, :update
       get "/:uuid", AccountController, :show
+      delete "/:uuid", AccountController, :delete
       post "/logout", AccountController, :logout
     end
   end

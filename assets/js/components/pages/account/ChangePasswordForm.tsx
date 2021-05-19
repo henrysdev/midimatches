@@ -9,19 +9,20 @@ import {
   MediumLargeTitle,
   InlineWidthInputSubmit,
   VinylLoadingSpinner,
+  MediumTitle,
 } from "../../common";
 import { useLoadUpdatePassword } from "../../../hooks";
 
-interface ChangePasswordFormProps {
-  setReadyToContinue: Function;
-}
+interface ChangePasswordFormProps {}
 
-const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({
-  setReadyToContinue,
-}) => {
+const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({}) => {
+  const [oldPassword, setOldPassword] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [secondPassword, setSecondPassword] = useState<string>("");
+  const [confirmPassword, setSecondPassword] = useState<string>("");
 
+  const handleOldPasswordChange = (e: any) => {
+    setOldPassword(e.target.value);
+  };
   const handlePasswordChange = (e: any) => {
     setPassword(e.target.value);
   };
@@ -31,9 +32,10 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({
 
   const requestBody = useMemo((): UpdatePasswordPayload => {
     return {
+      old_password: oldPassword.substring(0, MAX_PLAYER_PASSWORD_LENGTH),
       password: password.substring(0, MAX_PLAYER_PASSWORD_LENGTH),
     };
-  }, [password, secondPassword]);
+  }, [oldPassword, password, confirmPassword]);
 
   const {
     submitDisabled,
@@ -42,8 +44,8 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({
   } = useMemo(() => {
     const passwordLengthViolation =
       password.length < MIN_PLAYER_PASSWORD_LENGTH;
-    const passwordMismatchViolation = password !== secondPassword;
-    const missingFieldViolation = !password || !secondPassword;
+    const passwordMismatchViolation = password !== confirmPassword;
+    const missingFieldViolation = !oldPassword || !password || !confirmPassword;
 
     const violations = [
       passwordLengthViolation,
@@ -56,13 +58,13 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({
     const showPasswordLengthRule =
       submitDisabled && !!password && passwordLengthViolation;
     const showPasswordMismatchRule =
-      !!password && !!secondPassword && passwordMismatchViolation;
+      !!password && !!confirmPassword && passwordMismatchViolation;
     return {
       submitDisabled,
       showPasswordLengthRule,
       showPasswordMismatchRule,
     };
-  }, [password, secondPassword]);
+  }, [password, confirmPassword]);
 
   const {
     data,
@@ -80,7 +82,6 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({
       setBadRequest(true);
     } else if (!!loaded) {
       setBadRequest(false);
-      setReadyToContinue(true);
     }
   }, [loaded, loadError, httpStatus]);
 
@@ -93,9 +94,12 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({
 
   return (
     <div>
-      <MediumLargeTitle>
-        <span className="accent_bars">///</span>RESET PASSWORD
-      </MediumLargeTitle>
+      <MediumTitle
+        extraStyles={{ paddingLeft: "8px", paddingTop: "8px" }}
+        centered={false}
+      >
+        CHANGE PASSWORD
+      </MediumTitle>
       <div className="register_content_wrapper inset_3d_border_deep inline_screen">
         {loading ? (
           <VinylLoadingSpinner />
@@ -113,6 +117,20 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({
               handleSubmitForm(e);
             }}
           >
+            <fieldset>
+              <label style={{ marginBottom: 4 }} className="roboto_font">
+                Old Password
+              </label>
+              <input
+                className="inline_width_text_input roboto_font"
+                type="password"
+                id="old_password"
+                name="old_password"
+                placeholder="Enter old password..."
+                maxLength={MAX_PLAYER_PASSWORD_LENGTH}
+                onChange={handleOldPasswordChange}
+              />
+            </fieldset>
             <br />
             <fieldset>
               <label style={{ marginBottom: 4 }} className="roboto_font">

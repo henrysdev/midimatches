@@ -11,6 +11,9 @@ import {
   useLoadLogout,
 } from "../../../hooks";
 import { PageWrapper } from "..";
+import { ChangePasswordForm } from "./ChangePasswordForm";
+import { AccountDetailsCard } from "./AccountDetailsCard";
+import { DeleteAccountForm } from "./DeleteAccountForm";
 
 const AccountPage: React.FC = () => {
   const { user: currentUser } = useCurrentUserContext();
@@ -36,7 +39,10 @@ const AccountPage: React.FC = () => {
 
   return (
     <PageWrapper socket={socket} currentUser={currentUser}>
-      <div className="narrow_center_container computer_frame outset_3d_border_deep">
+      <div
+        style={{ overflowY: "auto" }}
+        className="narrow_center_container computer_frame outset_3d_border_deep"
+      >
         <div style={{ padding: "8px", position: "absolute" }}>
           <FixedLeftBackButton
             callback={() => (window.location.href = "/menu")}
@@ -50,38 +56,18 @@ const AccountPage: React.FC = () => {
         </MediumLargeTitle>
         <br />
         <div className="main_menu_btn_group">
-          {!!currentUser ? (
-            <div>
-              <p className="text_light">
-                Username: {currentUser.userAlias}
-                <br />
-                UserID: {currentUser.userId}
-              </p>
-            </div>
-          ) : (
-            <></>
-          )}
-          <div className="main_menu_btn">
-            <ComputerButton
-              callback={() => {
-                logoutRequest();
-              }}
-              extraClasses={["register_button"]}
-            >
-              LOG OUT
-            </ComputerButton>
-          </div>
-          <div className="main_menu_btn">
-            <ComputerButton
-              callback={() => {
-                // deleteAccountRequest();
-              }}
-              extraClasses={["register_button"]}
-              extraStyles={{ backgroundColor: "var(--extra_danger_bg_color)" }}
-            >
-              DELETE ACCOUNT
-            </ComputerButton>
-          </div>
+          <AccountDetailsCard />
+          <ComputerButton
+            callback={() => {
+              logoutRequest();
+            }}
+            extraClasses={["register_button"]}
+          >
+            LOG OUT
+          </ComputerButton>
+          <br />
+          <ChangePasswordForm />
+          <DeleteAccountForm />
         </div>
       </div>
       {badRequest ? (
@@ -91,7 +77,6 @@ const AccountPage: React.FC = () => {
       ) : (
         <></>
       )}
-      {/* </div> */}
     </PageWrapper>
   );
 };

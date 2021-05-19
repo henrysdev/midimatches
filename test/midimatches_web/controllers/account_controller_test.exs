@@ -213,7 +213,6 @@ defmodule MidimatchesWeb.AccountControllerTest do
         put(
           conn,
           Routes.account_path(conn, :update_password, %{
-            username: username,
             old_password: old_password,
             password: new_password
           })
@@ -259,7 +258,6 @@ defmodule MidimatchesWeb.AccountControllerTest do
         put(
           conn,
           Routes.account_path(conn, :update_password, %{
-            username: username,
             old_password: "a_bad_password+thats00wrong",
             password: new_password
           })
@@ -372,6 +370,90 @@ defmodule MidimatchesWeb.AccountControllerTest do
         |> get(Routes.account_path(conn, :show, UUID.uuid4()))
 
       assert json_response(conn, 404) == %{"error" => "%{not_found: \"user\"}"}
+    end
+  end
+
+  describe "DELETE /api/account/:uuid" do
+    test "successfully deletes user by user_id", %{conn: _conn} do
+      password = "asdgasdg111"
+
+      {:ok, %Db.User{uuid: user_id}} =
+        Db.Users.create_user(%{
+          "username" => "b33t121",
+          "password" => password,
+          "email" => "jiu3@jdid.5jd"
+        })
+
+      conn =
+        session_conn()
+        |> Auth.put_bearer_token(user_id)
+
+      conn =
+        conn
+        |> delete(Routes.account_path(conn, :delete, user_id, %{password: password}))
+
+      resp = json_response(conn, 200)
+
+      assert resp == %{}
+
+      assert Db.Users.get_user_by(:uuid, user_id) == {:error, %{not_found: "user"}}
+    end
+
+    test "unsuccessfully attempts to delete a user because of wrong password", %{conn: _conn} do
+      password = "asdgasdg111"
+
+      {:ok, %Db.User{uuid: user_id}} =
+        Db.Users.create_user(%{
+          "username" => "b33t121",
+          "password" => password,
+          "email" => "jiu3@jdid.5jd"
+        })
+
+      conn =
+        session_conn()
+        |> Auth.put_bearer_token(user_id)
+
+      conn =
+        conn
+        |> delete(Routes.account_path(conn, :delete, user_id, %{password: "awrongpassword"}))
+
+      resp = json_response(conn, 400)
+
+      assert resp == %{"error" => "\"invalid password\""}
+    end
+
+    test "unsuccessfully attempts to delete a user at an id outside different than bearer", %{
+      conn: _conn
+    } do
+      password = "asdgasdg111"
+
+      {:ok, %Db.User{uuid: user_id}} =
+        Db.Users.create_user(%{
+          "username" => "b33t121",
+          "password" => password,
+          "email" => "jiu3@jdid.5jd"
+        })
+
+      {:ok, %Db.User{uuid: another_user_id}} =
+        Db.Users.create_user(%{
+          "username" => "user2",
+          "password" => "somepassword",
+          "email" => "hnghgng"
+        })
+
+      conn =
+        session_conn()
+        |> Auth.put_bearer_token(user_id)
+
+      conn =
+        conn
+        |> delete(
+          Routes.account_path(conn, :delete, another_user_id, %{password: "awrongpassword"})
+        )
+
+      resp = json_response(conn, 401)
+
+      assert resp == %{"error" => "\"not authorized to make changes to requested user\""}
     end
   end
 end

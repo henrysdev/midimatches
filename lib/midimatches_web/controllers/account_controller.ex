@@ -122,12 +122,12 @@ defmodule MidimatchesWeb.AccountController do
   def update_password(
         conn,
         %{
-          "username" => username,
           "old_password" => old_password,
           "password" => _password
         } = user_params
       ) do
     user_id = conn.assigns[:auth_user].user_id
+    username = conn.assigns[:auth_user].user_alias
     old_creds = %{username: username, password: old_password}
 
     user_params =
@@ -171,23 +171,6 @@ defmodule MidimatchesWeb.AccountController do
     end
   end
 
-  # defp handle_password_update(conn, user_params) do
-  #   user_id = conn.assigns[:auth_user].user_id
-
-  #   case Db.Users.update_user(user_id, user_params) do
-  #     {:ok, %Db.User{uuid: user_id} = _updated_user} ->
-  #       conn
-  #       |> Auth.put_bearer_token(user_id)
-  #       |> json(%{})
-
-  #     {:error, %{not_found: "user"} = reason} ->
-  #       bad_json_request(conn, reason, :not_found)
-
-  #     {:error, reason} ->
-  #       bad_json_request(conn, reason)
-  #   end
-  # end
-
   @spec recovery(Plug.Conn.t(), map) :: Plug.Conn.t()
   @doc """
   Trigger account recovery via email password reset
@@ -199,6 +182,33 @@ defmodule MidimatchesWeb.AccountController do
          :ok <- Email.password_reset_email(email, username, user_id) do
       json(conn, %{})
     else
+      {:error, reason} ->
+        bad_json_request(conn, reason)
+    end
+  end
+
+  @spec delete(Plug.Conn.t(), map) :: Plug.Conn.t()
+  @doc """
+  Delete an account
+  """
+  def delete(conn, %{"uuid" => requested_user_id, "password" => password}) do
+    user_id = conn.assigns[:auth_user].user_id
+    creds = %{uuid: user_id, password: password}
+
+    with true <- user_id == requested_user_id,
+         {:ok, _found_user} <- Db.Users.get_user_by_creds(creds),
+         {:ok, _updated_user} <-
+           Db.Users.delete_user_by_id(user_id) do
+      conn
+      |> json(%{})
+    else
+      false ->
+        reason = "not authorized to make changes to requested user"
+        bad_json_request(conn, reason, :unauthorized)
+
+      {:error, %{not_found: "user"} = reason} ->
+        bad_json_request(conn, reason, :not_found)
+
       {:error, reason} ->
         bad_json_request(conn, reason)
     end

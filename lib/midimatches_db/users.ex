@@ -170,6 +170,12 @@ defmodule MidimatchesDb.Users do
     |> Bcrypt.check_pass(password, hash_key: :password)
   end
 
+  def get_user_by_creds(%{uuid: uuid, password: password}) do
+    User
+    |> Repo.get_by(uuid: uuid)
+    |> Bcrypt.check_pass(password, hash_key: :password)
+  end
+
   # TODO factor out to imported module
   defp traverse_errors(changeset) do
     Ecto.Changeset.traverse_errors(changeset, fn {msg, opts} ->

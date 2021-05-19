@@ -173,12 +173,17 @@ export interface AccountLoginPayload {
 }
 
 export interface UpdatePasswordPayload {
+  old_password?: string;
   password: string;
 }
 
 export interface RecoverAccountPayload {
   username: string;
   email: string;
+}
+
+export interface DeleteAccountPayload {
+  password: string;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
