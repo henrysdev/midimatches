@@ -15,6 +15,10 @@ defmodule MidimatchesWeb.Email do
   @from_address "midimatches@gmail.com"
 
   @spec password_reset_email(String.t(), String.t(), String.t()) :: :ok | {:error, any()}
+  @doc """
+  Sends a password reset email to the specified recipient. Only used for the purpose of account
+  recovery.
+  """
   def password_reset_email(recipient_email, username, user_id) do
     reset_slug = Auth.gen_reset_token(user_id)
 
@@ -45,10 +49,11 @@ defmodule MidimatchesWeb.Email do
       </div>
       <br/>
       <div>
-      Follow this link to reset your password:
-        <a href='#{reset_link}'>
-          #{reset_link}
-        </a>
+        <strong>
+          <a href='#{reset_link}'>
+            Click Here to Reset Password
+          </a>
+        </strong>
       </div>
       <br/>
       <div>

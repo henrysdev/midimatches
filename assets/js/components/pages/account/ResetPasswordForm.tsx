@@ -116,7 +116,7 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
             <br />
             <fieldset>
               <label style={{ marginBottom: 4 }} className="roboto_font">
-                Password
+                New Password
               </label>
               <input
                 className="inline_width_text_input roboto_font"
@@ -137,7 +137,7 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
             </fieldset>
             <br />
             <fieldset>
-              <label className="roboto_font">Confirm Password</label>
+              <label className="roboto_font">Confirm New Password</label>
               <input
                 className="inline_width_text_input roboto_font"
                 type="password"
