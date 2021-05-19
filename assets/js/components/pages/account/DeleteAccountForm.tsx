@@ -84,7 +84,7 @@ const DeleteAccountForm: React.FC<DeleteAccountFormProps> = ({}) => {
         DELETE ACCOUNT
       </MediumTitle>
       <div className="register_content_wrapper inset_3d_border_deep inline_screen">
-        {loading ? (
+        {loading || loaded ? (
           <VinylLoadingSpinner />
         ) : (
           <form

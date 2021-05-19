@@ -96,7 +96,7 @@ const AccountLoginForm: React.FC<AccountLoginFormProps> = ({
         <span className="accent_bars">///</span>ACCOUNT LOGIN
       </MediumLargeTitle>
       <div className="register_content_wrapper inset_3d_border_deep inline_screen">
-        {loading ? (
+        {loading || loaded ? (
           <VinylLoadingSpinner />
         ) : (
           <form
