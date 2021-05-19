@@ -62,28 +62,6 @@ defmodule MidimatchesDb.UsersTest do
       end)
     end
 
-    test "unsuccessfully via an invalid changeset" do
-      user_username = "jazzyman23"
-      user_password = "abcdef1234!"
-      user_email = "eeaasdg@gmasgd.com"
-
-      user_id =
-        insert_user(%{
-          username: user_username,
-          password: user_password,
-          email: user_email
-        }).uuid
-
-      new_uuid = UUID.uuid4()
-      resp = Users.update_user(user_id, %{uuid: new_uuid})
-
-      assert resp ==
-               {:error,
-                %{
-                  uuid: ["One of these change fields must not be present: [:uuid, :token_serial]"]
-                }}
-    end
-
     test "unsuccessfully via user uuid not found" do
       user_id = UUID.uuid4()
 

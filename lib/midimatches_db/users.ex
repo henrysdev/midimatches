@@ -57,6 +57,8 @@ defmodule MidimatchesDb.Users do
       user_params
       |> map_to_string_keys()
       |> Map.delete("registered")
+      |> Map.delete("uuid")
+      |> Map.delete("token_serial")
 
     with {:ok, found_user} <- get_user_by(:uuid, user_id),
          {change, user_params} <- build_update_changeset(found_user, user_params),

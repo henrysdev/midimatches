@@ -2,6 +2,7 @@ defmodule MidimatchesWeb.AccountControllerTest do
   use MidimatchesWeb.ConnCase
 
   alias MidimatchesWeb.Auth
+  alias MidimatchesDb, as: Db
 
   describe "POST /api/account/create" do
     test "succeeds with valid params", %{conn: conn} do
@@ -52,7 +53,7 @@ defmodule MidimatchesWeb.AccountControllerTest do
         "email" => "jaa11@jdid.5jd"
       }
 
-      {:ok, user} = MidimatchesDb.Users.create_user(user_params)
+      {:ok, user} = Db.Users.create_user(user_params)
 
       conn =
         session_conn()
@@ -91,7 +92,7 @@ defmodule MidimatchesWeb.AccountControllerTest do
         "email" => "jiu8@jdid.5jd"
       }
 
-      {:ok, user} = MidimatchesDb.Users.create_user(user_params)
+      {:ok, user} = Db.Users.create_user(user_params)
       user_id = user.uuid
 
       conn =
@@ -124,7 +125,7 @@ defmodule MidimatchesWeb.AccountControllerTest do
         "email" => "jiu7@jdid.5jd"
       }
 
-      {:ok, user} = MidimatchesDb.Users.create_user(user_params)
+      {:ok, user} = Db.Users.create_user(user_params)
       user_id = user.uuid
 
       conn =
@@ -147,6 +148,128 @@ defmodule MidimatchesWeb.AccountControllerTest do
     end
   end
 
+  describe "PUT /api/account/password" do
+    test "update password succeeds for a password reset", %{conn: _conn} do
+      username = "sNo00ydo0"
+      email = "jaa11@jdid.5jd"
+      old_password = "asdgasdg111"
+      new_password = "floorfloorfloor111"
+
+      {:ok, %Db.User{uuid: user_id, token_serial: old_token_serial}} =
+        Db.Users.create_user(%{
+          "username" => username,
+          "password" => old_password,
+          "email" => email
+        })
+
+      conn =
+        session_conn()
+        |> Auth.put_bearer_token(user_id)
+
+      conn =
+        put(
+          conn,
+          Routes.account_path(conn, :update_password, %{
+            password: new_password
+          })
+        )
+
+      expected_user = %{
+        "user" => %{
+          "email" => email,
+          "username" => username,
+          "password" => new_password,
+          "token_serial" => old_token_serial + 1
+        }
+      }
+
+      actual_user = json_response(conn, 200)
+
+      assertion_fields = ["username", "email", "password", "token_serial"]
+
+      Enum.each(assertion_fields, fn field ->
+        assert Map.get(actual_user, field) == Map.get(expected_user, field)
+      end)
+    end
+
+    test "update password succeeds with params for a standard password change", %{conn: _conn} do
+      username = "sNo00ydo0"
+      email = "jaa11@jdid.5jd"
+      old_password = "asdgasdg111"
+      new_password = "floorfloorfloor111"
+
+      {:ok, %Db.User{uuid: user_id, token_serial: old_token_serial}} =
+        Db.Users.create_user(%{
+          "username" => username,
+          "password" => old_password,
+          "email" => email
+        })
+
+      conn =
+        session_conn()
+        |> Auth.put_bearer_token(user_id)
+
+      conn =
+        put(
+          conn,
+          Routes.account_path(conn, :update_password, %{
+            username: username,
+            old_password: old_password,
+            password: new_password
+          })
+        )
+
+      expected_user = %{
+        "user" => %{
+          "email" => email,
+          "username" => username,
+          "password" => new_password,
+          "token_serial" => old_token_serial
+        }
+      }
+
+      actual_user = json_response(conn, 200)
+
+      assertion_fields = ["username", "email", "password"]
+
+      Enum.each(assertion_fields, fn field ->
+        assert Map.get(actual_user, field) == Map.get(expected_user, field)
+      end)
+    end
+
+    test "update password fails when credentials are wrong for password change", %{conn: _conn} do
+      username = "sNo00ydo0"
+      email = "jaa11@jdid.5jd"
+      old_password = "asdgasdg111"
+      new_password = "floorfloorfloor111"
+
+      user_params = %{
+        "username" => username,
+        "password" => old_password,
+        "email" => email
+      }
+
+      {:ok, user} = Db.Users.create_user(user_params)
+
+      conn =
+        session_conn()
+        |> Auth.put_bearer_token(user.uuid)
+
+      conn =
+        put(
+          conn,
+          Routes.account_path(conn, :update_password, %{
+            username: username,
+            old_password: "a_bad_password+thats00wrong",
+            password: new_password
+          })
+        )
+
+      actual_error = json_response(conn, 400)
+      assert actual_error == %{"error" => "\"invalid password\""}
+    end
+  end
+
   describe "POST /api/account/login" do
     test "successful login", %{conn: _conn} do
       user_params = %{
@@ -155,7 +278,7 @@ defmodule MidimatchesWeb.AccountControllerTest do
         "email" => "jiu55@jdid.5jd"
       }
 
-      {:ok, user} = MidimatchesDb.Users.create_user(user_params)
+      {:ok, user} = Db.Users.create_user(user_params)
       user_id = user.uuid
 
       conn =
@@ -204,7 +327,7 @@ defmodule MidimatchesWeb.AccountControllerTest do
         "email" => "jiu3@jdid.5jd"
       }
 
-      {:ok, user} = MidimatchesDb.Users.create_user(user_params)
+      {:ok, user} = Db.Users.create_user(user_params)
       user_id = user.uuid
 
       conn =
@@ -237,7 +360,7 @@ defmodule MidimatchesWeb.AccountControllerTest do
         "email" => "jiu1@jdid.5jd"
       }
 
-      {:ok, user} = MidimatchesDb.Users.create_user(user_params)
+      {:ok, user} = Db.Users.create_user(user_params)
       user_id = user.uuid
 
       conn =

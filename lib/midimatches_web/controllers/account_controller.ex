@@ -40,17 +40,17 @@ defmodule MidimatchesWeb.AccountController do
   @doc """
   Update the account
   """
-  def update(conn, %{"uuid" => uuid} = params) do
+  def update(conn, %{"uuid" => requested_user_id} = params) do
     user_id = conn.assigns[:auth_user].user_id
 
-    if user_id == uuid do
+    if user_id == requested_user_id do
       user_change_params =
         params
         |> Map.delete("uuid")
         |> Map.delete("password")
 
-      case Db.Users.update_user(uuid, user_change_params) do
-        {:ok, %Db.User{uuid: ^uuid} = updated_user} ->
+      case Db.Users.update_user(requested_user_id, user_change_params) do
+        {:ok, %Db.User{uuid: ^requested_user_id} = updated_user} ->
           conn
           |> json(%{user: updated_user})
 
@@ -116,8 +116,39 @@ defmodule MidimatchesWeb.AccountController do
 
   @spec update_password(Plug.Conn.t(), map) :: Plug.Conn.t()
   @doc """
-  Update the current user's password and create a new bearer token
+  Update the current user's password. If old credentials not provided, it's a password reset
+  so also create a new bearer token.
   """
+  def update_password(
+        conn,
+        %{
+          "username" => username,
+          "old_password" => old_password,
+          "password" => _password
+        } = user_params
+      ) do
+    user_id = conn.assigns[:auth_user].user_id
+    old_creds = %{username: username, password: old_password}
+
+    user_params =
+      user_params
+      |> Map.delete("old_password")
+      |> Map.delete("username")
+
+    with {:ok, _found_user} <- Db.Users.get_user_by_creds(old_creds),
+         {:ok, _updated_user} <-
+           Db.Users.update_user(user_id, user_params) do
+      conn
+      |> json(%{})
+    else
+      {:error, %{not_found: "user"} = reason} ->
+        bad_json_request(conn, reason, :not_found)
+
+      {:error, reason} ->
+        bad_json_request(conn, reason)
+    end
+  end
+
   def update_password(
         conn,
         %{
@@ -139,6 +170,23 @@ defmodule MidimatchesWeb.AccountController do
         bad_json_request(conn, reason)
     end
   end
+
+  # defp handle_password_update(conn, user_params) do
+  #   user_id = conn.assigns[:auth_user].user_id
+
+  #   case Db.Users.update_user(user_id, user_params) do
+  #     {:ok, %Db.User{uuid: user_id} = _updated_user} ->
+  #       conn
+  #       |> Auth.put_bearer_token(user_id)
+  #       |> json(%{})
+
+  #     {:error, %{not_found: "user"} = reason} ->
+  #       bad_json_request(conn, reason, :not_found)
+
+  #     {:error, reason} ->
+  #       bad_json_request(conn, reason)
+  #   end
+  # end
 
   @spec recovery(Plug.Conn.t(), map) :: Plug.Conn.t()
   @doc """
