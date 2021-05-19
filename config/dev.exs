@@ -66,7 +66,9 @@ config :midimatches, MidimatchesWeb.Endpoint,
     ]
   ]
 
-config :midimatches, :s3_client, Midimatches.S3Client
+config :midimatches,
+  s3_client: Midimatches.S3Client,
+  host_url: "http://localhost"
 
 # # Do not include metadata nor timestamps in development logs
 # config :logger, :console, format: "[$level] $message\n"

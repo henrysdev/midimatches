@@ -20,7 +20,8 @@ config :midimatches,
   custom_telemetrics: false,
   ecto_repos: [MidimatchesDb.Repo],
   rooms_config: "config/app_scheme/dev/config.json",
-  token_secret: System.get_env("TOKEN_SECRET")
+  token_secret: System.get_env("TOKEN_SECRET"),
+  host_url: "https://midimatches.com"
 
 # Configures Elixir's Logger
 config :logger, :console,

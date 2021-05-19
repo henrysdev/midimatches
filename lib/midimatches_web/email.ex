@@ -13,6 +13,7 @@ defmodule MidimatchesWeb.Email do
   require Logger
 
   @from_address "midimatches@gmail.com"
+  @host_url Application.get_env(:midimatches, :host_url)
 
   @spec password_reset_email(String.t(), String.t(), String.t()) :: :ok | {:error, any()}
   @doc """
@@ -23,7 +24,7 @@ defmodule MidimatchesWeb.Email do
     reset_slug = Auth.gen_reset_token(user_id)
 
     reset_link =
-      MidimatchesWeb.Endpoint.url() <>
+      @host_url <>
         Routes.page_path(MidimatchesWeb.Endpoint, :reset_password, reset_slug)
 
     Logger.info("sending password reset email for user_id=#{user_id} username=#{username}")
