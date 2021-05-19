@@ -16,6 +16,13 @@ const RecoverAccountPage: React.FC = () => {
       <div className="narrow_center_container computer_frame outset_3d_border_deep">
         <br />
         <div className="main_menu_btn_group">
+          <div style={{ padding: "8px", position: "absolute" }}>
+            <FixedLeftBackButton
+              callback={() => (window.location.href = "/enter")}
+              buttonText={"< LOGIN"}
+              extraStyles={{ top: "-32px", left: "-16px" }}
+            />
+          </div>
           <RecoverAccountForm setReadyToContinue={setReadyToContinue} />
         </div>
       </div>

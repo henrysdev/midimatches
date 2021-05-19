@@ -74,17 +74,6 @@ defmodule MidimatchesWeb.UserController do
       conn
       |> clear_session()
       |> json(%{})
-
-      # case UserCache.delete_user_by_id(user.user_id) do
-      #   {:ok, _any} ->
-      #     conn
-      #     |> clear_session()
-      #     |> json(%{})
-
-      #   {:error, reason} ->
-      #     Logger.error(reason)
-      #     bad_json_request(conn, reason)
-      # end
     else
       json(conn, %{})
     end
