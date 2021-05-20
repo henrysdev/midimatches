@@ -104,7 +104,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({}) => {
                     <th>Player</th>
                     <th>Score</th>
                     <th>Wins</th>
-                    <th>Losses</th>
+                    {/* <th>Losses</th> */}
                     <th>Ties</th>
                     <th># Games</th>
                   </tr>
@@ -125,7 +125,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({}) => {
                           <td>{playerRow.username}</td>
                           <td>{playerRow.playerScore}</td>
                           <td>{playerRow.winCount}</td>
-                          <td>{playerRow.lossCount}</td>
+                          {/* <td>{playerRow.lossCount}</td> */}
                           <td>{playerRow.tieCount}</td>
                           <td>{playerRow.totalGames}</td>
                         </tr>

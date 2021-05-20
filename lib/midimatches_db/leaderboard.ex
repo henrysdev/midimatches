@@ -42,6 +42,8 @@ defmodule MidimatchesDb.Leaderboard do
       SELECT COUNT(*), player_uuid, outcome
       FROM public.player_outcomes
       WHERE "outcome" = 'won'
+      AND "event_type" = 'game'
+      AND num_points > 0
       GROUP BY player_uuid, outcome
       ORDER BY sum(num_points);
       """,
@@ -56,6 +58,7 @@ defmodule MidimatchesDb.Leaderboard do
       SELECT COUNT(*), player_uuid, outcome
       FROM public.player_outcomes
       WHERE "outcome" = 'tied'
+      AND "event_type" = 'game'
       GROUP BY player_uuid, outcome
       ORDER BY sum(num_points);
       """,
@@ -70,6 +73,7 @@ defmodule MidimatchesDb.Leaderboard do
       SELECT COUNT(*), player_uuid, outcome
       FROM public.player_outcomes
       WHERE "outcome" = 'lost'
+      AND "event_type" = 'game'
       GROUP BY player_uuid, outcome
       ORDER BY sum(num_points);
       """,
