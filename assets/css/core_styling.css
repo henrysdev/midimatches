@@ -428,8 +428,8 @@ body {
 }
 
 .leaderboard_page_content {
-  /* height: calc(100% - 136px); */
-  height: calc(100% - 88px);
+  height: calc(100% - 136px);
+  /* height: calc(100% - 88px); */
   max-width: 100%;
   margin: auto;
   padding: 16px;

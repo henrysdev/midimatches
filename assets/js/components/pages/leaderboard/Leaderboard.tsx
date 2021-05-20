@@ -61,7 +61,11 @@ const Leaderboard: React.FC<LeaderboardProps> = ({}) => {
   return (
     <div
       className="leaderboard_page_content"
-      style={hasNextPage || hasPrevPage ? { height: "calc(100% - 136px)" } : {}}
+      // style={
+      //   hasNextPage || hasPrevPage || (!!currentUser && !currentUser.registered)
+      //     ? { height: "calc(100% - 136px)" }
+      //     : {}
+      // }
     >
       <div style={{ height: "100%" }}>
         <div style={{ display: "flex" }}>
@@ -157,6 +161,26 @@ const Leaderboard: React.FC<LeaderboardProps> = ({}) => {
             ) : (
               <></>
             )}
+          </div>
+          <div style={{ flex: 3 }}>
+            <div className="relative_anchor" style={{ height: "48px" }}>
+              <div className="centered_text" style={{ padding: "16px" }}>
+                <p style={{ padding: 0 }}>
+                  Leaderboard is updated hourly. <br />
+                  {!!currentUser && !currentUser.registered ? (
+                    <>
+                      You must{" "}
+                      <a className="accent_link" href="/account">
+                        have an account
+                      </a>{" "}
+                      to appear on the leaderboard.
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                </p>
+              </div>
+            </div>
           </div>
           <div style={{ flex: 1 }}>
             {hasNextPage ? (
