@@ -34,7 +34,7 @@ defmodule MidimatchesDb.Leaderboard do
       DROP TABLE IF EXISTS games_won;
       """,
       """
-      CREATE TEMPORARY TABLE games_won AS
+      CREATE UNLOGGED TABLE games_won AS
       SELECT COUNT(*), player_uuid, outcome
       FROM public.player_outcomes
       WHERE "outcome" = 'won'
@@ -48,7 +48,7 @@ defmodule MidimatchesDb.Leaderboard do
       DROP TABLE IF EXISTS games_tied;
       """,
       """
-      CREATE TEMPORARY TABLE games_tied AS
+      CREATE UNLOGGED TABLE games_tied AS
       SELECT COUNT(*), player_uuid, outcome
       FROM public.player_outcomes
       WHERE "outcome" = 'tied'
@@ -62,7 +62,7 @@ defmodule MidimatchesDb.Leaderboard do
       DROP TABLE IF EXISTS games_lost;
       """,
       """
-      CREATE TEMPORARY TABLE games_lost AS
+      CREATE UNLOGGED TABLE games_lost AS
       SELECT COUNT(*), player_uuid, outcome
       FROM public.player_outcomes
       WHERE "outcome" = 'lost'
@@ -76,7 +76,7 @@ defmodule MidimatchesDb.Leaderboard do
       DROP TABLE IF EXISTS games_played;
       """,
       """
-      CREATE TEMPORARY TABLE games_played AS
+      CREATE UNLOGGED TABLE games_played AS
       SELECT COUNT(*), player_uuid
       FROM public.player_outcomes
       GROUP BY player_uuid;
@@ -95,7 +95,7 @@ defmodule MidimatchesDb.Leaderboard do
             -- calculate player score
             COALESCE(games_won.win_count, 0) * 100 +
               COALESCE(games_tied.tie_count, 0) * 50 +
-              COALESCE(games_lost.loss_count, 0) * 10,
+              COALESCE(games_played.total_games, 0) * 10,
             win_count,
             tie_count,
             total_games
@@ -126,6 +126,6 @@ defmodule MidimatchesDb.Leaderboard do
       ALTER TABLE leaderboard ADD COLUMN id SERIAL PRIMARY KEY;
       """
     ]
-    |> Enum.each(&Repo.query/1)
+    |> Enum.each(&Repo.query!/1)
   end
 end
