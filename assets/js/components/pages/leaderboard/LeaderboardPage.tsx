@@ -12,9 +12,7 @@ const LeaderboardPage: React.FC = () => {
   return (
     <PageWrapper socket={socket} currentUser={currentUser}>
       <ComputerFrame>
-        <div className="serverlist_page_content">
-          <Leaderboard />
-        </div>
+        <Leaderboard />
       </ComputerFrame>
     </PageWrapper>
   );

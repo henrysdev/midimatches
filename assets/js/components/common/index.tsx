@@ -28,3 +28,4 @@ export { Modal } from "./Modal";
 export { CenteredFrontWindow } from "./CenteredFrontWindow";
 export { BackButton } from "./BackButton";
 export { FixedLeftBackButton } from "./FixedLeftBackButton";
+export { SmallButton } from "./SmallButton";
