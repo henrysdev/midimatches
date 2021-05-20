@@ -29,3 +29,4 @@ export { CenteredFrontWindow } from "./CenteredFrontWindow";
 export { BackButton } from "./BackButton";
 export { FixedLeftBackButton } from "./FixedLeftBackButton";
 export { SmallButton } from "./SmallButton";
+export { SmallTextBadge } from "./SmallTextBadge";

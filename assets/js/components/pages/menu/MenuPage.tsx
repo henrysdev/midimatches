@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { MediumLargeTitle, ComputerButton } from "../../common";
+import { MediumLargeTitle, ComputerButton, SmallTextBadge } from "../../common";
 import { useCurrentUserContext, useSocketContext } from "../../../hooks";
 import { PageWrapper } from "../";
 
@@ -28,9 +28,9 @@ const MenuPage: React.FC = () => {
           <div className="main_menu_btn">
             <ComputerButton
               callback={() => (window.location.href = "/leaderboard")}
-              extraClasses={["register_button"]}
+              extraClasses={["register_button", "no_line_break"]}
             >
-              LEADERBOARD
+              LEADERBOARD <SmallTextBadge>NEW!</SmallTextBadge>
             </ComputerButton>
           </div>
           <div className="main_menu_btn">
@@ -48,7 +48,7 @@ const MenuPage: React.FC = () => {
               }}
               extraClasses={["register_button"]}
             >
-              ACCOUNT
+              ACCOUNT <SmallTextBadge>NEW!</SmallTextBadge>
             </ComputerButton>
           </div>
           <div className="main_menu_btn">
