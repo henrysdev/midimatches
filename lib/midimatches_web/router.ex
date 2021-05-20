@@ -81,6 +81,8 @@ defmodule MidimatchesWeb.Router do
       post "/account/login", AccountController, :login
       post "/account/recovery", AccountController, :recovery
       post "/account", AccountController, :create
+
+      get "/stats/rankings", StatsController, :rankings
     end
 
     scope "/account" do

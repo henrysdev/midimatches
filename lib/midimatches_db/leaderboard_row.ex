@@ -5,9 +5,20 @@ defmodule MidimatchesDb.LeaderboardRow do
 
   use Ecto.Schema
 
-  # @primary_key false
+  @derive {Jason.Encoder,
+           only: [
+             :username,
+             :player_uuid,
+             :player_rank,
+             :player_score,
+             :win_count,
+             :tie_count,
+             :loss_count,
+             :total_games
+           ]}
   schema "leaderboard" do
     field(:username, :string)
+    field(:player_uuid, Ecto.UUID)
     field(:player_rank, :integer)
     field(:player_score, :integer)
     field(:win_count, :integer)

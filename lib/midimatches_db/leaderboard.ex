@@ -103,6 +103,7 @@ defmodule MidimatchesDb.Leaderboard do
         ) player_rank,
 
         u.username,
+        u.uuid AS player_uuid,
         -- calculate player scores (TODO factor out redundant calculation)
         COALESCE(games_won.win_count, 0) * 100 +
           COALESCE(games_tied.tie_count, 0) * 50 +
