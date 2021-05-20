@@ -38,7 +38,7 @@ defmodule MidimatchesDb.Leaderboard do
       DROP TABLE IF EXISTS games_won;
       """,
       """
-      CREATE UNLOGGED TABLE games_won AS
+      CREATE TABLE games_won AS
       SELECT COUNT(*), player_uuid, outcome
       FROM public.player_outcomes
       WHERE "outcome" = 'won'
@@ -54,7 +54,7 @@ defmodule MidimatchesDb.Leaderboard do
       DROP TABLE IF EXISTS games_tied;
       """,
       """
-      CREATE UNLOGGED TABLE games_tied AS
+      CREATE TABLE games_tied AS
       SELECT COUNT(*), player_uuid, outcome
       FROM public.player_outcomes
       WHERE "outcome" = 'tied'
@@ -69,7 +69,7 @@ defmodule MidimatchesDb.Leaderboard do
       DROP TABLE IF EXISTS games_lost;
       """,
       """
-      CREATE UNLOGGED TABLE games_lost AS
+      CREATE TABLE games_lost AS
       SELECT COUNT(*), player_uuid, outcome
       FROM public.player_outcomes
       WHERE "outcome" = 'lost'
@@ -84,9 +84,10 @@ defmodule MidimatchesDb.Leaderboard do
       DROP TABLE IF EXISTS games_played;
       """,
       """
-      CREATE UNLOGGED TABLE games_played AS
+      CREATE TABLE games_played AS
       SELECT COUNT(*), player_uuid
       FROM public.player_outcomes
+      WHERE "event_type" = 'game'
       GROUP BY player_uuid;
       """,
       """

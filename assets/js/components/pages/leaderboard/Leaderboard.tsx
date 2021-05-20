@@ -165,8 +165,9 @@ const Leaderboard: React.FC<LeaderboardProps> = ({}) => {
           <div style={{ flex: 3 }}>
             <div className="relative_anchor" style={{ height: "48px" }}>
               <div className="centered_text" style={{ padding: "16px" }}>
-                <p style={{ padding: 0 }}>
-                  Leaderboard is updated hourly. <br />
+                <p style={{ padding: 0 }} className="no_line_break">
+                  Leaderboard is updated <strong>hourly</strong> and tracks{" "}
+                  <strong>completed games</strong> only. <br />
                   {!!currentUser && !currentUser.registered ? (
                     <>
                       You must{" "}
