@@ -52,6 +52,11 @@ defmodule MidimatchesWeb.PageController do
     redirect_if_banned(conn, fn conn -> render(conn, "serverlist.html") end)
   end
 
+  @spec leaderboard(Plug.Conn.t(), any) :: Plug.Conn.t()
+  def leaderboard(conn, _params) do
+    redirect_if_banned(conn, fn conn -> render(conn, "leaderboard.html") end)
+  end
+
   @spec room_play(Plug.Conn.t(), map) :: Plug.Conn.t()
   @doc """
   Shortcut route to join player into game as a participatory musician/player.

@@ -145,6 +145,17 @@ export interface AdminMessage {
   alertLifetime: number;
 }
 
+export interface LeaderboardRow {
+  username: string;
+  playerId: string;
+  playerRank: number;
+  playerScore: number;
+  winCount: number;
+  tieCount: number;
+  lossCount: number;
+  totalGames: number;
+}
+
 type RecordingTuple = [string, any];
 type ScoreTuple = [string, number];
 
@@ -184,6 +195,11 @@ export interface RecoverAccountPayload {
 
 export interface DeleteAccountPayload {
   password: string;
+}
+
+export interface LeaderboardRankingsPayload {
+  offset: number;
+  limit: number;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

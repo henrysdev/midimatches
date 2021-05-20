@@ -25,4 +25,5 @@ export { useLoadUpdatePassword } from "./useLoadUpdatePassword";
 export { useLoadAccountRecovery } from "./useLoadAccountRecovery";
 export { useLoadLogout } from "./useLoadLogout";
 export { useLoadDeleteAccount } from "./useLoadDeleteAccount";
+export { useLoadLeaderboardRows } from "./useLoadLeaderboardRows";
 export * from "./context";

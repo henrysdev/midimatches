@@ -7,6 +7,7 @@ import {
   RoomPage,
   EnterPlayerPage,
   ServerlistPage,
+  LeaderboardPage,
   MenuPage,
   PrivacyPolicyPage,
   TermsPage,
@@ -34,6 +35,7 @@ const PageRouter: React.FC = () => {
           <Route exact path="/about" component={AboutPage} />
           <Route path="/menu" component={MenuPage} />
           <Route path="/rooms" component={ServerlistPage} />
+          <Route path="/leaderboard" component={LeaderboardPage} />
           <Route path="/room" component={RoomPage} />
           <Route path="/practice" component={PracticePage} />
           <Route path="/enter" component={EnterPlayerPage} />

@@ -10,18 +10,22 @@ defmodule MidimatchesDb.Leaderboard do
 
   import Ecto.Query
 
-  @spec fetch_leaderboard_rows(integer(), integer()) :: list(LeaderboardRow)
+  @spec fetch_leaderboard_rows(integer(), integer()) :: {list(LeaderboardRow), integer()}
   @doc """
   Returns results from the leaderboard table for the given limit/offset pagination.
   """
   def fetch_leaderboard_rows(offset, limit) when is_integer(limit) and is_integer(offset) do
     query =
       from(lr in LeaderboardRow,
-        where: lr.player_rank > ^offset,
+        where: lr.id > ^offset,
         limit: ^limit
       )
 
-    Repo.all(query)
+    results = Repo.all(query)
+
+    count = Repo.one(from(lr in LeaderboardRow, select: fragment("COUNT(*)")))
+
+    {results, count}
   end
 
   @spec refresh_leaderboard() :: :ok | {:error, any()}
@@ -103,7 +107,7 @@ defmodule MidimatchesDb.Leaderboard do
         ) player_rank,
 
         u.username,
-        u.uuid AS player_uuid,
+        u.uuid AS player_id,
         -- calculate player scores (TODO factor out redundant calculation)
         COALESCE(games_won.win_count, 0) * 100 +
           COALESCE(games_tied.tie_count, 0) * 50 +

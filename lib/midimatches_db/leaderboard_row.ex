@@ -8,7 +8,7 @@ defmodule MidimatchesDb.LeaderboardRow do
   @derive {Jason.Encoder,
            only: [
              :username,
-             :player_uuid,
+             :player_id,
              :player_rank,
              :player_score,
              :win_count,
@@ -18,7 +18,7 @@ defmodule MidimatchesDb.LeaderboardRow do
            ]}
   schema "leaderboard" do
     field(:username, :string)
-    field(:player_uuid, Ecto.UUID)
+    field(:player_id, Ecto.UUID)
     field(:player_rank, :integer)
     field(:player_score, :integer)
     field(:win_count, :integer)

@@ -15,7 +15,7 @@ defmodule MidimatchesDb.LeaderboardTest do
     } = TestHelpers.populate_leaderboards(2, 1)
 
     # get records from leaderboard
-    orig_top_players = Leaderboard.fetch_leaderboard_rows(0, 2)
+    {orig_top_players, 2} = Leaderboard.fetch_leaderboard_rows(0, 2)
 
     assert [
              %LeaderboardRow{
@@ -45,7 +45,7 @@ defmodule MidimatchesDb.LeaderboardTest do
 
     Leaderboard.refresh_leaderboard()
 
-    new_top_players = Leaderboard.fetch_leaderboard_rows(0, 10)
+    {new_top_players, 4} = Leaderboard.fetch_leaderboard_rows(0, 10)
 
     assert orig_top_players != new_top_players
   end

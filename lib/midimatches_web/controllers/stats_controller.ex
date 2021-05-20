@@ -14,8 +14,8 @@ defmodule MidimatchesWeb.StatsController do
     with {offset, ""} <- Integer.parse(offset),
          {limit, ""} <- Integer.parse(limit),
          true <- (fn -> offset >= 0 and limit >= 0 and limit < 100 end).() do
-      rows = Db.Leaderboard.fetch_leaderboard_rows(offset, limit)
-      json(conn, %{"player_rankings" => rows, "count" => length(rows)})
+      {rows, count} = Db.Leaderboard.fetch_leaderboard_rows(offset, limit)
+      json(conn, %{"player_rankings" => rows, "count" => count})
     else
       _ ->
         reason = "invalid parameters, offset and limit must be integers in range 0-100"

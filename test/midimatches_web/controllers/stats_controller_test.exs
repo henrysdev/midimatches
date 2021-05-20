@@ -31,7 +31,7 @@ defmodule MidimatchesWeb.StatsControllerTest do
                    "player_score" => 100,
                    "tie_count" => 0,
                    "total_games" => 1,
-                   "player_uuid" => ^winner_uuid,
+                   "player_id" => ^winner_uuid,
                    "win_count" => 1
                  },
                  %{
