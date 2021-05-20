@@ -17,6 +17,7 @@ defmodule Midimatches.LeaderboardUpdater do
   end
 
   def init(_args) do
+    update_leaderboard()
     Process.send_after(self(), {:update_leaderboard}, @default_update_cadence)
     {:ok, %{}}
   end
