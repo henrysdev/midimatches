@@ -13,7 +13,7 @@ const AccountDetailsCard: React.FC<AccountDetailsCardProps> = ({}) => {
         extraStyles={{ paddingLeft: "8px", paddingTop: "8px" }}
         centered={false}
       >
-        DETAILS
+        LOGGED IN AS
       </MediumTitle>
       {!!currentUser ? (
         <div>

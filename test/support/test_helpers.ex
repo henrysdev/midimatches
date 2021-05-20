@@ -3,10 +3,7 @@ defmodule Midimatches.TestHelpers do
   This module provides convenience methods for writing unit tests for this project
   """
 
-  alias MidimatchesDb.{
-    BackingTrack,
-    BackingTracks
-  }
+  alias MidimatchesDb, as: Db
 
   alias Midimatches.{
     Rooms,
@@ -17,23 +14,15 @@ defmodule Midimatches.TestHelpers do
 
   def populate_backing_tracks_table(count \\ 10) do
     for _ <- 1..count do
-      %BackingTrack{
+      %Db.BackingTrack{
         name: UUID.uuid4(),
         file_url: UUID.uuid4(),
         author: UUID.uuid4(),
         bpm: 90,
         musical_key: "Em"
       }
-      |> BackingTracks.create_backing_track()
+      |> Db.BackingTracks.create_backing_track()
     end
-  end
-
-  def flush_user_cache do
-    # if :ets.whereis(:user_cache) != :undefined do
-    #   :ets.match_delete(:user_cache, {:"$1", :"$2"})
-    # else
-    #   :ok
-    # end
   end
 
   def flush_banned_users do
@@ -43,6 +32,8 @@ defmodule Midimatches.TestHelpers do
       :ok
     end
   end
+
+  def flush_user_cache, do: :ok
 
   def teardown_rooms do
     pids = room_pids()
@@ -93,6 +84,71 @@ defmodule Midimatches.TestHelpers do
     end)
 
     game_server
+  end
+
+  def populate_leaderboards(num_players, num_games) do
+    # insert several users
+    users = insert_users(num_players)
+
+    # insert several player_outcome rows
+    outcomes = gen_player_outcomes(users, num_games)
+    :ok = Db.PlayerOutcomes.bulk_create_player_outcomes(outcomes)
+
+    # create/refresh leaderboard
+    Db.Leaderboard.refresh_leaderboard()
+
+    %{
+      users: users,
+      game_outcomes: outcomes
+    }
+  end
+
+  defp gen_player_outcomes(users, game_count) do
+    1..game_count
+    |> Enum.flat_map(fn game_id ->
+      game_winner = Enum.random(users)
+
+      users
+      |> Enum.map(fn user ->
+        if user.uuid == game_winner.uuid do
+          %Db.PlayerOutcome{
+            event_type: :game,
+            event_id: game_id,
+            player_uuid: game_winner.uuid,
+            outcome: :won,
+            num_points: 10
+          }
+        else
+          %Db.PlayerOutcome{
+            event_type: :game,
+            event_id: game_id,
+            player_uuid: user.uuid,
+            outcome: :lost,
+            num_points: 1
+          }
+        end
+      end)
+    end)
+  end
+
+  defp insert_users(n) do
+    1..n
+    |> Enum.map(fn _ ->
+      {:ok, inserted_user} =
+        Db.Users.create_user(%{
+          username: random_string(8),
+          password: random_string(11),
+          email: random_string(8)
+        })
+
+      inserted_user
+    end)
+  end
+
+  defp random_string(size) do
+    for _ <- 1..size, into: "" do
+      <<Enum.random('0123456789abcdef')>>
+    end
   end
 
   defp room_pids do

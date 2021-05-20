@@ -56,6 +56,8 @@ export const MAX_NOTE_NUMBER = 108;
 
 export const MIN_FORCED_VOTING_WINDOW_TIME = 20;
 
+export const DEFAULT_LEADERBOARD_PAGE_SIZE = 25;
+
 export const DEFAULT_SAMPLE_COLORS = [
   "rgba(255, 127, 0, 0.15)",
   "rgba(255, 213, 0, 0.15)",

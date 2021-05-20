@@ -23,23 +23,25 @@ const ComputerButton: React.FC<ComputerButtonProps> = ({
     return [...defaultClasses, ...extraClasses].join(" ");
   }, [extraClasses]);
   return (
-    <div
-      onMouseEnter={() => setLightBulbAnimClass("led-green bulb-on-green")}
-      onMouseLeave={() => setLightBulbAnimClass("led-green bulb-off-green")}
-      onClick={() => {
-        const audioNode = new Audio("../soundeffects/button_click.mp3");
-        audioNode.volume = 0.4;
-        audioNode.play();
-        callback();
-      }}
-      className={className}
-      style={{ ...extraStyles }}
-    >
-      <div className="led-box" style={{ float: "left" }}>
-        <div className={lightBulbAnimClass}></div>
-      </div>
-      <div className="centered_div">
-        <div className="computer_button_text">{children}</div>
+    <div className="computer_button_wrapper">
+      <div
+        onMouseEnter={() => setLightBulbAnimClass("led-green bulb-on-green")}
+        onMouseLeave={() => setLightBulbAnimClass("led-green bulb-off-green")}
+        onClick={() => {
+          const audioNode = new Audio("../soundeffects/button_click.mp3");
+          audioNode.volume = 0.4;
+          audioNode.play();
+          callback();
+        }}
+        className={className}
+        style={{ ...extraStyles }}
+      >
+        <div className="led-box" style={{ float: "left" }}>
+          <div className={lightBulbAnimClass}></div>
+        </div>
+        <div className="centered_div">
+          <div className="computer_button_text">{children}</div>
+        </div>
       </div>
     </div>
   );
