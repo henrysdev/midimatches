@@ -1,20 +1,40 @@
 import React from "react";
 
-import { HowToPlay } from ".";
-
 const MobileAboutPage: React.FC = () => {
   return (
-    <div>
-      <div className="mobile_placeholder outset_3d_border_deep">
-        <h1 className="mobile_title centered_title">
-          <span className="accent_bars">///</span>ABOUT
-        </h1>
-        <HowToPlay />
-        <div className="warning_alert roboto_font">
-          <strong>Note: </strong> Midi Matches is not currently supported on
-          mobile devices. Please switch to a desktop browser to continue.
-        </div>
-      </div>
+    <div className="mobile_content">
+      <iframe
+        width="100%"
+        height="256px"
+        src="https://www.youtube.com/embed/iVk7Va_hPis?autoplay=1&mute=1&start=43"
+        allow="autoplay"
+      ></iframe>
+      <p
+        style={{
+          color: "var(--text_light)",
+        }}
+      >
+        Midi Matches is a web-based multiplayer piano game that aims to combine
+        the joy of playing improvisational keyboard with the thrill of friendly
+        competition.
+        <br />
+        <br />
+        Plug and play with any{" "}
+        <a href="https://en.wikipedia.org/wiki/MIDI" className="accent_link">
+          MIDI-capable
+        </a>{" "}
+        digital piano or type-to-play via a standard computer keyboard. No setup
+        required!
+        <br />
+        <br />
+        Ready to play? Switch over to a desktop browser!
+        <br />
+        <br />
+        Project created by{" "}
+        <a href="https://github.com/henrysdev" className="accent_link">
+          Henry Warren
+        </a>
+      </p>
     </div>
   );
 };

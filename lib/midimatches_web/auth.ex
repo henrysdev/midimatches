@@ -40,7 +40,7 @@ defmodule MidimatchesWeb.Auth do
 
   @spec auth_conn(Plug.Conn.t(), list(atom)) :: Plug.Conn.t()
   @doc """
-  Verify token and set user struct to assigns if applicable.
+  Plug to verify token and set user struct to assigns if applicable.
 
   Takes a list of tuples that correspond to fallback behavior
   """

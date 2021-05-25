@@ -20,25 +20,7 @@ defmodule Midimatches.FreeForAllLogicTest do
 
   describe "ready up" do
     test "all players and advance to next game view" do
-      players =
-        MapSet.new([
-          %Player{
-            player_id: "1",
-            player_alias: "foo"
-          },
-          %Player{
-            player_id: "2",
-            player_alias: "zoo"
-          },
-          %Player{
-            player_id: "3",
-            player_alias: "fee"
-          },
-          %Player{
-            player_id: "4",
-            player_alias: "fum"
-          }
-        ])
+      players = default_players()
 
       player_ids_set = MapSet.new(["1", "2", "3", "4"])
 
@@ -80,25 +62,7 @@ defmodule Midimatches.FreeForAllLogicTest do
     end
 
     test "handles duplicate ready up case" do
-      players =
-        MapSet.new([
-          %Player{
-            player_id: "1",
-            player_alias: "foo"
-          },
-          %Player{
-            player_id: "2",
-            player_alias: "zoo"
-          },
-          %Player{
-            player_id: "3",
-            player_alias: "fee"
-          },
-          %Player{
-            player_id: "4",
-            player_alias: "fum"
-          }
-        ])
+      players = default_players()
 
       player_ids_set = MapSet.new(["1", "2", "3", "4"])
       duped_ready_ups = ["1", "1", "3", "1"]
@@ -143,25 +107,7 @@ defmodule Midimatches.FreeForAllLogicTest do
 
   describe "recordings" do
     test "are submitted from all contestants and game view advances" do
-      players =
-        MapSet.new([
-          %Player{
-            player_id: "1",
-            player_alias: "foo"
-          },
-          %Player{
-            player_id: "2",
-            player_alias: "zoo"
-          },
-          %Player{
-            player_id: "3",
-            player_alias: "fee"
-          },
-          %Player{
-            player_id: "4",
-            player_alias: "fum"
-          }
-        ])
+      players = default_players()
 
       player_ids_set = MapSet.new(["1", "2", "3", "4"])
 
@@ -213,29 +159,10 @@ defmodule Midimatches.FreeForAllLogicTest do
 
   describe "cast votes" do
     test "are submitted from all judges and game view advances" do
-      players =
-        MapSet.new([
-          %Player{
-            player_id: "1",
-            player_alias: "foo"
-          },
-          %Player{
-            player_id: "2",
-            player_alias: "zoo"
-          },
-          %Player{
-            player_id: "3",
-            player_alias: "fee"
-          },
-          %Player{
-            player_id: "4",
-            player_alias: "fum"
-          }
-        ])
+      players = default_players()
 
       contestants = ["1", "2", "3", "4"]
       player_ids_set = MapSet.new(contestants)
-      event_payloads = [{"3", "1"}, {"4", "1"}, {"2", "1"}, {"1", "4"}]
 
       game_server_state = %GameInstance{
         room_id: "1",
@@ -255,9 +182,11 @@ defmodule Midimatches.FreeForAllLogicTest do
         ]
       }
 
+      vote_events = [{"3", "1"}, {"4", "1"}, {"2", "1"}, {"1", "4"}]
+
       {_bracket, actual_state_scan} =
         Enum.reduce(
-          event_payloads,
+          vote_events,
           {game_server_state, []},
           fn ep, {gss, state_scan} ->
             %{state: gss} = FreeForAllLogic.cast_vote(gss, ep)
@@ -277,25 +206,7 @@ defmodule Midimatches.FreeForAllLogicTest do
     end
 
     test "have invalid votes that are not counted" do
-      players =
-        MapSet.new([
-          %Player{
-            player_id: "1",
-            player_alias: "foo"
-          },
-          %Player{
-            player_id: "2",
-            player_alias: "zoo"
-          },
-          %Player{
-            player_id: "3",
-            player_alias: "fee"
-          },
-          %Player{
-            player_id: "4",
-            player_alias: "fum"
-          }
-        ])
+      players = default_players()
 
       contestants = ["1", "2", "3", "4"]
       player_ids_set = MapSet.new(contestants)
@@ -759,5 +670,26 @@ defmodule Midimatches.FreeForAllLogicTest do
     resp = FreeForAllLogic.save_game_record(game_record)
 
     assert resp == :ok
+  end
+
+  def default_players do
+    MapSet.new([
+      %Player{
+        player_id: "1",
+        player_alias: "foo"
+      },
+      %Player{
+        player_id: "2",
+        player_alias: "zoo"
+      },
+      %Player{
+        player_id: "3",
+        player_alias: "fee"
+      },
+      %Player{
+        player_id: "4",
+        player_alias: "fum"
+      }
+    ])
   end
 end

@@ -525,6 +525,16 @@ body {
   padding-left: 8px;
 }
 
+.mobile_content {
+  margin: auto;
+  margin-top: 8px;
+  padding: 8px;
+  color: var(--text_light);
+  border-radius: 10px;
+  /* max-height: calc(100vh - 258px); */
+  overflow: auto;
+}
+
 .about_page_info {
   margin: auto;
   margin-top: 16px;
@@ -1441,14 +1451,17 @@ strong {
 
 .mobile_placeholder {
   height: 100%;
-  margin: 8px;
+  margin-right: 8px;
+  margin-left: 8px;
+  margin-bottom: 8px;
   padding: 8px;
   border-radius: 10px;
   background-color: var(--main_theme_color);
 }
 
 .mobile_title {
-  padding: 8px;
+  padding-top: 16px;
+  padding-bottom: 4px;
 }
 
 .warning_alert {

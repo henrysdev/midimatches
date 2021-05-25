@@ -36,6 +36,10 @@ defmodule MidimatchesWeb.Router do
     plug :auth_conn, [:registered_only, :return_auth_error]
   end
 
+  pipeline :auth_rate_limited do
+    plug :rate_limit, request_limit: 10, bucket_time: 1000, auth_keyed?: true
+  end
+
   scope "/", MidimatchesWeb do
     pipe_through :browser
 
@@ -88,11 +92,15 @@ defmodule MidimatchesWeb.Router do
 
     scope "/account" do
       pipe_through :registered_user_api_auth
-      put "/password", AccountController, :update_password
-      put "/:uuid", AccountController, :update
       get "/:uuid", AccountController, :show
       delete "/:uuid", AccountController, :delete
-      post "/logout", AccountController, :logout
+
+      scope "/" do
+        pipe_through :auth_rate_limited
+        put "/password", AccountController, :update_password
+        put "/:uuid", AccountController, :update
+        post "/logout", AccountController, :logout
+      end
     end
   end
 
