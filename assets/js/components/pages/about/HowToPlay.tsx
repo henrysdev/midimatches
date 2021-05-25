@@ -3,6 +3,24 @@ import React from "react";
 const HowToPlay: React.FC = () => {
   return (
     <div className="about_page_info inset_3d_border_shallow inline_screen">
+      <div style={{ display: "flex" }}>
+        <div
+          style={{
+            flex: 1,
+            margin: "auto",
+            padding: "8px",
+            maxWidth: "50%",
+            backgroundColor: "black",
+          }}
+        >
+          <iframe
+            width="100%"
+            height="300px"
+            src="https://www.youtube.com/embed/iVk7Va_hPis?autoplay=1&mute=1&start=43"
+            allow="autoplay; fullscreen;"
+          ></iframe>
+        </div>
+      </div>
       <dl>
         <dd>
           <p>
@@ -40,6 +58,57 @@ const HowToPlay: React.FC = () => {
           </p>
         </dd>
       </dl>
+      <div className="developer_about_tagline_flex_wrapper">
+        <div className="developer_about_tagline">
+          Alpha stage project; all feedback and bug reports welcome via{" "}
+          <a
+            className="resource_link"
+            target="_blank"
+            href="https://discord.gg/yNQAp2JAxE"
+          >
+            Discord
+          </a>{" "}
+          or{" "}
+          <a className="resource_link" href="mailto:henrysdev@gmail.com">
+            email
+          </a>
+          . <br /> <br />
+          <a
+            className="resource_link"
+            target="_blank"
+            href="https://github.com/henrysdev/midimatches"
+          >
+            Open source
+          </a>{" "}
+          and proudly built with{" "}
+          <a
+            className="resource_link elixir_accent"
+            target="_blank"
+            href="https://elixir-lang.org/"
+          >
+            Elixir
+          </a>
+          . Created by{" "}
+          <a
+            className="resource_link"
+            target="_blank"
+            href="https://github.com/henrysdev"
+          >
+            @henrysdev
+          </a>
+          .
+          {/* <br />
+                <br /> If you enjoy this game, please consider
+                <a
+                  className="resource_link"
+                  target="_blank"
+                  href="https://www.patreon.com/midimatches"
+                >
+                  {" "}
+                  becoming a patron ❤️{" "}
+                </a> */}
+        </div>
+      </div>
     </div>
   );
 };
