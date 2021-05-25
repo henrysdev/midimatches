@@ -180,8 +180,8 @@ defmodule MidimatchesWeb.AccountController do
     query_args = [{:email, email}, {:username, username}]
 
     with {:ok, %Db.User{uuid: user_id}} <- Db.Users.get_user_by(query_args),
-         :ok <- Email.password_reset_email(email, username, user_id),
-         {:ok, _call_count} <- RateLimiter.check_rate("recovery_emails:#{email}", 60_000, 1) do
+         {:ok, _call_count} <- RateLimiter.check_rate("recovery_emails:#{email}", 60_000, 1),
+         :ok <- Email.password_reset_email(email, username, user_id) do
       json(conn, %{})
     else
       {:error, count} when is_integer(count) ->
