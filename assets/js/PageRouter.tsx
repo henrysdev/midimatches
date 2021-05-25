@@ -29,6 +29,7 @@ const PageRouter: React.FC = () => {
           <Route exact path="/about" component={MobileAboutPage} />
           <Route path="/privacy" component={MobilePrivacyPolicyPage} />
           <Route path="/terms" component={MobileTermsPolicyPage} />
+          <Route path="/:other_path" component={MobileAboutPage} />
         </Switch>
       ) : (
         <Switch>
