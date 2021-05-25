@@ -36,10 +36,15 @@ const HowToPlay: React.FC = () => {
         </dt>
         <dd>
           <p>
-            Midi Matches is intended to be played with a MIDI-capable piano
-            keyboard. For the best experience, you'll want to have a MIDI
-            keyboard connected to your computer. Alternatively, you can play via
-            type-to-play with just your computer keys.
+            Plug and play with any{" "}
+            <a
+              href="https://en.wikipedia.org/wiki/MIDI"
+              className="accent_link"
+            >
+              MIDI-capable
+            </a>{" "}
+            digital piano or type-to-play via a standard computer keyboard. No
+            setup required!
           </p>
         </dd>
         <br />
