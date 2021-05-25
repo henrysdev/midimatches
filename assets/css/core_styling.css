@@ -541,7 +541,7 @@ body {
   padding: 16px;
   color: var(--text_light);
   border-radius: 10px;
-  max-height: calc(100vh - 416px);
+  max-height: calc(100vh - 346px);
   overflow: auto;
 }
 
