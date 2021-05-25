@@ -9,7 +9,7 @@ const HowToPlay: React.FC = () => {
             flex: 1,
             margin: "auto",
             padding: "8px",
-            maxWidth: "50%",
+            width: "50%",
             backgroundColor: "black",
           }}
         >
