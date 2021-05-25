@@ -119,6 +119,8 @@ const Leaderboard: React.FC<LeaderboardProps> = ({}) => {
                       return (
                         <tr
                           className={
+                            !!currentUser &&
+                            !!currentUser.userId &&
                             playerRow.playerId === currentUser.userId
                               ? "current_user_rank_row"
                               : ""
