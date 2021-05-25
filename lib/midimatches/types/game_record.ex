@@ -2,7 +2,6 @@ defmodule Midimatches.Types.GameRecord do
   @moduledoc false
 
   alias Midimatches.{
-    Types.GameRules,
     Types.PlayerOutcome,
     Types.RoundRecord
   }

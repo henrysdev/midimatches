@@ -43,3 +43,10 @@ config :ex_aws,
   json_codec: Jason,
   access_key_id: System.get_env("AWS_ACCESS_KEY_ID"),
   secret_access_key: System.get_env("AWS_SECRET_ACCESS_KEY")
+
+config :ex_rated,
+  timeout: 10_000,
+  cleanup_rate: 10_000,
+  persistent: false,
+  name: :ex_rated,
+  ets_table_name: :rate_limit_buckets

@@ -32,3 +32,10 @@ config :logger, :error_log,
 config :midimatches, :s3_client, Midimatches.S3Client.Mock
 
 config :bcrypt_elixir, log_rounds: 4
+
+config :ex_rated,
+  timeout: 0,
+  cleanup_rate: 10_000,
+  persistent: false,
+  name: :ex_rated,
+  ets_table_name: :ets_rated_test_buckets

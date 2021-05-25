@@ -8,7 +8,8 @@ defmodule MidimatchesWeb.AccountController do
 
   alias MidimatchesWeb.{
     Auth,
-    Email
+    Email,
+    RateLimiter
   }
 
   require Logger
@@ -179,9 +180,13 @@ defmodule MidimatchesWeb.AccountController do
     query_args = [{:email, email}, {:username, username}]
 
     with {:ok, %Db.User{uuid: user_id}} <- Db.Users.get_user_by(query_args),
-         :ok <- Email.password_reset_email(email, username, user_id) do
+         :ok <- Email.password_reset_email(email, username, user_id),
+         {:ok, _call_count} <- RateLimiter.check_rate("recovery_emails:#{email}", 60_000, 1) do
       json(conn, %{})
     else
+      {:error, count} when is_integer(count) ->
+        bad_json_request(conn, "Too soon to request another password reset", 429)
+
       {:error, reason} ->
         bad_json_request(conn, reason)
     end
