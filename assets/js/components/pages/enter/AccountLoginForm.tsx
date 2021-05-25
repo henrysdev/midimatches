@@ -174,13 +174,13 @@ const AccountLoginForm: React.FC<AccountLoginFormProps> = ({
           <strong>OR...</strong>
         </div>
       </div>
-      <div className="main_menu_btn">
+      <div className="main_menu_btn" style={{ marginTop: 0, paddingTop: 0 }}>
         <ComputerButton
           callback={() => setPlayWithoutSaveView()}
           extraClasses={["register_button"]}
           extraStyles={{ whiteSpace: "nowrap" }}
         >
-          PLAY WITHOUT SAVE
+          <span style={{ color: "yellow" }}>PLAY WITHOUT ACCOUNT</span>
         </ComputerButton>
       </div>
     </div>
