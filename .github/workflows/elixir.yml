@@ -54,7 +54,3 @@ jobs:
       - run: mix local.hex --force
       - run: mix deps.get
       - run: mix test
-      - name: Run Coveralls Tests
-        run: mix coveralls.github
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
