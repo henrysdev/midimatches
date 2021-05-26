@@ -10,7 +10,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllLogic do
     Types.GameRecord,
     Types.GameRules,
     Types.Player,
-    Types.PlayerRecordingRecord,
+    Types.PlayerRecording,
     Types.RoundRecord,
     Utils
   }
@@ -236,7 +236,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllLogic do
   defp save_round_record(
          %RoundRecord{
            round_outcomes: round_outcomes,
-           player_recording_records: player_recording_records
+           player_recordings: player_recordings
          } = round_record,
          %Db.GameRecord{} = inserted_game_record
        ) do
@@ -247,7 +247,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllLogic do
 
     with {:ok, inserted_round_record} <- create_round_record_db_resp,
          :ok <- save_round_outcomes(round_outcomes, inserted_round_record),
-         :ok <- save_player_recording_records(player_recording_records, inserted_round_record) do
+         :ok <- save_player_recordings(player_recordings, inserted_round_record) do
       :ok
     else
       {:error, reason} ->
@@ -255,9 +255,9 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllLogic do
     end
   end
 
-  @spec save_player_recording_records(list(PlayerRecordingRecord), %Db.RoundRecord{}) ::
+  @spec save_player_recordings(list(PlayerRecording), %Db.RoundRecord{}) ::
           :ok | {:error, any()}
-  def save_player_recording_records(_player_recordings, %Db.RoundRecord{id: _round_id}) do
+  def save_player_recordings(_player_recordings, %Db.RoundRecord{id: _round_id}) do
     # TODO persist each player recording record to database
     :ok
   end

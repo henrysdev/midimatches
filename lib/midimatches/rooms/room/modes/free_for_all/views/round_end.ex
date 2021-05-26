@@ -6,7 +6,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.RoundEnd do
   alias Midimatches.{
     Rooms.Room.GameInstance,
     Types.PlayerOutcome,
-    Types.PlayerRecordingRecord,
+    Types.PlayerRecording,
     Types.RoundRecord,
     Types.WinResult,
     Utils
@@ -115,13 +115,13 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.RoundEnd do
 
     round_outcomes = build_round_outcomes(round_winners, player_ids_set, votes)
 
-    player_recording_records = build_player_recording_records(recordings, backing_track_uuid)
+    player_recordings = build_player_recordings(recordings, backing_track_uuid)
 
     %RoundRecord{
       round_num: round_num,
       round_outcomes: round_outcomes,
       backing_track_id: backing_track_uuid,
-      player_recording_records: player_recording_records
+      player_recordings: player_recordings
     }
   end
 
@@ -164,9 +164,9 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.RoundEnd do
     end)
   end
 
-  @spec build_player_recording_records(%{required(id()) => any}, id()) ::
-          list(PlayerRecordingRecord)
-  defp build_player_recording_records(recordings, backing_track_id) when is_map(recordings) do
+  @spec build_player_recordings(%{required(id()) => any}, id()) ::
+          list(PlayerRecording)
+  defp build_player_recordings(recordings, backing_track_id) when is_map(recordings) do
     recordings
     |> Map.keys()
     |> Enum.reduce([], fn player_id, acc ->
@@ -176,7 +176,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.RoundEnd do
       if length(recording.timestep_slices) == 0 do
         acc
       else
-        recording_record = %PlayerRecordingRecord{
+        recording_record = %PlayerRecording{
           recording: recording,
           backing_track_id: backing_track_id,
           player_id: player_id

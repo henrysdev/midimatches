@@ -8,7 +8,7 @@ defmodule Midimatches.RoundEndTest do
     Types.Note,
     Types.Player,
     Types.PlayerOutcome,
-    Types.PlayerRecordingRecord,
+    Types.PlayerRecording,
     Types.RoundRecord,
     Types.TimestepSlice,
     Types.WinResult
@@ -105,7 +105,7 @@ defmodule Midimatches.RoundEndTest do
         %RoundRecord{
           backing_track_id: backing_track_id,
           round_num: 1,
-          player_recording_records: [],
+          player_recordings: [],
           round_outcomes: [
             %PlayerOutcome{
               event_type: :round,
@@ -208,7 +208,7 @@ defmodule Midimatches.RoundEndTest do
       %RoundRecord{
         backing_track_id: backing_track_id,
         round_num: 3,
-        player_recording_records: [],
+        player_recordings: [],
         round_outcomes: [
           %PlayerOutcome{
             event_type: :round,
@@ -279,7 +279,7 @@ defmodule Midimatches.RoundEndTest do
 
     assert round_record == %RoundRecord{
              round_num: 1,
-             player_recording_records: [],
+             player_recordings: [],
              round_outcomes: [
                %PlayerOutcome{
                  player_id: "1",
@@ -335,7 +335,7 @@ defmodule Midimatches.RoundEndTest do
 
     assert round_record == %RoundRecord{
              round_num: 1,
-             player_recording_records: [],
+             player_recordings: [],
              round_outcomes: [
                %PlayerOutcome{
                  player_id: "1",
@@ -392,13 +392,13 @@ defmodule Midimatches.RoundEndTest do
 
     recording_loop = default_recording()
 
-    assert round_record.player_recording_records == [
-             %PlayerRecordingRecord{
+    assert round_record.player_recordings == [
+             %PlayerRecording{
                player_id: "1",
                recording: recording_loop,
                backing_track_id: backing_track_id
              },
-             %PlayerRecordingRecord{
+             %PlayerRecording{
                player_id: "2",
                recording: recording_loop,
                backing_track_id: backing_track_id
@@ -430,8 +430,8 @@ defmodule Midimatches.RoundEndTest do
 
     round_record = RoundEnd.build_round_record(game_state)
 
-    assert round_record.player_recording_records == [
-             %PlayerRecordingRecord{
+    assert round_record.player_recordings == [
+             %PlayerRecording{
                player_id: "1",
                recording: default_recording(),
                backing_track_id: backing_track_id

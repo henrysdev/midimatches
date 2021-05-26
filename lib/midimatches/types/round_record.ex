@@ -13,7 +13,7 @@ defmodule Midimatches.Types.RoundRecord do
   typedstruct do
     field(:round_num, integer(), enforce: true)
     field(:round_outcomes, list(PlayerOutcome), enforce: true)
-    field(:player_recording_records, list(PlayerRecordingRecord), enforce: true)
+    field(:player_recordings, list(PlayerRecording), enforce: true)
     field(:backing_track_id, id(), enforce: true)
   end
 end

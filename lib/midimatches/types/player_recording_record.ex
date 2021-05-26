@@ -1,4 +1,4 @@
-defmodule Midimatches.Types.PlayerRecordingRecord do
+defmodule Midimatches.Types.PlayerRecording do
   @moduledoc false
 
   alias Midimatches.Types.Loop
