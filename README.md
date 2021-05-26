@@ -1,5 +1,7 @@
 # Midi Matches (Alpha)
 
+![](https://github.com/henrysdev/midimatches/workflows/build/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/henrysdev/midimatches/badge.svg?branch=master)](https://coveralls.io/github/henrysdev/midimatches?branch=master)
+
 [Midi Matches](https://midimatches.com/) is a browser-based online multiplayer game that aims to combine the joy of improvisational keyboard with the thrill of friendly competition.
 
 The core game mechanic revolves around facing off with other musicians on creating short keyboard solos over beats/backing tracks.
