@@ -5,8 +5,8 @@ defmodule MidimatchesDb.RoundRecords do
 
   alias MidimatchesDb.{
     GameRecord,
-    RoundRecord,
-    Repo
+    Repo,
+    RoundRecord
   }
 
   @spec create_round_record(%RoundRecord{}) :: {:ok, %RoundRecord{}} | {:error, any()}

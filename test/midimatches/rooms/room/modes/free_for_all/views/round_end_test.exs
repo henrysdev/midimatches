@@ -541,16 +541,14 @@ defmodule Midimatches.RoundEndTest do
           ]
         }
       ],
-      length: 100,
-      start_timestep: 0
+      timestep_size: 50
     }
   end
 
   defp empty_recording do
     %Loop{
       timestep_slices: [],
-      length: 100,
-      start_timestep: 20
+      timestep_size: 50
     }
   end
 end

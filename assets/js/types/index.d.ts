@@ -17,9 +17,8 @@ export interface TimestepSlice {
 }
 
 export interface Loop {
-  startTimestep: number;
-  length: number;
   timestepSlices: TimestepSlice[];
+  timestepSize: Microseconds;
 }
 
 export interface MIDINoteEvent {

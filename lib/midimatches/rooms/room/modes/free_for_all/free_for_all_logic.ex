@@ -257,9 +257,19 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllLogic do
 
   @spec save_player_recordings(list(PlayerRecording), %Db.RoundRecord{}) ::
           :ok | {:error, any()}
-  def save_player_recordings(_player_recordings, %Db.RoundRecord{id: _round_id}) do
-    # TODO persist each player recording record to database
-    :ok
+  def save_player_recordings(player_recordings, %Db.RoundRecord{id: round_id}) do
+    player_recordings_to_insert =
+      Enum.map(player_recordings, fn recording ->
+        recording
+        |> Utils.player_recording_to_db_player_recording(:round, round_id)
+      end)
+
+    db_resp = Db.PlayerRecordings.bulk_create_player_recordings(player_recordings_to_insert)
+
+    case db_resp do
+      {:error, reason} -> Logger.error(reason)
+      _ -> :ok
+    end
   end
 
   @spec save_round_outcomes(list(PlayerOutcome), %Db.RoundRecord{}) :: :ok | {:error, any()}

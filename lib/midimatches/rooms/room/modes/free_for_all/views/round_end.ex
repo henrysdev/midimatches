@@ -173,7 +173,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.RoundEnd do
       recording = Map.fetch!(recordings, player_id)
 
       # only save non-empty recordings
-      if length(recording.timestep_slices) == 0 do
+      if Enum.empty?(recording.timestep_slices) do
         acc
       else
         recording_record = %PlayerRecording{

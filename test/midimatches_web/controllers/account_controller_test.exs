@@ -1,8 +1,8 @@
 defmodule MidimatchesWeb.AccountControllerTest do
   use MidimatchesWeb.ConnCase
 
-  alias MidimatchesWeb.Auth
   alias MidimatchesDb, as: Db
+  alias MidimatchesWeb.Auth
 
   describe "POST /api/account/create" do
     test "succeeds with valid params", %{conn: conn} do

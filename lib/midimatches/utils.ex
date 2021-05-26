@@ -14,6 +14,7 @@ defmodule Midimatches.Utils do
     Types.GameRecord,
     Types.Player,
     Types.PlayerOutcome,
+    Types.PlayerRecording,
     Types.RoundRecord,
     Types.User,
     Types.WinResult
@@ -276,6 +277,30 @@ defmodule Midimatches.Utils do
       player_uuid: player_uuid,
       outcome: outcome,
       num_points: num_points,
+      event_type: event_type,
+      event_id: event_id
+    }
+  end
+
+  @spec player_recording_to_db_player_recording(%PlayerRecording{}, event_type(), id()) ::
+          %Db.PlayerRecording{}
+  @doc """
+  Cast a player recording to a db player outcome
+  """
+  def player_recording_to_db_player_recording(
+        %PlayerRecording{
+          player_id: player_uuid,
+          recording: recording,
+          backing_track_id: backing_track_id
+        },
+        event_type,
+        event_id
+      )
+      when event_type in [:round, :game] do
+    %Db.PlayerRecording{
+      player_uuid: player_uuid,
+      recording: recording,
+      backing_track_uuid: backing_track_id,
       event_type: event_type,
       event_id: event_id
     }

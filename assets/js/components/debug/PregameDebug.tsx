@@ -62,8 +62,6 @@ const mockedPlayers = [
 
 const mockedRecordings = {
   xb4z: {
-    startTimestep: 0,
-    length: 0,
     timestepSlices: [
       {
         timestep: 1,
@@ -86,6 +84,7 @@ const mockedRecordings = {
         ],
       },
     ],
+    timestepSize: 50,
   } as Loop,
 };
 

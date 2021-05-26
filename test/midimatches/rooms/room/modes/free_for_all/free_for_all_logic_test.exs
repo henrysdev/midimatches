@@ -112,8 +112,8 @@ defmodule Midimatches.FreeForAllLogicTest do
       player_ids_set = MapSet.new(["1", "2", "3", "4"])
 
       event_payloads = [
-        {"1", %Loop{timestep_slices: [], length: 0, start_timestep: 0}},
-        {"2", %Loop{timestep_slices: [], length: 0, start_timestep: 0}}
+        {"1", %Loop{timestep_slices: [], timestep_size: 50}},
+        {"2", %Loop{timestep_slices: [], timestep_size: 50}}
       ]
 
       game_server_state = %GameInstance{
@@ -146,10 +146,10 @@ defmodule Midimatches.FreeForAllLogicTest do
         )
 
       expected_state_scan = [
-        {[%Loop{timestep_slices: [], length: 0, start_timestep: 0}], :recording},
+        {[%Loop{timestep_slices: [], timestep_size: 50}], :recording},
         {[
-           %Loop{timestep_slices: [], length: 0, start_timestep: 0},
-           %Loop{timestep_slices: [], length: 0, start_timestep: 0}
+           %Loop{timestep_slices: [], timestep_size: 50},
+           %Loop{timestep_slices: [], timestep_size: 50}
          ], :playback_voting}
       ]
 
