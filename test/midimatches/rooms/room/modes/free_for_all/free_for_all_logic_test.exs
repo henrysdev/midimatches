@@ -632,6 +632,7 @@ defmodule Midimatches.FreeForAllLogicTest do
         %Midimatches.Types.RoundRecord{
           backing_track_id: "2cd44c1b-4c7f-4eee-984a-ab1bd54ae823",
           round_num: 2,
+          player_recording_records: [],
           round_outcomes: [
             %Midimatches.Types.PlayerOutcome{
               event_type: :round,
@@ -650,6 +651,7 @@ defmodule Midimatches.FreeForAllLogicTest do
         %Midimatches.Types.RoundRecord{
           backing_track_id: "30f8cf65-c26c-41ba-bd64-028a0db5a425",
           round_num: 1,
+          player_recording_records: [],
           round_outcomes: [
             %Midimatches.Types.PlayerOutcome{
               event_type: :round,

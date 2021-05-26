@@ -4,9 +4,13 @@ defmodule Midimatches.RoundEndTest do
   alias Midimatches.{
     Rooms.Room.GameInstance,
     Rooms.Room.Modes.FreeForAll.Views.RoundEnd,
+    Types.Loop,
+    Types.Note,
     Types.Player,
     Types.PlayerOutcome,
+    Types.PlayerRecordingRecord,
     Types.RoundRecord,
+    Types.TimestepSlice,
     Types.WinResult
   }
 
@@ -101,6 +105,7 @@ defmodule Midimatches.RoundEndTest do
         %RoundRecord{
           backing_track_id: backing_track_id,
           round_num: 1,
+          player_recording_records: [],
           round_outcomes: [
             %PlayerOutcome{
               event_type: :round,
@@ -203,6 +208,7 @@ defmodule Midimatches.RoundEndTest do
       %RoundRecord{
         backing_track_id: backing_track_id,
         round_num: 3,
+        player_recording_records: [],
         round_outcomes: [
           %PlayerOutcome{
             event_type: :round,
@@ -273,6 +279,7 @@ defmodule Midimatches.RoundEndTest do
 
     assert round_record == %RoundRecord{
              round_num: 1,
+             player_recording_records: [],
              round_outcomes: [
                %PlayerOutcome{
                  player_id: "1",
@@ -318,12 +325,17 @@ defmodule Midimatches.RoundEndTest do
       num_points: 2
     }
 
-    game_state = %GameInstance{game_state | votes: votes, round_winners: round_winners}
+    game_state = %GameInstance{
+      game_state
+      | votes: votes,
+        round_winners: round_winners
+    }
 
     round_record = RoundEnd.build_round_record(game_state)
 
     assert round_record == %RoundRecord{
              round_num: 1,
+             player_recording_records: [],
              round_outcomes: [
                %PlayerOutcome{
                  player_id: "1",
@@ -354,6 +366,79 @@ defmodule Midimatches.RoundEndTest do
            }
   end
 
+  test "build round record with player recordings" do
+    game_state = default_game_state()
+    sample_beats = game_state.sample_beats
+
+    %Db.BackingTrack{
+      uuid: backing_track_id
+    } = Enum.at(sample_beats, 0)
+
+    votes = %{"1" => "2", "2" => "3", "3" => "2", "4" => "3"}
+
+    round_winners = %WinResult{
+      winners: ["2", "3"],
+      num_points: 2
+    }
+
+    game_state = %GameInstance{
+      game_state
+      | votes: votes,
+        round_winners: round_winners,
+        recordings: default_recordings(["1", "2"])
+    }
+
+    round_record = RoundEnd.build_round_record(game_state)
+
+    recording_loop = default_recording()
+
+    assert round_record.player_recording_records == [
+             %PlayerRecordingRecord{
+               player_id: "1",
+               recording: recording_loop,
+               backing_track_id: backing_track_id
+             },
+             %PlayerRecordingRecord{
+               player_id: "2",
+               recording: recording_loop,
+               backing_track_id: backing_track_id
+             }
+           ]
+  end
+
+  test "build round record excluding empty player recordings" do
+    game_state = default_game_state()
+    sample_beats = game_state.sample_beats
+
+    %Db.BackingTrack{
+      uuid: backing_track_id
+    } = Enum.at(sample_beats, 0)
+
+    votes = %{"1" => "2", "2" => "3", "3" => "2", "4" => "3"}
+
+    round_winners = %WinResult{
+      winners: ["2", "3"],
+      num_points: 2
+    }
+
+    game_state = %GameInstance{
+      game_state
+      | votes: votes,
+        round_winners: round_winners,
+        recordings: %{"1" => default_recording(), "2" => empty_recording()}
+    }
+
+    round_record = RoundEnd.build_round_record(game_state)
+
+    assert round_record.player_recording_records == [
+             %PlayerRecordingRecord{
+               player_id: "1",
+               recording: default_recording(),
+               backing_track_id: backing_track_id
+             }
+           ]
+  end
+
   defp default_players do
     MapSet.new([
       %Player{
@@ -375,7 +460,7 @@ defmodule Midimatches.RoundEndTest do
     ])
   end
 
-  defp default_game_state() do
+  defp default_game_state do
     players = default_players()
     contestants = ["1", "2", "3", "4"]
     player_ids_set = MapSet.new(contestants)
@@ -404,6 +489,68 @@ defmodule Midimatches.RoundEndTest do
           uuid: backing_track_id
         }
       ]
+    }
+  end
+
+  defp default_recordings(player_ids) do
+    recording = default_recording()
+    Enum.reduce(player_ids, %{}, fn player_id, acc -> Map.put(acc, player_id, recording) end)
+  end
+
+  defp default_recording do
+    %Loop{
+      timestep_slices: [
+        %TimestepSlice{
+          timestep: 10,
+          notes: [
+            %Note{
+              key: 52,
+              duration: 3,
+              velocity: 100
+            },
+            %Note{
+              key: 54,
+              duration: 3,
+              velocity: 100
+            },
+            %Note{
+              key: 52,
+              duration: 1,
+              velocity: 100
+            }
+          ]
+        },
+        %TimestepSlice{
+          timestep: 23,
+          notes: [
+            %Note{
+              key: 12,
+              duration: 3,
+              velocity: 100
+            },
+            %Note{
+              key: 88,
+              duration: 3,
+              velocity: 100
+            },
+            %Note{
+              key: 72,
+              duration: 1,
+              velocity: 100
+            }
+          ]
+        }
+      ],
+      length: 100,
+      start_timestep: 0
+    }
+  end
+
+  defp empty_recording do
+    %Loop{
+      timestep_slices: [],
+      length: 100,
+      start_timestep: 20
     }
   end
 end
