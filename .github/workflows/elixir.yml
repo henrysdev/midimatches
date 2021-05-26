@@ -53,30 +53,8 @@ jobs:
       - run: mix local.rebar --force
       - run: mix local.hex --force
       - run: mix deps.get
-      - run: npm install --prefix assets
-      - run: npm run deploy --prefix assets
       - run: mix test
-# jobs:
-#   build:
-#     name: Build and test
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v2
-#       - name: Set up Elixir
-#         uses: actions/setup-elixir@v1
-#         with:
-#           elixir-version: "1.11.3" # Define the elixir version [required]
-#           otp-version: "23.2" # Define the OTP version [required]
-#           experimental-otp: true # Fix crypto SSL build error
-#       - name: Restore dependencies cache
-#         uses: actions/cache@v2
-#         with:
-#           path: deps
-#           key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
-#           restore-keys: ${{ runner.os }}-mix-
-#       - name: Install dependencies
-#         run: mix deps.get
-#       - name: Check Formatting
-#         run: mix format --check-formatted
-#       - name: Run tests
-#         run: mix test
+      - name: Run Coveralls Tests
+        run: mix coveralls.github
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
