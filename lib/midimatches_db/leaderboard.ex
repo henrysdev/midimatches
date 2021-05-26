@@ -106,7 +106,7 @@ defmodule MidimatchesDb.Leaderboard do
       COALESCE(games_tied.tie_count, 0) AS tie_count,
       COALESCE(games_lost.loss_count, 0) AS loss_count,
       COALESCE(games_played.total_games, 0) AS total_games,
-      COALESCE(player_scores.player_score, 0) AS player_score
+      player_scores.player_score AS player_score
 
     FROM users u
     LEFT OUTER JOIN games_won ON (u.uuid = games_won.player_uuid)
@@ -127,7 +127,9 @@ defmodule MidimatchesDb.Leaderboard do
 
     sql_file
     |> String.split(";")
-    |> Enum.map(fn s -> s <> ";" end)
+    |> Enum.map(&String.trim/1)
+    |> Enum.reject(&(&1 in ["", "\n"]))
+    |> Enum.map(&(&1 <> ";"))
     |> Enum.each(&Repo.query!/1)
   end
 end
