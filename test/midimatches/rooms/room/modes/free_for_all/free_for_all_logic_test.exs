@@ -433,7 +433,8 @@ defmodule Midimatches.FreeForAllLogicTest do
         }
       ],
       scores: %{"4" => 0},
-      ready_ups: MapSet.new(["4"])
+      ready_ups: MapSet.new(["4"]),
+      historic_player_ids_set: MapSet.new(["4"])
     }
 
     assert actual_state == expected_state

@@ -54,7 +54,8 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllLogic do
       contestants: player_ids_list,
       sample_beats: sample_beats,
       scores: player_ids_list |> Enum.map(&{&1, 0}) |> Map.new(),
-      view_deadline: Utils.calc_future_timestamp(game_rules.view_timeouts.game_start)
+      view_deadline: Utils.calc_future_timestamp(game_rules.view_timeouts.game_start),
+      historic_player_ids_set: MapSet.new(player_ids_list)
     }
   end
 
@@ -72,7 +73,8 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllLogic do
         players: updated_players,
         contestants: updated_contestants,
         ready_ups: MapSet.put(state.ready_ups, player_id),
-        scores: Map.put(state.scores, player_id, 0)
+        scores: Map.put(state.scores, player_id, 0),
+        historic_player_ids_set: MapSet.put(state.historic_player_ids_set, player_id)
     }
     |> as_instruction(sync?: true, view_change?: false)
   end
@@ -258,6 +260,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllLogic do
     save_player_outcomes(game_outcomes, :game, game_id)
   end
 
+  @spec save_player_outcomes(list(PlayerOutcome), any(), any()) :: :ok | {:error, any()}
   defp save_player_outcomes(player_outcomes, event_type, event_id)
        when event_type in [:round, :game] do
     player_outcomes_to_insert =
