@@ -47,6 +47,7 @@ defmodule Midimatches.Rooms.Room.GameInstance do
     field(:view_deadline, integer(), default: -1)
     field(:audience_members, MapSet.t(Player), default: MapSet.new())
     field(:audience_member_ids_set, MapSet.t(id()), default: MapSet.new())
+    field(:historic_player_ids_set, MapSet.t(id()), default: MapSet.new())
 
     # historical records for recording game
     field(:round_records, list(RoundRecord), default: [])

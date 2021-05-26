@@ -40,6 +40,7 @@ const HowToPlay: React.FC = () => {
             <a
               href="https://en.wikipedia.org/wiki/MIDI"
               className="accent_link"
+              target="_blank"
             >
               MIDI-capable
             </a>{" "}

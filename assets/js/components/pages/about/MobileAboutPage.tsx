@@ -20,7 +20,11 @@ const MobileAboutPage: React.FC = () => {
         <br />
         <br />
         Plug and play with any{" "}
-        <a href="https://en.wikipedia.org/wiki/MIDI" className="accent_link">
+        <a
+          href="https://en.wikipedia.org/wiki/MIDI"
+          target="_blank"
+          className="accent_link"
+        >
           MIDI-capable
         </a>{" "}
         digital piano or type-to-play via a standard computer keyboard. No setup
@@ -31,7 +35,11 @@ const MobileAboutPage: React.FC = () => {
         <br />
         <br />
         Project created by{" "}
-        <a href="https://github.com/henrysdev" className="accent_link">
+        <a
+          href="https://github.com/henrysdev"
+          target="_blank"
+          className="accent_link"
+        >
           Henry Warren
         </a>
       </p>
