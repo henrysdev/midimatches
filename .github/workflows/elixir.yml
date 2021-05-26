@@ -11,7 +11,6 @@ env:
 jobs:
   test:
     runs-on: ubuntu-latest
-    services:
     postgres:
       image: postgres:11
       env:
@@ -26,10 +25,12 @@ jobs:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-elixir@v1.0.0
+    - name: Set up Elixir
+      uses: actions/setup-elixir@v1
       with:
-        otp-version: 23.2
-        elixir-version: 1.11.3
+        elixir-version: "1.11.3"
+        otp-version: "23.2"
+       
     - uses: actions/cache@v1
       with:
         path: deps
