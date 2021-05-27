@@ -6,7 +6,7 @@ const MobileAboutPage: React.FC = () => {
       <iframe
         width="100%"
         height="256px"
-        src="https://www.youtube.com/embed/iVk7Va_hPis?autoplay=1&mute=1&start=43"
+        src="https://www.youtube.com/embed/iVk7Va_hPis?start=43"
         allow="autoplay"
       ></iframe>
       <p

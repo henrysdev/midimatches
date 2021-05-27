@@ -300,9 +300,10 @@ defmodule Midimatches.Utils do
         event_id
       )
       when event_type in [:round, :game] do
+    # minify recording json in preparation for db insert
     %Db.PlayerRecording{
       player_uuid: player_uuid,
-      recording: recording,
+      recording: minify_recording_json(recording),
       backing_track_uuid: backing_track_id,
       event_type: event_type,
       event_id: event_id
