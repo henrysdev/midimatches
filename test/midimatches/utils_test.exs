@@ -7,7 +7,10 @@ defmodule Midimatches.UtilsTest do
     Types.ClientGameState,
     Types.ClientRoomState,
     Types.GameRules,
+    Types.Note,
+    Types.Loop,
     Types.Player,
+    Types.TimestepSlice,
     Types.User,
     Types.WinResult,
     Utils
@@ -169,5 +172,157 @@ defmodule Midimatches.UtilsTest do
     }
 
     assert Utils.user_to_player(user) == expected_player
+  end
+
+  test "minify recording json" do
+    recording = %Loop{
+      timestep_size: 50,
+      timestep_slices: [
+        %TimestepSlice{
+          timestep: 10,
+          notes: [
+            %Note{
+              key: 11,
+              velocity: 100,
+              duration: 13
+            },
+            %Note{
+              key: 13,
+              velocity: 100,
+              duration: 14
+            }
+          ]
+        },
+        %TimestepSlice{
+          timestep: 14,
+          notes: [
+            %Note{
+              key: 53,
+              velocity: 85,
+              duration: 20
+            },
+            %Note{
+              key: 52,
+              velocity: 100,
+              duration: 11
+            }
+          ]
+        }
+      ]
+    }
+
+    minified_recording = Utils.minify_recording_json(recording)
+
+    assert minified_recording == %{
+             ts_size: 50,
+             ts_slices: [
+               %{
+                 ts: 10,
+                 ns: [
+                   %{
+                     k: 11,
+                     v: 100,
+                     d: 13
+                   },
+                   %{
+                     k: 13,
+                     v: 100,
+                     d: 14
+                   }
+                 ]
+               },
+               %{
+                 ts: 14,
+                 ns: [
+                   %{
+                     k: 53,
+                     v: 85,
+                     d: 20
+                   },
+                   %{
+                     k: 52,
+                     v: 100,
+                     d: 11
+                   }
+                 ]
+               }
+             ]
+           }
+  end
+
+  test "unminify recording json" do
+    recording = %{
+      ts_size: 50,
+      ts_slices: [
+        %{
+          ts: 10,
+          ns: [
+            %{
+              k: 11,
+              v: 100,
+              d: 13
+            },
+            %{
+              k: 13,
+              v: 100,
+              d: 14
+            }
+          ]
+        },
+        %{
+          ts: 14,
+          ns: [
+            %{
+              k: 53,
+              v: 85,
+              d: 20
+            },
+            %{
+              k: 52,
+              v: 100,
+              d: 11
+            }
+          ]
+        }
+      ]
+    }
+
+    unminified_recording = Utils.unminify_recording_json(recording)
+
+    assert unminified_recording == %Loop{
+             timestep_size: 50,
+             timestep_slices: [
+               %TimestepSlice{
+                 timestep: 10,
+                 notes: [
+                   %Note{
+                     key: 11,
+                     velocity: 100,
+                     duration: 13
+                   },
+                   %Note{
+                     key: 13,
+                     velocity: 100,
+                     duration: 14
+                   }
+                 ]
+               },
+               %TimestepSlice{
+                 timestep: 14,
+                 notes: [
+                   %Note{
+                     key: 53,
+                     velocity: 85,
+                     duration: 20
+                   },
+                   %Note{
+                     key: 52,
+                     velocity: 100,
+                     duration: 11
+                   }
+                 ]
+               }
+             ]
+           }
   end
 end
