@@ -24,8 +24,7 @@ defmodule MidimatchesWeb.RoomChannel do
   require Logger
 
   @loop_schema %Loop{
-    length: nil,
-    start_timestep: nil,
+    timestep_size: nil,
     timestep_slices: [
       %TimestepSlice{
         notes: [

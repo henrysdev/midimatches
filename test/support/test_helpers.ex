@@ -66,9 +66,8 @@ defmodule Midimatches.TestHelpers do
         {:record,
          {m_id,
           %Loop{
-            start_timestep: 0,
-            length: 4,
-            timestep_slices: []
+            timestep_slices: [],
+            timestep_size: 50
           }}}
       )
     end)

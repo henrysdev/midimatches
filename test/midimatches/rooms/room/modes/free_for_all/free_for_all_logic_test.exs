@@ -112,8 +112,8 @@ defmodule Midimatches.FreeForAllLogicTest do
       player_ids_set = MapSet.new(["1", "2", "3", "4"])
 
       event_payloads = [
-        {"1", %Loop{timestep_slices: [], length: 0, start_timestep: 0}},
-        {"2", %Loop{timestep_slices: [], length: 0, start_timestep: 0}}
+        {"1", %Loop{timestep_slices: [], timestep_size: 50}},
+        {"2", %Loop{timestep_slices: [], timestep_size: 50}}
       ]
 
       game_server_state = %GameInstance{
@@ -146,10 +146,10 @@ defmodule Midimatches.FreeForAllLogicTest do
         )
 
       expected_state_scan = [
-        {[%Loop{timestep_slices: [], length: 0, start_timestep: 0}], :recording},
+        {[%Loop{timestep_slices: [], timestep_size: 50}], :recording},
         {[
-           %Loop{timestep_slices: [], length: 0, start_timestep: 0},
-           %Loop{timestep_slices: [], length: 0, start_timestep: 0}
+           %Loop{timestep_slices: [], timestep_size: 50},
+           %Loop{timestep_slices: [], timestep_size: 50}
          ], :playback_voting}
       ]
 
@@ -632,6 +632,7 @@ defmodule Midimatches.FreeForAllLogicTest do
         %Midimatches.Types.RoundRecord{
           backing_track_id: "2cd44c1b-4c7f-4eee-984a-ab1bd54ae823",
           round_num: 2,
+          player_recordings: [],
           round_outcomes: [
             %Midimatches.Types.PlayerOutcome{
               event_type: :round,
@@ -650,6 +651,7 @@ defmodule Midimatches.FreeForAllLogicTest do
         %Midimatches.Types.RoundRecord{
           backing_track_id: "30f8cf65-c26c-41ba-bd64-028a0db5a425",
           round_num: 1,
+          player_recordings: [],
           round_outcomes: [
             %Midimatches.Types.PlayerOutcome{
               event_type: :round,

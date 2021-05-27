@@ -1,7 +1,6 @@
 {
   "basicBeatLoop": {
-    "startTimestep": 0,
-    "length": 16,
+    "timestepSize": 50,
     "timestepSlices": [
       {
         "timestep": 0,
@@ -15,8 +14,7 @@
     ]
   },
   "classicalLoopRH": {
-    "startTimestep": 0,
-    "length": 16,
+    "timestepSize": 50,
     "timestepSlices": [
       {
         "timestep": 0,
@@ -51,8 +49,7 @@
     ]
   },
   "classicalLoopLH": {
-    "startTimestep": 0,
-    "length": 16,
+    "timestepSize": 50,
     "timestepSlices": [
       {
         "timestep": 0,
@@ -93,8 +90,7 @@
     ]
   },
   "shortLoop": {
-    "startTimestep": 0,
-    "length": 4,
+    "timestepSize": 50,
     "timestepSlices": [
       {
         "timestep": 0,
@@ -117,8 +113,7 @@
     ]
   },
   "longLoop": {
-    "startTimestep": 2,
-    "length": 8,
+    "timestepSize": 50,
     "timestepSlices": [
       {
         "timestep": 0,
@@ -132,8 +127,7 @@
     ]
   },
   "defaultLoop": {
-    "startTimestep": 0,
-    "length": 8,
+    "timestepSize": 50,
     "timestepSlices": [
       {
         "timestep": 0,

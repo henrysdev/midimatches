@@ -150,10 +150,12 @@ export function useNoteRecorder({
     );
 
     // TODO format in a utility method rather than writing snake case here
+    const {
+      gameRules: { timestepSize },
+    } = internalStateRef.current as InternalState;
     const loop = {
       timestep_slices: timestepSlices,
-      start_timestep: 0,
-      length: length,
+      timestep_size: timestepSize,
     };
     submitRecording(loop);
     setInternalState({ recordedTimesteps: new Map(), isRecording: false });

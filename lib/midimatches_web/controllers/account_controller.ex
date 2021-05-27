@@ -4,13 +4,13 @@ defmodule MidimatchesWeb.AccountController do
   """
   use MidimatchesWeb, :controller
 
-  alias MidimatchesDb, as: Db
-
   alias MidimatchesWeb.{
     Auth,
     Email,
     RateLimiter
   }
+
+  alias MidimatchesDb, as: Db
 
   require Logger
 

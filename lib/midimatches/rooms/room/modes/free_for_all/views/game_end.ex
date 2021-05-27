@@ -21,16 +21,19 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.GameEnd do
   end
 
   @spec build_game_record(%GameInstance{}, game_end_reason()) :: %GameRecord{}
+  @doc """
+  Build a record of the game and its player outcomes to be persisted
+  """
   def build_game_record(
         %GameInstance{
           game_winners: game_winners,
-          player_ids_set: player_ids_set,
+          historic_player_ids_set: historic_player_ids_set,
           round_records: round_records,
           scores: scores
         },
         game_end_reason
       ) do
-    game_outcomes = build_game_outcomes(game_winners, player_ids_set, scores)
+    game_outcomes = build_game_outcomes(game_winners, historic_player_ids_set, scores)
 
     %GameRecord{
       game_outcomes: game_outcomes,
@@ -40,7 +43,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.GameEnd do
   end
 
   @spec build_game_outcomes(%WinResult{}, any(), any()) :: list(PlayerOutcome)
-  defp build_game_outcomes(game_winners, player_ids_set, scores) do
+  defp build_game_outcomes(game_winners, historic_player_ids_set, scores) do
     game_winners =
       if is_nil(game_winners) do
         RoundEnd.scores_to_win_result(scores)
@@ -57,7 +60,9 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.GameEnd do
         :won
       end
 
-    player_ids_set
+    # write a game outcome for every player that played in the game.
+    # players that left early will get a loss.
+    historic_player_ids_set
     |> Enum.to_list()
     |> Enum.map(fn player_id ->
       num_points = Map.get(scores, player_id, 0)

@@ -8,8 +8,7 @@ defmodule Midimatches.Types.Loop do
 
   @derive Jason.Encoder
   typedstruct enforce: true do
-    field(:start_timestep, integer())
-    field(:length, integer())
     field(:timestep_slices, list(%TimestepSlice{}))
+    field(:timestep_size, integer())
   end
 end

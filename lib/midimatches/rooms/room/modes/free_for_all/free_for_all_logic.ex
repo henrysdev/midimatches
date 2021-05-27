@@ -10,6 +10,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllLogic do
     Types.GameRecord,
     Types.GameRules,
     Types.Player,
+    Types.PlayerRecording,
     Types.RoundRecord,
     Utils
   }
@@ -233,7 +234,10 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllLogic do
 
   @spec save_round_record(%RoundRecord{}, %Db.GameRecord{}) :: :ok | {:error, any()}
   defp save_round_record(
-         %RoundRecord{round_outcomes: round_outcomes} = round_record,
+         %RoundRecord{
+           round_outcomes: round_outcomes,
+           player_recordings: player_recordings
+         } = round_record,
          %Db.GameRecord{} = inserted_game_record
        ) do
     create_round_record_db_resp =
@@ -241,12 +245,30 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllLogic do
       |> Utils.round_record_to_db_round_record()
       |> Db.RoundRecords.add_round_record_for_game(inserted_game_record)
 
-    case create_round_record_db_resp do
-      {:ok, inserted_round_record} ->
-        save_round_outcomes(round_outcomes, inserted_round_record)
-
+    with {:ok, inserted_round_record} <- create_round_record_db_resp,
+         :ok <- save_round_outcomes(round_outcomes, inserted_round_record),
+         :ok <- save_player_recordings(player_recordings, inserted_round_record) do
+      :ok
+    else
       {:error, reason} ->
         Logger.error(reason)
+    end
+  end
+
+  @spec save_player_recordings(list(PlayerRecording), %Db.RoundRecord{}) ::
+          :ok | {:error, any()}
+  def save_player_recordings(player_recordings, %Db.RoundRecord{id: round_id}) do
+    player_recordings_to_insert =
+      Enum.map(player_recordings, fn recording ->
+        recording
+        |> Utils.player_recording_to_db_player_recording(:round, round_id)
+      end)
+
+    db_resp = Db.PlayerRecordings.bulk_create_player_recordings(player_recordings_to_insert)
+
+    case db_resp do
+      {:error, reason} -> Logger.error(reason)
+      _ -> :ok
     end
   end
 

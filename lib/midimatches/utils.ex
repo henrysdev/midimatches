@@ -12,9 +12,13 @@ defmodule Midimatches.Utils do
     Types.ClientRoomState,
     Types.ClientUser,
     Types.GameRecord,
+    Types.Loop,
+    Types.Note,
     Types.Player,
     Types.PlayerOutcome,
+    Types.PlayerRecording,
     Types.RoundRecord,
+    Types.TimestepSlice,
     Types.User,
     Types.WinResult
   }
@@ -278,6 +282,71 @@ defmodule Midimatches.Utils do
       num_points: num_points,
       event_type: event_type,
       event_id: event_id
+    }
+  end
+
+  @spec player_recording_to_db_player_recording(%PlayerRecording{}, event_type(), id()) ::
+          %Db.PlayerRecording{}
+  @doc """
+  Cast a player recording to a db player outcome
+  """
+  def player_recording_to_db_player_recording(
+        %PlayerRecording{
+          player_id: player_uuid,
+          recording: recording,
+          backing_track_id: backing_track_id
+        },
+        event_type,
+        event_id
+      )
+      when event_type in [:round, :game] do
+    # minify recording json in preparation for db insert
+    %Db.PlayerRecording{
+      player_uuid: player_uuid,
+      recording: minify_recording_json(recording),
+      backing_track_uuid: backing_track_id,
+      event_type: event_type,
+      event_id: event_id
+    }
+  end
+
+  @spec minify_recording_json(%Loop{}) :: map()
+  @doc """
+  Minify the aussie toy mini
+  """
+  def minify_recording_json(%Loop{timestep_slices: ts_slices, timestep_size: ts_size}) do
+    %{
+      ts_size: ts_size,
+      ts_slices:
+        Enum.map(ts_slices, fn %TimestepSlice{timestep: ts, notes: ns} ->
+          %{
+            ts: ts,
+            ns:
+              Enum.map(ns, fn %Note{key: k, velocity: v, duration: d} ->
+                %{k: k, v: v, d: d}
+              end)
+          }
+        end)
+    }
+  end
+
+  @spec unminify_recording_json(map()) :: %Loop{}
+  @doc """
+  Unminify recording json
+  """
+  def unminify_recording_json(%{ts_slices: timestep_slices, ts_size: timestep_size}) do
+    %Loop{
+      timestep_size: timestep_size,
+      timestep_slices:
+        Enum.map(timestep_slices, fn %{ts: timestep, ns: notes} ->
+          %TimestepSlice{
+            timestep: timestep,
+            notes:
+              Enum.map(notes, fn %{k: key, v: velocity, d: duration} ->
+                %Note{key: key, velocity: velocity, duration: duration}
+              end)
+          }
+        end)
     }
   end
 end
