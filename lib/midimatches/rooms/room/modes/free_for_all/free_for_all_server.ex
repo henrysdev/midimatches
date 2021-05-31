@@ -243,6 +243,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllServer do
 
   @spec broadcast_start_game(%GameInstance{}) :: %GameInstance{}
   defp broadcast_start_game(%GameInstance{room_id: room_id} = state) do
+    # TODO send game start message to bots
     MidimatchesWeb.Endpoint.broadcast("room:#{room_id}", "start_game", %{
       game_state: Utils.server_to_client_game_state(state)
     })
@@ -252,6 +253,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.FreeForAllServer do
 
   @spec broadcast_gamestate(%GameInstance{}) :: %GameInstance{}
   defp broadcast_gamestate(%GameInstance{room_id: room_id} = state) do
+    # TODO send gamestate update message to bots
     MidimatchesWeb.Endpoint.broadcast("room:#{room_id}", "game_update", %{
       game_state: Utils.server_to_client_game_state(state)
     })

@@ -316,14 +316,14 @@ defmodule Midimatches.Utils do
   """
   def minify_recording_json(%Loop{timestep_slices: ts_slices, timestep_size: ts_size}) do
     %{
-      ts_size: ts_size,
-      ts_slices:
+      "ts_size" => ts_size,
+      "ts_slices" =>
         Enum.map(ts_slices, fn %TimestepSlice{timestep: ts, notes: ns} ->
           %{
-            ts: ts,
-            ns:
+            "ts" => ts,
+            "ns" =>
               Enum.map(ns, fn %Note{key: k, velocity: v, duration: d} ->
-                %{k: k, v: v, d: d}
+                %{"k" => k, "v" => v, "d" => d}
               end)
           }
         end)
@@ -334,15 +334,15 @@ defmodule Midimatches.Utils do
   @doc """
   Unminify recording json
   """
-  def unminify_recording_json(%{ts_slices: timestep_slices, ts_size: timestep_size}) do
+  def unminify_recording_json(%{"ts_slices" => timestep_slices, "ts_size" => timestep_size}) do
     %Loop{
       timestep_size: timestep_size,
       timestep_slices:
-        Enum.map(timestep_slices, fn %{ts: timestep, ns: notes} ->
+        Enum.map(timestep_slices, fn %{"ts" => timestep, "ns" => notes} ->
           %TimestepSlice{
             timestep: timestep,
             notes:
-              Enum.map(notes, fn %{k: key, v: velocity, d: duration} ->
+              Enum.map(notes, fn %{"k" => key, "v" => velocity, "d" => duration} ->
                 %Note{key: key, velocity: velocity, duration: duration}
               end)
           }
