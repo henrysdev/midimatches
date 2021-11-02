@@ -18,11 +18,12 @@ const DuplicateSessionAlert: React.FC<DuplicateSessionAlertProps> = ({
   userChannel,
 }) => {
   useEffect(() => {
-    if (!!userChannel) {
-      userChannel.on(DUPLICATE_SESSION_EVENT, (body) => {
-        setShowDuplicateSessionAlert(true);
-      });
-    }
+    // Bug causing frequent false duplicate session detection... comment out for now
+    // if (!!userChannel) {
+    //   userChannel.on(DUPLICATE_SESSION_EVENT, (body) => {
+    //     setShowDuplicateSessionAlert(true);
+    //   });
+    // }
   }, [userChannel]);
 
   const [

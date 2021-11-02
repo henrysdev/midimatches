@@ -8,6 +8,8 @@ defmodule MidimatchesDb.PlayerRecordings do
     Repo
   }
 
+  # import Ecto.Query
+
   @spec create_player_recording(%PlayerRecording{}) :: %PlayerRecording{}
   @doc """
   Insert a new player recording
@@ -41,4 +43,16 @@ defmodule MidimatchesDb.PlayerRecordings do
       :ok
     end
   end
+
+  # def get_random_recording do
+  #   query =
+  #     from(track in PlayerRecording,
+  #       select: track,
+  #       limit: 1,
+  #       order_by: fragment("RANDOM()")
+  #     )
+
+  #   [%PlayerRecording{recording: recording}] = Repo.all(query)
+  #   recording
+  # end
 end

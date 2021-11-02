@@ -214,35 +214,35 @@ defmodule Midimatches.UtilsTest do
     minified_recording = Utils.minify_recording_json(recording)
 
     assert minified_recording == %{
-             ts_size: 50,
-             ts_slices: [
+             "ts_size" => 50,
+             "ts_slices" => [
                %{
-                 ts: 10,
-                 ns: [
+                 "ts" => 10,
+                 "ns" => [
                    %{
-                     k: 11,
-                     v: 100,
-                     d: 13
+                     "k" => 11,
+                     "v" => 100,
+                     "d" => 13
                    },
                    %{
-                     k: 13,
-                     v: 100,
-                     d: 14
+                     "k" => 13,
+                     "v" => 100,
+                     "d" => 14
                    }
                  ]
                },
                %{
-                 ts: 14,
-                 ns: [
+                 "ts" => 14,
+                 "ns" => [
                    %{
-                     k: 53,
-                     v: 85,
-                     d: 20
+                     "k" => 53,
+                     "v" => 85,
+                     "d" => 20
                    },
                    %{
-                     k: 52,
-                     v: 100,
-                     d: 11
+                     "k" => 52,
+                     "v" => 100,
+                     "d" => 11
                    }
                  ]
                }
@@ -252,35 +252,35 @@ defmodule Midimatches.UtilsTest do
 
   test "unminify recording json" do
     recording = %{
-      ts_size: 50,
-      ts_slices: [
+      "ts_size" => 50,
+      "ts_slices" => [
         %{
-          ts: 10,
-          ns: [
+          "ts" => 10,
+          "ns" => [
             %{
-              k: 11,
-              v: 100,
-              d: 13
+              "k" => 11,
+              "v" => 100,
+              "d" => 13
             },
             %{
-              k: 13,
-              v: 100,
-              d: 14
+              "k" => 13,
+              "v" => 100,
+              "d" => 14
             }
           ]
         },
         %{
-          ts: 14,
-          ns: [
+          "ts" => 14,
+          "ns" => [
             %{
-              k: 53,
-              v: 85,
-              d: 20
+              "k" => 53,
+              "v" => 85,
+              "d" => 20
             },
             %{
-              k: 52,
-              v: 100,
-              d: 11
+              "k" => 52,
+              "v" => 100,
+              "d" => 11
             }
           ]
         }
