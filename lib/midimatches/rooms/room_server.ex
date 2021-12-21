@@ -10,6 +10,7 @@ defmodule Midimatches.Rooms.RoomServer do
   alias __MODULE__
 
   alias Midimatches.{
+    ChatServer,
     Pids,
     Rooms.Room.Game,
     Rooms.Room.GameInstance,
@@ -338,6 +339,12 @@ defmodule Midimatches.Rooms.RoomServer do
         }
       ) do
     Game.stop_game(game)
+
+    chat_server = Pids.fetch({:chat_server, room_id})
+
+    if chat_server != nil do
+      ChatServer.clear_chat_history(chat_server)
+    end
 
     state = %RoomServer{
       room_id: room_id,

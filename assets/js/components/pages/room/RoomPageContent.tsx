@@ -54,7 +54,7 @@ const RoomPageContent: React.FC<RoomPageContentProps> = ({
 }) => {
   const toneAudioContext = useAudioContextProvider();
   const keyboardInputContext = useKeyboardInputContextProvider();
-  const [chatHistory, handleChatMessage] = useChat();
+  const [chatHistory, handleChatMessage, messageCounter] = useChat();
 
   const [gameInProgress, setGameInProgress] = useState<boolean>(false);
   const [currPlayer, setCurrPlayer] = useState<Player>();
@@ -197,7 +197,7 @@ const RoomPageContent: React.FC<RoomPageContentProps> = ({
             }}
           >
             <ChatContext.Provider
-              value={{ chatHistory, submitChatMessageEvent }}
+              value={{ chatHistory, submitChatMessageEvent, messageCounter }}
             >
               {!!channel && !!currPlayer && !!initGameState ? (
                 <Game

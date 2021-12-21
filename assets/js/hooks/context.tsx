@@ -37,7 +37,6 @@ import {
   BrowserCompatibilityContextType,
   BackingTrackContextType,
 } from "../types";
-import { Player } from "tone";
 
 export function useGameContext() {
   return useContext(GameContext) as GameContextType;

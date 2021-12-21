@@ -255,6 +255,7 @@ type GameContextType = GameState;
 export interface ChatContextType {
   chatHistory: ChatMessage[];
   submitChatMessageEvent: (messageText: string) => void;
+  messageCounter: number;
 }
 
 export interface GameViewContextType {

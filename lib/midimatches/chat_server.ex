@@ -49,6 +49,11 @@ defmodule Midimatches.ChatServer do
     GenServer.call(pid, {:chat_history, msg_count})
   end
 
+  @spec clear_chat_history(pid()) :: %ChatServer{}
+  def clear_chat_history(pid) do
+    GenServer.call(pid, {:clear_chat_history})
+  end
+
   @impl true
   def handle_call(
         {:incoming_chat_message, chat_msg},
@@ -86,5 +91,15 @@ defmodule Midimatches.ChatServer do
       |> Enum.reverse()
 
     {:reply, chat_msg_history_list, state}
+  end
+
+  @impl true
+  def handle_call(
+        {:clear_chat_history},
+        _from,
+        %ChatServer{} = state
+      ) do
+    state = %ChatServer{state | chat_msg_history: :queue.new()}
+    {:reply, state, state}
   end
 end

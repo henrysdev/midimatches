@@ -138,4 +138,44 @@ defmodule Midimatches.ChatServerTest do
       assert actual_chat_history == expected_chat_history
     end
   end
+
+  describe "clear chat history" do
+    test "clears all history" do
+      {:ok, chat_server} = start_supervised({ChatServer, [{"123"}]})
+
+      :sys.replace_state(chat_server, fn state ->
+        %ChatServer{
+          state
+          | chat_msg_history:
+              :queue.from_list([
+                %ChatMessage{
+                  sender_id: "abc123",
+                  sender_alias: "ooga",
+                  is_audience_member: false,
+                  timestamp: 111,
+                  message_text: "hello all!"
+                },
+                %ChatMessage{
+                  sender_id: "def123",
+                  sender_alias: "oobbga",
+                  is_audience_member: false,
+                  timestamp: 121,
+                  message_text: "heasllo all!"
+                },
+                %ChatMessage{
+                  sender_id: "ghi123",
+                  sender_alias: "ooaabbga",
+                  is_audience_member: false,
+                  timestamp: 131,
+                  message_text: "h11easllo all!"
+                }
+              ])
+        }
+      end)
+
+      ChatServer.clear_chat_history(chat_server)
+
+      assert ChatServer.chat_history(chat_server) == []
+    end
+  end
 end

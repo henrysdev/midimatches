@@ -1,14 +1,20 @@
-import React, { memo, useState, useEffect } from "react";
+import React, { memo, useState, useMemo, useEffect } from "react";
 import {
   useGameContext,
   usePlayerContext,
   usePlayersContext,
   useScoresContext,
+  useChatContext,
 } from "../../../../hooks";
 import { Scoreboard } from "./Scoreboard";
-import { Player } from "../../../../types";
+import { Player, ChatMessage } from "../../../../types";
 import { GameSettings } from ".";
-import { ChatBox, ContentButton, InlineWidthButton } from "../../../common";
+import {
+  ChatBox,
+  ContentButton,
+  InlineWidthButton,
+  SmallTextBadge,
+} from "../../../common";
 
 interface GameLeftPaneProps {}
 
@@ -22,10 +28,24 @@ const GameLeftPane: React.FC<GameLeftPaneProps> = memo(({}) => {
   const { players = [] } = usePlayersContext();
   const { scores } = useScoresContext();
   const { player: currPlayer } = usePlayerContext();
-
   const [columnView, setColumnView] = useState<ColumnView>(
     ColumnView.SCOREBOARD
   );
+  const { messageCounter } = useChatContext();
+  const [unreadChatsCount, setUnreadChatsCount] = useState<number>(-1);
+  useEffect(() => {
+    if (columnView === ColumnView.CHAT) {
+      setUnreadChatsCount(0);
+    }
+  }, [columnView]);
+
+  useEffect(() => {
+    if (columnView === ColumnView.CHAT) {
+      setUnreadChatsCount(0);
+    } else {
+      setUnreadChatsCount((v) => v + 1);
+    }
+  }, [messageCounter]);
 
   return (
     <div className="left_game_multi_container">
@@ -51,7 +71,14 @@ const GameLeftPane: React.FC<GameLeftPaneProps> = memo(({}) => {
             }
             onClick={() => setColumnView(ColumnView.CHAT)}
           >
-            <h5 style={{ textAlign: "center" }}>Chat</h5>
+            <h5 style={{ textAlign: "center" }}>
+              Chat
+              {!!unreadChatsCount ? (
+                <SmallTextBadge>{unreadChatsCount}</SmallTextBadge>
+              ) : (
+                <></>
+              )}
+            </h5>
           </div>
         </div>
         <div className="multi_use_item_wrapper">
