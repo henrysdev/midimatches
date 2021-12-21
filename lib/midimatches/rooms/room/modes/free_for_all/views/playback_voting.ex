@@ -6,6 +6,8 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.PlaybackVoting do
   alias Midimatches.{
     Rooms.Room.GameInstance,
     Rooms.Room.Modes.FreeForAll.FreeForAllLogic,
+    Types.GameRules,
+    Types.GameRules.ViewTimeouts,
     Types.WinResult,
     Utils
   }
@@ -25,7 +27,16 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.PlaybackVoting do
   Take care of any unfinished business before advancing view.
   """
   def advance_view(
-        %GameInstance{game_view: :playback_voting, round_winners: round_winners} = state
+        %GameInstance{
+          game_view: :playback_voting,
+          game_rules:
+            %GameRules{
+              view_timeouts: view_timeouts
+            } = game_rules,
+          sample_beats: sample_beats,
+          round_winners: round_winners,
+          round_num: round_num
+        } = state
       ) do
     # address case where last vote has not yet been encountered and therefore round winner has not
     # yet been calculated
@@ -35,6 +46,21 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.PlaybackVoting do
       else
         state
       end
+
+    # calculate round end time to accommodate playing back the winning track
+    current_sample_beat = Enum.at(sample_beats, round_num - 1)
+    sample_time = Utils.calc_sample_time(current_sample_beat.bpm)
+
+    state = %GameInstance{
+      state
+      | game_rules: %GameRules{
+          game_rules
+          | view_timeouts: %ViewTimeouts{
+              view_timeouts
+              | round_end: sample_time
+            }
+        }
+    }
 
     %GameInstance{state | game_view: :round_end}
   end

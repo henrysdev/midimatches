@@ -1,9 +1,12 @@
 defmodule Midimatches.PlaybackVotingTest do
   use ExUnit.Case
 
+  alias MidimatchesDb.BackingTrack
+
   alias Midimatches.{
     Rooms.Room.GameInstance,
     Rooms.Room.Modes.FreeForAll.Views.PlaybackVoting,
+    Types.GameRules,
     Types.Player,
     Types.WinResult
   }
@@ -40,7 +43,18 @@ defmodule Midimatches.PlaybackVotingTest do
       game_view: :playback_voting,
       contestants: contestants,
       votes: %{},
-      sample_beats: []
+      sample_beats: [
+        %BackingTrack{
+          name: "footrack",
+          author: "barsician",
+          bpm: 110,
+          musical_key: "C",
+          file_url: "www.asdfasd.com/jalkasdg/das"
+        }
+      ],
+      game_rules: %GameRules{
+        rounds_to_win: 3
+      }
     }
 
     %GameInstance{

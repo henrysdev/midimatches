@@ -141,7 +141,12 @@ const Game: React.FC<GameProps> = ({
                   );
 
                 case GAME_VIEW.ROUND_END:
-                  return <RoundEndView />;
+                  return (
+                    <RoundEndView
+                      isSamplePlayerLoaded={isSamplePlayerLoaded}
+                      stopSample={stopSample}
+                    />
+                  );
 
                 case GAME_VIEW.GAME_END:
                   return <GameEndView />;
