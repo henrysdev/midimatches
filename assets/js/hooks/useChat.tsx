@@ -2,7 +2,13 @@ import { useEffect, useState, useMemo, useRef } from "react";
 import { ChatMessage } from "../types";
 import { MAX_CHAT_HISTORY_LENGTH } from "../constants";
 
-export function useChat() {
+type ChatTuple = [
+  Array<ChatMessage>,
+  (newMessage: ChatMessage) => void,
+  number
+];
+
+export function useChat(): ChatTuple {
   const [_chatHistory, setChatHistory] = useState<Array<ChatMessage>>([]);
   const chatHistoryRef = useRef<Array<ChatMessage>>([]);
   const [_msgCounter, setCurrMsg] = useState<number>(0);
@@ -32,9 +38,5 @@ export function useChat() {
     });
   };
 
-  return {
-    chatHistory: chatHistoryRef.current,
-    handleChatMessage,
-    messageCounter: msgCounterRef.current,
-  };
+  return [chatHistoryRef.current, handleChatMessage, msgCounterRef.current];
 }
