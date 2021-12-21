@@ -54,7 +54,7 @@ const RoomPageContent: React.FC<RoomPageContentProps> = ({
 }) => {
   const toneAudioContext = useAudioContextProvider();
   const keyboardInputContext = useKeyboardInputContextProvider();
-  const [chatHistory, handleChatMessage] = useChat();
+  const chatContext = useChat();
 
   const [gameInProgress, setGameInProgress] = useState<boolean>(false);
   const [currPlayer, setCurrPlayer] = useState<Player>();
@@ -131,7 +131,7 @@ const RoomPageContent: React.FC<RoomPageContentProps> = ({
     // receive chat
     channel.on(NEW_CHAT_MESSAGES_EVENT, (body) => {
       const { chatMessages } = unmarshalBody(body) as NewChatMessagePayload;
-      chatMessages.forEach((chatMsg) => handleChatMessage(chatMsg));
+      chatMessages.forEach((chatMsg) => chatContext.handleChatMessage(chatMsg));
     });
 
     // lobby update
@@ -196,9 +196,7 @@ const RoomPageContent: React.FC<RoomPageContentProps> = ({
               isAudienceMember,
             }}
           >
-            <ChatContext.Provider
-              value={{ chatHistory, submitChatMessageEvent }}
-            >
+            <ChatContext.Provider value={chatContext}>
               {!!channel && !!currPlayer && !!initGameState ? (
                 <Game
                   gameChannel={channel}
