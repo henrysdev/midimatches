@@ -50,7 +50,7 @@ const RoundEndView: React.FC<RoundEndViewProps> = ({
       );
       setWinningPlayers(newWinningPlayers);
     }
-  }, [roundWinners]);
+  }, [roundNum]);
 
   const soleWinner = useMemo(() => {
     if (!!winningPlayers && !!recordings && winningPlayers.length === 1) {
