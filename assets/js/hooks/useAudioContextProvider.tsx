@@ -115,6 +115,7 @@ export function useAudioContextProvider(): ToneAudioContextType {
     samplePlayer,
     loadSample,
     stopSample,
+    batchLoadSamples,
   ] = useSamplePlayer(Tone, recorder);
 
   const resetTone = () => {
@@ -133,6 +134,7 @@ export function useAudioContextProvider(): ToneAudioContextType {
     synth,
     samplePlayer,
     loadSample,
+    batchLoadSamples,
     stopSample,
     resetTone,
     isSamplePlayerLoaded,

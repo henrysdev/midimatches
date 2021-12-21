@@ -215,6 +215,7 @@ export interface ToneAudioContextType {
   synth: any;
   samplePlayer: any;
   loadSample: Function;
+  batchLoadSamples: Function;
   stopSample: Function;
   resetTone: Function;
   isSamplePlayerLoaded: boolean;
