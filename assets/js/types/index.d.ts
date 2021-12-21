@@ -155,7 +155,7 @@ export interface LeaderboardRow {
   totalGames: number;
 }
 
-type RecordingTuple = [string, any];
+export type RecordingTuple = [string, any];
 type ScoreTuple = [string, number];
 
 ///////////////////////////////////////////////////////////////////////////////

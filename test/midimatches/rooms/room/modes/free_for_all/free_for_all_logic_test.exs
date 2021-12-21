@@ -9,6 +9,7 @@ defmodule Midimatches.FreeForAllLogicTest do
     Rooms.Room.GameInstance,
     Rooms.Room.Modes.FreeForAll.FreeForAllLogic,
     TestHelpers,
+    Types.GameRules,
     Types.Loop,
     Types.Player
   }
@@ -229,8 +230,24 @@ defmodule Midimatches.FreeForAllLogicTest do
         game_view: :playback_voting,
         contestants: contestants,
         round_num: 3,
-        game_rules: %{rounds_to_win: 3},
+        game_rules: %GameRules{
+          rounds_to_win: 3
+        },
         sample_beats: [
+          %BackingTrack{
+            name: "footrack",
+            author: "barsician",
+            bpm: 110,
+            musical_key: "C",
+            file_url: "www.asdfasd.com/jalkasdg/das"
+          },
+          %BackingTrack{
+            name: "footrack",
+            author: "barsician",
+            bpm: 110,
+            musical_key: "C",
+            file_url: "www.asdfasd.com/jalkasdg/das"
+          },
           %BackingTrack{
             name: "footrack",
             author: "barsician",
