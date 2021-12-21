@@ -1,11 +1,21 @@
 import { useState, useEffect, useMemo } from "react";
+import { useAudioBufferCache } from "./useAudioBufferCache";
 import { DEFAULT_SAMPLE_VOLUME } from "../constants";
+import { ToneAudioBuffer } from "tone";
 
-type SamplePlayerTuple = [boolean, any, (url: string) => void, () => void];
+type SamplePlayerTuple = [
+  boolean,
+  any,
+  (url: string) => void,
+  () => void,
+  (urls: string[]) => void
+];
 
 export function useSamplePlayer(Tone: any, recorder: any): SamplePlayerTuple {
   const [loadedSampleName, setLoadedSampleName] = useState<string>();
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
+
+  const [audioBufferCache, populateBufferCache] = useAudioBufferCache();
 
   const samplePlayer = useMemo(() => {
     const newSamplePlayer = new Tone.Player({
@@ -19,11 +29,25 @@ export function useSamplePlayer(Tone: any, recorder: any): SamplePlayerTuple {
 
   const loadSample = async (sampleBeatFilename: string) => {
     if (!!samplePlayer && sampleBeatFilename !== loadedSampleName) {
-      setIsLoaded(false);
-      await samplePlayer.load(sampleBeatFilename);
+      const audioBuffer = audioBufferCache.get(sampleBeatFilename);
+
+      if (!!audioBuffer) {
+        samplePlayer.set({
+          buffer: audioBuffer,
+        });
+      } else {
+        setIsLoaded(false);
+        await samplePlayer.load(sampleBeatFilename);
+        setIsLoaded(true);
+      }
       setLoadedSampleName(sampleBeatFilename);
-      setIsLoaded(true);
     }
+  };
+
+  const batchLoadSamples = async (sampleUrls: string[]) => {
+    setIsLoaded(false);
+    await populateBufferCache(sampleUrls);
+    setIsLoaded(true);
   };
 
   const stopSample = () => {
@@ -33,5 +57,5 @@ export function useSamplePlayer(Tone: any, recorder: any): SamplePlayerTuple {
     }
   };
 
-  return [isLoaded, samplePlayer, loadSample, stopSample];
+  return [isLoaded, samplePlayer, loadSample, stopSample, batchLoadSamples];
 }

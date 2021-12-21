@@ -50,6 +50,7 @@ const Game: React.FC<GameProps> = ({
     loadSample,
     stopSample,
     resetTone,
+    batchLoadSamples,
   } = useToneAudioContext();
 
   const [joinedMidRecording, setJoinedMidRecording] = useState<boolean>(true);
@@ -61,6 +62,12 @@ const Game: React.FC<GameProps> = ({
   const sampleName = useMemo(() => {
     return currBackingTrack.name;
   }, [currBackingTrack]);
+
+  useEffect(() => {
+    if (!!gameContext.sampleBeats) {
+      batchLoadSamples(gameContext.sampleBeats.map(({ fileUrl }) => fileUrl));
+    }
+  }, []);
 
   useEffect(() => {
     switch (currentView) {
