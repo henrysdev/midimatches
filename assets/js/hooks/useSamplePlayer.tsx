@@ -38,16 +38,14 @@ export function useSamplePlayer(Tone: any, recorder: any): SamplePlayerTuple {
       } else {
         setIsLoaded(false);
         await samplePlayer.load(sampleBeatFilename);
-        setIsLoaded(true);
       }
+      setIsLoaded(true);
       setLoadedSampleName(sampleBeatFilename);
     }
   };
 
   const batchLoadSamples = async (sampleUrls: string[]) => {
-    setIsLoaded(false);
     await populateBufferCache(sampleUrls);
-    setIsLoaded(true);
   };
 
   const stopSample = () => {
