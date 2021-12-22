@@ -11,7 +11,25 @@ defmodule Midimatches.FreeForAllLogicTest do
     TestHelpers,
     Types.GameRules,
     Types.Loop,
-    Types.Player
+    Types.Note,
+    Types.Player,
+    Types.TimestepSlice
+  }
+
+  @recording_default %Loop{
+    timestep_size: 50,
+    timestep_slices: [
+      %TimestepSlice{
+        timestep: 20,
+        notes: [
+          %Note{
+            key: 10,
+            duration: 20,
+            velocity: 100
+          }
+        ]
+      }
+    ]
   }
 
   setup do
@@ -113,8 +131,8 @@ defmodule Midimatches.FreeForAllLogicTest do
       player_ids_set = MapSet.new(["1", "2", "3", "4"])
 
       event_payloads = [
-        {"1", %Loop{timestep_slices: [], timestep_size: 50}},
-        {"2", %Loop{timestep_slices: [], timestep_size: 50}}
+        {"1", @recording_default},
+        {"2", @recording_default}
       ]
 
       game_server_state = %GameInstance{
@@ -147,10 +165,10 @@ defmodule Midimatches.FreeForAllLogicTest do
         )
 
       expected_state_scan = [
-        {[%Loop{timestep_slices: [], timestep_size: 50}], :recording},
+        {[@recording_default], :recording},
         {[
-           %Loop{timestep_slices: [], timestep_size: 50},
-           %Loop{timestep_slices: [], timestep_size: 50}
+           @recording_default,
+           @recording_default
          ], :playback_voting}
       ]
 
@@ -172,6 +190,12 @@ defmodule Midimatches.FreeForAllLogicTest do
         player_ids_set: player_ids_set,
         game_view: :playback_voting,
         contestants: ["1", "2", "3", "4"],
+        recordings: %{
+          "1" => @recording_default,
+          "2" => @recording_default,
+          "3" => @recording_default,
+          "4" => @recording_default
+        },
         sample_beats: [
           %BackingTrack{
             name: "footrack",
@@ -203,7 +227,7 @@ defmodule Midimatches.FreeForAllLogicTest do
         {%{"1" => "4", "2" => "1", "3" => "1", "4" => "1"}, nil, :round_end}
       ]
 
-      assert Enum.reverse(actual_state_scan) == expected_state_scan
+      assert expected_state_scan == Enum.reverse(actual_state_scan)
     end
 
     test "have invalid votes that are not counted" do
@@ -232,6 +256,12 @@ defmodule Midimatches.FreeForAllLogicTest do
         round_num: 3,
         game_rules: %GameRules{
           rounds_to_win: 3
+        },
+        recordings: %{
+          "1" => @recording_default,
+          "2" => @recording_default,
+          "3" => @recording_default,
+          "4" => @recording_default
         },
         sample_beats: [
           %BackingTrack{

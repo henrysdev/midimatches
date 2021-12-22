@@ -349,4 +349,10 @@ defmodule Midimatches.Utils do
         end)
     }
   end
+
+  @spec empty_recording?(%Loop{}) :: boolean()
+  @doc """
+  Returns truthy on whether or not the given recording is empty
+  """
+  def empty_recording?(%Loop{timestep_slices: ts}), do: Enum.empty?(ts)
 end

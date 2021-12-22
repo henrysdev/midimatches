@@ -54,14 +54,12 @@ const RoundEndView: React.FC<RoundEndViewProps> = ({
 
   const soleWinner = useMemo(() => {
     if (!!winningPlayers && !!recordings && winningPlayers.length === 1) {
-      console.log({ recordings });
       const soleRoundWinnerPlayerId = winningPlayers[0].playerId;
+      const recordingIdx = recordings.findIndex((r: RecordingTuple) =>
+        !!r ? r[0] === soleRoundWinnerPlayerId : false
+      );
       const soleRoundWinnerRecording =
-        recordings[
-          recordings.findIndex(
-            (r: RecordingTuple) => r[0] === soleRoundWinnerPlayerId
-          )
-        ][1];
+        recordingIdx === -1 ? undefined : recordings[recordingIdx][1];
       console.log({ soleRoundWinnerRecording });
       return {
         playerId: soleRoundWinnerPlayerId,
@@ -83,7 +81,10 @@ const RoundEndView: React.FC<RoundEndViewProps> = ({
               roundNum={roundNum}
               endOfGame={false}
             />
-            {!!recordings && !!soleWinner && !!isSamplePlayerLoaded ? (
+            {!!recordings &&
+            !!soleWinner &&
+            !!isSamplePlayerLoaded &&
+            !!soleWinner.recording ? (
               <PlaybackAudio
                 isCurrPlayer={
                   !!currPlayer && currPlayer.playerId === soleWinner.playerId

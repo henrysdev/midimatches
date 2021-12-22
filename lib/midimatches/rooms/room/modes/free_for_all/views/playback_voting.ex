@@ -127,7 +127,11 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.PlaybackVoting do
 
   @spec update_scores(%GameInstance{}) :: %GameInstance{}
   def update_scores(
-        %GameInstance{votes: votes, scores: scores, player_ids_set: player_ids_set} = state
+        %GameInstance{
+          votes: votes,
+          scores: scores,
+          player_ids_set: player_ids_set
+        } = state
       ) do
     scores =
       Enum.reduce(
@@ -148,7 +152,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.PlaybackVoting do
   @spec votes_to_win_result(votes_map(), MapSet.t(id)) :: %WinResult{}
   @doc """
   Transform a votes map into win result struct. Filters out votes for players that are no
-  longer in the game.
+  longer in the game, and votes for players with empty recordings.
   """
   def votes_to_win_result(votes, current_players_set) do
     vote_freq_list =

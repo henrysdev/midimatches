@@ -325,4 +325,40 @@ defmodule Midimatches.UtilsTest do
              ]
            }
   end
+
+  describe "empty recording" do
+    test "when recording not empty should return false" do
+      recording = %Loop{
+        timestep_size: 50,
+        timestep_slices: [
+          %TimestepSlice{
+            timestep: 10,
+            notes: [
+              %Note{
+                key: 11,
+                velocity: 100,
+                duration: 13
+              },
+              %Note{
+                key: 13,
+                velocity: 100,
+                duration: 14
+              }
+            ]
+          }
+        ]
+      }
+
+      assert Utils.empty_recording?(recording) == false
+    end
+
+    test "when recording empty should return true" do
+      recording = %Loop{
+        timestep_size: 50,
+        timestep_slices: []
+      }
+
+      assert Utils.empty_recording?(recording) == true
+    end
+  end
 end

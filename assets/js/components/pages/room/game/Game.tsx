@@ -76,6 +76,7 @@ const Game: React.FC<GameProps> = ({
       case GAME_VIEW.ROUND_START:
         setJoinedMidRecording(false);
         loadSample(currBackingTrack.fileUrl);
+        resetTone();
         break;
       case GAME_VIEW.RECORDING:
         loadSample(currBackingTrack.fileUrl);

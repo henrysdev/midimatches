@@ -8,7 +8,6 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.Recording do
     Rooms.Room.Modes.FreeForAll.FreeForAllLogic,
     Types.GameRules,
     Types.GameRules.ViewTimeouts,
-    Types.Loop,
     Utils
   }
 
@@ -34,19 +33,16 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.Recording do
           round_num: round_num
         } = state
       ) do
-    # handle special case where we want to calculate length of playback voting timeout
-    # based on how many players are in the game
-    number_of_recordings_with_content =
+    current_sample_beat = Enum.at(sample_beats, round_num - 1)
+
+    valid_recordings =
       recordings
       |> Map.to_list()
-      |> Enum.reject(fn {_key, %Loop{timestep_slices: ts}} -> Enum.empty?(ts) end)
-      |> length()
-
-    current_sample_beat = Enum.at(sample_beats, round_num - 1)
-    sample_time = Utils.calc_sample_time(current_sample_beat.bpm)
+      |> Enum.reject(fn {_key, rec} -> Utils.empty_recording?(rec) end)
+      |> Enum.into(%{})
 
     playback_voting_timeout =
-      max(ceil(sample_time * number_of_recordings_with_content * 1.3) + 5_000, 10_000)
+      calc_playback_voting_timeout(map_size(valid_recordings), current_sample_beat)
 
     state = %GameInstance{
       state
@@ -56,7 +52,8 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.Recording do
               view_timeouts
               | playback_voting: playback_voting_timeout
             }
-        }
+        },
+        recordings: valid_recordings
     }
 
     %GameInstance{state | game_view: :playback_voting}
@@ -84,6 +81,14 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.Recording do
       # invalid vote - return state unchanged
       _bad_recording ->
         FreeForAllLogic.as_instruction(state, sync?: false, view_change?: false)
+    end
+  end
+
+  defp calc_playback_voting_timeout(num_valid_recordings, current_sample_beat) do
+    case num_valid_recordings do
+      # skip playback voting view if no valid recordings (timeout immediately)
+      0 -> 5_000
+      _n -> Utils.calc_sample_time(current_sample_beat.bpm) * num_valid_recordings + 10_000
     end
   end
 
