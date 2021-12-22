@@ -137,57 +137,70 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
   return (
     <div className="view_container">
       <MediumLargeTitle>LISTEN AND VOTE</MediumLargeTitle>
-      <DynamicContent centeredStyles={{ height: "100%" }}>
-        {voteSubmitted ? (
-          <></>
-        ) : (
-          <Instructions
-            description="Listen through other players' recordings. Once all 
+      <DynamicContent
+        centeredStyles={
+          !!recordings && recordings.length > 0 ? { height: "100%" } : {}
+        }
+      >
+        {!!recordings && recordings.length > 0 ? (
+          <div>
+            {voteSubmitted ? (
+              <></>
+            ) : (
+              <Instructions
+                description="Listen through other players' recordings. Once all 
         recordings have been heard you will be able to cast a vote for your favorite."
-          />
-        )}
-        {voteSubmitted ? (
-          <p style={{ textAlign: "center" }}>
-            Vote submitted successfully. Waiting on other players...
-          </p>
-        ) : !!recordings ? (
-          <div className="playback_recordings_container">
-            {recordings
-              .map((recordingTuple: RecordingTuple, idx: number): [
-                RecordingTuple,
-                Color
-              ] => {
-                return [recordingTuple, randomColors[idx]];
-              })
-              .map(
-                ([[playerId, recording], color]: [RecordingTuple, Color]) => {
-                  return (
-                    <div key={`playback-${playerId}`}>
-                      <PlaybackAudio
-                        key={`player-${playerId}`}
-                        isCurrPlayer={
-                          !!currPlayer && currPlayer.playerId === playerId
-                        }
-                        recording={recording}
-                        playerId={playerId}
-                        stopSample={stopSample}
-                        color={color}
-                        submitVote={submitVote}
-                        setActivePlaybackTrack={setActivePlaybackTrack}
-                        isPlaying={activePlaybackTrack === playerId}
-                        listenComplete={listenCompleteTracks.has(playerId)}
-                        canVote={canVote}
-                        completeListening={completeListening}
-                        emptyRecording={emptyRecordings.has(playerId)}
-                        autoPlayingId={autoPlayingId}
-                      />
-                    </div>
-                  );
-                }
-              )}
+              />
+            )}
+            {voteSubmitted ? (
+              <p style={{ textAlign: "center" }}>
+                Vote submitted successfully. Waiting on other players...
+              </p>
+            ) : (
+              <div className="playback_recordings_container">
+                {recordings
+                  .map((recordingTuple: RecordingTuple, idx: number): [
+                    RecordingTuple,
+                    Color
+                  ] => {
+                    return [recordingTuple, randomColors[idx]];
+                  })
+                  .map(
+                    ([[playerId, recording], color]: [
+                      RecordingTuple,
+                      Color
+                    ]) => {
+                      return (
+                        <div key={`playback-${playerId}`}>
+                          <PlaybackAudio
+                            key={`player-${playerId}`}
+                            isCurrPlayer={
+                              !!currPlayer && currPlayer.playerId === playerId
+                            }
+                            recording={recording}
+                            playerId={playerId}
+                            stopSample={stopSample}
+                            color={color}
+                            submitVote={submitVote}
+                            setActivePlaybackTrack={setActivePlaybackTrack}
+                            isPlaying={activePlaybackTrack === playerId}
+                            listenComplete={listenCompleteTracks.has(playerId)}
+                            canVote={canVote}
+                            completeListening={completeListening}
+                            emptyRecording={emptyRecordings.has(playerId)}
+                            autoPlayingId={autoPlayingId}
+                          />
+                        </div>
+                      );
+                    }
+                  )}
+              </div>
+            )}
           </div>
         ) : (
-          <div>No recordings available</div>
+          <div style={{ textAlign: "center", height: "100%" }}>
+            <Instructions description="Skipping voting... no submissions from active players :( " />
+          </div>
         )}
       </DynamicContent>
       <TimerBox>

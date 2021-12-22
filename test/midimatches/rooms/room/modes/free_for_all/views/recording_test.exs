@@ -68,7 +68,7 @@ defmodule Midimatches.RecordingTest do
       assert 74_000 == actual_game_server_state.game_rules.view_timeouts.playback_voting
     end
 
-    test "when all invalid recordings, should set appropriate view timeout" do
+    test "when all invalid recordings, should set timeout for no active submissions" do
       players =
         MapSet.new([
           %Player{
@@ -99,7 +99,7 @@ defmodule Midimatches.RecordingTest do
       actual_game_server_state = Recording.advance_view(game_server_state)
 
       assert :playback_voting == actual_game_server_state.game_view
-      assert 10_000 == actual_game_server_state.game_rules.view_timeouts.playback_voting
+      assert 5_000 == actual_game_server_state.game_rules.view_timeouts.playback_voting
     end
   end
 

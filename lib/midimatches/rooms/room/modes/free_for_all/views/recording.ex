@@ -35,7 +35,14 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.Recording do
       ) do
     current_sample_beat = Enum.at(sample_beats, round_num - 1)
 
-    playback_voting_timeout = calc_playback_voting_timeout(recordings, current_sample_beat)
+    valid_recordings =
+      recordings
+      |> Map.to_list()
+      |> Enum.reject(fn {_key, rec} -> Utils.empty_recording?(rec) end)
+      |> Enum.into(%{})
+
+    playback_voting_timeout =
+      calc_playback_voting_timeout(map_size(valid_recordings), current_sample_beat)
 
     state = %GameInstance{
       state
@@ -45,7 +52,8 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.Recording do
               view_timeouts
               | playback_voting: playback_voting_timeout
             }
-        }
+        },
+        recordings: valid_recordings
     }
 
     %GameInstance{state | game_view: :playback_voting}
@@ -76,18 +84,11 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.Recording do
     end
   end
 
-  defp calc_playback_voting_timeout(recordings, current_sample_beat) do
-    num_empty_recordings =
-      recordings
-      |> Map.to_list()
-      |> Enum.filter(fn {_key, rec} -> Utils.empty_recording?(rec) end)
-      |> length()
-
-    num_valid_submissions = map_size(recordings) - num_empty_recordings
-
-    case num_valid_submissions do
-      # TODO handle cases for 1 or 0 valid submissions
-      _n -> Utils.calc_sample_time(current_sample_beat.bpm) * num_valid_submissions + 10_000
+  defp calc_playback_voting_timeout(num_valid_recordings, current_sample_beat) do
+    case num_valid_recordings do
+      # skip playback voting view if no valid recordings (timeout immediately)
+      0 -> 5_000
+      _n -> Utils.calc_sample_time(current_sample_beat.bpm) * num_valid_recordings + 10_000
     end
   end
 
