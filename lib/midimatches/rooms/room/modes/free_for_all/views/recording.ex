@@ -87,14 +87,7 @@ defmodule Midimatches.Rooms.Room.Modes.FreeForAll.Views.Recording do
 
     case num_valid_submissions do
       # TODO handle cases for 1 or 0 valid submissions
-      _n ->
-        max(
-          ceil(
-            Utils.calc_sample_time(current_sample_beat.bpm) * num_valid_submissions *
-              1.3
-          ) + 5_000,
-          10_000
-        )
+      _n -> Utils.calc_sample_time(current_sample_beat.bpm) * num_valid_submissions + 10_000
     end
   end
 
