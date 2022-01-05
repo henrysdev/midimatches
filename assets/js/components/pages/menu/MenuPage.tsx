@@ -30,7 +30,7 @@ const MenuPage: React.FC = () => {
               callback={() => (window.location.href = "/leaderboard")}
               extraClasses={["register_button", "no_line_break"]}
             >
-              LEADERBOARD <SmallTextBadge>NEW!</SmallTextBadge>
+              LEADERBOARD
             </ComputerButton>
           </div>
           <div className="main_menu_btn">
@@ -48,7 +48,7 @@ const MenuPage: React.FC = () => {
               }}
               extraClasses={["register_button"]}
             >
-              ACCOUNT <SmallTextBadge>NEW!</SmallTextBadge>
+              ACCOUNT
             </ComputerButton>
           </div>
           <div className="main_menu_btn">
