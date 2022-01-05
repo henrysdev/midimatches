@@ -161,9 +161,6 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
     if (canVote) {
       classes.push("highlight_on_hover");
     }
-    if (isCurrPlayer) {
-      classes.push("frozen");
-    }
     return [...classes].join(" ");
   }, [isPlaying, listenComplete, canVote]);
 
@@ -193,7 +190,9 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
                   width: "32px",
                 }}
               >
-                {isPlaying ? (
+                {emptyRecording ? (
+                  <></>
+                ) : isPlaying ? (
                   <MaterialIcon iconName="hearing" style={{ color: "blue" }} />
                 ) : listenComplete ? (
                   <MaterialIcon
@@ -230,7 +229,7 @@ const PlaybackAudio: React.FC<PlaybackAudioProps> = ({
           </div>
         </div>
 
-        {!practiceMode && canVote ? (
+        {!practiceMode && canVote && !emptyRecording ? (
           <div style={{ flex: "1" }}>
             <InlineWidthButton
               callback={() => {

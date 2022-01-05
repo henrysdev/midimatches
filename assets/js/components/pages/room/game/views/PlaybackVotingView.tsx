@@ -37,6 +37,7 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
       viewTimeouts: { playbackVoting: playbackVotingTimeout },
     },
     viewDeadline,
+    players: allPlayers,
   } = useGameContext();
   const { clockOffset } = useClockOffsetContext();
   const { recordingTime } = useBackingTrackContext();
@@ -52,12 +53,43 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
     new Set<string>()
   );
 
-  const recordings = useMemo(() => {
+  const players = useMemo(() => {
+    return !!allPlayers ? allPlayers : [];
+  }, []);
+
+  const validRecordings = useMemo(() => {
     return !!allRecordings ? allRecordings : [];
   }, []);
 
+  const recordingPlayerIdsSet = useMemo(() => {
+    return !!validRecordings
+      ? new Set(validRecordings.map(([playerId, _recording]) => playerId))
+      : new Set([]);
+  }, []);
+
+  const emptyMusicianIds = useMemo(() => {
+    return players
+      .map((player) => player.playerId)
+      .filter((playerId) => !recordingPlayerIdsSet.has(playerId));
+  }, []);
+
+  const playbackRecordings = useMemo(() => {
+    const emptyRecordingFakes = emptyMusicianIds.map((id) => {
+      return [
+        id,
+        {
+          timestepSlices: [],
+          timestepSize: 0,
+        } as Loop,
+      ] as RecordingTuple;
+    });
+    return validRecordings.concat(emptyRecordingFakes);
+  }, []);
+
   const randomColors: Array<Color> = useMemo(() => {
-    const numColorsNeeded = !!recordings ? Object.keys(recordings).length : 0;
+    const numColorsNeeded = !!playbackRecordings
+      ? Object.keys(playbackRecordings).length
+      : 0;
     return genRandomColors(numColorsNeeded);
   }, []);
 
@@ -71,7 +103,7 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
         setAutoPlayingTrackIdx((idx) => idx + 1);
       }
 
-      if (autoPlayingTrackIdx < recordings.length) {
+      if (autoPlayingTrackIdx < playbackRecordings.length) {
         autoPlayCounter.current = setTimeout(() => {
           setAutoPlayingTrackIdx((idx) => idx + 1);
         }, secToMs(recordingTime));
@@ -86,26 +118,23 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
   }, [autoPlayingTrackIdx, isSamplePlayerLoaded]);
 
   const autoPlayingId = useMemo(() => {
-    return !!recordings &&
-      recordings.length - emptyRecordings.size > autoPlayingTrackIdx &&
+    return !!playbackRecordings &&
+      playbackRecordings.length - emptyRecordings.size > autoPlayingTrackIdx &&
       autoPlayingTrackIdx >= 0
-      ? recordings[autoPlayingTrackIdx][0]
+      ? playbackRecordings[autoPlayingTrackIdx][0]
       : undefined;
   }, [autoPlayingTrackIdx]);
 
   useEffect(() => {
-    const emptyMusicians = recordings
-      .filter(([_playerId, recording]) => recording.timestepSlices.length === 0)
-      .map(([playerId, _recording]) => playerId);
-    const emptyMusiciansSet = new Set(emptyMusicians);
-    setEmptyRecordings(emptyMusiciansSet);
+    const emptyMusicianIdsSet = new Set(emptyMusicianIds);
+    setEmptyRecordings(emptyMusicianIdsSet);
     setListenCompleteTracks(
-      new Set([...listenCompleteTracks, ...emptyMusicians])
+      new Set([...listenCompleteTracks, ...emptyMusicianIds])
     );
   }, []);
 
   useEffect(() => {
-    if (listenCompleteTracks.size >= recordings.length) {
+    if (listenCompleteTracks.size >= playbackRecordings.length) {
       setCanVote(true);
     }
   }, [listenCompleteTracks.size]);
@@ -139,10 +168,12 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
       <MediumLargeTitle>LISTEN AND VOTE</MediumLargeTitle>
       <DynamicContent
         centeredStyles={
-          !!recordings && recordings.length > 0 ? { height: "100%" } : {}
+          !!validRecordings && validRecordings.length > 0
+            ? { height: "100%" }
+            : {}
         }
       >
-        {!!recordings && recordings.length > 0 ? (
+        {!!validRecordings && validRecordings.length > 0 ? (
           <div>
             {voteSubmitted ? (
               <></>
@@ -158,7 +189,7 @@ const PlaybackVotingView: React.FC<PlaybackVotingViewProps> = ({
               </p>
             ) : (
               <div className="playback_recordings_container">
-                {recordings
+                {playbackRecordings
                   .map((recordingTuple: RecordingTuple, idx: number): [
                     RecordingTuple,
                     Color
