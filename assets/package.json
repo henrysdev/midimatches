@@ -32,7 +32,7 @@
     "react-router-dom": "^4.3.1",
     "react-timer-hook": "^2.0.7",
     "sinon": "^9.2.3",
-    "tone": "^14.7.58",
+    "tone": "^14.7.77",
     "ts-jest": "^26.4.4",
     "universal-cookie": "^4.0.4",
     "webmidi": "^2.5.1"

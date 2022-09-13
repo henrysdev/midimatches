@@ -73,7 +73,7 @@ const RecordingView: React.FC<RecordingViewProps> = ({
 
   return (
     <div
-      className={isRecording ? "view_container neon_border" : "view_container "}
+      className={"view_container "}
     >
       <MediumLargeTitle title="PLAY AND RECORD" />
       {isContestant ? (
