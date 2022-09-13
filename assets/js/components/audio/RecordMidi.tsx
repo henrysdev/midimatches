@@ -176,7 +176,8 @@ const RecordMidi: React.FC<RecordMidiProps> = ({
               if (
                 midiNumber >= MIN_NOTE_NUMBER &&
                 midiNumber <= MAX_NOTE_NUMBER &&
-                !!synth
+                synth &&
+                synth.loaded
               ) {
                 const { noteNumber, noteVelocity } = playRecordedNote(
                   midiNumber
