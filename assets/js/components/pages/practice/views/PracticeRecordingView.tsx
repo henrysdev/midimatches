@@ -72,7 +72,7 @@ const PracticeRecordingView: React.FC<PracticeRecordingViewProps> = ({
 
   return (
     <div
-      className={isRecording ? "view_container neon_border" : "view_container "}
+      className={"view_container "}
     >
       <span className="anim_line" />
       <span className="anim_line" />
